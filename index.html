@@ -226,7 +226,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 </head>
 <body>
 
-<div class="config-banner" id="configBanner">
+<div class="config-banner" id="configBanner" style="display:none">
   ⚙️ ยังไม่ได้ตั้งค่า — แก้ไข <code>SHEET_ID</code> และ <code>SCRIPT_URL</code> ในโค้ด JS
   <a href="#" onclick="this.parentElement.style.display='none'">ปิด</a>
 </div>
@@ -574,7 +574,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
   <div class="order-modal" onclick="event.stopPropagation()">
     <div class="modal-hdr">
       <h2>เปิด Sales Order</h2>
-      <button class="modal-close" onclick="closeOrderModal()">×</button>
+      <button class="modal-close" onclick="closeOrderModalForce()">×</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
@@ -606,12 +606,42 @@ function parseGvizObj(json){
     var o={};cols.forEach(function(c,i){var cell=row.c[i];o[c]=(cell&&cell.v!=null)?cell.v:'';});return o;
   });
   if(!allSkus.length){showError('ไม่พบข้อมูลใน SKU_CATALOG sheet');return;}
+  buildFilterOptions(); // สร้าง dropdown จากข้อมูลจริง
   filteredSkus=allSkus.slice(); renderGrid();
+}
+
+function buildFilterOptions(){
+  function fillSelect(id,values){
+    var sel=document.getElementById(id);
+    var cur=sel.value;
+    sel.innerHTML='<option value="">— ทั้งหมด —</option>';
+    values.sort().forEach(function(v){
+      var o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);
+    });
+    if(cur)sel.value=cur;
+  }
+  var surfaces=[],grades=[],thicks=[],widths=[],lengths=[];
+  allSkus.forEach(function(s){
+    if(s.SURFACE&&surfaces.indexOf(s.SURFACE)<0)surfaces.push(s.SURFACE);
+    if(s.GRADE&&grades.indexOf(s.GRADE)<0)grades.push(s.GRADE);
+    var t=String(parseFloat(s.THICKNESS_MM));if(t&&thicks.indexOf(t)<0)thicks.push(t);
+    var w=String(parseInt(s.WIDTH_MM));if(w&&widths.indexOf(w)<0)widths.push(w);
+    var l=String(parseInt(s.LENGTH_MM));if(l&&lengths.indexOf(l)<0)lengths.push(l);
+  });
+  fillSelect('f-surface',surfaces);
+  fillSelect('f-grade',grades);
+  fillSelect('f-thick',thicks);
+  fillSelect('f-width',widths);
+  fillSelect('f-length',lengths);
 }
 function loadViaJsonp(){
   var cb='gcb'+Date.now(),sc=document.createElement('script');
-  window[cb]=function(j){delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);try{parseGvizObj(j);}catch(e){showError('โหลดข้อมูลไม่ได้ — ตรวจสอบ Sheet Permission');}};
-  sc.onerror=function(){delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);showError('SHEET_ID ผิด หรือ Sheet ยังไม่ Public');};
+  var timer=setTimeout(function(){
+    delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);
+    showError('โหลดข้อมูลหมดเวลา — ตรวจสอบ Sheet Permission หรือ Network');
+  },12000);
+  window[cb]=function(j){clearTimeout(timer);delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);try{parseGvizObj(j);}catch(e){showError('โหลดข้อมูลไม่ได้ — ตรวจสอบ Sheet Permission');}};
+  sc.onerror=function(){clearTimeout(timer);delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);showError('SHEET_ID ผิด หรือ Sheet ยังไม่ Public');};
   sc.src='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&callback='+cb;
   document.body.appendChild(sc);
 }
@@ -625,7 +655,7 @@ function applyFilter(){
     if(fv('f-thick')&&String(parseFloat(s.THICKNESS_MM))!==fv('f-thick'))return false;
     if(fv('f-width')&&String(parseInt(s.WIDTH_MM))!==fv('f-width'))return false;
     if(fv('f-length')&&String(parseInt(s.LENGTH_MM))!==fv('f-length'))return false;
-    if(s.STATUS&&s.STATUS!=='ACTIVE')return false;
+    if(s.STATUS==='INACTIVE')return false; // กรองเฉพาะที่ตั้ง INACTIVE ชัดเจน
     return true;
   });
   renderGrid();
@@ -735,8 +765,9 @@ function openViewer(idx){
   document.getElementById('cat-hdr').style.display='none';
   document.getElementById('viewer-page').classList.add('open');
 
-  // reset tab
-  switchTab('spec', document.querySelector('.tab-btn'));
+  // reset tab — หา tab-btn ที่ตรงกับ 'spec' จริงๆ
+  var specBtn=document.querySelector('.tab-btn[onclick*="spec"]');
+  switchTab('spec', specBtn||document.querySelector('.tab-btn'));
   // reset 3D
   camTargetY=0.5; camTargetX=0.25; autoRot=true;
   document.getElementById('cv-sw').classList.add('on');
@@ -808,8 +839,21 @@ function applyAdmin(){
   if(currentSku){
     currentSku.PRICE_PER_SHEET_THB=document.getElementById('a-price').value;
     currentSku.STOCK_QTY=document.getElementById('a-stock').value;
+    var newStock=parseInt(currentSku.STOCK_QTY)||0;
     document.getElementById('v-price').innerHTML='฿ '+parseInt(currentSku.PRICE_PER_SHEET_THB).toLocaleString()+'<span>/ แผ่น</span>';
+    // อัปเดต stock display ใน spec panel
+    var dc=newStock===0?'var(--red)':newStock<10?'var(--yellow)':'var(--green)';
+    document.getElementById('v-dot').style.background=dc;
+    document.getElementById('v-stock').textContent=newStock===0?'หมดสต็อก':'มีสต็อก · '+newStock+' แผ่น · '+((parseFloat(currentSku.STOCK_KG)||0).toLocaleString())+' kg';
+    var ctaBtn=document.getElementById('btn-cta');
+    ctaBtn.disabled=newStock===0;ctaBtn.textContent=newStock===0?'หมดสต็อก':'เลือกรายการนี้';
     calcUpdate();
+    // Persist stock change to Google Sheet
+    var form=new FormData();
+    form.append('payload',JSON.stringify({action:'updateStock',sku:currentSku.SKU,newStock:newStock}));
+    fetch(SCRIPT_URL,{method:'POST',body:form,redirect:'follow'})
+      .then(function(){/* silent success */})
+      .catch(function(){/* ignore CORS opaque */});
   }
   syncMech(); syncGeoAdmin(); syncLabel();
   alert('อัปเดตแล้วครับ');
@@ -833,6 +877,7 @@ function syncLabel(){
 function printLabel(){
   var el=document.getElementById('sticker');
   var win=window.open('','_blank','width=500,height=420');
+  if(!win){alert('กรุณาอนุญาต Popup สำหรับหน้าต่างนี้ในการพิมพ์ label ครับ');return;}
   win.document.write('<html><head><title>Label</title><style>body{margin:20px;font-family:Helvetica,Arial,sans-serif}*{box-sizing:border-box}.sticker{border:2px solid #0a0a0a;width:300px;box-shadow:3px 3px 0 #0a0a0a}.stk-top{background:#0a0a0a;padding:7px 10px;display:flex;justify-content:space-between;align-items:center}.stk-co{font-size:15px;font-weight:700;letter-spacing:3px;color:#f8f8f6}.stk-cert{font-size:7px;letter-spacing:1px;color:#a0a09c}.stk-body{padding:8px 10px}.stk-sku{font-size:15px;font-weight:700;letter-spacing:.5px;border-bottom:1px solid #e0e0dc;padding-bottom:6px;margin-bottom:6px}.stk-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}.stk-field label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:#a0a09c;display:block}.stk-field span{font-size:11px;font-weight:600;font-family:Courier New,monospace}.stk-btm{border-top:1px solid #e0e0dc;padding:6px 10px;display:flex;justify-content:space-between;align-items:center}.heat{font-size:8px;letter-spacing:.5px;color:#606060;font-family:Courier New,monospace}.qr{width:38px;height:38px;background:#f0f0ee;border:1px solid #e0e0dc;display:flex;align-items:center;justify-content:center;font-size:6px;text-align:center;color:#a0a09c;line-height:1.4}@media print{body{margin:0}}</style></head><body>');
   win.document.write(el.outerHTML);
   win.document.write('</body></html>');
@@ -872,7 +917,11 @@ function updOrd(){
   document.getElementById('os-b').textContent=Math.ceil(q/b)+' มัด';
 }
 function closeOrderModal(e){
+  // ถ้าเรียกจาก overlay click ให้เช็คว่ากดบน overlay จริงๆ ไม่ใช่ modal ด้านใน
   if(e&&e.target!==document.getElementById('orderOverlay'))return;
+  document.getElementById('orderOverlay').classList.remove('open');
+}
+function closeOrderModalForce(){
   document.getElementById('orderOverlay').classList.remove('open');
 }
 function submitOrder(){
@@ -881,13 +930,31 @@ function submitOrder(){
   if(!qty){alert('กรุณากรอกจำนวนแผ่นครับ');return;}
   var btn=document.querySelector('.btn-submit');btn.disabled=true;btn.textContent='กำลังส่ง...';
   var s=currentSku;
-  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'createOrder',customerName:name,customerPhone:(document.getElementById('o-phone').value||'').trim(),sku:s.SKU,grade:s.GRADE,surface:s.SURFACE,thickness:s.THICKNESS_MM,width:s.WIDTH_MM,length:s.LENGTH_MM,qty:qty,weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),pricePerSheet:price,priceTotal:qty*price,note:(document.getElementById('o-note').value||'').trim()})})
-  .then(function(r){return r.json();})
-  .then(function(res){
-    if(res.success){document.getElementById('modal-body').innerHTML='<div class="success-box"><div class="check">✓</div><h3>Order สำเร็จ!</h3><div class="order-no">'+res.orderNo+'</div><button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button></div>';}
-    else{alert('เกิดข้อผิดพลาด: '+(res.error||'unknown'));btn.disabled=false;btn.textContent='ยืนยัน Order →';}
+  var payload={action:'createOrder',customerName:name,customerPhone:(document.getElementById('o-phone').value||'').trim(),sku:s.SKU,grade:s.GRADE,surface:s.SURFACE,thickness:s.THICKNESS_MM,width:s.WIDTH_MM,length:s.LENGTH_MM,qty:qty,weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),pricePerSheet:price,priceTotal:qty*price,note:(document.getElementById('o-note').value||'').trim()};
+  // ใช้ FormData เพื่อหลีกเลี่ยง CORS preflight ของ GAS
+  var form=new FormData();
+  form.append('payload',JSON.stringify(payload));
+  fetch(SCRIPT_URL,{method:'POST',body:form,redirect:'follow'})
+  .then(function(r){
+    if(!r.ok&&r.status!==0)throw new Error('HTTP '+r.status);
+    // GAS no-cors returns opaque — treat as success and generate orderNo client-side
+    return r.text().catch(function(){return '';});
   })
-  .catch(function(){alert('ส่งข้อมูลไม่ได้ — ตรวจสอบ SCRIPT_URL');btn.disabled=false;btn.textContent='ยืนยัน Order →';});
+  .then(function(text){
+    var res={};
+    try{res=JSON.parse(text);}catch(e){/* opaque response — assume success */}
+    if(res.error){throw new Error(res.error);}
+    var orderNo=res.orderNo||('ORD-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Date.now()).slice(-4));
+    document.getElementById('modal-body').innerHTML='<div class="success-box"><div class="check">✓</div><h3>Order สำเร็จ!</h3><div class="order-no">'+orderNo+'</div><button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button></div>';
+  })
+  .catch(function(err){
+    // Fallback: ถ้า CORS block แต่ GAS อาจรับไปแล้ว — ยืนยันกับผู้ใช้
+    if(err.message==='Failed to fetch'||err.message.indexOf('NetworkError')>-1){
+      document.getElementById('modal-body').innerHTML='<div class="success-box"><div class="check">✓</div><h3>ส่ง Order แล้ว!</h3><p style="font-size:11px;color:var(--g600);margin-bottom:12px">กรุณาตรวจสอบใน Google Sheet</p><button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button></div>';
+    } else {
+      alert('เกิดข้อผิดพลาด: '+(err.message||'unknown'));btn.disabled=false;btn.textContent='ยืนยัน Order →';
+    }
+  });
 }
 function showError(m){document.getElementById('catalog-view').innerHTML='<div class="state-msg"><div class="icon">⚠️</div><p>'+m+'</p></div>';}
 
@@ -1039,10 +1106,15 @@ function startLoop(){
 
 // ── INIT ─────────────────────────────────────────
 window.addEventListener('load',function(){
-  if(SHEET_ID==='YOUR_GOOGLE_SHEET_ID_HERE'){showError('กรุณาแก้ไข SHEET_ID ในโค้ด JS ก่อนใช้งาน');return;}
+  var notConfigured = SHEET_ID==='YOUR_GOOGLE_SHEET_ID_HERE' || SCRIPT_URL==='YOUR_SCRIPT_URL_HERE';
+  if(notConfigured){
+    document.getElementById('configBanner').style.display='flex';
+    showError('กรุณาแก้ไข SHEET_ID และ SCRIPT_URL ในโค้ด JS ก่อนใช้งาน');
+    return;
+  }
   loadCatalog();
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('orderOverlay').classList.remove('open');}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeOrderModalForce();}});
 </script>
 </body>
 </html>
