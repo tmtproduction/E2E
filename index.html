@@ -212,27 +212,92 @@ var currentSku   = null;
 
 // ── LOAD DATA ──────────────────────────────────────────
 function loadCatalog() {
-  fetch(API_BASE)
-    .then(function(r){ return r.text(); })
+  // Add cache-bust + หลีกเลี่ยง CORS preflight
+  var url = API_BASE + '&nocache=' + Date.now();
+
+  fetch(url)
+    .then(function(r){
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    })
     .then(function(text){
-      // Google returns /*O_o*/\ngoogle.visualization.Query.setResponse({...});
-      var json = JSON.parse(text.replace(/^.*?(\{)/,'$1').replace(/\);?\s*$/,''));
-      var cols = json.table.cols.map(function(c){ return c.label || c.id; });
-      allSkus = json.table.rows
+      // Google gviz returns: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
+      // หา JSON ระหว่าง setResponse( ... );
+      var start = text.indexOf('(');
+      var end   = text.lastIndexOf(')');
+      if (start === -1 || end === -1) throw new Error('parse failed: ' + text.substring(0,120));
+      var json = JSON.parse(text.substring(start + 1, end));
+
+      if (!json.table) throw new Error('no table in response');
+
+      var cols = json.table.cols.map(function(c){
+        return (c.label && c.label.trim()) ? c.label.trim() : c.id;
+      });
+
+      allSkus = (json.table.rows || [])
+        .filter(function(row){ return row && row.c && row.c[0] && row.c[0] && row.c[0].v; })
+        .map(function(row){
+          var obj = {};
+          cols.forEach(function(col, i){
+            var cell = row.c[i];
+            obj[col] = (cell && cell.v !== null && cell.v !== undefined) ? cell.v : '';
+          });
+          return obj;
+        });
+
+      if (allSkus.length === 0) {
+        showError('โหลดข้อมูลสำเร็จ แต่ไม่พบข้อมูลใน Sheet — ตรวจสอบว่า Sheet ชื่อ SKU_CATALOG และมีข้อมูลแถวที่ 2 ขึ้นไป');
+        return;
+      }
+
+      filteredSkus = allSkus.slice();
+      renderGrid();
+    })
+    .catch(function(err){
+      console.error('loadCatalog error:', err);
+      // ลองวิธี JSONP fallback
+      loadViaJsonp();
+    });
+}
+
+// JSONP fallback — สำหรับกรณี CORS block
+function loadViaJsonp() {
+  var callbackName = 'steelCatalogCb_' + Date.now();
+  var script = document.createElement('script');
+
+  window[callbackName] = function(json) {
+    delete window[callbackName];
+    document.body.removeChild(script);
+    try {
+      var cols = json.table.cols.map(function(c){
+        return (c.label && c.label.trim()) ? c.label.trim() : c.id;
+      });
+      allSkus = (json.table.rows || [])
         .filter(function(row){ return row && row.c && row.c[0] && row.c[0].v; })
         .map(function(row){
           var obj = {};
           cols.forEach(function(col, i){
-            obj[col] = (row.c[i] && row.c[i].v !== null) ? row.c[i].v : '';
+            var cell = row.c[i];
+            obj[col] = (cell && cell.v !== null && cell.v !== undefined) ? cell.v : '';
           });
           return obj;
         });
       filteredSkus = allSkus.slice();
       renderGrid();
-    })
-    .catch(function(err){
-      showError('ไม่สามารถโหลดข้อมูลได้ — กรุณาตรวจสอบ SHEET_ID และ Sheet permission');
-    });
+    } catch(e) {
+      showError('ไม่สามารถโหลดข้อมูลได้ — ตรวจสอบว่า Sheet เป็น Public (Anyone with link → Viewer)');
+    }
+  };
+
+  script.onerror = function() {
+    delete window[callbackName];
+    document.body.removeChild(script);
+    showError('โหลดข้อมูลไม่ได้ — Sheet อาจยังไม่เป็น Public หรือ Sheet ชื่อผิด (ต้องชื่อ SKU_CATALOG)');
+  };
+
+  script.src = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+               '/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&tq=select+*&callback=' + callbackName;
+  document.body.appendChild(script);
 }
 
 // ── FILTER ────────────────────────────────────────────
