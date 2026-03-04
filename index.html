@@ -7,189 +7,232 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--black:#0a0a0a;--white:#f8f8f6;--g100:#f0f0ee;--g200:#e0e0dc;--g400:#a0a09c;--g600:#606060;--green:#1a7a4a;--yellow:#d4a017;--red:#c0392b;}
-body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color:var(--black);min-height:100vh;display:flex;flex-direction:column;}
-.hdr{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;padding:14px 32px;border-bottom:1px solid var(--g200);background:var(--white);position:sticky;top:0;z-index:50;}
-.brand{font-size:15px;font-weight:800;letter-spacing:3px;text-transform:uppercase;line-height:1.2;}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color:var(--black);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── CATALOG HEADER ── */
+.cat-hdr{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;padding:12px 28px;border-bottom:1px solid var(--g200);background:var(--white);flex-shrink:0;}
+.brand{font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;line-height:1.2;}
 .search-bar{display:flex;gap:8px;flex-wrap:wrap;}
 .sf{display:flex;flex-direction:column;gap:2px;}
 .sf label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);}
-.sf select{border:1px solid var(--g200);background:var(--white);font-size:12px;padding:5px 8px;outline:none;color:var(--black);font-family:inherit;min-width:100px;}
+.sf select{border:1px solid var(--g200);background:var(--white);font-size:11px;padding:4px 7px;outline:none;color:var(--black);font-family:inherit;min-width:90px;}
 .sf select:focus{border-color:var(--black);}
-.btn-search{background:var(--black);color:var(--white);border:none;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:8px 20px;cursor:pointer;align-self:flex-end;font-family:inherit;font-weight:600;}
+.btn-search{background:var(--black);color:var(--white);border:none;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:7px 16px;cursor:pointer;align-self:flex-end;font-family:inherit;font-weight:600;}
 .btn-search:hover{background:var(--g600);}
 .hdr-stat{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);white-space:nowrap;}
+
+/* ── CATALOG VIEW ── */
+#catalog-view{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
 .state-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;padding:60px 20px;}
 .state-msg .icon{font-size:32px;opacity:.3;}
 .state-msg p{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);}
 .spinner{width:24px;height:24px;border:2px solid var(--g200);border-top-color:var(--black);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.grid-wrap{padding:24px 32px;flex:1;}
-.grid-hdr{display:flex;align-items:baseline;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--g200);padding-bottom:10px;}
+.grid-wrap{padding:20px 28px;flex:1;}
+.grid-hdr{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;border-bottom:1px solid var(--g200);padding-bottom:8px;}
 .grid-hdr h2{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;}
 .grid-hdr span{font-size:10px;color:var(--g400);font-family:'Courier New',monospace;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--g200);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1px;background:var(--g200);}
 .card{background:var(--white);transition:background .15s;}
 .card:hover{background:#fafaf8;}
-.card-img{height:140px;background:var(--g100);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer;}
-.status-dot{position:absolute;top:12px;right:12px;width:9px;height:9px;border-radius:50%;}
-.card-body{padding:16px 18px;border-top:1px solid var(--g200);}
-.c-sku{font-size:12px;font-weight:700;font-family:'Courier New',monospace;letter-spacing:.5px;margin-bottom:3px;}
-.c-sub{font-size:9px;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;}
-.c-specs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
-.cs label{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:1px;}
-.cs span{font-family:'Courier New',monospace;font-size:12px;font-weight:600;}
-.c-divider{height:1px;background:var(--g200);margin:10px 0;}
+.card-img{height:130px;background:var(--g100);position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.status-dot{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%;}
+.card-body{padding:14px 16px;border-top:1px solid var(--g200);}
+.c-sku{font-size:11px;font-weight:700;font-family:'Courier New',monospace;letter-spacing:.5px;margin-bottom:2px;}
+.c-sub{font-size:8px;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.c-specs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;}
+.cs label{font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:1px;}
+.cs span{font-family:'Courier New',monospace;font-size:11px;font-weight:600;}
+.c-divider{height:1px;background:var(--g200);margin:8px 0;}
 .c-bottom{display:flex;justify-content:space-between;align-items:flex-end;}
-.c-stock .stock-num{font-size:22px;font-weight:700;line-height:1;}
-.c-stock .stock-num.green{color:var(--green);}
-.c-stock .stock-num.yellow{color:var(--yellow);}
-.c-stock .stock-num.red{color:var(--red);}
-.c-stock .stock-unit{font-size:9px;color:var(--g400);text-transform:uppercase;margin-top:1px;}
+.c-stock .stock-num{font-size:20px;font-weight:700;line-height:1;}
+.c-stock .stock-num.green{color:var(--green);} .c-stock .stock-num.yellow{color:var(--yellow);} .c-stock .stock-num.red{color:var(--red);}
+.c-stock .stock-unit{font-size:8px;color:var(--g400);text-transform:uppercase;margin-top:1px;}
 .c-price{text-align:right;}
-.c-price .price-main{font-family:'Courier New',monospace;font-size:13px;font-weight:700;}
-.c-price .price-sub{font-size:9px;color:var(--g400);margin-top:1px;}
-.card-foot{padding:10px 18px;border-top:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center;}
-.btn-spec{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;}
+.c-price .price-main{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
+.c-price .price-sub{font-size:8px;color:var(--g400);margin-top:1px;}
+.card-foot{padding:8px 16px;border-top:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center;}
+.btn-spec{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;}
 .btn-spec:hover{color:var(--black);}
-.btn-order{background:var(--black);color:var(--white);border:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;cursor:pointer;font-family:inherit;font-weight:600;}
-.btn-order:hover{background:var(--g600);}
-.btn-order:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
+.btn-order-card{background:var(--black);color:var(--white);border:none;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;cursor:pointer;font-family:inherit;font-weight:600;}
+.btn-order-card:hover{background:var(--g600);}
+.btn-order-card:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
 
-/* OVERLAYS */
-.overlay{display:none;position:fixed;inset:0;background:rgba(10,10,10,.62);z-index:100;align-items:flex-start;justify-content:center;padding:20px 16px;overflow-y:auto;backdrop-filter:blur(4px);}
-.overlay.open{display:flex;}
-@keyframes slideUp{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+/* ── VIEWER PAGE (full-screen, hidden by default) ── */
+#viewer-page{display:none;flex:1;flex-direction:column;overflow:hidden;}
+#viewer-page.open{display:flex;}
+.vp-hdr{display:grid;grid-template-columns:auto 1fr auto;align-items:center;padding:10px 24px;border-bottom:1px solid var(--g200);flex-shrink:0;background:var(--white);}
+.vp-back{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g600);cursor:pointer;background:none;border:none;font-family:inherit;display:flex;align-items:center;gap:6px;}
+.vp-back:hover{color:var(--black);}
+.vp-title{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--g400);text-align:center;font-weight:600;}
+.vp-tabs{display:flex;gap:3px;justify-content:flex-end;}
+.tab-btn{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border:1px solid var(--g200);background:none;cursor:pointer;color:var(--g600);transition:all .15s;font-family:inherit;}
+.tab-btn:hover{border-color:var(--black);color:var(--black);}
+.tab-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
 
-/* SPEC MODAL */
-.spec-modal{background:var(--white);width:100%;max-width:860px;animation:slideUp .24s ease;}
-.sm-head{display:grid;grid-template-columns:1fr 300px;min-height:220px;}
-.sm-head-left{background:var(--black);padding:30px 34px;display:flex;flex-direction:column;justify-content:space-between;}
-.sm-cat{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:8px;}
-.sm-sku{font-size:32px;font-weight:800;letter-spacing:1px;color:var(--white);line-height:1.05;margin-bottom:6px;}
-.sm-grade{font-family:'Courier New',monospace;font-size:11px;color:var(--g400);letter-spacing:1px;}
-.sm-badge{display:inline-flex;align-items:center;gap:7px;margin-top:18px;padding:5px 11px;background:rgba(255,255,255,.08);}
-.sm-badge .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.sm-badge span{font-family:'Courier New',monospace;font-size:11px;color:var(--white);}
-.sm-head-right{background:var(--g100);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.sm-head-right::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--g200) 1px,transparent 1px),linear-gradient(90deg,var(--g200) 1px,transparent 1px);background-size:28px 28px;opacity:.55;}
-#sm-canvas{position:relative;z-index:1;cursor:grab;display:block;}
-#sm-canvas:active{cursor:grabbing;}
-.sm-vbtns{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:3px;z-index:2;}
-.sm-vb{background:var(--white);border:1px solid var(--g200);font-size:8px;letter-spacing:1px;padding:4px 8px;cursor:pointer;color:var(--g600);min-width:42px;text-align:center;font-family:inherit;transition:all .15s;}
-.sm-vb:hover,.sm-vb.on{background:var(--black);color:var(--white);border-color:var(--black);}
-.sm-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);z-index:2;pointer-events:none;transition:opacity .6s;white-space:nowrap;}
-.sm-auto{position:absolute;bottom:8px;right:10px;z-index:2;display:flex;align-items:center;gap:5px;cursor:pointer;}
-.sm-auto-lbl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);}
-.sw{width:28px;height:14px;background:var(--g200);border-radius:7px;position:relative;border:none;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.vp-main{display:grid;grid-template-columns:1fr 320px;flex:1;min-height:0;overflow:hidden;}
+
+/* Canvas */
+.canvas-wrap{position:relative;background:var(--g100);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.canvas-wrap::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--g200) 1px,transparent 1px),linear-gradient(90deg,var(--g200) 1px,transparent 1px);background-size:34px 34px;opacity:.5;}
+#c3d{position:relative;z-index:1;cursor:grab;display:block;}
+#c3d:active{cursor:grabbing;}
+.view-btns{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:3px;z-index:2;}
+.vb{background:var(--white);border:1px solid var(--g200);font-size:9px;letter-spacing:1px;padding:5px 9px;cursor:pointer;color:var(--g600);min-width:46px;text-align:center;font-family:inherit;transition:all .15s;}
+.vb:hover,.vb.on{background:var(--black);color:var(--white);border-color:var(--black);}
+.cv-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);z-index:2;pointer-events:none;transition:opacity .6s;white-space:nowrap;}
+.cv-auto{position:absolute;bottom:12px;right:12px;z-index:2;display:flex;align-items:center;gap:6px;cursor:pointer;}
+.cv-auto span{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);}
+.sw{width:30px;height:15px;background:var(--g200);border-radius:8px;position:relative;border:none;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .sw.on{background:var(--black);}
-.sw-k{position:absolute;top:2px;left:2px;width:10px;height:10px;background:var(--white);border-radius:50%;transition:transform .2s;}
-.sw.on .sw-k{transform:translateX(14px);}
-.sm-body{padding:0 34px 26px;}
-.sm-sec{padding:18px 0;border-bottom:1px solid var(--g200);}
-.sm-sec:last-child{border-bottom:none;}
-.sm-sec-ttl{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
-.sm-sec-ttl::after{content:'';flex:1;height:1px;background:var(--g200);}
-.sm-g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-.sm-g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.sfield label{display:block;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:3px;}
-.sfield .sv{font-family:'Courier New',monospace;font-size:14px;font-weight:700;}
-.sfield .svl{font-size:24px;font-weight:800;line-height:1;}
-.sfield .svsub{font-size:9px;color:var(--g400);margin-top:1px;}
-.mrow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--g100);}
+.sw-k{position:absolute;top:2px;left:2px;width:11px;height:11px;background:var(--white);border-radius:50%;transition:transform .2s;}
+.sw.on .sw-k{transform:translateX(15px);}
+.cv-info{position:absolute;bottom:12px;left:12px;font-size:9px;font-family:'Courier New',monospace;color:var(--g400);z-index:2;}
+
+/* Sidebar */
+.sidebar{border-left:1px solid var(--g200);display:flex;flex-direction:column;overflow:hidden;}
+.panel{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.panel.active{display:flex;}
+.panel-scroll{flex:1;overflow-y:auto;}
+
+/* Spec panel */
+.sec{padding:14px 18px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.sec-lbl{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:600;}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--g200);}
+.prod-sku{font-size:20px;font-weight:700;letter-spacing:.5px;line-height:1.1;margin-bottom:3px;}
+.prod-sub{font-size:9px;color:var(--g400);letter-spacing:.5px;text-transform:uppercase;}
+.stock-pill{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 10px;background:var(--g100);}
+.stock-pill .dot{width:6px;height:6px;border-radius:50%;}
+.stock-pill span{font-size:10px;font-family:'Courier New',monospace;}
+.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.df label{display:block;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;}
+.df .dv{font-family:'Courier New',monospace;font-size:14px;font-weight:600;}
+.df .du{font-size:9px;color:var(--g400);margin-left:1px;}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--g100);}
 .mrow:last-child{border-bottom:none;}
 .mk{font-size:9px;letter-spacing:.5px;color:var(--g400);text-transform:uppercase;}
-.mv{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
-.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.pack-item{display:flex;gap:9px;align-items:flex-start;}
-.pack-icon{width:26px;height:26px;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
-.pack-text label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
-.pack-text span{font-family:'Courier New',monospace;font-size:11px;font-weight:600;}
-.calc-row{display:flex;align-items:center;gap:10px;}
-.calc-row label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);}
-.calc-inp{width:68px;border:1px solid var(--g200);font-family:'Courier New',monospace;font-size:14px;font-weight:700;padding:5px 9px;outline:none;text-align:center;transition:border-color .2s;}
+.mv{font-family:'Courier New',monospace;font-size:11px;font-weight:600;}
+.price-big{font-size:26px;font-weight:700;letter-spacing:1px;line-height:1;}
+.price-big span{font-size:11px;color:var(--g400);font-weight:400;margin-left:3px;}
+.price-sub2{font-size:10px;color:var(--g400);margin-top:2px;}
+.calc-box{background:var(--g100);padding:10px 12px;margin-top:10px;}
+.calc-r{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.calc-r label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);}
+.calc-inp{width:58px;border:1px solid var(--g200);background:var(--white);font-family:'Courier New',monospace;font-size:13px;font-weight:600;padding:4px 6px;outline:none;text-align:center;}
 .calc-inp:focus{border-color:var(--black);}
-.calc-res{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;padding:12px 14px;background:var(--g100);}
-.cr-item label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
-.cr-item .crv{font-size:20px;font-weight:800;letter-spacing:.5px;}
-.sm-footer{border-top:1px solid var(--g200);padding:14px 34px;display:flex;justify-content:space-between;align-items:center;background:var(--white);position:sticky;bottom:0;}
-.btn-back{border:1px solid var(--g200);background:none;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:9px 16px;cursor:pointer;font-family:inherit;color:var(--g600);transition:all .2s;}
-.btn-back:hover{border-color:var(--black);color:var(--black);}
-.btn-order-now{background:var(--black);color:var(--white);border:none;font-size:11px;letter-spacing:4px;text-transform:uppercase;padding:12px 26px;cursor:pointer;font-family:inherit;font-weight:700;}
-.btn-order-now:hover{background:var(--g600);}
-.btn-order-now:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
+.calc-res{display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--g200);}
+.cr label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
+.cr .crv{font-size:14px;font-weight:700;letter-spacing:.5px;}
+.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pack-item{display:flex;gap:7px;align-items:flex-start;}
+.pack-icon{width:22px;height:22px;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.pack-text label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:1px;}
+.pack-text span{font-family:'Courier New',monospace;font-size:10px;font-weight:600;}
+.btn-cta{width:100%;background:var(--black);color:var(--white);border:none;font-size:12px;letter-spacing:4px;text-transform:uppercase;padding:14px;cursor:pointer;flex-shrink:0;font-family:inherit;font-weight:600;}
+.btn-cta:hover{background:var(--g600);}
+.btn-cta:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
+
+/* Geometry panel */
+.geo-card{padding:14px 18px;border-bottom:1px solid var(--g200);}
+.geo-card:last-child{border-bottom:none;}
+.geo-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.geo-std{font-size:8px;letter-spacing:1px;color:var(--g400);text-transform:uppercase;margin-bottom:10px;}
+.geo-diagram{background:var(--g100);border:1px solid var(--g200);padding:10px;margin-bottom:10px;display:flex;justify-content:center;}
+.geo-vals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.geo-val-item label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
+.geo-val-item span{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
+.geo-desc{font-size:9px;color:var(--g600);line-height:1.5;padding-top:8px;border-top:1px solid var(--g200);}
+
+/* Admin panel */
+.admin-hdr{padding:12px 18px;background:var(--black);flex-shrink:0;}
+.admin-hdr h3{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--white);font-weight:600;}
+.admin-hdr p{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-top:2px;}
+.admin-sec{padding:14px 18px;border-bottom:1px solid var(--g200);}
+.admin-sec-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:600;}
+.admin-sec-title::after{content:'';flex:1;height:1px;background:var(--g200);}
+.tag3d{display:inline-block;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;padding:1px 4px;background:var(--black);color:var(--white);margin-left:4px;vertical-align:middle;}
+.frow{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
+.frow:last-child{margin-bottom:0;}
+.frow label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);}
+.frow input,.frow select{width:100%;border:1px solid var(--g200);background:var(--white);font-family:'Courier New',monospace;font-size:12px;padding:5px 8px;outline:none;color:var(--black);}
+.frow input:focus{border-color:var(--black);}
+.f2col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.range-wrap{display:flex;align-items:center;gap:8px;}
+.range-wrap input[type=range]{flex:1;-webkit-appearance:none;height:2px;background:var(--g200);outline:none;cursor:pointer;}
+.range-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--black);border-radius:50%;}
+.range-val{font-family:'Courier New',monospace;font-size:12px;font-weight:600;min-width:36px;text-align:right;}
+.btn-apply-wrap{padding:14px 18px;border-top:1px solid var(--g200);flex-shrink:0;}
+.btn-apply{width:100%;background:var(--black);color:var(--white);border:none;font-size:11px;letter-spacing:4px;text-transform:uppercase;padding:11px;cursor:pointer;font-family:inherit;font-weight:600;}
+.btn-apply:hover{background:var(--g600);}
+
+/* Label panel */
+.label-preview{padding:16px 18px;background:var(--g100);border-bottom:1px solid var(--g200);flex-shrink:0;}
+.label-preview-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;font-weight:600;}
+.sticker{background:var(--white);border:2px solid var(--black);width:100%;max-width:260px;margin:0 auto;box-shadow:3px 3px 0 var(--black);}
+.stk-top{background:var(--black);padding:6px 10px;display:flex;justify-content:space-between;align-items:center;}
+.stk-co{font-size:14px;font-weight:700;letter-spacing:3px;color:var(--white);}
+.stk-cert{font-size:7px;letter-spacing:1px;color:var(--g400);}
+.stk-body{padding:8px 10px;}
+.stk-sku{font-size:14px;font-weight:700;letter-spacing:.5px;line-height:1.1;margin-bottom:6px;border-bottom:1px solid var(--g200);padding-bottom:6px;}
+.stk-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px;}
+.stk-field label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;}
+.stk-field span{font-size:11px;font-weight:600;font-family:'Courier New',monospace;}
+.stk-btm{border-top:1px solid var(--g200);padding:6px 10px;display:flex;justify-content:space-between;align-items:center;}
+.heat{font-size:8px;letter-spacing:.5px;color:var(--g600);font-family:'Courier New',monospace;}
+.qr{width:36px;height:36px;background:var(--g100);border:1px solid var(--g200);display:flex;align-items:center;justify-content:center;font-size:6px;color:var(--g400);text-align:center;line-height:1.3;}
+.label-fields{padding:14px 18px;}
+.lf-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.lf-title::after{content:'';flex:1;height:1px;background:var(--g200);}
+.btn-print{width:100%;border:1px solid var(--black);background:var(--white);font-size:11px;letter-spacing:4px;text-transform:uppercase;padding:10px;cursor:pointer;margin-top:10px;font-family:inherit;}
+.btn-print:hover{background:var(--black);color:var(--white);}
 
 /* ORDER MODAL */
-.order-modal{background:var(--white);width:100%;max-width:560px;animation:slideUp .22s ease;}
-.modal-hdr{background:var(--black);padding:18px 26px;display:flex;justify-content:space-between;align-items:center;}
-.modal-hdr h2{font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--white);}
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,10,10,.65);z-index:200;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+.overlay.open{display:flex;}
+.order-modal{background:var(--white);width:100%;max-width:540px;animation:slideUp .22s ease;}
+@keyframes slideUp{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-hdr{background:var(--black);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;}
+.modal-hdr h2{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--white);}
 .modal-close{background:none;border:none;color:var(--g400);font-size:20px;cursor:pointer;line-height:1;}
 .modal-close:hover{color:var(--white);}
-.modal-body{padding:20px 24px;}
-.fsec{margin-bottom:16px;}
+.modal-body{padding:20px 24px;max-height:80vh;overflow-y:auto;}
+.fsec{margin-bottom:14px;}
 .fsec-ttl{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .fsec-ttl::after{content:'';flex:1;height:1px;background:var(--g200);}
-.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.f1{display:grid;grid-template-columns:1fr;}
-.frow{display:flex;flex-direction:column;gap:3px;}
-.frow label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);}
-.frow input,.frow textarea{border:1px solid var(--g200);background:var(--white);font-size:13px;padding:7px 10px;outline:none;color:var(--black);font-family:inherit;width:100%;}
-.frow input:focus,.frow textarea:focus{border-color:var(--black);}
-.spec-pill{background:var(--g100);padding:11px 13px;margin-bottom:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.sp-item label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
-.sp-item span{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
-.order-sum{background:var(--black);color:var(--white);padding:11px 13px;margin-bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.os-item label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
-.os-item span{font-size:16px;font-weight:700;}
-.btn-submit{width:100%;background:var(--black);color:var(--white);border:none;font-size:12px;letter-spacing:4px;text-transform:uppercase;padding:14px;cursor:pointer;font-family:inherit;font-weight:700;}
+.f2g{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.frow-m{display:flex;flex-direction:column;gap:3px;}
+.frow-m label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);}
+.frow-m input,.frow-m textarea{border:1px solid var(--g200);background:var(--white);font-size:13px;padding:7px 9px;outline:none;color:var(--black);font-family:inherit;width:100%;}
+.frow-m input:focus,.frow-m textarea:focus{border-color:var(--black);}
+.spec-pill{background:var(--g100);padding:10px 12px;margin-bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.sp-item label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
+.sp-item span{font-family:'Courier New',monospace;font-size:11px;font-weight:700;}
+.order-sum{background:var(--black);color:var(--white);padding:11px 13px;margin-bottom:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.os-item label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
+.os-item span{font-size:15px;font-weight:700;}
+.btn-submit{width:100%;background:var(--black);color:var(--white);border:none;font-size:11px;letter-spacing:4px;text-transform:uppercase;padding:13px;cursor:pointer;font-family:inherit;font-weight:700;}
 .btn-submit:hover{background:var(--g600);}
 .btn-submit:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
 .success-box{text-align:center;padding:28px 20px;}
-.success-box .check{font-size:44px;margin-bottom:10px;}
-.success-box h3{font-size:16px;font-weight:700;letter-spacing:2px;margin-bottom:6px;}
-.success-box .order-no{font-family:'Courier New',monospace;font-size:12px;color:var(--g600);margin-bottom:18px;}
-.btn-done{border:1px solid var(--black);background:none;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:9px 22px;cursor:pointer;font-family:inherit;}
+.success-box .check{font-size:42px;margin-bottom:10px;}
+.success-box h3{font-size:15px;font-weight:700;letter-spacing:2px;margin-bottom:6px;}
+.success-box .order-no{font-family:'Courier New',monospace;font-size:12px;color:var(--g600);margin-bottom:16px;}
+.btn-done{border:1px solid var(--black);background:none;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:8px 20px;cursor:pointer;font-family:inherit;}
 .btn-done:hover{background:var(--black);color:var(--white);}
-.config-banner{background:#fef9c3;border-bottom:2px solid #d4a017;padding:10px 32px;font-size:11px;display:flex;align-items:center;gap:10px;}
+
+.config-banner{background:#fef9c3;border-bottom:2px solid #d4a017;padding:8px 28px;font-size:11px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .config-banner a{color:var(--black);font-weight:700;}
-
-/* GEOMETRIC TOLERANCES */
-.geo-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.geo-card{background:var(--g100);padding:14px 16px;}
-.geo-card-ttl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
-.geo-card-std{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;}
-.geo-diagram{display:flex;justify-content:center;align-items:center;margin-bottom:10px;background:var(--white);border:1px solid var(--g200);padding:8px;}
-.geo-vals{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;}
-.geo-val label{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:1px;}
-.geo-val span{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
-.geo-desc{font-size:9px;color:var(--g600);line-height:1.5;border-top:1px solid var(--g200);padding-top:7px;margin-top:4px;}
-
-/* ADMIN EDIT MODE */
-.admin-toggle{display:flex;align-items:center;gap:8px;margin-left:auto;}
-.admin-toggle label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);}
-.admin-sw{width:32px;height:16px;background:var(--g200);border-radius:8px;position:relative;border:none;cursor:pointer;transition:background .2s;flex-shrink:0;}
-.admin-sw.on{background:var(--black);}
-.admin-sw-k{position:absolute;top:2px;left:2px;width:12px;height:12px;background:var(--white);border-radius:50%;transition:transform .2s;}
-.admin-sw.on .admin-sw-k{transform:translateX(16px);}
-.editable{display:none;border:none;border-bottom:1px solid var(--g400);background:transparent;font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--black);outline:none;width:100%;padding:1px 0;}
-.editable:focus{border-bottom-color:var(--black);}
-body.admin-mode .geo-val span{display:none;}
-body.admin-mode .geo-val .editable{display:block;}
-body.admin-mode .mv-editable .mv{display:none;}
-body.admin-mode .mv-editable .editable-mv{display:block;}
-.editable-mv{display:none;border:none;border-bottom:1px solid var(--g400);background:transparent;font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--black);outline:none;padding:1px 2px;}
-.editable-mv:focus{border-bottom-color:var(--black);}
-.admin-badge{display:none;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:2px 8px;background:var(--black);color:var(--white);margin-left:8px;}
-body.admin-mode .admin-badge{display:inline-block;}
 </style>
 </head>
 <body>
 
 <div class="config-banner" id="configBanner">
   ⚙️ ยังไม่ได้ตั้งค่า — แก้ไข <code>SHEET_ID</code> และ <code>SCRIPT_URL</code> ในโค้ด JS
-  <a href="#" onclick="document.getElementById('configBanner').style.display='none'">ปิด</a>
+  <a href="#" onclick="this.parentElement.style.display='none'">ปิด</a>
 </div>
 
-<div class="hdr">
+<!-- ══ CATALOG VIEW ══ -->
+<div class="cat-hdr" id="cat-hdr">
   <div class="brand">Steel<br>Catalog</div>
   <div class="search-bar">
     <div class="sf"><label>ประเภทผิว</label>
@@ -212,264 +255,326 @@ body.admin-mode .admin-badge{display:inline-block;}
   <div class="hdr-stat" id="hdr-stat">—</div>
 </div>
 
-<div id="main-content" style="flex:1;display:flex;flex-direction:column;">
+<div id="catalog-view">
   <div class="state-msg"><div class="spinner"></div><p>Loading catalog...</p></div>
 </div>
 
-<!-- ══ SPEC SHEET MODAL ══ -->
-<div class="overlay" id="specOverlay" onclick="closeSpec(event)">
-  <div class="spec-modal" onclick="event.stopPropagation()">
-    <div class="sm-head">
-      <div class="sm-head-left">
-        <div>
-          <div class="sm-cat" id="sm-cat">เหล็กแผ่น</div>
-          <div class="sm-sku" id="sm-sku">—</div>
-          <div class="sm-grade" id="sm-grade">—</div>
-        </div>
-        <div class="sm-badge">
-          <div class="dot" id="sm-dot" style="background:var(--green)"></div>
-          <span id="sm-stock">—</span>
-        </div>
-      </div>
-      <div class="sm-head-right" style="min-height:220px;">
-        <canvas id="sm-canvas" width="300" height="220"></canvas>
-        <div class="sm-vbtns">
-          <button class="sm-vb on" onclick="smSetView('iso',this)">3D</button>
-          <button class="sm-vb" onclick="smSetView('front',this)">FRONT</button>
-          <button class="sm-vb" onclick="smSetView('top',this)">TOP</button>
-          <button class="sm-vb" onclick="smSetView('side',this)">SIDE</button>
-        </div>
-        <div class="sm-hint" id="sm-hint">⟳ drag to rotate</div>
-        <div class="sm-auto" onclick="smToggleAuto()">
-          <span class="sm-auto-lbl">Auto</span>
-          <div class="sw on" id="sm-sw"><div class="sw-k"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sm-body">
-      <div class="sm-sec">
-        <div class="sm-sec-ttl">Dimensions</div>
-        <div class="sm-g4">
-          <div class="sfield"><label>ความหนา</label><div class="svl" id="sm-t">—</div><div class="svsub">mm</div></div>
-          <div class="sfield"><label>ความกว้าง</label><div class="svl" id="sm-w">—</div><div class="svsub">mm</div></div>
-          <div class="sfield"><label>ความยาว</label><div class="svl" id="sm-l">—</div><div class="svsub">mm</div></div>
-          <div class="sfield"><label>น้ำหนัก/แผ่น</label><div class="svl" id="sm-kg">—</div><div class="svsub">kg</div></div>
-        </div>
-      </div>
-      <div class="sm-sec">
-        <div class="sm-sec-ttl">Mechanical Properties</div>
-        <div class="sm-g2">
-          <div>
-            <div class="mrow"><span class="mk">Tensile Strength</span><span class="mv" id="sm-ts">—</span></div>
-            <div class="mrow"><span class="mk">Yield Strength</span><span class="mv" id="sm-ys">—</span></div>
-            <div class="mrow"><span class="mk">Elongation</span><span class="mv" id="sm-el">—</span></div>
-          </div>
-          <div>
-            <div class="mrow"><span class="mk">Hardness</span><span class="mv" id="sm-hd">—</span></div>
-            <div class="mrow"><span class="mk">Tolerance หนา</span><span class="mv" id="sm-tol">—</span></div>
-            <div class="mrow"><span class="mk">Standard</span><span class="mv" id="sm-std">—</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="sm-sec">
-        <div class="sm-sec-ttl">Packing</div>
-        <div class="pack-grid">
-          <div class="pack-item"><div class="pack-icon">📦</div><div class="pack-text"><label>Bundle</label><span id="sm-bnd">—</span></div></div>
-          <div class="pack-item"><div class="pack-icon">⚖️</div><div class="pack-text"><label>น้ำหนัก/มัด</label><span id="sm-bwt">—</span></div></div>
-          <div class="pack-item"><div class="pack-icon">🔗</div><div class="pack-text"><label>มัดด้วย</label><span id="sm-strap">—</span></div></div>
-          <div class="pack-item"><div class="pack-icon">🗞️</div><div class="pack-text"><label>ห่อ</label><span id="sm-wrap">—</span></div></div>
-          <div class="pack-item"><div class="pack-icon">🏗️</div><div class="pack-text"><label>ยก</label><span id="sm-lift">—</span></div></div>
-          <div class="pack-item"><div class="pack-icon">🏷️</div><div class="pack-text"><label>Label</label><span>SKU · Heat No. · วันผลิต</span></div></div>
-        </div>
-      </div>
-      <div class="sm-sec">
-        <div class="sm-sec-ttl">
-          Geometric Tolerances
-          <span class="admin-badge">Admin Mode</span>
-          <div class="admin-toggle" style="margin-left:auto">
-            <label>Admin Edit</label>
-            <button class="admin-sw" id="admin-sw" onclick="toggleAdminMode()"><div class="admin-sw-k"></div></button>
-          </div>
-        </div>
-        <div class="geo-grid">
-
-          <!-- FLATNESS -->
-          <div class="geo-card">
-            <div class="geo-card-ttl">Flatness</div>
-            <div class="geo-card-std">JIS G3193 · ความราบของแผ่น</div>
-            <div class="geo-diagram">
-              <svg width="200" height="66" viewBox="0 0 200 66" fill="none">
-                <line x1="8" y1="42" x2="192" y2="42" stroke="#c8c8c4" stroke-width="1" stroke-dasharray="4,3"/>
-                <path d="M8 32 C34 22,58 38,84 30 C110 22,136 38,162 30 C178 24,190 32,192 30" stroke="#0a0a0a" stroke-width="2" fill="none"/>
-                <path d="M8 38 C34 28,58 44,84 36 C110 28,136 44,162 36 C178 30,190 38,192 36" stroke="#0a0a0a" stroke-width="1.2" fill="none"/>
-                <path d="M8 32 C34 22,58 38,84 30 C110 22,136 38,162 30 C178 24,190 32,192 30 L192 36 C178 30,162 36,136 44 C110 28,84 36,58 44 C34 28,8 38,8 38Z" fill="#e0e0dc" opacity="0.55"/>
-                <line x1="100" y1="42" x2="100" y2="25" stroke="#0a0a0a" stroke-width="1"/>
-                <polygon points="100,21 97,28 103,28" fill="#0a0a0a"/>
-                <text x="104" y="32" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700">f</text>
-                <text x="8" y="60" font-size="7" fill="#a0a09c" font-family="Courier New">Reference plane</text>
-                <text x="130" y="60" font-size="7" fill="#a0a09c" font-family="Courier New">deviation</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val">
-                <label>Max / m</label>
-                <span id="geo-flat1">≤ 12 mm/m</span>
-                <input class="editable" id="edit-flat1" value="≤ 12 mm/m" oninput="syncGeo('flat1')">
-              </div>
-              <div class="geo-val">
-                <label>Overall</label>
-                <span id="geo-flat2">≤ 20 mm</span>
-                <input class="editable" id="edit-flat2" value="≤ 20 mm" oninput="syncGeo('flat2')">
-              </div>
-            </div>
-            <div class="geo-desc">ค่าเบี่ยงเบนสูงสุดของผิวแผ่นจาก reference plane วัดต่อ 1 เมตร ยิ่งน้อยยิ่งราบเรียบ</div>
-          </div>
-
-          <!-- CAMBER -->
-          <div class="geo-card">
-            <div class="geo-card-ttl">Camber</div>
-            <div class="geo-card-std">JIS G3193 · ความโค้งตามแนวยาว</div>
-            <div class="geo-diagram">
-              <svg width="200" height="66" viewBox="0 0 200 66" fill="none">
-                <line x1="8" y1="48" x2="192" y2="48" stroke="#c8c8c4" stroke-width="1" stroke-dasharray="4,3"/>
-                <path d="M8 44 Q100 22 192 44" stroke="#0a0a0a" stroke-width="2" fill="none"/>
-                <path d="M8 50 Q100 28 192 50" stroke="#0a0a0a" stroke-width="1.2" fill="none"/>
-                <path d="M8 44 Q100 22 192 44 L192 50 Q100 28 8 50Z" fill="#e0e0dc" opacity="0.55"/>
-                <line x1="100" y1="48" x2="100" y2="26" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="3,2"/>
-                <line x1="96" y1="26" x2="104" y2="26" stroke="#0a0a0a" stroke-width="1"/>
-                <line x1="96" y1="48" x2="104" y2="48" stroke="#0a0a0a" stroke-width="1"/>
-                <text x="106" y="38" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700">C</text>
-                <line x1="8" y1="58" x2="192" y2="58" stroke="#a0a09c" stroke-width="0.8"/>
-                <polygon points="8,58 14,55 14,61" fill="#a0a09c"/>
-                <polygon points="192,58 186,55 186,61" fill="#a0a09c"/>
-                <text x="75" y="66" font-size="7" fill="#a0a09c" font-family="Courier New">Length L</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val">
-                <label>Max / m</label>
-                <span id="geo-camb1">≤ 2 mm/m</span>
-                <input class="editable" id="edit-camb1" value="≤ 2 mm/m" oninput="syncGeo('camb1')">
-              </div>
-              <div class="geo-val">
-                <label>Per 2m</label>
-                <span id="geo-camb2">≤ 4 mm</span>
-                <input class="editable" id="edit-camb2" value="≤ 4 mm" oninput="syncGeo('camb2')">
-              </div>
-            </div>
-            <div class="geo-desc">ความโค้งด้านข้างตามแนวยาว C = ระยะห่างสูงสุดจากเส้นตรงอ้างอิง</div>
-          </div>
-
-          <!-- SQUARENESS -->
-          <div class="geo-card">
-            <div class="geo-card-ttl">Squareness</div>
-            <div class="geo-card-std">JIS G3193 · ความตั้งฉากของมุม</div>
-            <div class="geo-diagram">
-              <svg width="200" height="72" viewBox="0 0 200 72" fill="none">
-                <rect x="14" y="10" width="155" height="48" stroke="#c8c8c4" stroke-width="1" stroke-dasharray="4,3" fill="none"/>
-                <polygon points="14,10 169,10 181,58 14,58" stroke="#0a0a0a" stroke-width="1.8" fill="#e0e0dc" fill-opacity="0.45"/>
-                <line x1="169" y1="10" x2="181" y2="10" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="2,2"/>
-                <line x1="169" y1="8" x2="169" y2="12" stroke="#0a0a0a" stroke-width="1"/>
-                <line x1="181" y1="8" x2="181" y2="12" stroke="#0a0a0a" stroke-width="1"/>
-                <text x="170" y="8" font-size="8" fill="#0a0a0a" font-family="Courier New" font-weight="700">d</text>
-                <rect x="14" y="46" width="7" height="7" stroke="#a0a09c" stroke-width="1" fill="none"/>
-                <text x="16" y="70" font-size="7" fill="#a0a09c" font-family="Courier New">Ideal (90°)</text>
-                <text x="120" y="70" font-size="7" fill="#a0a09c" font-family="Courier New">Actual</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val">
-                <label>Max / m</label>
-                <span id="geo-sq1">≤ 2 mm/m</span>
-                <input class="editable" id="edit-sq1" value="≤ 2 mm/m" oninput="syncGeo('sq1')">
-              </div>
-              <div class="geo-val">
-                <label>Absolute</label>
-                <span id="geo-sq2">≤ 3 mm</span>
-                <input class="editable" id="edit-sq2" value="≤ 3 mm" oninput="syncGeo('sq2')">
-              </div>
-            </div>
-            <div class="geo-desc">ค่า d คือระยะเบี่ยงเบนของมุมจริงจาก 90° วัดเป็น mm ต่อความยาว 1 เมตร</div>
-          </div>
-
-          <!-- BENDING -->
-          <div class="geo-card">
-            <div class="geo-card-ttl">Min Bend Radius</div>
-            <div class="geo-card-std">JIS Z2248 · รัศมีดัดงอขั้นต่ำ</div>
-            <div class="geo-diagram">
-              <svg width="200" height="72" viewBox="0 0 200 72" fill="none">
-                <rect x="8" y="26" width="52" height="8" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
-                <path d="M60 34 A26 26 0 0 1 86 8" stroke="#0a0a0a" stroke-width="1.8" fill="none"/>
-                <path d="M60 26 A18 18 0 0 1 78 8" stroke="#0a0a0a" stroke-width="1.2" fill="none"/>
-                <path d="M60 34 A26 26 0 0 1 86 8 L78 8 A18 18 0 0 0 60 26Z" fill="#e0e0dc" opacity="0.55"/>
-                <rect x="78" y="8" width="8" height="52" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
-                <line x1="60" y1="8" x2="60" y2="34" stroke="#a0a09c" stroke-width="1" stroke-dasharray="3,2"/>
-                <line x1="60" y1="8" x2="86" y2="8" stroke="#a0a09c" stroke-width="1" stroke-dasharray="3,2"/>
-                <path d="M60 20 A12 12 0 0 1 72 8" stroke="#606060" stroke-width="1" fill="none"/>
-                <text x="66" y="22" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700">R</text>
-                <text x="108" y="32" font-size="8" fill="#606060" font-family="Courier New">R_trans =</text>
-                <text x="108" y="44" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700" id="svg-br1-txt">1.0t</text>
-                <text x="108" y="56" font-size="8" fill="#606060" font-family="Courier New">R_long =</text>
-                <text x="108" y="68" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700" id="svg-br2-txt">1.5t</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val">
-                <label>R ตัดขวาง</label>
-                <span id="geo-br1">1.0t</span>
-                <input class="editable" id="edit-br1" value="1.0t" oninput="syncGeo('br1')">
-              </div>
-              <div class="geo-val">
-                <label>R ตามยาว</label>
-                <span id="geo-br2">1.5t</span>
-                <input class="editable" id="edit-br2" value="1.5t" oninput="syncGeo('br2')">
-              </div>
-              <div class="geo-val">
-                <label>Bend Angle</label>
-                <span id="geo-ba">90°</span>
-                <input class="editable" id="edit-ba" value="90°" oninput="syncGeo('ba')">
-              </div>
-              <div class="geo-val">
-                <label>Spring-back</label>
-                <span id="geo-sb">~ 2–3°</span>
-                <input class="editable" id="edit-sb" value="~ 2–3°" oninput="syncGeo('sb')">
-              </div>
-            </div>
-            <div class="geo-desc">รัศมีดัดขั้นต่ำโดยไม่แตกร้าว t = ความหนาแผ่น ทิศตัดขวางดัดได้ง่ายกว่าตามยาว</div>
-          </div>
-
-        </div><!-- /geo-grid -->
-      </div><!-- /geo sec -->
-
-      <div class="sm-sec">
-        <div class="sm-sec-ttl">Calculator</div>
-        <div class="calc-row">
-          <label>จำนวน</label>
-          <input type="number" class="calc-inp" id="sm-qty" value="10" min="1" oninput="smCalc()">
-          <label>แผ่น</label>
-        </div>
-        <div class="calc-res">
-          <div class="cr-item"><label>น้ำหนักรวม</label><div class="crv" id="sm-cw">—</div></div>
-          <div class="cr-item"><label>ราคารวม</label><div class="crv" id="sm-cp">—</div></div>
-          <div class="cr-item"><label>จำนวนมัด</label><div class="crv" id="sm-cb">—</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sm-footer">
-      <button class="btn-back" onclick="closeSpec()">← กลับ</button>
-      <button class="btn-order-now" id="sm-btn-order" onclick="openOrderFromSpec()">เลือกรายการนี้</button>
+<!-- ══ VIEWER PAGE ══ -->
+<div id="viewer-page">
+  <div class="vp-hdr">
+    <button class="vp-back" onclick="closePage()">← กลับค้นหา</button>
+    <div class="vp-title" id="vp-title">Steel Product Viewer</div>
+    <div class="vp-tabs">
+      <button class="tab-btn active" onclick="switchTab('spec',this)">Spec Sheet</button>
+      <button class="tab-btn" onclick="switchTab('geo',this)">Geometry</button>
+      <button class="tab-btn" onclick="switchTab('admin',this)">Admin</button>
+      <button class="tab-btn" onclick="switchTab('label',this)">Label</button>
     </div>
   </div>
-</div>
+
+  <div class="vp-main">
+    <!-- 3D Canvas -->
+    <div class="canvas-wrap">
+      <canvas id="c3d"></canvas>
+      <div class="view-btns">
+        <button class="vb on" onclick="setView('iso',this)">3D</button>
+        <button class="vb" onclick="setView('front',this)">FRONT</button>
+        <button class="vb" onclick="setView('top',this)">TOP</button>
+        <button class="vb" onclick="setView('side',this)">SIDE</button>
+      </div>
+      <div class="cv-hint" id="cv-hint">⟳ ลาก / drag to rotate</div>
+      <div class="cv-auto" onclick="toggleAuto()">
+        <span>Auto</span>
+        <div class="sw on" id="cv-sw"><div class="sw-k"></div></div>
+      </div>
+      <div class="cv-info" id="cv-info"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+      <!-- SPEC SHEET -->
+      <div class="panel active" id="panel-spec">
+        <div class="panel-scroll">
+          <div class="sec">
+            <div class="sec-lbl">Product</div>
+            <div class="prod-sku" id="v-sku">—</div>
+            <div class="prod-sub" id="v-sub">—</div>
+            <div class="stock-pill">
+              <div class="dot" id="v-dot" style="background:var(--green)"></div>
+              <span id="v-stock">—</span>
+            </div>
+          </div>
+          <div class="sec">
+            <div class="sec-lbl">Dimensions</div>
+            <div class="dim-grid">
+              <div class="df"><label>ความหนา</label><div class="dv" id="v-t">—<span class="du">mm</span></div></div>
+              <div class="df"><label>ความกว้าง</label><div class="dv" id="v-w">—<span class="du">mm</span></div></div>
+              <div class="df"><label>ความยาว</label><div class="dv" id="v-l">—<span class="du">mm</span></div></div>
+              <div class="df"><label>น้ำหนัก/แผ่น</label><div class="dv" id="v-kg">—<span class="du">kg</span></div></div>
+            </div>
+          </div>
+          <div class="sec">
+            <div class="sec-lbl">Mechanical Properties</div>
+            <div class="mrow"><span class="mk">Tensile Strength</span><span class="mv" id="v-ts">—</span></div>
+            <div class="mrow"><span class="mk">Yield Strength</span><span class="mv" id="v-ys">—</span></div>
+            <div class="mrow"><span class="mk">Elongation</span><span class="mv" id="v-el">—</span></div>
+            <div class="mrow"><span class="mk">Hardness</span><span class="mv" id="v-hd">—</span></div>
+            <div class="mrow"><span class="mk">Tolerance หนา</span><span class="mv" id="v-tol">—</span></div>
+            <div class="mrow"><span class="mk">Standard</span><span class="mv" id="v-std">—</span></div>
+          </div>
+          <div class="sec">
+            <div class="sec-lbl">Packing</div>
+            <div class="pack-grid">
+              <div class="pack-item"><div class="pack-icon">📦</div><div class="pack-text"><label>Bundle</label><span id="v-bnd">—</span></div></div>
+              <div class="pack-item"><div class="pack-icon">⚖️</div><div class="pack-text"><label>น้ำหนัก/มัด</label><span id="v-bwt">—</span></div></div>
+              <div class="pack-item"><div class="pack-icon">🔗</div><div class="pack-text"><label>มัดด้วย</label><span id="v-strap">—</span></div></div>
+              <div class="pack-item"><div class="pack-icon">🗞️</div><div class="pack-text"><label>ห่อ</label><span id="v-wrap">—</span></div></div>
+            </div>
+          </div>
+          <div class="sec" style="padding-bottom:0">
+            <div class="price-big" id="v-price">฿ —<span>/ แผ่น</span></div>
+            <div class="price-sub2" id="v-prickg">— ฿/kg</div>
+            <div class="calc-box">
+              <div class="calc-r">
+                <label>จำนวน (แผ่น)</label>
+                <input type="number" class="calc-inp" id="qty" value="10" min="1" oninput="calcUpdate()">
+              </div>
+              <div class="calc-res">
+                <div class="cr"><label>น้ำหนัก</label><div class="crv" id="r-w">—</div></div>
+                <div class="cr"><label>ราคารวม</label><div class="crv" id="r-p">—</div></div>
+                <div class="cr"><label>มัด</label><div class="crv" id="r-b">—</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-cta" id="btn-cta" onclick="openOrderModal()">เลือกรายการนี้</button>
+      </div>
+
+      <!-- GEOMETRY -->
+      <div class="panel" id="panel-geo">
+        <div class="panel-scroll">
+
+          <div class="geo-card">
+            <div class="geo-title">Flatness</div>
+            <div class="geo-std">JIS G3193 · ความราบของแผ่น</div>
+            <div class="geo-diagram">
+              <svg width="240" height="78" viewBox="0 0 240 78" fill="none">
+                <line x1="10" y1="50" x2="230" y2="50" stroke="#c0c0bc" stroke-width="1" stroke-dasharray="4,3"/>
+                <path d="M10 38 C40 28,70 44,100 36 C130 28,160 44,190 36 C210 30,225 38,230 36" stroke="#0a0a0a" stroke-width="2" fill="none"/>
+                <path d="M10 46 C40 36,70 52,100 44 C130 36,160 52,190 44 C210 38,225 46,230 44" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
+                <path d="M10 38 C40 28,70 44,100 36 C130 28,160 44,190 36 C210 30,225 38,230 36 L230 44 C225 46,210 38,190 44 C160 52,130 36,100 44 C70 52,40 36,10 46Z" fill="#e0e0dc" opacity="0.6"/>
+                <line x1="120" y1="50" x2="120" y2="31" stroke="#0a0a0a" stroke-width="1"/>
+                <polygon points="120,27 117,34 123,34" fill="#0a0a0a"/>
+                <text x="125" y="38" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="600">f</text>
+                <text x="10" y="72" font-size="8" fill="#a0a09c" font-family="Courier New">Reference plane</text>
+                <text x="150" y="72" font-size="8" fill="#a0a09c" font-family="Courier New">max deviation</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val-item"><label>Max Flatness</label><span id="g-flat">≤ 12 mm/m</span></div>
+              <div class="geo-val-item"><label>Overall</label><span id="g-flat2">≤ 20 mm</span></div>
+            </div>
+            <div class="geo-desc">ค่าเบี่ยงเบนสูงสุดของผิวแผ่นจาก reference plane วัดต่อ 1 เมตร และตลอดความยาวแผ่น</div>
+          </div>
+
+          <div class="geo-card">
+            <div class="geo-title">Camber</div>
+            <div class="geo-std">JIS G3193 · ความโค้งตามแนวยาว</div>
+            <div class="geo-diagram">
+              <svg width="240" height="78" viewBox="0 0 240 78" fill="none">
+                <line x1="15" y1="55" x2="225" y2="55" stroke="#c0c0bc" stroke-width="1" stroke-dasharray="4,3"/>
+                <path d="M15 50 Q120 28 225 50" stroke="#0a0a0a" stroke-width="2" fill="none"/>
+                <path d="M15 56 Q120 34 225 56" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
+                <path d="M15 50 Q120 28 225 50 L225 56 Q120 34 15 56Z" fill="#e0e0dc" opacity="0.6"/>
+                <line x1="120" y1="55" x2="120" y2="31" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="3,2"/>
+                <line x1="116" y1="31" x2="124" y2="31" stroke="#0a0a0a" stroke-width="1"/>
+                <line x1="116" y1="55" x2="124" y2="55" stroke="#0a0a0a" stroke-width="1"/>
+                <text x="126" y="45" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="600">C</text>
+                <line x1="15" y1="68" x2="225" y2="68" stroke="#a0a09c" stroke-width="1"/>
+                <polygon points="15,68 22,65 22,71" fill="#a0a09c"/>
+                <polygon points="225,68 218,65 218,71" fill="#a0a09c"/>
+                <text x="90" y="78" font-size="8" fill="#a0a09c" font-family="Courier New">Length (L)</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val-item"><label>Max Camber</label><span id="g-camb">≤ 2 mm/m</span></div>
+              <div class="geo-val-item"><label>Per 2m</label><span id="g-camb2">≤ 4 mm</span></div>
+            </div>
+            <div class="geo-desc">ความโค้งด้านข้างของแผ่นตามแนวยาว ค่า C = ระยะห่างสูงสุดจากเส้นตรงอ้างอิง</div>
+          </div>
+
+          <div class="geo-card">
+            <div class="geo-title">Squareness</div>
+            <div class="geo-std">JIS G3193 · ความตั้งฉากของมุม</div>
+            <div class="geo-diagram">
+              <svg width="240" height="88" viewBox="0 0 240 88" fill="none">
+                <rect x="20" y="15" width="180" height="55" stroke="#c0c0bc" stroke-width="1" stroke-dasharray="4,3" fill="none"/>
+                <polygon points="20,15 200,15 212,70 20,70" stroke="#0a0a0a" stroke-width="2" fill="#e0e0dc" fill-opacity="0.5"/>
+                <line x1="200" y1="15" x2="212" y2="15" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="2,2"/>
+                <line x1="200" y1="13" x2="200" y2="17" stroke="#0a0a0a" stroke-width="1"/>
+                <line x1="212" y1="13" x2="212" y2="17" stroke="#0a0a0a" stroke-width="1"/>
+                <text x="201" y="11" font-size="8" fill="#0a0a0a" font-family="Courier New" font-weight="600">d</text>
+                <rect x="20" y="55" width="8" height="8" stroke="#a0a09c" stroke-width="1" fill="none"/>
+                <text x="22" y="84" font-size="8" fill="#a0a09c" font-family="Courier New">Ideal (90°)</text>
+                <text x="140" y="84" font-size="8" fill="#a0a09c" font-family="Courier New">Actual (skew)</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val-item"><label>Max Squareness</label><span id="g-sq">≤ 2 mm/m</span></div>
+              <div class="geo-val-item"><label>Absolute</label><span id="g-sq2">≤ 3 mm</span></div>
+            </div>
+            <div class="geo-desc">ความเบี่ยงเบนของมุมแผ่นจาก 90° วัดเป็นระยะห่าง d ของมุมจริงกับมุมอ้างอิง</div>
+          </div>
+
+          <div class="geo-card">
+            <div class="geo-title">Bending (Min. Bend Radius)</div>
+            <div class="geo-std">JIS Z2248 · รัศมีดัดงอขั้นต่ำ</div>
+            <div class="geo-diagram">
+              <svg width="240" height="88" viewBox="0 0 240 88" fill="none">
+                <rect x="10" y="30" width="60" height="8" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
+                <path d="M70 38 A30 30 0 0 1 100 8" stroke="#0a0a0a" stroke-width="2" fill="none"/>
+                <path d="M70 30 A22 22 0 0 1 92 8" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
+                <path d="M70 38 A30 30 0 0 1 100 8 L92 8 A22 22 0 0 0 70 30Z" fill="#e0e0dc" opacity="0.6"/>
+                <rect x="92" y="8" width="8" height="55" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
+                <line x1="70" y1="8" x2="70" y2="38" stroke="#a0a09c" stroke-width="1" stroke-dasharray="3,2"/>
+                <line x1="70" y1="8" x2="100" y2="8" stroke="#a0a09c" stroke-width="1" stroke-dasharray="3,2"/>
+                <path d="M70 20 A12 12 0 0 1 82 8" stroke="#606060" stroke-width="1" fill="none"/>
+                <text x="76" y="22" font-size="8" fill="#0a0a0a" font-family="Courier New" font-weight="600">R</text>
+                <text x="150" y="38" font-size="8" fill="#606060" font-family="Courier New">R_trans =</text>
+                <text x="150" y="50" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700" id="svgbr1">1.0t</text>
+                <text x="150" y="64" font-size="8" fill="#606060" font-family="Courier New">R_long =</text>
+                <text x="150" y="76" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700" id="svgbr2">1.5t</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val-item"><label>Min R (ตัดขวาง)</label><span id="g-br1">1.0t</span></div>
+              <div class="geo-val-item"><label>Min R (ตามยาว)</label><span id="g-br2">1.5t</span></div>
+              <div class="geo-val-item"><label>Bend Angle</label><span id="g-ba">90°</span></div>
+              <div class="geo-val-item"><label>Spring-back</label><span id="g-sb">~ 2–3°</span></div>
+            </div>
+            <div class="geo-desc">รัศมีดัดงอขั้นต่ำโดยไม่แตกร้าว R คือรัศมี, t คือความหนาแผ่น ทิศตัดขวางดัดได้ง่ายกว่าตามยาว</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ADMIN -->
+      <div class="panel" id="panel-admin">
+        <div class="admin-hdr">
+          <h3>Admin — Edit Product</h3>
+          <p>แก้ไขค่าแล้ว 3D อัปเดตทันที</p>
+        </div>
+        <div class="panel-scroll">
+          <div class="admin-sec">
+            <div class="admin-sec-title">3D Model <span class="tag3d">LIVE</span></div>
+            <div class="frow">
+              <label>จำนวนแผ่นใน Bundle <span class="tag3d">3D</span></label>
+              <div class="range-wrap">
+                <input type="range" id="a-sheets" min="1" max="10" value="5" oninput="liveUpdate()">
+                <span class="range-val" id="a-sheets-v">5</span>
+              </div>
+            </div>
+            <div class="frow">
+              <label>ความหนา (mm) <span class="tag3d">3D</span></label>
+              <div class="range-wrap">
+                <input type="range" id="a-thick" min="5" max="60" value="20" oninput="liveUpdate()">
+                <span class="range-val" id="a-thick-v">2.0</span>
+              </div>
+            </div>
+            <div class="f2col">
+              <div class="frow"><label>กว้าง (mm) <span class="tag3d">3D</span></label><input type="number" id="a-w" value="1200" oninput="liveUpdate()"></div>
+              <div class="frow"><label>ยาว (mm) <span class="tag3d">3D</span></label><input type="number" id="a-l" value="2400" oninput="liveUpdate()"></div>
+            </div>
+          </div>
+          <div class="admin-sec">
+            <div class="admin-sec-title">Mechanical Properties</div>
+            <div class="f2col">
+              <div class="frow"><label>Tensile Strength</label><input type="text" id="a-ts" oninput="syncMech()"></div>
+              <div class="frow"><label>Yield Strength</label><input type="text" id="a-ys" oninput="syncMech()"></div>
+              <div class="frow"><label>Elongation</label><input type="text" id="a-el" oninput="syncMech()"></div>
+              <div class="frow"><label>Hardness</label><input type="text" id="a-hd" oninput="syncMech()"></div>
+            </div>
+            <div class="frow"><label>Tolerance ความหนา</label><input type="text" id="a-tol" oninput="syncMech()"></div>
+          </div>
+          <div class="admin-sec">
+            <div class="admin-sec-title">Geometric Tolerances</div>
+            <div class="f2col">
+              <div class="frow"><label>Flatness (mm/m)</label><input type="text" id="a-flat" oninput="syncGeoAdmin()"></div>
+              <div class="frow"><label>Flatness Overall</label><input type="text" id="a-flat2" oninput="syncGeoAdmin()"></div>
+              <div class="frow"><label>Camber (mm/m)</label><input type="text" id="a-camb" oninput="syncGeoAdmin()"></div>
+              <div class="frow"><label>Camber per 2m</label><input type="text" id="a-camb2" oninput="syncGeoAdmin()"></div>
+              <div class="frow"><label>Squareness (mm/m)</label><input type="text" id="a-sq" oninput="syncGeoAdmin()"></div>
+              <div class="frow"><label>Squareness Abs.</label><input type="text" id="a-sq2" oninput="syncGeoAdmin()"></div>
+              <div class="frow"><label>Min R (ตัดขวาง)</label><input type="text" id="a-br1" oninput="syncGeoAdmin()"></div>
+              <div class="frow"><label>Min R (ตามยาว)</label><input type="text" id="a-br2" oninput="syncGeoAdmin()"></div>
+              <div class="frow"><label>Bend Angle</label><input type="text" id="a-ba" oninput="syncGeoAdmin()"></div>
+              <div class="frow"><label>Spring-back</label><input type="text" id="a-sb" oninput="syncGeoAdmin()"></div>
+            </div>
+          </div>
+          <div class="admin-sec">
+            <div class="f2col">
+              <div class="frow"><label>ราคา (฿/แผ่น)</label><input type="number" id="a-price"></div>
+              <div class="frow"><label>สต็อก (แผ่น)</label><input type="number" id="a-stock"></div>
+            </div>
+          </div>
+        </div>
+        <div class="btn-apply-wrap">
+          <button class="btn-apply" onclick="applyAdmin()">Apply Changes</button>
+        </div>
+      </div>
+
+      <!-- LABEL -->
+      <div class="panel" id="panel-label">
+        <div class="panel-scroll">
+          <div class="label-preview">
+            <div class="label-preview-title">Label Preview</div>
+            <div class="sticker" id="sticker">
+              <div class="stk-top">
+                <span class="stk-co" id="s-co">STEEL CO.</span>
+                <span class="stk-cert" id="s-cert">JIS G3131 CERTIFIED</span>
+              </div>
+              <div class="stk-body">
+                <div class="stk-sku" id="s-sku">—</div>
+                <div class="stk-grid">
+                  <div class="stk-field"><label>Grade</label><span id="s-grade">—</span></div>
+                  <div class="stk-field"><label>Surface</label><span id="s-surf">—</span></div>
+                  <div class="stk-field"><label>Thickness</label><span id="s-thick">—</span></div>
+                  <div class="stk-field"><label>Size W×L</label><span id="s-size">—</span></div>
+                  <div class="stk-field"><label>Bundle</label><span id="s-bundle">—</span></div>
+                  <div class="stk-field"><label>Weight/Bundle</label><span id="s-wt">—</span></div>
+                </div>
+              </div>
+              <div class="stk-btm">
+                <div>
+                  <div class="heat">Heat No: <strong id="s-heat">HT-2024-0001</strong></div>
+                  <div class="heat" style="margin-top:3px">Prod: <strong id="s-date">2024-01-01</strong></div>
+                </div>
+                <div class="qr">QR<br>CODE</div>
+              </div>
+            </div>
+          </div>
+          <div class="label-fields">
+            <div class="lf-title">Edit Label</div>
+            <div class="frow"><label>Company Name</label><input type="text" id="l-co" value="STEEL CO." oninput="syncLabel()"></div>
+            <div class="frow"><label>Heat Number</label><input type="text" id="l-heat" value="HT-2024-0001" oninput="syncLabel()"></div>
+            <div class="frow"><label>Production Date</label><input type="date" id="l-date" value="2024-01-01" oninput="syncLabel()"></div>
+            <div class="frow"><label>Standard / Cert</label><input type="text" id="l-cert" value="JIS G3131 CERTIFIED" oninput="syncLabel()"></div>
+            <button class="btn-print" onclick="printLabel()">Print Label</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sidebar -->
+  </div><!-- /vp-main -->
+</div><!-- /viewer-page -->
 
 <!-- ══ ORDER MODAL ══ -->
-<div class="overlay" id="orderOverlay" onclick="closeOrder(event)">
+<div class="overlay" id="orderOverlay" onclick="closeOrderModal(event)">
   <div class="order-modal" onclick="event.stopPropagation()">
     <div class="modal-hdr">
       <h2>เปิด Sales Order</h2>
-      <button class="modal-close" onclick="closeOrder()">×</button>
+      <button class="modal-close" onclick="closeOrderModal()">×</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
@@ -479,27 +584,12 @@ body.admin-mode .admin-badge{display:inline-block;}
 // ══ CONFIG ══
 var SHEET_ID   = '1cRyakqWceoB18RrQKUoTCkNbqpPJaku1uCcmZB74ScE';
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0L4mq9Be83pe0VMpFkE9zRl5revOPgUyNxocUK7VzpyrdkOyVBSLWBcEPe7x8RgKafg/exec';
-// ════════════
+// ═══════════
 
 var allSkus=[], filteredSkus=[], currentSku=null;
+var S={sheets:5,thick:2.0,w:1200,l:2400}; // 3D state
 
-// ── ADMIN MODE ────────────────────────────────────
-function toggleAdminMode(){
-  var on = document.body.classList.toggle('admin-mode');
-  document.getElementById('admin-sw').classList.toggle('on', on);
-}
-
-function syncGeo(key){
-  var val = document.getElementById('edit-'+key).value;
-  // update display span
-  var span = document.getElementById('geo-'+key);
-  if(span) span.textContent = val;
-  // update SVG text for bending diagram
-  if(key==='br1'){ var el=document.getElementById('svg-br1-txt'); if(el) el.textContent=val; }
-  if(key==='br2'){ var el=document.getElementById('svg-br2-txt'); if(el) el.textContent=val; }
-}
-
-// ── LOAD ──────────────────────────────────────────
+// ── LOAD ─────────────────────────────────────────
 function loadCatalog(){
   var url='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&nocache='+Date.now();
   fetch(url).then(function(r){if(!r.ok)throw 0;return r.text();}).then(parseGvizText).catch(loadViaJsonp);
@@ -510,17 +600,17 @@ function parseGvizText(text){
   parseGvizObj(JSON.parse(text.substring(s+1,e)));
 }
 function parseGvizObj(json){
-  if(!json||!json.table){showError('ไม่พบ table ใน Sheet response');return;}
+  if(!json||!json.table){showError('ไม่พบ table ใน Sheet');return;}
   var cols=json.table.cols.map(function(c){return(c.label&&c.label.trim())?c.label.trim():c.id;});
   allSkus=(json.table.rows||[]).filter(function(r){return r&&r.c&&r.c[0]&&r.c[0].v;}).map(function(row){
     var o={};cols.forEach(function(c,i){var cell=row.c[i];o[c]=(cell&&cell.v!=null)?cell.v:'';});return o;
   });
-  if(!allSkus.length){showError('ไม่พบข้อมูล — ตรวจสอบชื่อ Sheet: SKU_CATALOG และมีข้อมูล row ที่ 2+');return;}
+  if(!allSkus.length){showError('ไม่พบข้อมูลใน SKU_CATALOG sheet');return;}
   filteredSkus=allSkus.slice(); renderGrid();
 }
 function loadViaJsonp(){
   var cb='gcb'+Date.now(),sc=document.createElement('script');
-  window[cb]=function(j){delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);try{parseGvizObj(j);}catch(e){showError('โหลดไม่ได้ — ตรวจสอบ Sheet Permission: Anyone with link → Viewer');}};
+  window[cb]=function(j){delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);try{parseGvizObj(j);}catch(e){showError('โหลดข้อมูลไม่ได้ — ตรวจสอบ Sheet Permission');}};
   sc.onerror=function(){delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);showError('SHEET_ID ผิด หรือ Sheet ยังไม่ Public');};
   sc.src='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&callback='+cb;
   document.body.appendChild(sc);
@@ -541,9 +631,9 @@ function applyFilter(){
   renderGrid();
 }
 
-// ── GRID ──────────────────────────────────────────
+// ── RENDER GRID ───────────────────────────────────
 function renderGrid(){
-  var el=document.getElementById('main-content');
+  var el=document.getElementById('catalog-view');
   document.getElementById('hdr-stat').textContent=filteredSkus.length+' รายการ';
   if(!filteredSkus.length){el.innerHTML='<div class="state-msg"><div class="icon">🔍</div><p>ไม่พบ Spec ที่ตรงกัน</p></div>';return;}
   var h='<div class="grid-wrap"><div class="grid-hdr"><h2>ผลการค้นหา</h2><span>'+filteredSkus.length+' รายการ</span></div><div class="grid">';
@@ -551,13 +641,13 @@ function renderGrid(){
     var stock=parseInt(s.STOCK_QTY)||0,sc=stock===0?'red':stock<10?'yellow':'green';
     var dc=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
     h+='<div class="card">'+
-      '<div class="card-img" onclick="openSpec('+i+')">'+
-        '<canvas id="cv-'+i+'" width="280" height="140"></canvas>'+
+      '<div class="card-img" onclick="openViewer('+i+')">'+
+        '<canvas id="cv-'+i+'" width="260" height="130"></canvas>'+
         '<div class="status-dot" style="background:'+dc+'"></div>'+
       '</div>'+
       '<div class="card-body">'+
         '<div class="c-sku">'+(s.SKU||'')+'</div>'+
-        '<div class="c-sub">'+(s.SURFACE||'')+' · '+(s.GRADE||'')+' · '+(s.STANDARD||'')+'</div>'+
+        '<div class="c-sub">'+(s.SURFACE||'')+' · '+(s.GRADE||'')+'</div>'+
         '<div class="c-specs">'+
           '<div class="cs"><label>หนา</label><span>'+s.THICKNESS_MM+' mm</span></div>'+
           '<div class="cs"><label>กว้าง</label><span>'+parseInt(s.WIDTH_MM)+'</span></div>'+
@@ -566,106 +656,212 @@ function renderGrid(){
         '<div class="c-divider"></div>'+
         '<div class="c-bottom">'+
           '<div class="c-stock"><div class="stock-num '+sc+'">'+stock+'</div><div class="stock-unit">แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg</div></div>'+
-          '<div class="c-price"><div class="price-main">฿ '+(parseInt(s.PRICE_PER_SHEET_THB)||0).toLocaleString()+' / แผ่น</div><div class="price-sub">'+(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1)+' ฿/kg</div></div>'+
+          '<div class="c-price"><div class="price-main">฿ '+(parseInt(s.PRICE_PER_SHEET_THB)||0).toLocaleString()+'</div><div class="price-sub">'+(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1)+' ฿/kg</div></div>'+
         '</div>'+
       '</div>'+
       '<div class="card-foot">'+
-        '<button class="btn-spec" onclick="openSpec('+i+')">ดู Spec Sheet →</button>'+
-        '<button class="btn-order" '+(stock===0?'disabled':'')+' onclick="openOrderDirect('+i+')">เลือกรายการนี้</button>'+
+        '<button class="btn-spec" onclick="openViewer('+i+')">ดู Spec →</button>'+
+        '<button class="btn-order-card" '+(stock===0?'disabled':'')+' onclick="currentSku=filteredSkus['+i+'];buildOrderForm()">เลือก</button>'+
       '</div>'+
     '</div>';
   });
   h+='</div></div>';
   el.innerHTML=h;
-  setTimeout(function(){filteredSkus.forEach(function(s,i){drawBundle('cv-'+i,s,0.45,0.22,false);});},50);
+  setTimeout(function(){filteredSkus.forEach(function(s,i){drawBundleCard('cv-'+i,s);});},50);
 }
 
-// ── OPEN SPEC ─────────────────────────────────────
-function openSpec(idx){
+// ── OPEN VIEWER ───────────────────────────────────
+function openViewer(idx){
   currentSku=filteredSkus[idx];
-  var s=currentSku,stock=parseInt(s.STOCK_QTY)||0;
-  document.getElementById('sm-cat').textContent=(s.SURFACE||'')+' · '+(s.GRADE||'');
-  document.getElementById('sm-sku').textContent=s.SKU||'—';
-  document.getElementById('sm-grade').textContent=(s.GRADE||'')+' · '+(s.STANDARD||'');
-  document.getElementById('sm-dot').style.background=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
-  document.getElementById('sm-stock').textContent=stock===0?'หมดสต็อก':'มีสต็อก · '+stock+' แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg';
-  document.getElementById('sm-t').textContent=s.THICKNESS_MM||'—';
-  document.getElementById('sm-w').textContent=parseInt(s.WIDTH_MM)||'—';
-  document.getElementById('sm-l').textContent=parseInt(s.LENGTH_MM)||'—';
-  document.getElementById('sm-kg').textContent=parseFloat(s.WEIGHT_PER_SHEET_KG)||'—';
-  document.getElementById('sm-ts').textContent=s.TENSILE_STRENGTH||'—';
-  document.getElementById('sm-ys').textContent=s.YIELD_STRENGTH||'—';
-  document.getElementById('sm-el').textContent=s.ELONGATION||'—';
-  document.getElementById('sm-hd').textContent=s.HARDNESS||'—';
-  document.getElementById('sm-tol').textContent=s.TOLERANCE_THICKNESS||'—';
-  document.getElementById('sm-std').textContent=s.STANDARD||'—';
-  var bnd=parseInt(s.BUNDLE_SIZE)||5,bwt=bnd*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0);
-  document.getElementById('sm-bnd').textContent=bnd+' แผ่น / มัด';
-  document.getElementById('sm-bwt').textContent=bwt.toLocaleString()+' kg';
-  document.getElementById('sm-strap').textContent=s.STRAP_TYPE||'เหล็กรัด 2 เส้น';
-  document.getElementById('sm-wrap').textContent=s.WRAP_TYPE||'ฟิล์ม+กระดาษกันสนิม';
-  document.getElementById('sm-lift').textContent=s.LIFTING||'Forklift (รองไม้)';
-  var ob=document.getElementById('sm-btn-order');
-  ob.disabled=stock===0; ob.textContent=stock===0?'หมดสต็อก':'เลือกรายการนี้';
-  document.getElementById('sm-qty').value=10; smCalc();
-  document.getElementById('specOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
-  smRotY=0.5;smRotX=0.25;smTargetY=0.5;smTargetX=0.25;smAutoRot=true;
-  document.getElementById('sm-sw').classList.add('on');
-  document.getElementById('sm-hint').style.opacity='1';
-  document.querySelectorAll('.sm-vb').forEach(function(b,i){b.classList.toggle('on',i===0);});
+  var s=currentSku;
+  var stock=parseInt(s.STOCK_QTY)||0;
+
+  // fill spec panel
+  document.getElementById('vp-title').textContent=s.SKU||'—';
+  document.getElementById('v-sku').textContent=s.SKU||'—';
+  document.getElementById('v-sub').textContent=(s.SURFACE||'')+' · '+(s.GRADE||'')+' · '+(s.STANDARD||'');
+  document.getElementById('v-dot').style.background=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
+  document.getElementById('v-stock').textContent=stock===0?'หมดสต็อก':'มีสต็อก · '+stock+' แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg';
+  document.getElementById('v-t').innerHTML=s.THICKNESS_MM+'<span class="du">mm</span>';
+  document.getElementById('v-w').innerHTML=(parseInt(s.WIDTH_MM)||0).toLocaleString()+'<span class="du">mm</span>';
+  document.getElementById('v-l').innerHTML=(parseInt(s.LENGTH_MM)||0).toLocaleString()+'<span class="du">mm</span>';
+  document.getElementById('v-kg').innerHTML=(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+'<span class="du">kg</span>';
+  document.getElementById('v-ts').textContent=s.TENSILE_STRENGTH||'—';
+  document.getElementById('v-ys').textContent=s.YIELD_STRENGTH||'—';
+  document.getElementById('v-el').textContent=s.ELONGATION||'—';
+  document.getElementById('v-hd').textContent=s.HARDNESS||'—';
+  document.getElementById('v-tol').textContent=s.TOLERANCE_THICKNESS||'—';
+  document.getElementById('v-std').textContent=s.STANDARD||'—';
+  var bnd=parseInt(s.BUNDLE_SIZE)||5,bwt=(bnd*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)).toLocaleString();
+  document.getElementById('v-bnd').textContent=bnd+' แผ่น/มัด';
+  document.getElementById('v-bwt').textContent=bwt+' kg';
+  document.getElementById('v-strap').textContent=s.STRAP_TYPE||'เหล็กรัด 2 เส้น';
+  document.getElementById('v-wrap').textContent=s.WRAP_TYPE||'ฟิล์ม+กระดาษกันสนิม';
+  var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
+  document.getElementById('v-price').innerHTML='฿ '+price.toLocaleString()+'<span>/ แผ่น</span>';
+  document.getElementById('v-prickg').textContent=(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1)+' ฿/kg';
+  var btn=document.getElementById('btn-cta');
+  btn.disabled=stock===0; btn.textContent=stock===0?'หมดสต็อก':'เลือกรายการนี้';
+  calcUpdate();
+
+  // fill geo panel from sheet data (or defaults)
+  var gDef={flat:s.FLATNESS||'≤ 12 mm/m',flat2:'≤ 20 mm',camb:s.CAMBER||'≤ 2 mm/m',camb2:'≤ 4 mm',sq:s.SQUARENESS||'≤ 2 mm/m',sq2:'≤ 3 mm',br1:s.BEND_RADIUS_TRANS||'1.0t',br2:s.BEND_RADIUS_LONG||'1.5t',ba:'90°',sb:'~ 2–3°'};
+  Object.keys(gDef).forEach(function(k){
+    var el=document.getElementById('g-'+k); if(el) el.textContent=gDef[k];
+    var ai=document.getElementById('a-'+k); if(ai) ai.value=gDef[k];
+  });
+  var svgbr1=document.getElementById('svgbr1'); if(svgbr1) svgbr1.textContent=gDef.br1;
+  var svgbr2=document.getElementById('svgbr2'); if(svgbr2) svgbr2.textContent=gDef.br2;
+
+  // fill admin panel
+  document.getElementById('a-ts').value=s.TENSILE_STRENGTH||'';
+  document.getElementById('a-ys').value=s.YIELD_STRENGTH||'';
+  document.getElementById('a-el').value=s.ELONGATION||'';
+  document.getElementById('a-hd').value=s.HARDNESS||'';
+  document.getElementById('a-tol').value=s.TOLERANCE_THICKNESS||'';
+  document.getElementById('a-price').value=price;
+  document.getElementById('a-stock').value=stock;
+  var th=parseFloat(s.THICKNESS_MM)||2.0;
+  S={sheets:parseInt(s.BUNDLE_SIZE)||5,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400};
+  document.getElementById('a-sheets').value=S.sheets; document.getElementById('a-sheets-v').textContent=S.sheets;
+  document.getElementById('a-thick').value=Math.round(th*10); document.getElementById('a-thick-v').textContent=th;
+  document.getElementById('a-w').value=S.w; document.getElementById('a-l').value=S.l;
+
+  // fill label
+  syncLabel();
+
+  // show viewer page
+  document.getElementById('catalog-view').style.display='none';
+  document.getElementById('cat-hdr').style.display='none';
+  document.getElementById('viewer-page').classList.add('open');
+
+  // reset tab
+  switchTab('spec', document.querySelector('.tab-btn'));
+  // reset 3D
+  camTargetY=0.5; camTargetX=0.25; autoRot=true;
+  document.getElementById('cv-sw').classList.add('on');
+  document.querySelectorAll('.vb').forEach(function(b,i){b.classList.toggle('on',i===0);});
   setTimeout(function(){
-    var cv=document.getElementById('sm-canvas');
-    cv.width=cv.parentElement.clientWidth||300;
-    cv.height=cv.parentElement.clientHeight||220;
-    if(!smRunning) smLoop();
+    var cw=document.querySelector('.canvas-wrap');
+    canvas.width=cw.clientWidth; canvas.height=cw.clientHeight;
+    if(!loopRunning)startLoop();
   },60);
-  setTimeout(function(){document.getElementById('sm-hint').style.opacity='0';},3000);
+  setTimeout(function(){document.getElementById('cv-hint').style.opacity='0';},3000);
 }
-function closeSpec(e){
-  if(e&&e.target!==document.getElementById('specOverlay'))return;
-  document.getElementById('specOverlay').classList.remove('open');
-  document.body.style.overflow='';
-  smAutoRot=false;
+
+function closePage(){
+  document.getElementById('viewer-page').classList.remove('open');
+  document.getElementById('catalog-view').style.display='';
+  document.getElementById('cat-hdr').style.display='';
+  autoRot=false;
 }
-function smCalc(){
+
+// ── TABS ─────────────────────────────────────────
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+// ── CALC ─────────────────────────────────────────
+function calcUpdate(){
   if(!currentSku)return;
-  var q=parseInt(document.getElementById('sm-qty').value)||0;
-  var p=parseInt(currentSku.PRICE_PER_SHEET_THB)||0,w=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0,b=parseInt(currentSku.BUNDLE_SIZE)||5;
-  document.getElementById('sm-cw').textContent=(q*w).toLocaleString()+' kg';
-  document.getElementById('sm-cp').textContent='฿ '+(q*p).toLocaleString();
-  document.getElementById('sm-cb').textContent=Math.ceil(q/b)+' มัด';
+  var q=parseInt(document.getElementById('qty').value)||0;
+  var p=parseInt(currentSku.PRICE_PER_SHEET_THB)||0;
+  var w=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0;
+  var b=parseInt(currentSku.BUNDLE_SIZE)||5;
+  document.getElementById('r-w').textContent=(q*w).toLocaleString()+' kg';
+  document.getElementById('r-p').textContent='฿ '+(q*p).toLocaleString();
+  document.getElementById('r-b').textContent=Math.ceil(q/b)+' มัด';
 }
-function openOrderFromSpec(){closeSpec();setTimeout(buildOrderForm,150);}
-function openOrderDirect(idx){currentSku=filteredSkus[idx];buildOrderForm();}
+
+// ── ADMIN SYNC ────────────────────────────────────
+function syncMech(){
+  document.getElementById('v-ts').textContent=document.getElementById('a-ts').value;
+  document.getElementById('v-ys').textContent=document.getElementById('a-ys').value;
+  document.getElementById('v-el').textContent=document.getElementById('a-el').value;
+  document.getElementById('v-hd').textContent=document.getElementById('a-hd').value;
+  document.getElementById('v-tol').textContent=document.getElementById('a-tol').value;
+}
+function syncGeoAdmin(){
+  ['flat','flat2','camb','camb2','sq','sq2','br1','br2','ba','sb'].forEach(function(k){
+    var el=document.getElementById('g-'+k),src=document.getElementById('a-'+k);
+    if(el&&src)el.textContent=src.value;
+  });
+  var b1=document.getElementById('a-br1'),b2=document.getElementById('a-br2');
+  var s1=document.getElementById('svgbr1'),s2=document.getElementById('svgbr2');
+  if(b1&&s1)s1.textContent=b1.value;
+  if(b2&&s2)s2.textContent=b2.value;
+}
+function liveUpdate(){
+  S.sheets=parseInt(document.getElementById('a-sheets').value);
+  S.thick=parseInt(document.getElementById('a-thick').value)/10;
+  S.w=parseInt(document.getElementById('a-w').value)||1200;
+  S.l=parseInt(document.getElementById('a-l').value)||2400;
+  document.getElementById('a-sheets-v').textContent=S.sheets;
+  document.getElementById('a-thick-v').textContent=S.thick.toFixed(1);
+  document.getElementById('cv-info').textContent='W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(1)+'mm  N:'+S.sheets;
+  syncLabel();
+}
+function applyAdmin(){
+  if(currentSku){
+    currentSku.PRICE_PER_SHEET_THB=document.getElementById('a-price').value;
+    currentSku.STOCK_QTY=document.getElementById('a-stock').value;
+    document.getElementById('v-price').innerHTML='฿ '+parseInt(currentSku.PRICE_PER_SHEET_THB).toLocaleString()+'<span>/ แผ่น</span>';
+    calcUpdate();
+  }
+  syncMech(); syncGeoAdmin(); syncLabel();
+  alert('อัปเดตแล้วครับ');
+}
+
+// ── LABEL ─────────────────────────────────────────
+function syncLabel(){
+  if(!currentSku)return;
+  document.getElementById('s-sku').textContent=currentSku.SKU||'—';
+  document.getElementById('s-grade').textContent=currentSku.GRADE||'—';
+  document.getElementById('s-surf').textContent=(currentSku.SURFACE||'').split('(')[0].trim();
+  document.getElementById('s-thick').textContent=S.thick.toFixed(1)+' mm';
+  document.getElementById('s-size').textContent=S.w+'×'+S.l;
+  document.getElementById('s-bundle').textContent=S.sheets+' แผ่น/มัด';
+  document.getElementById('s-wt').textContent=(S.sheets*(parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0)).toFixed(0)+' kg';
+  document.getElementById('s-co').textContent=document.getElementById('l-co').value;
+  document.getElementById('s-cert').textContent=document.getElementById('l-cert').value;
+  document.getElementById('s-heat').textContent=document.getElementById('l-heat').value;
+  document.getElementById('s-date').textContent=document.getElementById('l-date').value;
+}
+function printLabel(){
+  var el=document.getElementById('sticker');
+  var win=window.open('','_blank','width=500,height=420');
+  win.document.write('<html><head><title>Label</title><style>body{margin:20px;font-family:Helvetica,Arial,sans-serif}*{box-sizing:border-box}.sticker{border:2px solid #0a0a0a;width:300px;box-shadow:3px 3px 0 #0a0a0a}.stk-top{background:#0a0a0a;padding:7px 10px;display:flex;justify-content:space-between;align-items:center}.stk-co{font-size:15px;font-weight:700;letter-spacing:3px;color:#f8f8f6}.stk-cert{font-size:7px;letter-spacing:1px;color:#a0a09c}.stk-body{padding:8px 10px}.stk-sku{font-size:15px;font-weight:700;letter-spacing:.5px;border-bottom:1px solid #e0e0dc;padding-bottom:6px;margin-bottom:6px}.stk-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}.stk-field label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:#a0a09c;display:block}.stk-field span{font-size:11px;font-weight:600;font-family:Courier New,monospace}.stk-btm{border-top:1px solid #e0e0dc;padding:6px 10px;display:flex;justify-content:space-between;align-items:center}.heat{font-size:8px;letter-spacing:.5px;color:#606060;font-family:Courier New,monospace}.qr{width:38px;height:38px;background:#f0f0ee;border:1px solid #e0e0dc;display:flex;align-items:center;justify-content:center;font-size:6px;text-align:center;color:#a0a09c;line-height:1.4}@media print{body{margin:0}}</style></head><body>');
+  win.document.write(el.outerHTML);
+  win.document.write('</body></html>');
+  win.document.close();
+  setTimeout(function(){win.print();},500);
+}
 
 // ── ORDER ─────────────────────────────────────────
+function openOrderModal(){currentSku&&buildOrderForm();}
 function buildOrderForm(){
   var s=currentSku,price=parseInt(s.PRICE_PER_SHEET_THB)||0;
   document.getElementById('modal-body').innerHTML=
     '<div class="spec-pill">'+
-      '<div class="sp-item"><label>SKU</label><span style="font-size:10px">'+s.SKU+'</span></div>'+
+      '<div class="sp-item"><label>SKU</label><span>'+s.SKU+'</span></div>'+
       '<div class="sp-item"><label>หนา</label><span>'+s.THICKNESS_MM+' mm</span></div>'+
       '<div class="sp-item"><label>W×L</label><span>'+parseInt(s.WIDTH_MM)+'×'+parseInt(s.LENGTH_MM)+'</span></div>'+
       '<div class="sp-item"><label>สต็อก</label><span style="color:var(--green)">'+(parseInt(s.STOCK_QTY)||0)+' แผ่น</span></div>'+
     '</div>'+
     '<div class="fsec"><div class="fsec-ttl">ข้อมูลลูกค้า</div>'+
-      '<div class="f2"><div class="frow"><label>ชื่อลูกค้า *</label><input type="text" id="o-name" placeholder="บริษัท / ชื่อ"></div>'+
-      '<div class="frow"><label>เบอร์โทร</label><input type="text" id="o-phone" placeholder="0xx-xxx-xxxx"></div></div></div>'+
+      '<div class="f2g"><div class="frow-m"><label>ชื่อลูกค้า *</label><input type="text" id="o-name" placeholder="บริษัท / ชื่อ"></div>'+
+      '<div class="frow-m"><label>เบอร์โทร</label><input type="text" id="o-phone" placeholder="0xx-xxx-xxxx"></div></div></div>'+
     '<div class="fsec"><div class="fsec-ttl">รายการสั่งซื้อ</div>'+
-      '<div class="f2"><div class="frow"><label>จำนวน (แผ่น) *</label><input type="number" id="o-qty" value="10" min="1" oninput="updOrd()"></div>'+
-      '<div class="frow"><label>ราคา/แผ่น (฿)</label><input type="number" id="o-price" value="'+price+'" oninput="updOrd()"></div></div></div>'+
-    '<div class="order-sum">'+
-      '<div class="os-item"><label>น้ำหนักรวม</label><span id="os-w">—</span></div>'+
-      '<div class="os-item"><label>ราคารวม</label><span id="os-p">—</span></div>'+
-      '<div class="os-item"><label>มัด</label><span id="os-b">—</span></div>'+
-    '</div>'+
-    '<div class="fsec"><div class="fsec-ttl">หมายเหตุ</div>'+
-      '<div class="f1"><div class="frow"><label>หมายเหตุ</label><textarea id="o-note" rows="2" style="resize:none" placeholder="วันที่รับ, เงื่อนไขพิเศษ..."></textarea></div></div></div>'+
+      '<div class="f2g"><div class="frow-m"><label>จำนวน (แผ่น) *</label><input type="number" id="o-qty" value="10" min="1" oninput="updOrd()"></div>'+
+      '<div class="frow-m"><label>ราคา/แผ่น (฿)</label><input type="number" id="o-price" value="'+price+'" oninput="updOrd()"></div></div></div>'+
+    '<div class="order-sum"><div class="os-item"><label>น้ำหนักรวม</label><span id="os-w">—</span></div><div class="os-item"><label>ราคารวม</label><span id="os-p">—</span></div><div class="os-item"><label>มัด</label><span id="os-b">—</span></div></div>'+
+    '<div class="fsec"><div class="fsec-ttl">หมายเหตุ</div><div class="frow-m"><label>หมายเหตุ</label><textarea id="o-note" rows="2" style="resize:none" placeholder="วันที่รับ, เงื่อนไขพิเศษ..."></textarea></div></div>'+
     '<button class="btn-submit" onclick="submitOrder()">ยืนยัน Order →</button>';
   updOrd();
   document.getElementById('orderOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
 }
 function updOrd(){
   if(!currentSku)return;
@@ -675,10 +871,9 @@ function updOrd(){
   document.getElementById('os-p').textContent='฿ '+(q*p).toLocaleString();
   document.getElementById('os-b').textContent=Math.ceil(q/b)+' มัด';
 }
-function closeOrder(e){
+function closeOrderModal(e){
   if(e&&e.target!==document.getElementById('orderOverlay'))return;
   document.getElementById('orderOverlay').classList.remove('open');
-  document.body.style.overflow='';
 }
 function submitOrder(){
   var name=(document.getElementById('o-name').value||'').trim(),qty=parseInt(document.getElementById('o-qty').value)||0,price=parseInt(document.getElementById('o-price').value)||0;
@@ -689,95 +884,165 @@ function submitOrder(){
   fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'createOrder',customerName:name,customerPhone:(document.getElementById('o-phone').value||'').trim(),sku:s.SKU,grade:s.GRADE,surface:s.SURFACE,thickness:s.THICKNESS_MM,width:s.WIDTH_MM,length:s.LENGTH_MM,qty:qty,weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),pricePerSheet:price,priceTotal:qty*price,note:(document.getElementById('o-note').value||'').trim()})})
   .then(function(r){return r.json();})
   .then(function(res){
-    if(res.success){
-      document.getElementById('modal-body').innerHTML='<div class="success-box"><div class="check">✓</div><h3>Order สำเร็จ!</h3><div class="order-no">'+res.orderNo+'</div><button class="btn-done" onclick="closeOrder()">ปิด</button></div>';
-    }else{alert('เกิดข้อผิดพลาด: '+(res.error||'unknown'));btn.disabled=false;btn.textContent='ยืนยัน Order →';}
+    if(res.success){document.getElementById('modal-body').innerHTML='<div class="success-box"><div class="check">✓</div><h3>Order สำเร็จ!</h3><div class="order-no">'+res.orderNo+'</div><button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button></div>';}
+    else{alert('เกิดข้อผิดพลาด: '+(res.error||'unknown'));btn.disabled=false;btn.textContent='ยืนยัน Order →';}
   })
   .catch(function(){alert('ส่งข้อมูลไม่ได้ — ตรวจสอบ SCRIPT_URL');btn.disabled=false;btn.textContent='ยืนยัน Order →';});
 }
-function showError(msg){document.getElementById('main-content').innerHTML='<div class="state-msg"><div class="icon">⚠️</div><p>'+msg+'</p></div>';}
+function showError(m){document.getElementById('catalog-view').innerHTML='<div class="state-msg"><div class="icon">⚠️</div><p>'+m+'</p></div>';}
 
-// ══ 3D BUNDLE ENGINE ══
-var smRotY=0.5,smRotX=0.25,smTargetY=0.5,smTargetX=0.25;
-var smAutoRot=false,smDrag=false,smLX=0,smLY=0,smRunning=false,smT=0;
-var smViews={iso:{y:0.5,x:0.25},front:{y:0,x:0},top:{y:0,x:1.55},side:{y:1.57,x:0.1}};
+// ══ 3D ENGINE ══
+var canvas=document.getElementById('c3d');
+var ctx=canvas.getContext('2d');
+var W=300,H=300;
+var camRotY=0.5,camRotX=0.25,camTargetY=0.5,camTargetX=0.25;
+var autoRot=false,drag=false,lastX=0,lastY=0,animT=0,loopRunning=false;
+var viewPresets={iso:{y:0.5,x:0.25},front:{y:0,x:0},top:{y:0,x:Math.PI/2-0.01},side:{y:Math.PI/2,x:0.1}};
 
-function drawBundle(cvId,s,rotY,rotX,floating){
-  var cv=document.getElementById(cvId);if(!cv)return;
-  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
-  var isLarge=(W>200);
+function resizeCanvas(){
+  var cw=document.querySelector('.canvas-wrap');
+  if(!cw)return;
+  W=cw.clientWidth; H=cw.clientHeight;
+  canvas.width=W; canvas.height=H;
+}
+
+function mat3Y(a){return[Math.cos(a),0,Math.sin(a),0,1,0,-Math.sin(a),0,Math.cos(a)];}
+function mat3X(a){return[1,0,0,0,Math.cos(a),-Math.sin(a),0,Math.sin(a),Math.cos(a)];}
+function mulM(m,v){return[m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];}
+function tp(p){return mulM(mat3X(camRotX),mulM(mat3Y(camRotY),p));}
+function pr(p){var fov=520,z=p[2]+12;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H/2-p[1]*fov/z];}
+function shade(nx,ny,nz){var lx=0.5,ly=0.8,lz=0.4,ln=Math.sqrt(lx*lx+ly*ly+lz*lz);lx/=ln;ly/=ln;lz/=ln;return Math.max(0.25,nx*lx+ny*ly+nz*lz);}
+
+function drawBox3d(cx,cy,cz,bW,bH,bL,topCol,sideCol,floatY){
+  var hw=bW/2,hh=bH/2,hl=bL/2,fy=cy+(floatY||0);
+  var c=[[cx-hw,fy-hh,cz-hl],[cx+hw,fy-hh,cz-hl],[cx+hw,fy+hh,cz-hl],[cx-hw,fy+hh,cz-hl],
+         [cx-hw,fy-hh,cz+hl],[cx+hw,fy-hh,cz+hl],[cx+hw,fy+hh,cz+hl],[cx-hw,fy+hh,cz+hl]];
+  var faces=[
+    {pts:[c[3],c[2],c[1],c[0]],n:[0,0,-1],col:sideCol},
+    {pts:[c[4],c[5],c[6],c[7]],n:[0,0,1],col:sideCol},
+    {pts:[c[7],c[6],c[2],c[3]],n:[0,1,0],col:topCol},
+    {pts:[c[0],c[1],c[5],c[4]],n:[0,-1,0],col:topCol},
+    {pts:[c[0],c[4],c[7],c[3]],n:[-1,0,0],col:sideCol},
+    {pts:[c[1],c[2],c[6],c[5]],n:[1,0,0],col:sideCol}
+  ];
+  faces.forEach(function(f){
+    var sum=0;f.pts.forEach(function(p){sum+=tp(p)[2];});f.depth=sum/f.pts.length;
+  });
+  faces.sort(function(a,b){return b.depth-a.depth;});
+  faces.forEach(function(f){
+    var t0=tp(f.pts[0]),t1=tp(f.pts[1]),t2=tp(f.pts[2]);
+    var e1=[t1[0]-t0[0],t1[1]-t0[1]],e2=[t2[0]-t0[0],t2[1]-t0[1]];
+    if(e1[0]*e2[1]-e1[1]*e2[0]>0)return;
+    var s=shade(f.n[0],f.n[1],f.n[2]);
+    var r=parseInt(f.col.slice(1,3),16),g=parseInt(f.col.slice(3,5),16),b=parseInt(f.col.slice(5,7),16);
+    ctx.beginPath();
+    var p2d=f.pts.map(function(p){return pr(tp(p));});
+    ctx.moveTo(p2d[0][0],p2d[0][1]);
+    for(var i=1;i<p2d.length;i++)ctx.lineTo(p2d[i][0],p2d[i][1]);
+    ctx.closePath();
+    ctx.fillStyle='rgb('+Math.round(r*s)+','+Math.round(g*s)+','+Math.round(b*s)+')';
+    ctx.fill();
+    ctx.strokeStyle='rgba(20,20,18,0.25)';ctx.lineWidth=0.5;ctx.stroke();
+  });
+}
+
+function render3d(){
   ctx.clearRect(0,0,W,H);
+  var N=S.sheets,thick=Math.max(0.04,S.thick*0.045);
+  var bw=Math.max(0.8,S.w/280),bl=Math.max(0.8,S.l/460),gap=0.012;
+  var totalH=N*(thick+gap)-gap,yOff=-totalH/2;
+  var fl=Math.sin(animT*0.6)*0.04;
+
+  // shadow
+  var sp=[];for(var a=0;a<=Math.PI*2;a+=0.28)sp.push(pr(tp([Math.cos(a)*bw*0.52,yOff+fl-0.04,Math.sin(a)*bl*0.46])));
+  ctx.save();ctx.beginPath();sp.forEach(function(p,i){i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);});ctx.closePath();ctx.fillStyle='rgba(0,0,0,0.07)';ctx.fill();ctx.restore();
+
+  for(var i=0;i<N;i++){
+    var cy=yOff+i*(thick+gap)+thick/2;
+    drawBox3d(0,cy,0,bw,thick,bl,'#484440','#3c3a38',fl);
+  }
+  [-bl*0.28,bl*0.28].forEach(function(sz){
+    var sH=totalH+0.05;
+    drawBox3d(0,yOff+totalH+0.025,sz,bw+0.06,0.05,0.035,'#989890','#888880',fl);
+    drawBox3d(0,yOff-0.025,sz,bw+0.06,0.05,0.035,'#989890','#888880',fl);
+    drawBox3d(-bw/2-0.03,yOff+totalH/2,sz,0.035,sH+0.1,0.035,'#888880','#787870',fl);
+    drawBox3d(bw/2+0.03,yOff+totalH/2,sz,0.035,sH+0.1,0.035,'#888880','#787870',fl);
+  });
+  drawBox3d(bw/2+0.04,yOff+totalH/2,-bl*0.28,0.01,0.30,0.48,'#f0f0ee','#e8e8e4',fl);
+  ctx.save();ctx.font='600 10px "Courier New",monospace';ctx.fillStyle='#a0a09c';
+  ctx.fillText('W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(1)+'mm  N:'+S.sheets,12,H-12);ctx.restore();
+}
+
+// card thumbnail renderer (simple, no float)
+function drawBundleCard(cvId,s){
+  var cv=document.getElementById(cvId);if(!cv)return;
+  var c2=cv.getContext('2d'),W2=cv.width,H2=cv.height;
+  c2.clearRect(0,0,W2,H2);
   var N=Math.min(parseInt(s.BUNDLE_SIZE)||5,8);
-  var thick=Math.max(0.03,parseFloat(s.THICKNESS_MM)*(isLarge?0.044:0.042));
-  var bw=isLarge?4.1:3.6,bl=isLarge?5.0:4.2,gap=0.012;
-  var totalH=N*(thick+gap)-gap;
-  var fov=isLarge?Math.min(W,H)*1.3:180,zBase=isLarge?10:9;
-  var fl=floating?Math.sin(smT*0.6)*0.04:0;
-  var cosY=Math.cos(rotY),sinY=Math.sin(rotY),cosX=Math.cos(rotX),sinX=Math.sin(rotX);
-  function tp(x,y,z){var x2=x*cosY+z*sinY,z2=-x*sinY+z*cosY,y2=y*cosX-z2*sinX,z3=y*sinX+z2*cosX;return[x2,y2,z3];}
-  function pr(p){var z=p[2]+zBase;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H/2-p[1]*fov/z];}
-  function sh(nx,ny,nz){return Math.max(0.28,Math.min(1,nx*0.45+ny*0.75+nz*0.35));}
-  function face(pts,r,g,b,nx,ny,nz){
-    var s2=sh(nx,ny,nz),p2=pts.map(function(p){return pr(tp(p[0],p[1]+fl,p[2]));});
+  var thick=Math.max(0.03,parseFloat(s.THICKNESS_MM)*0.042);
+  var bw=3.4,bl=4.0,gap=0.012,totalH=N*(thick+gap)-gap;
+  var rY=0.45,rX=0.22,cY=Math.cos(rY),sY=Math.sin(rY),cX=Math.cos(rX),sX=Math.sin(rX);
+  function tpc(x,y,z){var x2=x*cY+z*sY,z2=-x*sY+z*cY,y2=y*cX-z2*sX,z3=y*sX+z2*cX;return[x2,y2,z3];}
+  function prc(p){var fov=170,z=p[2]+9;if(z<0.1)z=0.1;return[W2/2+p[0]*fov/z,H2/2-p[1]*fov/z];}
+  function shc(nx,ny,nz){return Math.max(0.28,Math.min(1,nx*0.45+ny*0.75+nz*0.35));}
+  function faceC(pts,r,g,b,nx,ny,nz){
+    var s2=shc(nx,ny,nz),p2=pts.map(function(p){return prc(tpc(p[0],p[1],p[2]));});
     var e1=[p2[1][0]-p2[0][0],p2[1][1]-p2[0][1]],e2=[p2[2][0]-p2[0][0],p2[2][1]-p2[0][1]];
     if(e1[0]*e2[1]-e1[1]*e2[0]>0)return;
-    ctx.beginPath();ctx.moveTo(p2[0][0],p2[0][1]);
-    for(var i=1;i<p2.length;i++)ctx.lineTo(p2[i][0],p2[i][1]);
-    ctx.closePath();ctx.fillStyle='rgb('+Math.round(r*s2)+','+Math.round(g*s2)+','+Math.round(b*s2)+')';
-    ctx.fill();ctx.strokeStyle='rgba(20,20,18,0.22)';ctx.lineWidth=0.5;ctx.stroke();
+    c2.beginPath();c2.moveTo(p2[0][0],p2[0][1]);for(var i=1;i<p2.length;i++)c2.lineTo(p2[i][0],p2[i][1]);
+    c2.closePath();c2.fillStyle='rgb('+Math.round(r*s2)+','+Math.round(g*s2)+','+Math.round(b*s2)+')';c2.fill();
+    c2.strokeStyle='rgba(20,20,18,0.22)';c2.lineWidth=0.5;c2.stroke();
   }
-  function box(cx,cy,cz,bW,bH,bL,tr,tg,tb,sr,sg,sb){
+  function boxC(cx,cy,cz,bW,bH,bL,tr,tg,tb,sr,sg,sb){
     var hw=bW/2,hh=bH/2,hl=bL/2;
-    var c=[[cx-hw,cy-hh,cz-hl],[cx+hw,cy-hh,cz-hl],[cx+hw,cy+hh,cz-hl],[cx-hw,cy+hh,cz-hl],[cx-hw,cy-hh,cz+hl],[cx+hw,cy-hh,cz+hl],[cx+hw,cy+hh,cz+hl],[cx-hw,cy+hh,cz+hl]];
-    [[c[3],c[2],c[1],c[0],0,0,-1,sr,sg,sb],[c[4],c[5],c[6],c[7],0,0,1,sr,sg,sb],[c[7],c[6],c[2],c[3],0,1,0,tr,tg,tb],[c[0],c[1],c[5],c[4],0,-1,0,tr,tg,tb],[c[0],c[4],c[7],c[3],-1,0,0,sr,sg,sb],[c[1],c[2],c[6],c[5],1,0,0,sr,sg,sb]].forEach(function(f){face([f[0],f[1],f[2],f[3]],f[7],f[8],f[9],f[4],f[5],f[6]);});
+    var cc=[[cx-hw,cy-hh,cz-hl],[cx+hw,cy-hh,cz-hl],[cx+hw,cy+hh,cz-hl],[cx-hw,cy+hh,cz-hl],[cx-hw,cy-hh,cz+hl],[cx+hw,cy-hh,cz+hl],[cx+hw,cy+hh,cz+hl],[cx-hw,cy+hh,cz+hl]];
+    [[cc[3],cc[2],cc[1],cc[0],0,0,-1,sr,sg,sb],[cc[4],cc[5],cc[6],cc[7],0,0,1,sr,sg,sb],[cc[7],cc[6],cc[2],cc[3],0,1,0,tr,tg,tb],[cc[0],cc[1],cc[5],cc[4],0,-1,0,tr,tg,tb],[cc[0],cc[4],cc[7],cc[3],-1,0,0,sr,sg,sb],[cc[1],cc[2],cc[6],cc[5],1,0,0,sr,sg,sb]].forEach(function(f){faceC([f[0],f[1],f[2],f[3]],f[7],f[8],f[9],f[4],f[5],f[6]);});
   }
   var surf=(s.SURFACE||'').toLowerCase(),tr,tg,tb,sr,sg,sb;
   if(surf.indexOf('galvanized')>-1||surf.indexOf('สังกะสี')>-1){tr=162;tg=170;tb=162;sr=142;sg=150;sb=142;}
   else if(surf.indexOf('cold')>-1||surf.indexOf('spcc')>-1){tr=122;tg=122;tb=128;sr=102;sg=102;sb=108;}
   else{tr=72;tg=72;tb=70;sr=58;sg=58;sb=56;}
-  var yOff=-totalH/2;
-  // shadow
-  var sp=[];for(var a=0;a<=Math.PI*2;a+=0.3)sp.push(pr(tp(Math.cos(a)*bw*0.52,yOff-0.06+fl,Math.sin(a)*bl*0.46)));
-  ctx.save();ctx.beginPath();sp.forEach(function(p,i){i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);});ctx.closePath();ctx.fillStyle='rgba(0,0,0,0.07)';ctx.fill();ctx.restore();
-  for(var i=0;i<N;i++){var cy=yOff+i*(thick+gap)+thick/2;box(0,cy,0,bw,thick,bl,tr,tg,tb,sr,sg,sb);}
+  var yOff2=-totalH/2;
+  for(var i=0;i<N;i++){var cy2=yOff2+i*(thick+gap)+thick/2;boxC(0,cy2,0,bw,thick,bl,tr,tg,tb,sr,sg,sb);}
   [-bl*.28,bl*.28].forEach(function(sz){
-    var sH=totalH+.05;
-    box(0,yOff+totalH+.03,sz,bw+.07,.055,.038,150,150,142,132,132,124);
-    box(0,yOff-.03,sz,bw+.07,.055,.038,150,150,142,132,132,124);
-    box(-bw/2-.03,yOff+totalH/2,sz,.038,sH+.11,.038,132,132,124,122,122,114);
-    box(bw/2+.03,yOff+totalH/2,sz,.038,sH+.11,.038,132,132,124,122,122,114);
+    boxC(0,yOff2+totalH+.025,sz,bw+.06,.05,.034,148,148,140,130,130,122);
+    boxC(0,yOff2-.025,sz,bw+.06,.05,.034,148,148,140,130,130,122);
+    boxC(-bw/2-.03,yOff2+totalH/2,sz,.034,totalH+.1,.034,130,130,122,120,120,112);
+    boxC(bw/2+.03,yOff2+totalH/2,sz,.034,totalH+.1,.034,130,130,122,120,120,112);
   });
-  box(bw/2+.05,yOff+totalH/2,-bl*.28,.01,.30,.46,236,236,230,226,226,220);
-  if(!isLarge){ctx.fillStyle='#a0a09c';ctx.font='600 9px Courier New';ctx.fillText((s.SURFACE?s.SURFACE.split('(')[0].trim():''),8,H-8);}
+  boxC(bw/2+.04,yOff2+totalH/2,-bl*.28,.01,.28,.44,236,236,230,226,226,220);
+  c2.fillStyle='#a0a09c';c2.font='600 8px Courier New';c2.fillText((s.SURFACE?s.SURFACE.split('(')[0].trim():''),7,H2-7);
 }
 
-// controls
-var smCv=document.getElementById('sm-canvas');
-smCv.addEventListener('mousedown',function(e){smDrag=true;smLX=e.clientX;smLY=e.clientY;smAutoRot=false;document.getElementById('sm-sw').classList.remove('on');document.getElementById('sm-hint').style.opacity='0';});
-window.addEventListener('mousemove',function(e){if(!smDrag)return;smTargetY+=(e.clientX-smLX)*0.009;smTargetX+=(e.clientY-smLY)*0.006;smTargetX=Math.max(-1.3,Math.min(1.3,smTargetX));smLX=e.clientX;smLY=e.clientY;});
-window.addEventListener('mouseup',function(){smDrag=false;});
-smCv.addEventListener('touchstart',function(e){smDrag=true;smLX=e.touches[0].clientX;smLY=e.touches[0].clientY;smAutoRot=false;},{passive:true});
-smCv.addEventListener('touchmove',function(e){if(!smDrag)return;smTargetY+=(e.touches[0].clientX-smLX)*0.009;smTargetX+=(e.touches[0].clientY-smLY)*0.006;smTargetX=Math.max(-1.3,Math.min(1.3,smTargetX));smLX=e.touches[0].clientX;smLY=e.touches[0].clientY;},{passive:true});
-smCv.addEventListener('touchend',function(){smDrag=false;});
-function smToggleAuto(){smAutoRot=!smAutoRot;document.getElementById('sm-sw').classList.toggle('on',smAutoRot);}
-function smSetView(n,btn){document.querySelectorAll('.sm-vb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');var v=smViews[n];smTargetY=v.y;smTargetX=v.x;smAutoRot=false;document.getElementById('sm-sw').classList.remove('on');}
-function smLoop(){
-  smRunning=true;
+// Controls
+canvas.addEventListener('mousedown',function(e){drag=true;lastX=e.clientX;lastY=e.clientY;autoRot=false;document.getElementById('cv-sw').classList.remove('on');document.getElementById('cv-hint').style.opacity='0';});
+window.addEventListener('mousemove',function(e){if(!drag)return;camTargetY+=(e.clientX-lastX)*0.008;camTargetX+=(e.clientY-lastY)*0.005;camTargetX=Math.max(-1.2,Math.min(1.2,camTargetX));lastX=e.clientX;lastY=e.clientY;});
+window.addEventListener('mouseup',function(){drag=false;});
+canvas.addEventListener('touchstart',function(e){drag=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;autoRot=false;},{passive:true});
+canvas.addEventListener('touchmove',function(e){if(!drag)return;camTargetY+=(e.touches[0].clientX-lastX)*0.008;camTargetX+=(e.touches[0].clientY-lastY)*0.005;camTargetX=Math.max(-1.2,Math.min(1.2,camTargetX));lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;},{passive:true});
+canvas.addEventListener('touchend',function(){drag=false;});
+function toggleAuto(){autoRot=!autoRot;document.getElementById('cv-sw').classList.toggle('on',autoRot);}
+function setView(name,btn){document.querySelectorAll('.vb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');var v=viewPresets[name];camTargetY=v.y;camTargetX=v.x;autoRot=false;document.getElementById('cv-sw').classList.remove('on');}
+new ResizeObserver(function(){if(document.getElementById('viewer-page').classList.contains('open')){resizeCanvas();}}).observe(document.body);
+
+function startLoop(){
+  loopRunning=true;
   (function tick(){
-    if(!document.getElementById('specOverlay').classList.contains('open')){smRunning=false;return;}
-    requestAnimationFrame(tick);smT+=0.016;
-    if(smAutoRot&&!smDrag)smTargetY+=0.004;
-    smRotY+=(smTargetY-smRotY)*0.08;smRotX+=(smTargetX-smRotX)*0.08;
-    if(currentSku)drawBundle('sm-canvas',currentSku,smRotY,smRotX,true);
+    requestAnimationFrame(tick);
+    animT+=0.016;
+    if(autoRot&&!drag)camTargetY+=0.004;
+    camRotY+=(camTargetY-camRotY)*0.08;
+    camRotX+=(camTargetX-camRotX)*0.08;
+    if(document.getElementById('viewer-page').classList.contains('open'))render3d();
   })();
 }
 
-// ── INIT ──────────────────────────────────────────
+// ── INIT ─────────────────────────────────────────
 window.addEventListener('load',function(){
   if(SHEET_ID==='YOUR_GOOGLE_SHEET_ID_HERE'){showError('กรุณาแก้ไข SHEET_ID ในโค้ด JS ก่อนใช้งาน');return;}
   loadCatalog();
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeOrder();closeSpec();document.body.style.overflow='';}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('orderOverlay').classList.remove('open');}});
 </script>
 </body>
 </html>
