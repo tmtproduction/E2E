@@ -3,660 +3,550 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Steel Catalog — 3D Viewer</title>
+<title>Steel Catalog</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --black:#0a0a0a;--white:#f8f8f6;--g100:#f0f0ee;--g200:#e0e0dc;
-  --g400:#a0a09c;--g600:#606060;--green:#1a7a4a;
-}
-@font-face{font-family:'Mono';src:local('Courier New'),local('Courier');}
-body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color:var(--black);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+:root{--black:#0a0a0a;--white:#f8f8f6;--g100:#f0f0ee;--g200:#e0e0dc;--g400:#a0a09c;--g600:#606060;--green:#1a7a4a;--yellow:#d4a017;--red:#c0392b;}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color:var(--black);min-height:100vh;display:flex;flex-direction:column;}
 
-.hdr{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 28px;border-bottom:1px solid var(--g200);flex-shrink:0}
-.hdr-back{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g600);cursor:pointer;background:none;border:none}
-.hdr-title{font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--g400);text-align:center;font-weight:600}
-.hdr-tabs{display:flex;gap:3px;justify-content:flex-end}
-.tab-btn{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border:1px solid var(--g200);background:none;cursor:pointer;color:var(--g600);transition:all .2s}
-.tab-btn.active{background:var(--black);color:var(--white);border-color:var(--black)}
+/* ── HEADER ── */
+.hdr{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;padding:14px 32px;border-bottom:1px solid var(--g200);background:var(--white);position:sticky;top:0;z-index:50;}
+.brand{font-size:16px;font-weight:800;letter-spacing:3px;text-transform:uppercase;}
+.search-bar{display:flex;gap:8px;flex-wrap:wrap;}
+.sf{display:flex;flex-direction:column;gap:2px;}
+.sf label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);}
+.sf select,.sf input{border:1px solid var(--g200);background:var(--white);font-size:12px;padding:5px 8px;outline:none;color:var(--black);font-family:inherit;min-width:100px;}
+.sf select:focus,.sf input:focus{border-color:var(--black);}
+.btn-search{background:var(--black);color:var(--white);border:none;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:8px 20px;cursor:pointer;align-self:flex-end;font-family:inherit;font-weight:600;transition:background .2s;}
+.btn-search:hover{background:var(--g600);}
+.hdr-stat{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);white-space:nowrap;}
 
-.main{display:grid;grid-template-columns:1fr 320px;flex:1;min-height:0;overflow:hidden}
+/* ── LOADING / EMPTY ── */
+.state-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;padding:60px 20px;}
+.state-msg .icon{font-size:32px;opacity:.3;}
+.state-msg p{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);}
+.spinner{width:24px;height:24px;border:2px solid var(--g200);border-top-color:var(--black);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* CANVAS */
-.canvas-wrap{position:relative;background:var(--g100);overflow:hidden;display:flex;align-items:center;justify-content:center}
-.canvas-wrap::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--g200) 1px,transparent 1px),linear-gradient(90deg,var(--g200) 1px,transparent 1px);background-size:36px 36px;opacity:.5}
-#c3d{position:relative;z-index:1;cursor:grab;display:block}
-#c3d:active{cursor:grabbing}
-.view-btns{position:absolute;top:14px;right:14px;display:flex;flex-direction:column;gap:3px;z-index:2}
-.vb{background:var(--white);border:1px solid var(--g200);font-size:9px;letter-spacing:1px;padding:5px 9px;cursor:pointer;color:var(--g600);transition:all .2s;min-width:48px;text-align:center;font-family:inherit}
-.vb:hover,.vb.on{background:var(--black);color:var(--white);border-color:var(--black)}
-.hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);z-index:2;pointer-events:none;transition:opacity .6s;white-space:nowrap}
-.auto-row{position:absolute;bottom:14px;right:14px;z-index:2;display:flex;align-items:center;gap:7px;cursor:pointer}
-.auto-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400)}
-.sw{width:32px;height:16px;background:var(--g200);border-radius:8px;position:relative;border:none;cursor:pointer;transition:background .2s;flex-shrink:0}
-.sw.on{background:var(--black)}
-.sw-k{position:absolute;top:2px;left:2px;width:12px;height:12px;background:var(--white);border-radius:50%;transition:transform .2s}
-.sw.on .sw-k{transform:translateX(16px)}
+/* ── GRID ── */
+.grid-wrap{padding:24px 32px;flex:1;}
+.grid-hdr{display:flex;align-items:baseline;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--g200);padding-bottom:10px;}
+.grid-hdr h2{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;}
+.grid-hdr span{font-size:10px;color:var(--g400);font-family:'Courier New',monospace;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--g200);}
 
-/* SIDEBAR */
-.sidebar{border-left:1px solid var(--g200);display:flex;flex-direction:column;overflow:hidden}
-.panel{display:none;flex-direction:column;flex:1;overflow-y:auto}
-.panel.active{display:flex}
+/* ── CARD ── */
+.card{background:var(--white);cursor:pointer;transition:background .15s;}
+.card:hover{background:#fafaf8;}
+.card-img{height:140px;background:var(--g100);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.card-img canvas{display:block;}
+.status-dot{position:absolute;top:12px;right:12px;width:9px;height:9px;border-radius:50%;}
+.card-body{padding:16px 18px;border-top:1px solid var(--g200);}
+.c-sku{font-size:12px;font-weight:700;font-family:'Courier New',monospace;letter-spacing:.5px;margin-bottom:3px;}
+.c-sub{font-size:9px;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;}
+.c-specs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
+.cs label{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:1px;}
+.cs span{font-family:'Courier New',monospace;font-size:12px;font-weight:600;}
+.c-divider{height:1px;background:var(--g200);margin:10px 0;}
+.c-bottom{display:flex;justify-content:space-between;align-items:flex-end;}
+.c-stock .stock-num{font-size:22px;font-weight:700;line-height:1;}
+.c-stock .stock-num.green{color:var(--green);}
+.c-stock .stock-num.yellow{color:var(--yellow);}
+.c-stock .stock-num.red{color:var(--red);}
+.c-stock .stock-unit{font-size:9px;color:var(--g400);text-transform:uppercase;margin-top:1px;}
+.c-price{text-align:right;}
+.c-price .price-main{font-family:'Courier New',monospace;font-size:13px;font-weight:700;}
+.c-price .price-sub{font-size:9px;color:var(--g400);margin-top:1px;}
+.card-foot{padding:10px 18px;border-top:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center;}
+.btn-detail{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;}
+.btn-detail:hover{color:var(--black);}
+.btn-select{background:var(--black);color:var(--white);border:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;cursor:pointer;font-family:inherit;font-weight:600;transition:background .2s;}
+.btn-select:hover{background:var(--g600);}
+.btn-select:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
 
-.sec{padding:16px 20px;border-bottom:1px solid var(--g200);flex-shrink:0}
-.sec-lbl{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:12px;display:flex;align-items:center;gap:8px;font-weight:600}
-.sec-lbl::after{content:'';flex:1;height:1px;background:var(--g200)}
+/* ── MODAL OVERLAY ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,10,10,.55);z-index:100;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;backdrop-filter:blur(3px);}
+.overlay.open{display:flex;}
 
-.prod-sku{font-size:22px;font-weight:700;letter-spacing:1px;line-height:1.1;margin-bottom:4px}
-.prod-sub{font-size:10px;color:var(--g400);letter-spacing:.5px;text-transform:uppercase}
-.stock-pill{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:4px 10px;background:var(--g100)}
-.stock-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
-.stock-pill span{font-size:10px;font-family:'Courier New',monospace;letter-spacing:.3px}
+/* ── ORDER MODAL ── */
+.modal{background:var(--white);width:100%;max-width:600px;animation:slideUp .22s ease;}
+@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-hdr{background:var(--black);padding:20px 28px;display:flex;justify-content:space-between;align-items:center;}
+.modal-hdr h2{font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--white);}
+.modal-close{background:none;border:none;color:var(--g400);font-size:20px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:var(--white);}
+.modal-body{padding:24px 28px;}
 
-.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.df label{display:block;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:2px}
-.df .dv{font-family:'Courier New',monospace;font-size:14px;font-weight:600}
-.df .du{font-size:9px;color:var(--g400);margin-left:1px}
+/* order form */
+.form-section{margin-bottom:20px;}
+.form-section-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.form-section-title::after{content:'';flex:1;height:1px;background:var(--g200);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-grid.full{grid-template-columns:1fr;}
+.frow{display:flex;flex-direction:column;gap:3px;}
+.frow label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);}
+.frow input,.frow textarea,.frow select{border:1px solid var(--g200);background:var(--white);font-size:13px;padding:7px 10px;outline:none;color:var(--black);font-family:inherit;transition:border-color .2s;width:100%;}
+.frow input:focus,.frow textarea:focus{border-color:var(--black);}
+.frow input[readonly]{background:var(--g100);color:var(--g600);}
 
-.mrow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--g100)}
-.mrow:last-child{border-bottom:none}
-.mk{font-size:9px;letter-spacing:.5px;color:var(--g400);text-transform:uppercase}
-.mv{font-family:'Courier New',monospace;font-size:11px;font-weight:600}
+/* spec preview in modal */
+.spec-preview{background:var(--g100);padding:14px 16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.sp-item label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
+.sp-item span{font-family:'Courier New',monospace;font-size:13px;font-weight:700;}
 
-.price-big{font-size:30px;font-weight:700;letter-spacing:1px;line-height:1}
-.price-big span{font-size:12px;color:var(--g400);font-weight:400;margin-left:3px}
-.price-sub{font-size:10px;color:var(--g400);margin-top:2px}
+/* summary box */
+.order-summary{background:var(--black);color:var(--white);padding:14px 16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.os-item label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:3px;}
+.os-item span{font-size:18px;font-weight:700;letter-spacing:.5px;}
 
-.calc-box{background:var(--g100);padding:10px 12px;margin-top:10px}
-.calc-r{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.calc-r label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400)}
-.calc-inp{width:60px;border:1px solid var(--g200);background:var(--white);font-family:'Courier New',monospace;font-size:13px;font-weight:600;padding:5px 7px;outline:none;text-align:center}
-.calc-inp:focus{border-color:var(--black)}
-.calc-res{display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--g200)}
-.cr label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px}
-.cr .crv{font-size:16px;font-weight:700;letter-spacing:.5px}
+.btn-submit{width:100%;background:var(--black);color:var(--white);border:none;font-size:13px;letter-spacing:4px;text-transform:uppercase;padding:15px;cursor:pointer;font-family:inherit;font-weight:700;transition:background .2s;}
+.btn-submit:hover{background:var(--g600);}
+.btn-submit:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
 
-.btn-cta{width:100%;background:var(--black);color:var(--white);border:none;font-size:13px;letter-spacing:4px;text-transform:uppercase;padding:14px;cursor:pointer;flex-shrink:0;font-family:inherit;font-weight:600}
-.btn-cta:hover{background:var(--g600)}
+/* success state */
+.success-box{text-align:center;padding:32px 20px;}
+.success-box .check{font-size:48px;margin-bottom:12px;}
+.success-box h3{font-size:18px;font-weight:700;letter-spacing:2px;margin-bottom:6px;}
+.success-box .order-no{font-family:'Courier New',monospace;font-size:13px;color:var(--g600);margin-bottom:20px;}
+.btn-done{border:1px solid var(--black);background:none;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:10px 24px;cursor:pointer;font-family:inherit;transition:all .2s;}
+.btn-done:hover{background:var(--black);color:var(--white);}
 
-/* ADMIN */
-.admin-hdr{padding:14px 20px;background:var(--black);flex-shrink:0}
-.admin-hdr h3{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--white);font-weight:600}
-.admin-hdr p{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-top:2px}
-.admin-body{flex:1;overflow-y:auto}
-.admin-sec{padding:16px 20px;border-bottom:1px solid var(--g200)}
-.admin-sec-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:12px;display:flex;align-items:center;gap:8px;font-weight:600}
-.admin-sec-title::after{content:'';flex:1;height:1px;background:var(--g200)}
-.tag3d{display:inline-block;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;padding:1px 5px;background:var(--black);color:var(--white);margin-left:5px;vertical-align:middle}
-.frow{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
-.frow:last-child{margin-bottom:0}
-.frow label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600)}
-.frow input,.frow select{width:100%;border:1px solid var(--g200);background:var(--white);font-family:'Courier New',monospace;font-size:12px;padding:6px 9px;outline:none;color:var(--black);transition:border-color .2s}
-.frow input:focus{border-color:var(--black)}
-.f2col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.range-wrap{display:flex;align-items:center;gap:8px}
-.range-wrap input[type=range]{flex:1;-webkit-appearance:none;height:2px;background:var(--g200);outline:none;cursor:pointer}
-.range-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--black);border-radius:50%;cursor:pointer}
-.range-val{font-family:'Courier New',monospace;font-size:12px;font-weight:600;min-width:36px;text-align:right}
-.btn-apply-wrap{padding:14px 20px;border-top:1px solid var(--g200);flex-shrink:0}
-.btn-apply{width:100%;background:var(--black);color:var(--white);border:none;font-size:12px;letter-spacing:4px;text-transform:uppercase;padding:12px;cursor:pointer;font-family:inherit;font-weight:600}
-.btn-apply:hover{background:var(--g600)}
-
-/* LABEL */
-.label-body{flex:1;overflow-y:auto}
-.label-preview{padding:18px 20px;background:var(--g100);border-bottom:1px solid var(--g200)}
-.label-preview-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:12px;font-weight:600}
-.sticker{background:var(--white);border:2px solid var(--black);width:100%;max-width:270px;margin:0 auto;box-shadow:3px 3px 0 var(--black)}
-.stk-top{background:var(--black);padding:7px 10px;display:flex;justify-content:space-between;align-items:center}
-.stk-co{font-size:15px;font-weight:700;letter-spacing:3px;color:var(--white)}
-.stk-cert{font-size:7px;letter-spacing:1px;color:var(--g400)}
-.stk-body{padding:8px 10px}
-.stk-sku{font-size:17px;font-weight:700;letter-spacing:1px;line-height:1.1;margin-bottom:7px;border-bottom:1px solid var(--g200);padding-bottom:7px}
-.stk-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:7px}
-.stk-field label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block}
-.stk-field span{font-size:11px;font-weight:600;font-family:'Courier New',monospace}
-.stk-btm{border-top:1px solid var(--g200);padding:7px 10px;display:flex;justify-content:space-between;align-items:center}
-.heat{font-size:8px;letter-spacing:.5px;color:var(--g600);font-family:'Courier New',monospace}
-.qr{width:38px;height:38px;background:var(--g100);border:1px solid var(--g200);display:flex;align-items:center;justify-content:center;font-size:6px;color:var(--g400);text-align:center;line-height:1.3}
-
-.label-fields{padding:16px 20px}
-.lf-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:12px;font-weight:600;display:flex;align-items:center;gap:8px}
-.lf-title::after{content:'';flex:1;height:1px;background:var(--g200)}
-.btn-print{width:100%;border:1px solid var(--black);background:var(--white);font-size:12px;letter-spacing:4px;text-transform:uppercase;padding:11px;cursor:pointer;transition:all .2s;margin-top:10px;font-family:inherit}
-.btn-print:hover{background:var(--black);color:var(--white)}
+/* config banner */
+.config-banner{background:#fef9c3;border-bottom:2px solid #d4a017;padding:10px 32px;font-size:11px;display:flex;align-items:center;gap:10px;}
+.config-banner a{color:var(--black);font-weight:700;}
 </style>
 </head>
 <body>
 
+<!-- CONFIG BANNER — แก้ไขก่อนใช้งาน -->
+<div class="config-banner" id="configBanner">
+  ⚙️ ยังไม่ได้ตั้งค่า — กรุณาแก้ไข <code>SHEET_ID</code> และ <code>SCRIPT_URL</code> ในโค้ด JS ด้านล่าง
+  <a href="#" onclick="document.getElementById('configBanner').style.display='none'">ปิด</a>
+</div>
+
+<!-- HEADER -->
 <div class="hdr">
-  <button class="hdr-back">← กลับค้นหา</button>
-  <div class="hdr-title">Steel Product Viewer</div>
-  <div class="hdr-tabs">
-    <button class="tab-btn active" onclick="switchTab('viewer',this)">Spec Sheet</button>
-    <button class="tab-btn" onclick="switchTab('admin',this)">Admin</button>
-    <button class="tab-btn" onclick="switchTab('label',this)">Label</button>
+  <div class="brand">Steel<br>Catalog</div>
+  <div class="search-bar">
+    <div class="sf">
+      <label>ประเภทผิว</label>
+      <select id="f-surface">
+        <option value="">— ทั้งหมด —</option>
+        <option>ดำ (Hot Rolled)</option>
+        <option>ชุบสังกะสี (Galvanized)</option>
+        <option>Cold Rolled</option>
+        <option>สเตนเลส</option>
+      </select>
+    </div>
+    <div class="sf">
+      <label>เกรด</label>
+      <select id="f-grade">
+        <option value="">— ทั้งหมด —</option>
+        <option>SPHC</option><option>SS400</option><option>SPCC</option><option>SGHC</option>
+      </select>
+    </div>
+    <div class="sf">
+      <label>หนา (mm)</label>
+      <select id="f-thick">
+        <option value="">— ทั้งหมด —</option>
+        <option>1.2</option><option>1.5</option><option>2.0</option><option>2.3</option><option>3.2</option>
+      </select>
+    </div>
+    <div class="sf">
+      <label>กว้าง (mm)</label>
+      <select id="f-width">
+        <option value="">— ทั้งหมด —</option>
+        <option>900</option><option>1200</option><option>1500</option>
+      </select>
+    </div>
+    <div class="sf">
+      <label>ยาว (mm)</label>
+      <select id="f-length">
+        <option value="">— ทั้งหมด —</option>
+        <option>2000</option><option>2400</option><option>3000</option>
+      </select>
+    </div>
+    <button class="btn-search" onclick="applyFilter()">ค้นหา</button>
+  </div>
+  <div class="hdr-stat" id="hdr-stat">—</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main-content" style="flex:1;display:flex;flex-direction:column;">
+  <div class="state-msg" id="loading-state">
+    <div class="spinner"></div>
+    <p>Loading catalog...</p>
   </div>
 </div>
 
-<div class="main">
-
-  <div class="canvas-wrap">
-    <canvas id="c3d"></canvas>
-    <div class="view-btns">
-      <button class="vb on" onclick="setView('iso',this)">3D</button>
-      <button class="vb" onclick="setView('front',this)">FRONT</button>
-      <button class="vb" onclick="setView('top',this)">TOP</button>
-      <button class="vb" onclick="setView('side',this)">SIDE</button>
+<!-- ORDER MODAL -->
+<div class="overlay" id="orderOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <h2>เปิด Sales Order</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
     </div>
-    <div class="hint" id="hint">&#8635; ลาก / drag to rotate</div>
-    <div class="auto-row" onclick="toggleAuto()">
-      <span class="auto-lbl">Auto</span>
-      <div class="sw on" id="sw"><div class="sw-k"></div></div>
+    <div class="modal-body" id="modal-body">
+      <!-- filled by JS -->
     </div>
-  </div>
-
-  <div class="sidebar">
-
-    <!-- VIEWER -->
-    <div class="panel active" id="panel-viewer">
-      <div class="sec">
-        <div class="sec-lbl">Product</div>
-        <div class="prod-sku" id="v-sku">SPHC-HR 2.0-1200-2400</div>
-        <div class="prod-sub">ดำ (Hot Rolled) · SPHC · JIS G3131</div>
-        <div class="stock-pill"><div class="dot"></div><span id="v-stock">มีสต็อก · 45 แผ่น · 2,160 kg</span></div>
-      </div>
-      <div class="sec">
-        <div class="sec-lbl">Dimensions</div>
-        <div class="dim-grid">
-          <div class="df"><label>ความหนา</label><div class="dv" id="v-t">2.0<span class="du">mm</span></div></div>
-          <div class="df"><label>ความกว้าง</label><div class="dv" id="v-w">1,200<span class="du">mm</span></div></div>
-          <div class="df"><label>ความยาว</label><div class="dv" id="v-l">2,400<span class="du">mm</span></div></div>
-          <div class="df"><label>น้ำหนัก/แผ่น</label><div class="dv" id="v-kg">48<span class="du">kg</span></div></div>
-        </div>
-      </div>
-      <div class="sec">
-        <div class="sec-lbl">Mechanical Properties</div>
-        <div class="mrow"><span class="mk">Tensile Strength</span><span class="mv" id="v-ts">≥ 400 N/mm²</span></div>
-        <div class="mrow"><span class="mk">Yield Strength</span><span class="mv" id="v-ys">≥ 245 N/mm²</span></div>
-        <div class="mrow"><span class="mk">Elongation</span><span class="mv" id="v-el">≥ 27%</span></div>
-        <div class="mrow"><span class="mk">Hardness</span><span class="mv" id="v-hd">HRB 60–75</span></div>
-        <div class="mrow"><span class="mk">Tolerance หนา</span><span class="mv" id="v-tol">±0.10 mm</span></div>
-        <div class="mrow"><span class="mk">Bundle</span><span class="mv" id="v-bnd">5 แผ่น/มัด</span></div>
-      </div>
-      <div class="sec" style="flex:1">
-        <div class="price-big">฿ 850<span>/ แผ่น</span></div>
-        <div class="price-sub">17.7 ฿/kg</div>
-        <div class="calc-box">
-          <div class="calc-r">
-            <label>จำนวน (แผ่น)</label>
-            <input type="number" class="calc-inp" id="qty" value="10" min="1" oninput="calcUpdate()">
-          </div>
-          <div class="calc-res">
-            <div class="cr"><label>น้ำหนัก</label><div class="crv" id="r-w">480 kg</div></div>
-            <div class="cr"><label>ราคารวม</label><div class="crv" id="r-p">฿ 8,500</div></div>
-            <div class="cr"><label>มัด</label><div class="crv" id="r-b">2 มัด</div></div>
-          </div>
-        </div>
-      </div>
-      <button class="btn-cta">เลือกรายการนี้</button>
-    </div>
-
-    <!-- ADMIN -->
-    <div class="panel" id="panel-admin">
-      <div class="admin-hdr">
-        <h3>Admin — Edit Product</h3>
-        <p>แก้ไขค่าแล้ว 3D อัปเดตทันที</p>
-      </div>
-      <div class="admin-body">
-        <div class="admin-sec">
-          <div class="admin-sec-title">3D Model <span class="tag3d">LIVE</span></div>
-          <div class="frow">
-            <label>จำนวนแผ่นใน Bundle <span class="tag3d">3D</span></label>
-            <div class="range-wrap">
-              <input type="range" id="a-sheets" min="1" max="10" value="5" oninput="liveUpdate()">
-              <span class="range-val" id="a-sheets-v">5</span>
-            </div>
-          </div>
-          <div class="frow">
-            <label>ความหนา (mm) <span class="tag3d">3D</span></label>
-            <div class="range-wrap">
-              <input type="range" id="a-thick" min="5" max="32" value="20" oninput="liveUpdate()">
-              <span class="range-val" id="a-thick-v">2.0</span>
-            </div>
-          </div>
-          <div class="f2col">
-            <div class="frow">
-              <label>ความกว้าง (mm) <span class="tag3d">3D</span></label>
-              <input type="number" id="a-w" value="1200" oninput="liveUpdate()">
-            </div>
-            <div class="frow">
-              <label>ความยาว (mm) <span class="tag3d">3D</span></label>
-              <input type="number" id="a-l" value="2400" oninput="liveUpdate()">
-            </div>
-          </div>
-        </div>
-        <div class="admin-sec">
-          <div class="admin-sec-title">Mechanical Properties</div>
-          <div class="f2col">
-            <div class="frow"><label>Tensile Strength</label><input type="text" id="a-ts" value="≥ 400 N/mm²" oninput="syncMech()"></div>
-            <div class="frow"><label>Yield Strength</label><input type="text" id="a-ys" value="≥ 245 N/mm²" oninput="syncMech()"></div>
-            <div class="frow"><label>Elongation</label><input type="text" id="a-el" value="≥ 27%" oninput="syncMech()"></div>
-            <div class="frow"><label>Hardness</label><input type="text" id="a-hd" value="HRB 60–75" oninput="syncMech()"></div>
-          </div>
-          <div class="frow"><label>Tolerance ความหนา</label><input type="text" id="a-tol" value="±0.10 mm" oninput="syncMech()"></div>
-        </div>
-        <div class="admin-sec">
-          <div class="admin-sec-title">ราคา &amp; สต็อก</div>
-          <div class="f2col">
-            <div class="frow"><label>ราคา (฿/แผ่น)</label><input type="number" id="a-price" value="850"></div>
-            <div class="frow"><label>สต็อก (แผ่น)</label><input type="number" id="a-stock" value="45"></div>
-          </div>
-        </div>
-      </div>
-      <div class="btn-apply-wrap">
-        <button class="btn-apply" onclick="applyAdmin()">Apply Changes</button>
-      </div>
-    </div>
-
-    <!-- LABEL -->
-    <div class="panel" id="panel-label">
-      <div class="label-body">
-        <div class="label-preview">
-          <div class="label-preview-title">Label Preview</div>
-          <div class="sticker" id="sticker">
-            <div class="stk-top">
-              <span class="stk-co" id="s-co">STEEL CO.</span>
-              <span class="stk-cert" id="s-cert">JIS G3131 CERTIFIED</span>
-            </div>
-            <div class="stk-body">
-              <div class="stk-sku" id="s-sku">SPHC-HR-2.0-1200-2400</div>
-              <div class="stk-grid">
-                <div class="stk-field"><label>Grade</label><span>SPHC</span></div>
-                <div class="stk-field"><label>Surface</label><span>Hot Rolled</span></div>
-                <div class="stk-field"><label>Thickness</label><span id="s-thick">2.0 mm</span></div>
-                <div class="stk-field"><label>Size (W×L)</label><span id="s-size">1200×2400</span></div>
-                <div class="stk-field"><label>Bundle</label><span id="s-bundle">5 แผ่น/มัด</span></div>
-                <div class="stk-field"><label>Weight</label><span id="s-wt">240 kg</span></div>
-              </div>
-            </div>
-            <div class="stk-btm">
-              <div>
-                <div class="heat">Heat No: <strong id="s-heat">HT-2024-0892</strong></div>
-                <div class="heat" style="margin-top:3px">Prod: <strong id="s-date">2024-11-15</strong></div>
-              </div>
-              <div class="qr">QR<br>CODE</div>
-            </div>
-          </div>
-        </div>
-        <div class="label-fields">
-          <div class="lf-title">Edit Label</div>
-          <div class="frow"><label>Company Name</label><input type="text" id="l-co" value="STEEL CO." oninput="syncLabel()"></div>
-          <div class="frow"><label>Heat Number</label><input type="text" id="l-heat" value="HT-2024-0892" oninput="syncLabel()"></div>
-          <div class="frow"><label>Production Date</label><input type="date" id="l-date" value="2024-11-15" oninput="syncLabel()"></div>
-          <div class="frow"><label>Standard / Cert</label><input type="text" id="l-cert" value="JIS G3131 CERTIFIED" oninput="syncLabel()"></div>
-          <button class="btn-print" onclick="printLabel()">Print Label</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
 
 <script>
-// ── STATE ──
-var S = { sheets:5, thick:2.0, w:1200, l:2400 };
+// ══════════════════════════════════════════════════════
+//  CONFIG — แก้ไข 2 บรรทัดนี้ก่อนใช้งาน
+// ══════════════════════════════════════════════════════
+var SHEET_ID   = '1cRyakqWceoB18RrQKUoTCkNbqpPJaku1uCcmZB74ScE';
+// หา Sheet ID จาก URL: docs.google.com/spreadsheets/d/[THIS_PART]/edit
 
-// ── TABS ──
-function switchTab(name, btn) {
-  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
-  btn.classList.add('active');
-  document.getElementById('panel-'+name).classList.add('active');
-}
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0L4mq9Be83pe0VMpFkE9zRl5revOPgUyNxocUK7VzpyrdkOyVBSLWBcEPe7x8RgKafg/exec';
+// ได้จากการ Deploy > New Deployment > Web App ใน Apps Script
+// ══════════════════════════════════════════════════════
 
-// ── CALC ──
-function calcUpdate() {
-  var q = parseInt(document.getElementById('qty').value) || 0;
-  document.getElementById('r-w').textContent = (q*48).toLocaleString()+' kg';
-  document.getElementById('r-p').textContent = '฿ '+(q*850).toLocaleString();
-  document.getElementById('r-b').textContent = Math.ceil(q/S.sheets)+' มัด';
-}
+var API_BASE = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+               '/gviz/tq?tqx=out:json&sheet=SKU_CATALOG';
 
-function syncMech() {
-  document.getElementById('v-ts').textContent = document.getElementById('a-ts').value;
-  document.getElementById('v-ys').textContent = document.getElementById('a-ys').value;
-  document.getElementById('v-el').textContent = document.getElementById('a-el').value;
-  document.getElementById('v-hd').textContent = document.getElementById('a-hd').value;
-  document.getElementById('v-tol').textContent = document.getElementById('a-tol').value;
-}
+var allSkus      = [];
+var filteredSkus = [];
+var currentSku   = null;
 
-function liveUpdate() {
-  var sh = parseInt(document.getElementById('a-sheets').value);
-  var thickRaw = parseInt(document.getElementById('a-thick').value);
-  var thick = (thickRaw/10).toFixed(1);
-  var w = parseInt(document.getElementById('a-w').value) || 1200;
-  var l = parseInt(document.getElementById('a-l').value) || 2400;
-  document.getElementById('a-sheets-v').textContent = sh;
-  document.getElementById('a-thick-v').textContent = thick;
-  S.sheets = sh; S.thick = parseFloat(thick); S.w = w; S.l = l;
-  syncLabel();
-  renderFrame();
-}
-
-function applyAdmin() {
-  document.getElementById('v-t').innerHTML = S.thick+'<span class="du">mm</span>';
-  document.getElementById('v-w').innerHTML = S.w.toLocaleString()+'<span class="du">mm</span>';
-  document.getElementById('v-l').innerHTML = S.l.toLocaleString()+'<span class="du">mm</span>';
-  document.getElementById('v-bnd').textContent = S.sheets+' แผ่น/มัด';
-  document.getElementById('v-sku').textContent = 'SPHC-HR '+S.thick+'-'+S.w+'-'+S.l;
-  syncMech(); syncLabel();
-  alert('อัปเดตแล้วครับ');
-}
-
-function syncLabel() {
-  var sku = 'SPHC-HR-'+S.thick+'-'+S.w+'-'+S.l;
-  document.getElementById('s-sku').textContent = sku;
-  document.getElementById('s-thick').textContent = S.thick+' mm';
-  document.getElementById('s-size').textContent = S.w+'x'+S.l;
-  document.getElementById('s-bundle').textContent = S.sheets+' แผ่น/มัด';
-  document.getElementById('s-wt').textContent = (S.sheets*48)+' kg';
-  document.getElementById('s-co').textContent = document.getElementById('l-co').value;
-  document.getElementById('s-cert').textContent = document.getElementById('l-cert').value;
-  document.getElementById('s-heat').textContent = document.getElementById('l-heat').value;
-  document.getElementById('s-date').textContent = document.getElementById('l-date').value;
-}
-
-function printLabel() {
-  var el = document.getElementById('sticker');
-  var win = window.open('','_blank','width=500,height=450');
-  win.document.write('<html><head><title>Label</title><style>');
-  win.document.write('body{margin:20px;font-family:Helvetica,Arial,sans-serif;background:#fff}');
-  win.document.write('.sticker{border:2px solid #0a0a0a;width:320px;box-shadow:3px 3px 0 #0a0a0a}');
-  win.document.write('.stk-top{background:#0a0a0a;padding:8px 12px;display:flex;justify-content:space-between;align-items:center}');
-  win.document.write('.stk-co{font-size:16px;font-weight:700;letter-spacing:3px;color:#f8f8f6}');
-  win.document.write('.stk-cert{font-size:8px;letter-spacing:1px;color:#a0a09c}');
-  win.document.write('.stk-body{padding:10px 12px}');
-  win.document.write('.stk-sku{font-size:18px;font-weight:700;letter-spacing:1px;border-bottom:1px solid #e0e0dc;padding-bottom:7px;margin-bottom:8px}');
-  win.document.write('.stk-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}');
-  win.document.write('.stk-field label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:#a0a09c;display:block}');
-  win.document.write('.stk-field span{font-size:12px;font-weight:600;font-family:"Courier New",monospace}');
-  win.document.write('.stk-btm{border-top:1px solid #e0e0dc;padding:8px 12px;display:flex;justify-content:space-between;align-items:center}');
-  win.document.write('.heat{font-size:9px;letter-spacing:.5px;color:#606060;font-family:"Courier New",monospace}');
-  win.document.write('.qr{width:45px;height:45px;background:#f0f0ee;border:1px solid #e0e0dc;display:flex;align-items:center;justify-content:center;font-size:7px;text-align:center;color:#a0a09c;line-height:1.4}');
-  win.document.write('@media print{body{margin:0}}</style></head><body>');
-  win.document.write(el.outerHTML);
-  win.document.write('</body></html>');
-  win.document.close();
-  setTimeout(function(){ win.print(); }, 600);
-}
-
-// ── PURE CANVAS 2D 3D RENDERER ──
-var canvas = document.getElementById('c3d');
-var ctx = canvas.getContext('2d');
-var wrap = canvas.parentElement;
-var W, H;
-
-function resize() {
-  W = wrap.clientWidth;
-  H = wrap.clientHeight;
-  canvas.width = W;
-  canvas.height = H;
-  renderFrame();
-}
-
-// Camera state
-var camRotY = 0.5;
-var camRotX = 0.25;
-var targetRotY = 0.5;
-var targetRotX = 0.25;
-var autoRot = true;
-var dragging = false;
-var lastX = 0, lastY = 0;
-var animT = 0;
-var currentView = 'iso';
-
-var viewPresets = {
-  iso:   { rotY: 0.5,  rotX: 0.25 },
-  front: { rotY: 0,    rotX: 0 },
-  top:   { rotY: 0,    rotX: Math.PI/2 - 0.01 },
-  side:  { rotY: Math.PI/2, rotX: 0.1 }
-};
-
-// 3D math
-function mat3RotY(a) {
-  return [Math.cos(a),0,Math.sin(a), 0,1,0, -Math.sin(a),0,Math.cos(a)];
-}
-function mat3RotX(a) {
-  return [1,0,0, 0,Math.cos(a),-Math.sin(a), 0,Math.sin(a),Math.cos(a)];
-}
-function mulMat(m, v) {
-  return [
-    m[0]*v[0]+m[1]*v[1]+m[2]*v[2],
-    m[3]*v[0]+m[4]*v[1]+m[5]*v[2],
-    m[6]*v[0]+m[7]*v[1]+m[8]*v[2]
-  ];
-}
-function project(p) {
-  var fov = 520;
-  var z = p[2] + 12;
-  if (z < 0.1) z = 0.1;
-  return [
-    W/2 + p[0] * fov / z,
-    H/2 - p[1] * fov / z
-  ];
-}
-function transformPt(p, mY, mX) {
-  return mulMat(mX, mulMat(mY, p));
-}
-
-// Draw filled polygon with z-depth check
-function drawFace(pts2d, fillColor, strokeColor, alpha) {
-  if (pts2d.length < 2) return;
-  ctx.save();
-  ctx.globalAlpha = alpha !== undefined ? alpha : 1;
-  ctx.beginPath();
-  ctx.moveTo(pts2d[0][0], pts2d[0][1]);
-  for (var i = 1; i < pts2d.length; i++) ctx.lineTo(pts2d[i][0], pts2d[i][1]);
-  ctx.closePath();
-  ctx.fillStyle = fillColor;
-  ctx.fill();
-  if (strokeColor) {
-    ctx.strokeStyle = strokeColor;
-    ctx.lineWidth = 0.5;
-    ctx.stroke();
-  }
-  ctx.restore();
-}
-
-function renderFrame() {
-  if (!ctx) return;
-  ctx.clearRect(0, 0, W, H);
-
-  var mY = mat3RotY(camRotY);
-  var mX = mat3RotX(camRotX);
-
-  function tp(p) { return transformPt(p, mY, mX); }
-  function pr(p) { return project(tp(p)); }
-
-  var N = S.sheets;
-  var thick = Math.max(0.04, S.thick * 0.045);
-  var bw = Math.max(0.8, S.w / 320);
-  var bl = Math.max(0.8, S.l / 500);
-  var gap = 0.012;
-  var totalH = N * (thick + gap) - gap;
-  var yOff = -totalH / 2;
-  var float = Math.sin(animT * 0.6) * 0.04;
-
-  // Lighting helper — normal dot with light dir
-  function shade(nx, ny, nz) {
-    var lx = 0.5, ly = 0.8, lz = 0.4;
-    var len = Math.sqrt(lx*lx+ly*ly+lz*lz);
-    lx/=len; ly/=len; lz/=len;
-    var d = nx*lx + ny*ly + nz*lz;
-    return Math.max(0.25, d);
-  }
-
-  // Draw a box face
-  function boxFace(corners, nx, ny, nz, baseColor, isEdge) {
-    // backface cull
-    var tp0 = tp(corners[0]);
-    var tp1 = tp(corners[1]);
-    var tp2 = tp(corners[2]);
-    var ex1 = tp1[0]-tp0[0], ey1 = tp1[1]-tp0[1];
-    var ex2 = tp2[0]-tp0[0], ey2 = tp2[1]-tp0[1];
-    var cross = ex1*ey2 - ey1*ex2;
-    if (cross > 0) return; // backface
-
-    var s = shade(nx, ny, nz);
-    var r = parseInt(baseColor.slice(1,3),16);
-    var g = parseInt(baseColor.slice(3,5),16);
-    var b = parseInt(baseColor.slice(5,7),16);
-    var rc = Math.round(r*s), gc = Math.round(g*s), bc = Math.round(b*s);
-    var col = 'rgb('+rc+','+gc+','+bc+')';
-    var pts2d = corners.map(function(c){ return pr(c); });
-    drawFace(pts2d, col, '#1a1a18', 1);
-  }
-
-  function drawBox(cx, cy, cz, bW, bH, bL, topCol, sideCol, edgeCol) {
-    var hW=bW/2, hH=bH/2, hL=bL/2;
-    var y = cy + float;
-
-    // 8 corners
-    var c = [
-      [cx-hW, y-hH, cz-hL], [cx+hW, y-hH, cz-hL],
-      [cx+hW, y+hH, cz-hL], [cx-hW, y+hH, cz-hL],
-      [cx-hW, y-hH, cz+hL], [cx+hW, y-hH, cz+hL],
-      [cx+hW, y+hH, cz+hL], [cx-hW, y+hH, cz+hL]
-    ];
-
-    // Sort faces by avg z after transform
-    var faces = [
-      { corners:[c[3],c[2],c[1],c[0]], nx:0, ny:0, nz:-1, col:sideCol },  // front
-      { corners:[c[4],c[5],c[6],c[7]], nx:0, ny:0, nz:1,  col:sideCol },  // back
-      { corners:[c[7],c[6],c[2],c[3]], nx:0, ny:1, nz:0,  col:topCol },   // top
-      { corners:[c[0],c[1],c[5],c[4]], nx:0, ny:-1,nz:0,  col:topCol },   // bottom
-      { corners:[c[0],c[4],c[7],c[3]], nx:-1,ny:0, nz:0,  col:edgeCol },  // left
-      { corners:[c[1],c[2],c[6],c[5]], nx:1, ny:0, nz:0,  col:edgeCol },  // right
-    ];
-
-    // Sort back-to-front
-    faces.forEach(function(f) {
-      var sum = 0;
-      f.corners.forEach(function(c){ sum += tp(c)[2]; });
-      f.depth = sum / f.corners.length;
+// ── LOAD DATA ──────────────────────────────────────────
+function loadCatalog() {
+  fetch(API_BASE)
+    .then(function(r){ return r.text(); })
+    .then(function(text){
+      // Google returns /*O_o*/\ngoogle.visualization.Query.setResponse({...});
+      var json = JSON.parse(text.replace(/^.*?(\{)/,'$1').replace(/\);?\s*$/,''));
+      var cols = json.table.cols.map(function(c){ return c.label || c.id; });
+      allSkus = json.table.rows
+        .filter(function(row){ return row && row.c && row.c[0] && row.c[0].v; })
+        .map(function(row){
+          var obj = {};
+          cols.forEach(function(col, i){
+            obj[col] = (row.c[i] && row.c[i].v !== null) ? row.c[i].v : '';
+          });
+          return obj;
+        });
+      filteredSkus = allSkus.slice();
+      renderGrid();
+    })
+    .catch(function(err){
+      showError('ไม่สามารถโหลดข้อมูลได้ — กรุณาตรวจสอบ SHEET_ID และ Sheet permission');
     });
-    faces.sort(function(a,b){ return b.depth - a.depth; });
-    faces.forEach(function(f){ boxFace(f.corners, f.nx, f.ny, f.nz, f.col); });
+}
+
+// ── FILTER ────────────────────────────────────────────
+function applyFilter() {
+  var surface = document.getElementById('f-surface').value;
+  var grade   = document.getElementById('f-grade').value;
+  var thick   = document.getElementById('f-thick').value;
+  var width   = document.getElementById('f-width').value;
+  var length  = document.getElementById('f-length').value;
+
+  filteredSkus = allSkus.filter(function(s){
+    if (surface && s.SURFACE !== surface) return false;
+    if (grade   && s.GRADE   !== grade)   return false;
+    if (thick   && String(parseFloat(s.THICKNESS_MM)) !== thick) return false;
+    if (width   && String(parseInt(s.WIDTH_MM))  !== width)  return false;
+    if (length  && String(parseInt(s.LENGTH_MM)) !== length) return false;
+    if (s.STATUS && s.STATUS !== 'ACTIVE') return false;
+    return true;
+  });
+  renderGrid();
+}
+
+// ── RENDER GRID ────────────────────────────────────────
+function renderGrid() {
+  var el = document.getElementById('main-content');
+  document.getElementById('hdr-stat').textContent = filteredSkus.length + ' รายการ';
+
+  if (filteredSkus.length === 0) {
+    el.innerHTML = '<div class="state-msg"><div class="icon">🔍</div><p>ไม่พบ Spec ที่ตรงกัน</p></div>';
+    return;
   }
 
-  // Draw shadow ellipse on ground
-  var shadowW = bw * 0.9;
-  var shadowCY = yOff + float - 0.02;
-  var shadowPts = [];
-  for (var a = 0; a <= Math.PI*2; a += 0.25) {
-    shadowPts.push(pr([Math.cos(a)*shadowW*0.5, shadowCY, Math.sin(a)*bl*0.45]));
-  }
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(shadowPts[0][0], shadowPts[0][1]);
-  for (var i = 1; i < shadowPts.length; i++) ctx.lineTo(shadowPts[i][0], shadowPts[i][1]);
-  ctx.closePath();
-  ctx.fillStyle = 'rgba(0,0,0,0.07)';
-  ctx.fill();
-  ctx.restore();
+  var html = '<div class="grid-wrap"><div class="grid-hdr"><h2>ผลการค้นหา</h2><span>' +
+             filteredSkus.length + ' รายการ</span></div><div class="grid">';
 
-  // Draw sheets
-  for (var i = 0; i < N; i++) {
-    var cy = yOff + i*(thick+gap) + thick/2;
-    drawBox(0, cy, 0, bw, thick, bl, '#464642', '#3c3c38', '#525250');
-  }
+  filteredSkus.forEach(function(s, i){
+    var stock = parseInt(s.STOCK_QTY) || 0;
+    var stockClass = stock === 0 ? 'red' : stock < 10 ? 'yellow' : 'green';
+    var dotColor   = stock === 0 ? 'var(--red)' : stock < 10 ? 'var(--yellow)' : 'var(--green)';
+    var stockKg    = parseFloat(s.STOCK_KG) || 0;
 
-  // Draw straps
-  var strapPositions = [-bl*0.28, bl*0.28];
-  strapPositions.forEach(function(sz) {
-    var strapH = totalH + 0.05;
-    var sw2 = 0.05, st = 0.03;
-    // top strap
-    drawBox(0, yOff+totalH+sw2/2+float, sz, bw+st*2, sw2, st, '#9a9a94', '#888882', '#808078');
-    // bottom strap
-    drawBox(0, yOff-sw2/2+float, sz, bw+st*2, sw2, st, '#9a9a94', '#888882', '#808078');
-    // left side
-    drawBox(-bw/2-st/2, yOff+totalH/2+float, sz, st, strapH+sw2*2, st, '#888882', '#808078', '#808078');
-    // right side
-    drawBox(bw/2+st/2, yOff+totalH/2+float, sz, st, strapH+sw2*2, st, '#888882', '#808078', '#808078');
+    html += '<div class="card" onclick="openOrder(' + i + ')">' +
+      '<div class="card-img">' +
+        '<canvas id="cv-'+i+'" width="280" height="140"></canvas>' +
+        '<div class="status-dot" style="background:' + dotColor + '"></div>' +
+      '</div>' +
+      '<div class="card-body">' +
+        '<div class="c-sku">' + (s.SKU||'') + '</div>' +
+        '<div class="c-sub">' + (s.SURFACE||'') + ' · ' + (s.GRADE||'') + ' · ' + (s.STANDARD||'') + '</div>' +
+        '<div class="c-specs">' +
+          '<div class="cs"><label>หนา</label><span>' + s.THICKNESS_MM + ' mm</span></div>' +
+          '<div class="cs"><label>กว้าง</label><span>' + parseInt(s.WIDTH_MM) + '</span></div>' +
+          '<div class="cs"><label>ยาว</label><span>' + parseInt(s.LENGTH_MM) + '</span></div>' +
+        '</div>' +
+        '<div class="c-divider"></div>' +
+        '<div class="c-bottom">' +
+          '<div class="c-stock">' +
+            '<div class="stock-num ' + stockClass + '">' + stock + '</div>' +
+            '<div class="stock-unit">แผ่น · ' + stockKg.toLocaleString() + ' kg</div>' +
+          '</div>' +
+          '<div class="c-price">' +
+            '<div class="price-main">฿ ' + (parseInt(s.PRICE_PER_SHEET_THB)||0).toLocaleString() + ' / แผ่น</div>' +
+            '<div class="price-sub">' + (parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1) + ' ฿/kg</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-foot">' +
+        '<button class="btn-detail" onclick="event.stopPropagation()">ดู Spec →</button>' +
+        '<button class="btn-select" ' + (stock===0?'disabled':'') + ' onclick="event.stopPropagation();openOrder(' + i + ')">เลือกรายการนี้</button>' +
+      '</div>' +
+    '</div>';
   });
 
-  // Label tag
-  drawBox(bw/2+0.04, yOff+totalH/2+float, -bl*0.28, 0.01, 0.32, 0.5, '#f0f0ee', '#e8e8e4', '#e0e0dc');
+  html += '</div></div>';
+  el.innerHTML = html;
 
-  // Axis indicator (corner)
-  var axO = pr([0,0,0]);
-  // small text info
-  ctx.save();
-  ctx.font = '600 10px "Courier New",monospace';
-  ctx.fillStyle = '#a0a09c';
-  ctx.letterSpacing = '1px';
-  ctx.fillText('W: '+S.w+'  L: '+S.l+'  T: '+S.thick+'mm  N: '+S.sheets, 14, H-14);
-  ctx.restore();
+  // Draw mini 3D bundles
+  setTimeout(function(){
+    filteredSkus.forEach(function(s, i){
+      drawMiniBundle('cv-'+i, s);
+    });
+  }, 50);
 }
 
-// ── MOUSE / TOUCH ──
-canvas.addEventListener('mousedown', function(e) {
-  dragging = true; lastX = e.clientX; lastY = e.clientY;
-  autoRot = false;
-  document.getElementById('sw').classList.remove('on');
-  document.getElementById('hint').style.opacity = '0';
+// ── MINI 3D BUNDLE (Canvas 2D) ─────────────────────────
+function drawMiniBundle(id, s) {
+  var cv  = document.getElementById(id);
+  if (!cv) return;
+  var ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height;
+  ctx.clearRect(0,0,W,H);
+
+  var N     = Math.min(parseInt(s.BUNDLE_SIZE)||5, 8);
+  var thick = Math.max(0.03, parseFloat(s.THICKNESS_MM) * 0.042);
+  var bw    = 3.6, bl = 4.2, gap = 0.01;
+  var totalH= N*(thick+gap)-gap;
+
+  var rotY = 0.45, rotX = 0.22;
+  var cosY=Math.cos(rotY),sinY=Math.sin(rotY);
+  var cosX=Math.cos(rotX),sinX=Math.sin(rotX);
+
+  function tp(x,y,z){
+    var x2=x*cosY+z*sinY, z2=-x*sinY+z*cosY;
+    var y2=y*cosX-z2*sinX, z3=y*sinX+z2*cosX;
+    return [x2,y2,z3];
+  }
+  function pr(p){
+    var fov=180, z=p[2]+9;
+    return [W/2+p[0]*fov/z, H/2-p[1]*fov/z];
+  }
+  function shade(nx,ny,nz){
+    var d=nx*0.45+ny*0.75+nz*0.35;
+    return Math.max(0.28,Math.min(1,d));
+  }
+  function drawFace(pts,r,g,b,nx,ny,nz){
+    var s2=shade(nx,ny,nz);
+    var pts2=pts.map(function(p){return pr(tp(p[0],p[1]+Math.sin(0)*0.03,p[2]));});
+    // backface cull
+    var e1=[pts2[1][0]-pts2[0][0],pts2[1][1]-pts2[0][1]];
+    var e2=[pts2[2][0]-pts2[0][0],pts2[2][1]-pts2[0][1]];
+    if(e1[0]*e2[1]-e1[1]*e2[0]>0) return;
+    ctx.beginPath();
+    ctx.moveTo(pts2[0][0],pts2[0][1]);
+    for(var i=1;i<pts2.length;i++) ctx.lineTo(pts2[i][0],pts2[i][1]);
+    ctx.closePath();
+    ctx.fillStyle='rgb('+Math.round(r*s2)+','+Math.round(g*s2)+','+Math.round(b*s2)+')';
+    ctx.fill();
+    ctx.strokeStyle='rgba(20,20,18,0.3)';ctx.lineWidth=0.5;ctx.stroke();
+  }
+  function drawBox(cx,cy,cz,bW,bH,bL,tr,tg,tb,sr,sg,sb){
+    var hw=bW/2,hh=bH/2,hl=bL/2;
+    var c=[[cx-hw,cy-hh,cz-hl],[cx+hw,cy-hh,cz-hl],[cx+hw,cy+hh,cz-hl],[cx-hw,cy+hh,cz-hl],
+           [cx-hw,cy-hh,cz+hl],[cx+hw,cy-hh,cz+hl],[cx+hw,cy+hh,cz+hl],[cx-hw,cy+hh,cz+hl]];
+    var faces=[
+      {f:[c[3],c[2],c[1],c[0]],n:[0,0,-1],r:sr,g:sg,b:sb},
+      {f:[c[4],c[5],c[6],c[7]],n:[0,0,1], r:sr,g:sg,b:sb},
+      {f:[c[7],c[6],c[2],c[3]],n:[0,1,0], r:tr,g:tg,b:tb},
+      {f:[c[0],c[1],c[5],c[4]],n:[0,-1,0],r:tr,g:tg,b:tb},
+      {f:[c[0],c[4],c[7],c[3]],n:[-1,0,0],r:sr,g:sg,b:sb},
+      {f:[c[1],c[2],c[6],c[5]],n:[1,0,0], r:sr,g:sg,b:sb},
+    ];
+    faces.forEach(function(fc){drawFace(fc.f,fc.r,fc.g,fc.b,fc.n[0],fc.n[1],fc.n[2]);});
+  }
+
+  var yOff=-totalH/2;
+  // Steel color based on surface
+  var surf = (s.SURFACE||'').toLowerCase();
+  var sr,sg,sb,tr,tg,tb;
+  if(surf.indexOf('galvanized')>-1||surf.indexOf('สังกะสี')>-1){
+    tr=160;tg=168;tb=160; sr=140;sg=148;sb=140;
+  } else if(surf.indexOf('cold')>-1||surf.indexOf('spcc')>-1){
+    tr=120;tg=120;tb=125; sr=100;sg=100;sb=105;
+  } else {
+    tr=72;tg=72;tb=70; sr=58;sg=58;sb=56;
+  }
+
+  for(var i=0;i<N;i++){
+    var cy=yOff+i*(thick+gap)+thick/2;
+    drawBox(0,cy,0,bw,thick,bl,tr,tg,tb,sr,sg,sb);
+  }
+  // Straps
+  [-bl*.28,bl*.28].forEach(function(sz){
+    var sH=totalH+.04;
+    drawBox(0,yOff+totalH+.03,sz,bw+.06,.05,.04,148,148,140,130,130,122);
+    drawBox(0,yOff-.03,sz,bw+.06,.05,.04,148,148,140,130,130,122);
+    drawBox(-bw/2-.03,yOff+totalH/2,sz,.04,sH+.1,.04,130,130,122,120,120,112);
+    drawBox(bw/2+.03,yOff+totalH/2,sz,.04,sH+.1,.04,130,130,122,120,120,112);
+  });
+  // Label
+  drawBox(bw/2+.04,yOff+totalH/2,-bl*.28,.01,.28,.42,235,235,230,225,225,220);
+  // Info text
+  ctx.fillStyle='#a0a09c';
+  ctx.font='600 9px Courier New';
+  ctx.fillText(s.SURFACE ? s.SURFACE.split('(')[0].trim() : '', 8, H-8);
+}
+
+// ── OPEN ORDER MODAL ───────────────────────────────────
+function openOrder(idx) {
+  currentSku = filteredSkus[idx];
+  var s = currentSku;
+  var pricePerSheet = parseInt(s.PRICE_PER_SHEET_THB) || 0;
+  var weightPerSheet = parseFloat(s.WEIGHT_PER_SHEET_KG) || 0;
+
+  document.getElementById('modal-body').innerHTML =
+    '<div class="form-section">' +
+      '<div class="form-section-title">Spec ที่เลือก</div>' +
+      '<div class="spec-preview">' +
+        '<div class="sp-item"><label>SKU</label><span style="font-size:10px">' + s.SKU + '</span></div>' +
+        '<div class="sp-item"><label>หนา</label><span>' + s.THICKNESS_MM + ' mm</span></div>' +
+        '<div class="sp-item"><label>กว้าง×ยาว</label><span>' + parseInt(s.WIDTH_MM) + '×' + parseInt(s.LENGTH_MM) + '</span></div>' +
+        '<div class="sp-item"><label>สต็อก</label><span style="color:var(--green)">' + (parseInt(s.STOCK_QTY)||0) + ' แผ่น</span></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="form-section">' +
+      '<div class="form-section-title">ข้อมูลลูกค้า</div>' +
+      '<div class="form-grid">' +
+        '<div class="frow"><label>ชื่อลูกค้า *</label><input type="text" id="o-name" placeholder="บริษัท / ชื่อ"></div>' +
+        '<div class="frow"><label>เบอร์โทร</label><input type="text" id="o-phone" placeholder="0xx-xxx-xxxx"></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="form-section">' +
+      '<div class="form-section-title">รายการสั่งซื้อ</div>' +
+      '<div class="form-grid">' +
+        '<div class="frow"><label>จำนวน (แผ่น) *</label><input type="number" id="o-qty" value="10" min="1" oninput="updateOrderSummary()"></div>' +
+        '<div class="frow"><label>ราคา/แผ่น (฿)</label><input type="number" id="o-price" value="' + pricePerSheet + '" oninput="updateOrderSummary()"></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="order-summary">' +
+      '<div class="os-item"><label>น้ำหนักรวม</label><span id="os-weight">—</span></div>' +
+      '<div class="os-item"><label>ราคารวม</label><span id="os-price">—</span></div>' +
+      '<div class="os-item"><label>จำนวนมัด</label><span id="os-bundle">—</span></div>' +
+    '</div>' +
+
+    '<div class="form-section">' +
+      '<div class="form-section-title">หมายเหตุ</div>' +
+      '<div class="form-grid full">' +
+        '<div class="frow"><label>หมายเหตุเพิ่มเติม</label><textarea id="o-note" rows="2" style="resize:none" placeholder="เช่น วันที่ต้องการรับของ, เงื่อนไขพิเศษ..."></textarea></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<button class="btn-submit" onclick="submitOrder()">ยืนยัน Order →</button>';
+
+  updateOrderSummary();
+  document.getElementById('orderOverlay').classList.add('open');
+}
+
+function updateOrderSummary() {
+  if (!currentSku) return;
+  var qty = parseInt(document.getElementById('o-qty').value) || 0;
+  var price = parseInt(document.getElementById('o-price').value) || 0;
+  var w = parseFloat(currentSku.WEIGHT_PER_SHEET_KG) || 0;
+  var bundle = parseInt(currentSku.BUNDLE_SIZE) || 5;
+  document.getElementById('os-weight').textContent = (qty*w).toLocaleString()+' kg';
+  document.getElementById('os-price').textContent  = '฿ '+(qty*price).toLocaleString();
+  document.getElementById('os-bundle').textContent = Math.ceil(qty/bundle)+' มัด';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('orderOverlay')) return;
+  document.getElementById('orderOverlay').classList.remove('open');
+}
+
+// ── SUBMIT ORDER ───────────────────────────────────────
+function submitOrder() {
+  var name  = (document.getElementById('o-name').value||'').trim();
+  var qty   = parseInt(document.getElementById('o-qty').value)||0;
+  var price = parseInt(document.getElementById('o-price').value)||0;
+
+  if (!name) { alert('กรุณากรอกชื่อลูกค้าครับ'); return; }
+  if (!qty)  { alert('กรุณากรอกจำนวนแผ่นครับ'); return; }
+
+  var btn = document.querySelector('.btn-submit');
+  btn.disabled = true; btn.textContent = 'กำลังส่ง...';
+
+  var s = currentSku;
+  var payload = {
+    action:        'createOrder',
+    customerName:  name,
+    customerPhone: (document.getElementById('o-phone').value||'').trim(),
+    sku:           s.SKU,
+    grade:         s.GRADE,
+    surface:       s.SURFACE,
+    thickness:     s.THICKNESS_MM,
+    width:         s.WIDTH_MM,
+    length:        s.LENGTH_MM,
+    qty:           qty,
+    weightTotal:   qty * (parseFloat(s.WEIGHT_PER_SHEET_KG)||0),
+    pricePerSheet: price,
+    priceTotal:    qty * price,
+    note:          (document.getElementById('o-note').value||'').trim()
+  };
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(res){
+    if (res.success) {
+      document.getElementById('modal-body').innerHTML =
+        '<div class="success-box">' +
+          '<div class="check">✓</div>' +
+          '<h3>Order สำเร็จ!</h3>' +
+          '<div class="order-no">' + res.orderNo + '</div>' +
+          '<button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button>' +
+        '</div>';
+    } else {
+      alert('เกิดข้อผิดพลาด: ' + (res.error||'unknown'));
+      btn.disabled = false; btn.textContent = 'ยืนยัน Order →';
+    }
+  })
+  .catch(function(){
+    alert('ไม่สามารถส่งข้อมูลได้ — กรุณาตรวจสอบ SCRIPT_URL');
+    btn.disabled = false; btn.textContent = 'ยืนยัน Order →';
+  });
+}
+
+// ── ERROR ──────────────────────────────────────────────
+function showError(msg) {
+  document.getElementById('main-content').innerHTML =
+    '<div class="state-msg"><div class="icon">⚠️</div><p>' + msg + '</p></div>';
+}
+
+// ── INIT ───────────────────────────────────────────────
+window.addEventListener('load', function(){
+  if (SHEET_ID === 'YOUR_GOOGLE_SHEET_ID_HERE') {
+    showError('กรุณาแก้ไข SHEET_ID ในโค้ด JS ก่อนใช้งาน');
+    return;
+  }
+  loadCatalog();
 });
-window.addEventListener('mousemove', function(e) {
-  if (!dragging) return;
-  targetRotY += (e.clientX - lastX) * 0.008;
-  targetRotX += (e.clientY - lastY) * 0.005;
-  targetRotX = Math.max(-1.2, Math.min(1.2, targetRotX));
-  lastX = e.clientX; lastY = e.clientY;
-});
-window.addEventListener('mouseup', function() { dragging = false; });
-canvas.addEventListener('touchstart', function(e) {
-  dragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-  autoRot = false;
-}, {passive:true});
-canvas.addEventListener('touchmove', function(e) {
-  if (!dragging) return;
-  targetRotY += (e.touches[0].clientX - lastX) * 0.008;
-  targetRotX += (e.touches[0].clientY - lastY) * 0.005;
-  targetRotX = Math.max(-1.2, Math.min(1.2, targetRotX));
-  lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-}, {passive:true});
-canvas.addEventListener('touchend', function() { dragging = false; });
-
-function toggleAuto() {
-  autoRot = !autoRot;
-  document.getElementById('sw').classList.toggle('on', autoRot);
-}
-
-function setView(name, btn) {
-  document.querySelectorAll('.vb').forEach(function(b){ b.classList.remove('on'); });
-  btn.classList.add('on');
-  var v = viewPresets[name];
-  targetRotY = v.rotY; targetRotX = v.rotX;
-  autoRot = false;
-  document.getElementById('sw').classList.remove('on');
-}
-
-setTimeout(function(){ document.getElementById('hint').style.opacity = '0'; }, 3000);
-
-// ── ANIMATION LOOP ──
-function loop() {
-  requestAnimationFrame(loop);
-  animT += 0.016;
-  if (autoRot && !dragging) targetRotY += 0.004;
-  camRotY += (targetRotY - camRotY) * 0.08;
-  camRotX += (targetRotX - camRotX) * 0.08;
-  renderFrame();
-}
-
-new ResizeObserver(resize).observe(wrap);
-resize();
-loop();
 </script>
 </body>
 </html>
