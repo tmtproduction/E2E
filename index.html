@@ -151,6 +151,35 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .btn-done:hover{background:var(--black);color:var(--white);}
 .config-banner{background:#fef9c3;border-bottom:2px solid #d4a017;padding:10px 32px;font-size:11px;display:flex;align-items:center;gap:10px;}
 .config-banner a{color:var(--black);font-weight:700;}
+
+/* GEOMETRIC TOLERANCES */
+.geo-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.geo-card{background:var(--g100);padding:14px 16px;}
+.geo-card-ttl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.geo-card-std{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;}
+.geo-diagram{display:flex;justify-content:center;align-items:center;margin-bottom:10px;background:var(--white);border:1px solid var(--g200);padding:8px;}
+.geo-vals{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;}
+.geo-val label{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:1px;}
+.geo-val span{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
+.geo-desc{font-size:9px;color:var(--g600);line-height:1.5;border-top:1px solid var(--g200);padding-top:7px;margin-top:4px;}
+
+/* ADMIN EDIT MODE */
+.admin-toggle{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.admin-toggle label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);}
+.admin-sw{width:32px;height:16px;background:var(--g200);border-radius:8px;position:relative;border:none;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.admin-sw.on{background:var(--black);}
+.admin-sw-k{position:absolute;top:2px;left:2px;width:12px;height:12px;background:var(--white);border-radius:50%;transition:transform .2s;}
+.admin-sw.on .admin-sw-k{transform:translateX(16px);}
+.editable{display:none;border:none;border-bottom:1px solid var(--g400);background:transparent;font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--black);outline:none;width:100%;padding:1px 0;}
+.editable:focus{border-bottom-color:var(--black);}
+body.admin-mode .geo-val span{display:none;}
+body.admin-mode .geo-val .editable{display:block;}
+body.admin-mode .mv-editable .mv{display:none;}
+body.admin-mode .mv-editable .editable-mv{display:block;}
+.editable-mv{display:none;border:none;border-bottom:1px solid var(--g400);background:transparent;font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--black);outline:none;padding:1px 2px;}
+.editable-mv:focus{border-bottom-color:var(--black);}
+.admin-badge{display:none;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:2px 8px;background:var(--black);color:var(--white);margin-left:8px;}
+body.admin-mode .admin-badge{display:inline-block;}
 </style>
 </head>
 <body>
@@ -255,6 +284,165 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
         </div>
       </div>
       <div class="sm-sec">
+        <div class="sm-sec-ttl">
+          Geometric Tolerances
+          <span class="admin-badge">Admin Mode</span>
+          <div class="admin-toggle" style="margin-left:auto">
+            <label>Admin Edit</label>
+            <button class="admin-sw" id="admin-sw" onclick="toggleAdminMode()"><div class="admin-sw-k"></div></button>
+          </div>
+        </div>
+        <div class="geo-grid">
+
+          <!-- FLATNESS -->
+          <div class="geo-card">
+            <div class="geo-card-ttl">Flatness</div>
+            <div class="geo-card-std">JIS G3193 · ความราบของแผ่น</div>
+            <div class="geo-diagram">
+              <svg width="200" height="66" viewBox="0 0 200 66" fill="none">
+                <line x1="8" y1="42" x2="192" y2="42" stroke="#c8c8c4" stroke-width="1" stroke-dasharray="4,3"/>
+                <path d="M8 32 C34 22,58 38,84 30 C110 22,136 38,162 30 C178 24,190 32,192 30" stroke="#0a0a0a" stroke-width="2" fill="none"/>
+                <path d="M8 38 C34 28,58 44,84 36 C110 28,136 44,162 36 C178 30,190 38,192 36" stroke="#0a0a0a" stroke-width="1.2" fill="none"/>
+                <path d="M8 32 C34 22,58 38,84 30 C110 22,136 38,162 30 C178 24,190 32,192 30 L192 36 C178 30,162 36,136 44 C110 28,84 36,58 44 C34 28,8 38,8 38Z" fill="#e0e0dc" opacity="0.55"/>
+                <line x1="100" y1="42" x2="100" y2="25" stroke="#0a0a0a" stroke-width="1"/>
+                <polygon points="100,21 97,28 103,28" fill="#0a0a0a"/>
+                <text x="104" y="32" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700">f</text>
+                <text x="8" y="60" font-size="7" fill="#a0a09c" font-family="Courier New">Reference plane</text>
+                <text x="130" y="60" font-size="7" fill="#a0a09c" font-family="Courier New">deviation</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val">
+                <label>Max / m</label>
+                <span id="geo-flat1">≤ 12 mm/m</span>
+                <input class="editable" id="edit-flat1" value="≤ 12 mm/m" oninput="syncGeo('flat1')">
+              </div>
+              <div class="geo-val">
+                <label>Overall</label>
+                <span id="geo-flat2">≤ 20 mm</span>
+                <input class="editable" id="edit-flat2" value="≤ 20 mm" oninput="syncGeo('flat2')">
+              </div>
+            </div>
+            <div class="geo-desc">ค่าเบี่ยงเบนสูงสุดของผิวแผ่นจาก reference plane วัดต่อ 1 เมตร ยิ่งน้อยยิ่งราบเรียบ</div>
+          </div>
+
+          <!-- CAMBER -->
+          <div class="geo-card">
+            <div class="geo-card-ttl">Camber</div>
+            <div class="geo-card-std">JIS G3193 · ความโค้งตามแนวยาว</div>
+            <div class="geo-diagram">
+              <svg width="200" height="66" viewBox="0 0 200 66" fill="none">
+                <line x1="8" y1="48" x2="192" y2="48" stroke="#c8c8c4" stroke-width="1" stroke-dasharray="4,3"/>
+                <path d="M8 44 Q100 22 192 44" stroke="#0a0a0a" stroke-width="2" fill="none"/>
+                <path d="M8 50 Q100 28 192 50" stroke="#0a0a0a" stroke-width="1.2" fill="none"/>
+                <path d="M8 44 Q100 22 192 44 L192 50 Q100 28 8 50Z" fill="#e0e0dc" opacity="0.55"/>
+                <line x1="100" y1="48" x2="100" y2="26" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="3,2"/>
+                <line x1="96" y1="26" x2="104" y2="26" stroke="#0a0a0a" stroke-width="1"/>
+                <line x1="96" y1="48" x2="104" y2="48" stroke="#0a0a0a" stroke-width="1"/>
+                <text x="106" y="38" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700">C</text>
+                <line x1="8" y1="58" x2="192" y2="58" stroke="#a0a09c" stroke-width="0.8"/>
+                <polygon points="8,58 14,55 14,61" fill="#a0a09c"/>
+                <polygon points="192,58 186,55 186,61" fill="#a0a09c"/>
+                <text x="75" y="66" font-size="7" fill="#a0a09c" font-family="Courier New">Length L</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val">
+                <label>Max / m</label>
+                <span id="geo-camb1">≤ 2 mm/m</span>
+                <input class="editable" id="edit-camb1" value="≤ 2 mm/m" oninput="syncGeo('camb1')">
+              </div>
+              <div class="geo-val">
+                <label>Per 2m</label>
+                <span id="geo-camb2">≤ 4 mm</span>
+                <input class="editable" id="edit-camb2" value="≤ 4 mm" oninput="syncGeo('camb2')">
+              </div>
+            </div>
+            <div class="geo-desc">ความโค้งด้านข้างตามแนวยาว C = ระยะห่างสูงสุดจากเส้นตรงอ้างอิง</div>
+          </div>
+
+          <!-- SQUARENESS -->
+          <div class="geo-card">
+            <div class="geo-card-ttl">Squareness</div>
+            <div class="geo-card-std">JIS G3193 · ความตั้งฉากของมุม</div>
+            <div class="geo-diagram">
+              <svg width="200" height="72" viewBox="0 0 200 72" fill="none">
+                <rect x="14" y="10" width="155" height="48" stroke="#c8c8c4" stroke-width="1" stroke-dasharray="4,3" fill="none"/>
+                <polygon points="14,10 169,10 181,58 14,58" stroke="#0a0a0a" stroke-width="1.8" fill="#e0e0dc" fill-opacity="0.45"/>
+                <line x1="169" y1="10" x2="181" y2="10" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="2,2"/>
+                <line x1="169" y1="8" x2="169" y2="12" stroke="#0a0a0a" stroke-width="1"/>
+                <line x1="181" y1="8" x2="181" y2="12" stroke="#0a0a0a" stroke-width="1"/>
+                <text x="170" y="8" font-size="8" fill="#0a0a0a" font-family="Courier New" font-weight="700">d</text>
+                <rect x="14" y="46" width="7" height="7" stroke="#a0a09c" stroke-width="1" fill="none"/>
+                <text x="16" y="70" font-size="7" fill="#a0a09c" font-family="Courier New">Ideal (90°)</text>
+                <text x="120" y="70" font-size="7" fill="#a0a09c" font-family="Courier New">Actual</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val">
+                <label>Max / m</label>
+                <span id="geo-sq1">≤ 2 mm/m</span>
+                <input class="editable" id="edit-sq1" value="≤ 2 mm/m" oninput="syncGeo('sq1')">
+              </div>
+              <div class="geo-val">
+                <label>Absolute</label>
+                <span id="geo-sq2">≤ 3 mm</span>
+                <input class="editable" id="edit-sq2" value="≤ 3 mm" oninput="syncGeo('sq2')">
+              </div>
+            </div>
+            <div class="geo-desc">ค่า d คือระยะเบี่ยงเบนของมุมจริงจาก 90° วัดเป็น mm ต่อความยาว 1 เมตร</div>
+          </div>
+
+          <!-- BENDING -->
+          <div class="geo-card">
+            <div class="geo-card-ttl">Min Bend Radius</div>
+            <div class="geo-card-std">JIS Z2248 · รัศมีดัดงอขั้นต่ำ</div>
+            <div class="geo-diagram">
+              <svg width="200" height="72" viewBox="0 0 200 72" fill="none">
+                <rect x="8" y="26" width="52" height="8" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
+                <path d="M60 34 A26 26 0 0 1 86 8" stroke="#0a0a0a" stroke-width="1.8" fill="none"/>
+                <path d="M60 26 A18 18 0 0 1 78 8" stroke="#0a0a0a" stroke-width="1.2" fill="none"/>
+                <path d="M60 34 A26 26 0 0 1 86 8 L78 8 A18 18 0 0 0 60 26Z" fill="#e0e0dc" opacity="0.55"/>
+                <rect x="78" y="8" width="8" height="52" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
+                <line x1="60" y1="8" x2="60" y2="34" stroke="#a0a09c" stroke-width="1" stroke-dasharray="3,2"/>
+                <line x1="60" y1="8" x2="86" y2="8" stroke="#a0a09c" stroke-width="1" stroke-dasharray="3,2"/>
+                <path d="M60 20 A12 12 0 0 1 72 8" stroke="#606060" stroke-width="1" fill="none"/>
+                <text x="66" y="22" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700">R</text>
+                <text x="108" y="32" font-size="8" fill="#606060" font-family="Courier New">R_trans =</text>
+                <text x="108" y="44" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700" id="svg-br1-txt">1.0t</text>
+                <text x="108" y="56" font-size="8" fill="#606060" font-family="Courier New">R_long =</text>
+                <text x="108" y="68" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700" id="svg-br2-txt">1.5t</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val">
+                <label>R ตัดขวาง</label>
+                <span id="geo-br1">1.0t</span>
+                <input class="editable" id="edit-br1" value="1.0t" oninput="syncGeo('br1')">
+              </div>
+              <div class="geo-val">
+                <label>R ตามยาว</label>
+                <span id="geo-br2">1.5t</span>
+                <input class="editable" id="edit-br2" value="1.5t" oninput="syncGeo('br2')">
+              </div>
+              <div class="geo-val">
+                <label>Bend Angle</label>
+                <span id="geo-ba">90°</span>
+                <input class="editable" id="edit-ba" value="90°" oninput="syncGeo('ba')">
+              </div>
+              <div class="geo-val">
+                <label>Spring-back</label>
+                <span id="geo-sb">~ 2–3°</span>
+                <input class="editable" id="edit-sb" value="~ 2–3°" oninput="syncGeo('sb')">
+              </div>
+            </div>
+            <div class="geo-desc">รัศมีดัดขั้นต่ำโดยไม่แตกร้าว t = ความหนาแผ่น ทิศตัดขวางดัดได้ง่ายกว่าตามยาว</div>
+          </div>
+
+        </div><!-- /geo-grid -->
+      </div><!-- /geo sec -->
+
+      <div class="sm-sec">
         <div class="sm-sec-ttl">Calculator</div>
         <div class="calc-row">
           <label>จำนวน</label>
@@ -294,6 +482,22 @@ var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0L4mq9Be83pe0VMpFkE9
 // ════════════
 
 var allSkus=[], filteredSkus=[], currentSku=null;
+
+// ── ADMIN MODE ────────────────────────────────────
+function toggleAdminMode(){
+  var on = document.body.classList.toggle('admin-mode');
+  document.getElementById('admin-sw').classList.toggle('on', on);
+}
+
+function syncGeo(key){
+  var val = document.getElementById('edit-'+key).value;
+  // update display span
+  var span = document.getElementById('geo-'+key);
+  if(span) span.textContent = val;
+  // update SVG text for bending diagram
+  if(key==='br1'){ var el=document.getElementById('svg-br1-txt'); if(el) el.textContent=val; }
+  if(key==='br2'){ var el=document.getElementById('svg-br2-txt'); if(el) el.textContent=val; }
+}
 
 // ── LOAD ──────────────────────────────────────────
 function loadCatalog(){
