@@ -8,38 +8,29 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--black:#0a0a0a;--white:#f8f8f6;--g100:#f0f0ee;--g200:#e0e0dc;--g400:#a0a09c;--g600:#606060;--green:#1a7a4a;--yellow:#d4a017;--red:#c0392b;}
 body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color:var(--black);min-height:100vh;display:flex;flex-direction:column;}
-
-/* ── HEADER ── */
 .hdr{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;padding:14px 32px;border-bottom:1px solid var(--g200);background:var(--white);position:sticky;top:0;z-index:50;}
-.brand{font-size:16px;font-weight:800;letter-spacing:3px;text-transform:uppercase;}
+.brand{font-size:15px;font-weight:800;letter-spacing:3px;text-transform:uppercase;line-height:1.2;}
 .search-bar{display:flex;gap:8px;flex-wrap:wrap;}
 .sf{display:flex;flex-direction:column;gap:2px;}
 .sf label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);}
-.sf select,.sf input{border:1px solid var(--g200);background:var(--white);font-size:12px;padding:5px 8px;outline:none;color:var(--black);font-family:inherit;min-width:100px;}
-.sf select:focus,.sf input:focus{border-color:var(--black);}
-.btn-search{background:var(--black);color:var(--white);border:none;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:8px 20px;cursor:pointer;align-self:flex-end;font-family:inherit;font-weight:600;transition:background .2s;}
+.sf select{border:1px solid var(--g200);background:var(--white);font-size:12px;padding:5px 8px;outline:none;color:var(--black);font-family:inherit;min-width:100px;}
+.sf select:focus{border-color:var(--black);}
+.btn-search{background:var(--black);color:var(--white);border:none;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:8px 20px;cursor:pointer;align-self:flex-end;font-family:inherit;font-weight:600;}
 .btn-search:hover{background:var(--g600);}
 .hdr-stat{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);white-space:nowrap;}
-
-/* ── LOADING / EMPTY ── */
 .state-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;padding:60px 20px;}
 .state-msg .icon{font-size:32px;opacity:.3;}
 .state-msg p{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);}
 .spinner{width:24px;height:24px;border:2px solid var(--g200);border-top-color:var(--black);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* ── GRID ── */
 .grid-wrap{padding:24px 32px;flex:1;}
 .grid-hdr{display:flex;align-items:baseline;gap:10px;margin-bottom:16px;border-bottom:1px solid var(--g200);padding-bottom:10px;}
 .grid-hdr h2{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;}
 .grid-hdr span{font-size:10px;color:var(--g400);font-family:'Courier New',monospace;}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--g200);}
-
-/* ── CARD ── */
-.card{background:var(--white);cursor:pointer;transition:background .15s;}
+.card{background:var(--white);transition:background .15s;}
 .card:hover{background:#fafaf8;}
-.card-img{height:140px;background:var(--g100);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.card-img canvas{display:block;}
+.card-img{height:140px;background:var(--g100);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer;}
 .status-dot{position:absolute;top:12px;right:12px;width:9px;height:9px;border-radius:50%;}
 .card-body{padding:16px 18px;border-top:1px solid var(--g200);}
 .c-sku{font-size:12px;font-weight:700;font-family:'Courier New',monospace;letter-spacing:.5px;margin-bottom:3px;}
@@ -58,560 +49,531 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .c-price .price-main{font-family:'Courier New',monospace;font-size:13px;font-weight:700;}
 .c-price .price-sub{font-size:9px;color:var(--g400);margin-top:1px;}
 .card-foot{padding:10px 18px;border-top:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center;}
-.btn-detail{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;}
-.btn-detail:hover{color:var(--black);}
-.btn-select{background:var(--black);color:var(--white);border:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;cursor:pointer;font-family:inherit;font-weight:600;transition:background .2s;}
-.btn-select:hover{background:var(--g600);}
-.btn-select:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
+.btn-spec{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;}
+.btn-spec:hover{color:var(--black);}
+.btn-order{background:var(--black);color:var(--white);border:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;cursor:pointer;font-family:inherit;font-weight:600;}
+.btn-order:hover{background:var(--g600);}
+.btn-order:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
 
-/* ── MODAL OVERLAY ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(10,10,10,.55);z-index:100;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;backdrop-filter:blur(3px);}
+/* OVERLAYS */
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,10,10,.62);z-index:100;align-items:flex-start;justify-content:center;padding:20px 16px;overflow-y:auto;backdrop-filter:blur(4px);}
 .overlay.open{display:flex;}
+@keyframes slideUp{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
 
-/* ── ORDER MODAL ── */
-.modal{background:var(--white);width:100%;max-width:600px;animation:slideUp .22s ease;}
-@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-hdr{background:var(--black);padding:20px 28px;display:flex;justify-content:space-between;align-items:center;}
-.modal-hdr h2{font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--white);}
+/* SPEC MODAL */
+.spec-modal{background:var(--white);width:100%;max-width:860px;animation:slideUp .24s ease;}
+.sm-head{display:grid;grid-template-columns:1fr 300px;min-height:220px;}
+.sm-head-left{background:var(--black);padding:30px 34px;display:flex;flex-direction:column;justify-content:space-between;}
+.sm-cat{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:8px;}
+.sm-sku{font-size:32px;font-weight:800;letter-spacing:1px;color:var(--white);line-height:1.05;margin-bottom:6px;}
+.sm-grade{font-family:'Courier New',monospace;font-size:11px;color:var(--g400);letter-spacing:1px;}
+.sm-badge{display:inline-flex;align-items:center;gap:7px;margin-top:18px;padding:5px 11px;background:rgba(255,255,255,.08);}
+.sm-badge .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sm-badge span{font-family:'Courier New',monospace;font-size:11px;color:var(--white);}
+.sm-head-right{background:var(--g100);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.sm-head-right::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--g200) 1px,transparent 1px),linear-gradient(90deg,var(--g200) 1px,transparent 1px);background-size:28px 28px;opacity:.55;}
+#sm-canvas{position:relative;z-index:1;cursor:grab;display:block;}
+#sm-canvas:active{cursor:grabbing;}
+.sm-vbtns{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:3px;z-index:2;}
+.sm-vb{background:var(--white);border:1px solid var(--g200);font-size:8px;letter-spacing:1px;padding:4px 8px;cursor:pointer;color:var(--g600);min-width:42px;text-align:center;font-family:inherit;transition:all .15s;}
+.sm-vb:hover,.sm-vb.on{background:var(--black);color:var(--white);border-color:var(--black);}
+.sm-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);z-index:2;pointer-events:none;transition:opacity .6s;white-space:nowrap;}
+.sm-auto{position:absolute;bottom:8px;right:10px;z-index:2;display:flex;align-items:center;gap:5px;cursor:pointer;}
+.sm-auto-lbl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);}
+.sw{width:28px;height:14px;background:var(--g200);border-radius:7px;position:relative;border:none;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.sw.on{background:var(--black);}
+.sw-k{position:absolute;top:2px;left:2px;width:10px;height:10px;background:var(--white);border-radius:50%;transition:transform .2s;}
+.sw.on .sw-k{transform:translateX(14px);}
+.sm-body{padding:0 34px 26px;}
+.sm-sec{padding:18px 0;border-bottom:1px solid var(--g200);}
+.sm-sec:last-child{border-bottom:none;}
+.sm-sec-ttl{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sm-sec-ttl::after{content:'';flex:1;height:1px;background:var(--g200);}
+.sm-g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.sm-g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sfield label{display:block;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:3px;}
+.sfield .sv{font-family:'Courier New',monospace;font-size:14px;font-weight:700;}
+.sfield .svl{font-size:24px;font-weight:800;line-height:1;}
+.sfield .svsub{font-size:9px;color:var(--g400);margin-top:1px;}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--g100);}
+.mrow:last-child{border-bottom:none;}
+.mk{font-size:9px;letter-spacing:.5px;color:var(--g400);text-transform:uppercase;}
+.mv{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
+.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pack-item{display:flex;gap:9px;align-items:flex-start;}
+.pack-icon{width:26px;height:26px;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.pack-text label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
+.pack-text span{font-family:'Courier New',monospace;font-size:11px;font-weight:600;}
+.calc-row{display:flex;align-items:center;gap:10px;}
+.calc-row label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);}
+.calc-inp{width:68px;border:1px solid var(--g200);font-family:'Courier New',monospace;font-size:14px;font-weight:700;padding:5px 9px;outline:none;text-align:center;transition:border-color .2s;}
+.calc-inp:focus{border-color:var(--black);}
+.calc-res{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;padding:12px 14px;background:var(--g100);}
+.cr-item label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
+.cr-item .crv{font-size:20px;font-weight:800;letter-spacing:.5px;}
+.sm-footer{border-top:1px solid var(--g200);padding:14px 34px;display:flex;justify-content:space-between;align-items:center;background:var(--white);position:sticky;bottom:0;}
+.btn-back{border:1px solid var(--g200);background:none;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:9px 16px;cursor:pointer;font-family:inherit;color:var(--g600);transition:all .2s;}
+.btn-back:hover{border-color:var(--black);color:var(--black);}
+.btn-order-now{background:var(--black);color:var(--white);border:none;font-size:11px;letter-spacing:4px;text-transform:uppercase;padding:12px 26px;cursor:pointer;font-family:inherit;font-weight:700;}
+.btn-order-now:hover{background:var(--g600);}
+.btn-order-now:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
+
+/* ORDER MODAL */
+.order-modal{background:var(--white);width:100%;max-width:560px;animation:slideUp .22s ease;}
+.modal-hdr{background:var(--black);padding:18px 26px;display:flex;justify-content:space-between;align-items:center;}
+.modal-hdr h2{font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--white);}
 .modal-close{background:none;border:none;color:var(--g400);font-size:20px;cursor:pointer;line-height:1;}
 .modal-close:hover{color:var(--white);}
-.modal-body{padding:24px 28px;}
-
-/* order form */
-.form-section{margin-bottom:20px;}
-.form-section-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.form-section-title::after{content:'';flex:1;height:1px;background:var(--g200);}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.form-grid.full{grid-template-columns:1fr;}
+.modal-body{padding:20px 24px;}
+.fsec{margin-bottom:16px;}
+.fsec-ttl{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.fsec-ttl::after{content:'';flex:1;height:1px;background:var(--g200);}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.f1{display:grid;grid-template-columns:1fr;}
 .frow{display:flex;flex-direction:column;gap:3px;}
 .frow label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);}
-.frow input,.frow textarea,.frow select{border:1px solid var(--g200);background:var(--white);font-size:13px;padding:7px 10px;outline:none;color:var(--black);font-family:inherit;transition:border-color .2s;width:100%;}
+.frow input,.frow textarea{border:1px solid var(--g200);background:var(--white);font-size:13px;padding:7px 10px;outline:none;color:var(--black);font-family:inherit;width:100%;}
 .frow input:focus,.frow textarea:focus{border-color:var(--black);}
-.frow input[readonly]{background:var(--g100);color:var(--g600);}
-
-/* spec preview in modal */
-.spec-preview{background:var(--g100);padding:14px 16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.spec-pill{background:var(--g100);padding:11px 13px;margin-bottom:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .sp-item label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
-.sp-item span{font-family:'Courier New',monospace;font-size:13px;font-weight:700;}
-
-/* summary box */
-.order-summary{background:var(--black);color:var(--white);padding:14px 16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.os-item label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:3px;}
-.os-item span{font-size:18px;font-weight:700;letter-spacing:.5px;}
-
-.btn-submit{width:100%;background:var(--black);color:var(--white);border:none;font-size:13px;letter-spacing:4px;text-transform:uppercase;padding:15px;cursor:pointer;font-family:inherit;font-weight:700;transition:background .2s;}
+.sp-item span{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
+.order-sum{background:var(--black);color:var(--white);padding:11px 13px;margin-bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.os-item label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
+.os-item span{font-size:16px;font-weight:700;}
+.btn-submit{width:100%;background:var(--black);color:var(--white);border:none;font-size:12px;letter-spacing:4px;text-transform:uppercase;padding:14px;cursor:pointer;font-family:inherit;font-weight:700;}
 .btn-submit:hover{background:var(--g600);}
 .btn-submit:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
-
-/* success state */
-.success-box{text-align:center;padding:32px 20px;}
-.success-box .check{font-size:48px;margin-bottom:12px;}
-.success-box h3{font-size:18px;font-weight:700;letter-spacing:2px;margin-bottom:6px;}
-.success-box .order-no{font-family:'Courier New',monospace;font-size:13px;color:var(--g600);margin-bottom:20px;}
-.btn-done{border:1px solid var(--black);background:none;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:10px 24px;cursor:pointer;font-family:inherit;transition:all .2s;}
+.success-box{text-align:center;padding:28px 20px;}
+.success-box .check{font-size:44px;margin-bottom:10px;}
+.success-box h3{font-size:16px;font-weight:700;letter-spacing:2px;margin-bottom:6px;}
+.success-box .order-no{font-family:'Courier New',monospace;font-size:12px;color:var(--g600);margin-bottom:18px;}
+.btn-done{border:1px solid var(--black);background:none;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:9px 22px;cursor:pointer;font-family:inherit;}
 .btn-done:hover{background:var(--black);color:var(--white);}
-
-/* config banner */
 .config-banner{background:#fef9c3;border-bottom:2px solid #d4a017;padding:10px 32px;font-size:11px;display:flex;align-items:center;gap:10px;}
 .config-banner a{color:var(--black);font-weight:700;}
 </style>
 </head>
 <body>
 
-<!-- CONFIG BANNER — แก้ไขก่อนใช้งาน -->
 <div class="config-banner" id="configBanner">
-  ⚙️ ยังไม่ได้ตั้งค่า — กรุณาแก้ไข <code>SHEET_ID</code> และ <code>SCRIPT_URL</code> ในโค้ด JS ด้านล่าง
+  ⚙️ ยังไม่ได้ตั้งค่า — แก้ไข <code>SHEET_ID</code> และ <code>SCRIPT_URL</code> ในโค้ด JS
   <a href="#" onclick="document.getElementById('configBanner').style.display='none'">ปิด</a>
 </div>
 
-<!-- HEADER -->
 <div class="hdr">
   <div class="brand">Steel<br>Catalog</div>
   <div class="search-bar">
-    <div class="sf">
-      <label>ประเภทผิว</label>
-      <select id="f-surface">
-        <option value="">— ทั้งหมด —</option>
-        <option>ดำ (Hot Rolled)</option>
-        <option>ชุบสังกะสี (Galvanized)</option>
-        <option>Cold Rolled</option>
-        <option>สเตนเลส</option>
-      </select>
+    <div class="sf"><label>ประเภทผิว</label>
+      <select id="f-surface"><option value="">— ทั้งหมด —</option><option>ดำ (Hot Rolled)</option><option>ชุบสังกะสี (Galvanized)</option><option>Cold Rolled</option><option>สเตนเลส</option></select>
     </div>
-    <div class="sf">
-      <label>เกรด</label>
-      <select id="f-grade">
-        <option value="">— ทั้งหมด —</option>
-        <option>SPHC</option><option>SS400</option><option>SPCC</option><option>SGHC</option>
-      </select>
+    <div class="sf"><label>เกรด</label>
+      <select id="f-grade"><option value="">— ทั้งหมด —</option><option>SPHC</option><option>SS400</option><option>SPCC</option><option>SGHC</option></select>
     </div>
-    <div class="sf">
-      <label>หนา (mm)</label>
-      <select id="f-thick">
-        <option value="">— ทั้งหมด —</option>
-        <option>1.2</option><option>1.5</option><option>2.0</option><option>2.3</option><option>3.2</option>
-      </select>
+    <div class="sf"><label>หนา (mm)</label>
+      <select id="f-thick"><option value="">— ทั้งหมด —</option><option>1.2</option><option>1.5</option><option>2.0</option><option>2.3</option><option>3.2</option></select>
     </div>
-    <div class="sf">
-      <label>กว้าง (mm)</label>
-      <select id="f-width">
-        <option value="">— ทั้งหมด —</option>
-        <option>900</option><option>1200</option><option>1500</option>
-      </select>
+    <div class="sf"><label>กว้าง (mm)</label>
+      <select id="f-width"><option value="">— ทั้งหมด —</option><option>900</option><option>1200</option><option>1500</option></select>
     </div>
-    <div class="sf">
-      <label>ยาว (mm)</label>
-      <select id="f-length">
-        <option value="">— ทั้งหมด —</option>
-        <option>2000</option><option>2400</option><option>3000</option>
-      </select>
+    <div class="sf"><label>ยาว (mm)</label>
+      <select id="f-length"><option value="">— ทั้งหมด —</option><option>2000</option><option>2400</option><option>3000</option></select>
     </div>
     <button class="btn-search" onclick="applyFilter()">ค้นหา</button>
   </div>
   <div class="hdr-stat" id="hdr-stat">—</div>
 </div>
 
-<!-- MAIN CONTENT -->
 <div id="main-content" style="flex:1;display:flex;flex-direction:column;">
-  <div class="state-msg" id="loading-state">
-    <div class="spinner"></div>
-    <p>Loading catalog...</p>
+  <div class="state-msg"><div class="spinner"></div><p>Loading catalog...</p></div>
+</div>
+
+<!-- ══ SPEC SHEET MODAL ══ -->
+<div class="overlay" id="specOverlay" onclick="closeSpec(event)">
+  <div class="spec-modal" onclick="event.stopPropagation()">
+    <div class="sm-head">
+      <div class="sm-head-left">
+        <div>
+          <div class="sm-cat" id="sm-cat">เหล็กแผ่น</div>
+          <div class="sm-sku" id="sm-sku">—</div>
+          <div class="sm-grade" id="sm-grade">—</div>
+        </div>
+        <div class="sm-badge">
+          <div class="dot" id="sm-dot" style="background:var(--green)"></div>
+          <span id="sm-stock">—</span>
+        </div>
+      </div>
+      <div class="sm-head-right" style="min-height:220px;">
+        <canvas id="sm-canvas" width="300" height="220"></canvas>
+        <div class="sm-vbtns">
+          <button class="sm-vb on" onclick="smSetView('iso',this)">3D</button>
+          <button class="sm-vb" onclick="smSetView('front',this)">FRONT</button>
+          <button class="sm-vb" onclick="smSetView('top',this)">TOP</button>
+          <button class="sm-vb" onclick="smSetView('side',this)">SIDE</button>
+        </div>
+        <div class="sm-hint" id="sm-hint">⟳ drag to rotate</div>
+        <div class="sm-auto" onclick="smToggleAuto()">
+          <span class="sm-auto-lbl">Auto</span>
+          <div class="sw on" id="sm-sw"><div class="sw-k"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sm-body">
+      <div class="sm-sec">
+        <div class="sm-sec-ttl">Dimensions</div>
+        <div class="sm-g4">
+          <div class="sfield"><label>ความหนา</label><div class="svl" id="sm-t">—</div><div class="svsub">mm</div></div>
+          <div class="sfield"><label>ความกว้าง</label><div class="svl" id="sm-w">—</div><div class="svsub">mm</div></div>
+          <div class="sfield"><label>ความยาว</label><div class="svl" id="sm-l">—</div><div class="svsub">mm</div></div>
+          <div class="sfield"><label>น้ำหนัก/แผ่น</label><div class="svl" id="sm-kg">—</div><div class="svsub">kg</div></div>
+        </div>
+      </div>
+      <div class="sm-sec">
+        <div class="sm-sec-ttl">Mechanical Properties</div>
+        <div class="sm-g2">
+          <div>
+            <div class="mrow"><span class="mk">Tensile Strength</span><span class="mv" id="sm-ts">—</span></div>
+            <div class="mrow"><span class="mk">Yield Strength</span><span class="mv" id="sm-ys">—</span></div>
+            <div class="mrow"><span class="mk">Elongation</span><span class="mv" id="sm-el">—</span></div>
+          </div>
+          <div>
+            <div class="mrow"><span class="mk">Hardness</span><span class="mv" id="sm-hd">—</span></div>
+            <div class="mrow"><span class="mk">Tolerance หนา</span><span class="mv" id="sm-tol">—</span></div>
+            <div class="mrow"><span class="mk">Standard</span><span class="mv" id="sm-std">—</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="sm-sec">
+        <div class="sm-sec-ttl">Packing</div>
+        <div class="pack-grid">
+          <div class="pack-item"><div class="pack-icon">📦</div><div class="pack-text"><label>Bundle</label><span id="sm-bnd">—</span></div></div>
+          <div class="pack-item"><div class="pack-icon">⚖️</div><div class="pack-text"><label>น้ำหนัก/มัด</label><span id="sm-bwt">—</span></div></div>
+          <div class="pack-item"><div class="pack-icon">🔗</div><div class="pack-text"><label>มัดด้วย</label><span id="sm-strap">—</span></div></div>
+          <div class="pack-item"><div class="pack-icon">🗞️</div><div class="pack-text"><label>ห่อ</label><span id="sm-wrap">—</span></div></div>
+          <div class="pack-item"><div class="pack-icon">🏗️</div><div class="pack-text"><label>ยก</label><span id="sm-lift">—</span></div></div>
+          <div class="pack-item"><div class="pack-icon">🏷️</div><div class="pack-text"><label>Label</label><span>SKU · Heat No. · วันผลิต</span></div></div>
+        </div>
+      </div>
+      <div class="sm-sec">
+        <div class="sm-sec-ttl">Calculator</div>
+        <div class="calc-row">
+          <label>จำนวน</label>
+          <input type="number" class="calc-inp" id="sm-qty" value="10" min="1" oninput="smCalc()">
+          <label>แผ่น</label>
+        </div>
+        <div class="calc-res">
+          <div class="cr-item"><label>น้ำหนักรวม</label><div class="crv" id="sm-cw">—</div></div>
+          <div class="cr-item"><label>ราคารวม</label><div class="crv" id="sm-cp">—</div></div>
+          <div class="cr-item"><label>จำนวนมัด</label><div class="crv" id="sm-cb">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sm-footer">
+      <button class="btn-back" onclick="closeSpec()">← กลับ</button>
+      <button class="btn-order-now" id="sm-btn-order" onclick="openOrderFromSpec()">เลือกรายการนี้</button>
+    </div>
   </div>
 </div>
 
-<!-- ORDER MODAL -->
-<div class="overlay" id="orderOverlay" onclick="closeModal(event)">
-  <div class="modal" onclick="event.stopPropagation()">
+<!-- ══ ORDER MODAL ══ -->
+<div class="overlay" id="orderOverlay" onclick="closeOrder(event)">
+  <div class="order-modal" onclick="event.stopPropagation()">
     <div class="modal-hdr">
       <h2>เปิด Sales Order</h2>
-      <button class="modal-close" onclick="closeModal()">×</button>
+      <button class="modal-close" onclick="closeOrder()">×</button>
     </div>
-    <div class="modal-body" id="modal-body">
-      <!-- filled by JS -->
-    </div>
+    <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════
-//  CONFIG — แก้ไข 2 บรรทัดนี้ก่อนใช้งาน
-// ══════════════════════════════════════════════════════
+// ══ CONFIG ══
 var SHEET_ID   = '1cRyakqWceoB18RrQKUoTCkNbqpPJaku1uCcmZB74ScE';
-// หา Sheet ID จาก URL: docs.google.com/spreadsheets/d/[THIS_PART]/edit
-
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0L4mq9Be83pe0VMpFkE9zRl5revOPgUyNxocUK7VzpyrdkOyVBSLWBcEPe7x8RgKafg/exec';
-// ได้จากการ Deploy > New Deployment > Web App ใน Apps Script
-// ══════════════════════════════════════════════════════
+// ════════════
 
-var API_BASE = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
-               '/gviz/tq?tqx=out:json&sheet=SKU_CATALOG';
+var allSkus=[], filteredSkus=[], currentSku=null;
 
-var allSkus      = [];
-var filteredSkus = [];
-var currentSku   = null;
-
-// ── LOAD DATA ──────────────────────────────────────────
-function loadCatalog() {
-  // Add cache-bust + หลีกเลี่ยง CORS preflight
-  var url = API_BASE + '&nocache=' + Date.now();
-
-  fetch(url)
-    .then(function(r){
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.text();
-    })
-    .then(function(text){
-      // Google gviz returns: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
-      // หา JSON ระหว่าง setResponse( ... );
-      var start = text.indexOf('(');
-      var end   = text.lastIndexOf(')');
-      if (start === -1 || end === -1) throw new Error('parse failed: ' + text.substring(0,120));
-      var json = JSON.parse(text.substring(start + 1, end));
-
-      if (!json.table) throw new Error('no table in response');
-
-      var cols = json.table.cols.map(function(c){
-        return (c.label && c.label.trim()) ? c.label.trim() : c.id;
-      });
-
-      allSkus = (json.table.rows || [])
-        .filter(function(row){ return row && row.c && row.c[0] && row.c[0] && row.c[0].v; })
-        .map(function(row){
-          var obj = {};
-          cols.forEach(function(col, i){
-            var cell = row.c[i];
-            obj[col] = (cell && cell.v !== null && cell.v !== undefined) ? cell.v : '';
-          });
-          return obj;
-        });
-
-      if (allSkus.length === 0) {
-        showError('โหลดข้อมูลสำเร็จ แต่ไม่พบข้อมูลใน Sheet — ตรวจสอบว่า Sheet ชื่อ SKU_CATALOG และมีข้อมูลแถวที่ 2 ขึ้นไป');
-        return;
-      }
-
-      filteredSkus = allSkus.slice();
-      renderGrid();
-    })
-    .catch(function(err){
-      console.error('loadCatalog error:', err);
-      // ลองวิธี JSONP fallback
-      loadViaJsonp();
-    });
+// ── LOAD ──────────────────────────────────────────
+function loadCatalog(){
+  var url='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&nocache='+Date.now();
+  fetch(url).then(function(r){if(!r.ok)throw 0;return r.text();}).then(parseGvizText).catch(loadViaJsonp);
+}
+function parseGvizText(text){
+  var s=text.indexOf('('),e=text.lastIndexOf(')');
+  if(s<0||e<0)throw 0;
+  parseGvizObj(JSON.parse(text.substring(s+1,e)));
+}
+function parseGvizObj(json){
+  if(!json||!json.table){showError('ไม่พบ table ใน Sheet response');return;}
+  var cols=json.table.cols.map(function(c){return(c.label&&c.label.trim())?c.label.trim():c.id;});
+  allSkus=(json.table.rows||[]).filter(function(r){return r&&r.c&&r.c[0]&&r.c[0].v;}).map(function(row){
+    var o={};cols.forEach(function(c,i){var cell=row.c[i];o[c]=(cell&&cell.v!=null)?cell.v:'';});return o;
+  });
+  if(!allSkus.length){showError('ไม่พบข้อมูล — ตรวจสอบชื่อ Sheet: SKU_CATALOG และมีข้อมูล row ที่ 2+');return;}
+  filteredSkus=allSkus.slice(); renderGrid();
+}
+function loadViaJsonp(){
+  var cb='gcb'+Date.now(),sc=document.createElement('script');
+  window[cb]=function(j){delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);try{parseGvizObj(j);}catch(e){showError('โหลดไม่ได้ — ตรวจสอบ Sheet Permission: Anyone with link → Viewer');}};
+  sc.onerror=function(){delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);showError('SHEET_ID ผิด หรือ Sheet ยังไม่ Public');};
+  sc.src='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&callback='+cb;
+  document.body.appendChild(sc);
 }
 
-// JSONP fallback — สำหรับกรณี CORS block
-function loadViaJsonp() {
-  var callbackName = 'steelCatalogCb_' + Date.now();
-  var script = document.createElement('script');
-
-  window[callbackName] = function(json) {
-    delete window[callbackName];
-    document.body.removeChild(script);
-    try {
-      var cols = json.table.cols.map(function(c){
-        return (c.label && c.label.trim()) ? c.label.trim() : c.id;
-      });
-      allSkus = (json.table.rows || [])
-        .filter(function(row){ return row && row.c && row.c[0] && row.c[0].v; })
-        .map(function(row){
-          var obj = {};
-          cols.forEach(function(col, i){
-            var cell = row.c[i];
-            obj[col] = (cell && cell.v !== null && cell.v !== undefined) ? cell.v : '';
-          });
-          return obj;
-        });
-      filteredSkus = allSkus.slice();
-      renderGrid();
-    } catch(e) {
-      showError('ไม่สามารถโหลดข้อมูลได้ — ตรวจสอบว่า Sheet เป็น Public (Anyone with link → Viewer)');
-    }
-  };
-
-  script.onerror = function() {
-    delete window[callbackName];
-    document.body.removeChild(script);
-    showError('โหลดข้อมูลไม่ได้ — Sheet อาจยังไม่เป็น Public หรือ Sheet ชื่อผิด (ต้องชื่อ SKU_CATALOG)');
-  };
-
-  script.src = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
-               '/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&tq=select+*&callback=' + callbackName;
-  document.body.appendChild(script);
-}
-
-// ── FILTER ────────────────────────────────────────────
-function applyFilter() {
-  var surface = document.getElementById('f-surface').value;
-  var grade   = document.getElementById('f-grade').value;
-  var thick   = document.getElementById('f-thick').value;
-  var width   = document.getElementById('f-width').value;
-  var length  = document.getElementById('f-length').value;
-
-  filteredSkus = allSkus.filter(function(s){
-    if (surface && s.SURFACE !== surface) return false;
-    if (grade   && s.GRADE   !== grade)   return false;
-    if (thick   && String(parseFloat(s.THICKNESS_MM)) !== thick) return false;
-    if (width   && String(parseInt(s.WIDTH_MM))  !== width)  return false;
-    if (length  && String(parseInt(s.LENGTH_MM)) !== length) return false;
-    if (s.STATUS && s.STATUS !== 'ACTIVE') return false;
+// ── FILTER ────────────────────────────────────────
+function applyFilter(){
+  var fv=function(id){return document.getElementById(id).value;};
+  filteredSkus=allSkus.filter(function(s){
+    if(fv('f-surface')&&s.SURFACE!==fv('f-surface'))return false;
+    if(fv('f-grade')&&s.GRADE!==fv('f-grade'))return false;
+    if(fv('f-thick')&&String(parseFloat(s.THICKNESS_MM))!==fv('f-thick'))return false;
+    if(fv('f-width')&&String(parseInt(s.WIDTH_MM))!==fv('f-width'))return false;
+    if(fv('f-length')&&String(parseInt(s.LENGTH_MM))!==fv('f-length'))return false;
+    if(s.STATUS&&s.STATUS!=='ACTIVE')return false;
     return true;
   });
   renderGrid();
 }
 
-// ── RENDER GRID ────────────────────────────────────────
-function renderGrid() {
-  var el = document.getElementById('main-content');
-  document.getElementById('hdr-stat').textContent = filteredSkus.length + ' รายการ';
-
-  if (filteredSkus.length === 0) {
-    el.innerHTML = '<div class="state-msg"><div class="icon">🔍</div><p>ไม่พบ Spec ที่ตรงกัน</p></div>';
-    return;
-  }
-
-  var html = '<div class="grid-wrap"><div class="grid-hdr"><h2>ผลการค้นหา</h2><span>' +
-             filteredSkus.length + ' รายการ</span></div><div class="grid">';
-
-  filteredSkus.forEach(function(s, i){
-    var stock = parseInt(s.STOCK_QTY) || 0;
-    var stockClass = stock === 0 ? 'red' : stock < 10 ? 'yellow' : 'green';
-    var dotColor   = stock === 0 ? 'var(--red)' : stock < 10 ? 'var(--yellow)' : 'var(--green)';
-    var stockKg    = parseFloat(s.STOCK_KG) || 0;
-
-    html += '<div class="card" onclick="openOrder(' + i + ')">' +
-      '<div class="card-img">' +
-        '<canvas id="cv-'+i+'" width="280" height="140"></canvas>' +
-        '<div class="status-dot" style="background:' + dotColor + '"></div>' +
-      '</div>' +
-      '<div class="card-body">' +
-        '<div class="c-sku">' + (s.SKU||'') + '</div>' +
-        '<div class="c-sub">' + (s.SURFACE||'') + ' · ' + (s.GRADE||'') + ' · ' + (s.STANDARD||'') + '</div>' +
-        '<div class="c-specs">' +
-          '<div class="cs"><label>หนา</label><span>' + s.THICKNESS_MM + ' mm</span></div>' +
-          '<div class="cs"><label>กว้าง</label><span>' + parseInt(s.WIDTH_MM) + '</span></div>' +
-          '<div class="cs"><label>ยาว</label><span>' + parseInt(s.LENGTH_MM) + '</span></div>' +
-        '</div>' +
-        '<div class="c-divider"></div>' +
-        '<div class="c-bottom">' +
-          '<div class="c-stock">' +
-            '<div class="stock-num ' + stockClass + '">' + stock + '</div>' +
-            '<div class="stock-unit">แผ่น · ' + stockKg.toLocaleString() + ' kg</div>' +
-          '</div>' +
-          '<div class="c-price">' +
-            '<div class="price-main">฿ ' + (parseInt(s.PRICE_PER_SHEET_THB)||0).toLocaleString() + ' / แผ่น</div>' +
-            '<div class="price-sub">' + (parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1) + ' ฿/kg</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="card-foot">' +
-        '<button class="btn-detail" onclick="event.stopPropagation()">ดู Spec →</button>' +
-        '<button class="btn-select" ' + (stock===0?'disabled':'') + ' onclick="event.stopPropagation();openOrder(' + i + ')">เลือกรายการนี้</button>' +
-      '</div>' +
+// ── GRID ──────────────────────────────────────────
+function renderGrid(){
+  var el=document.getElementById('main-content');
+  document.getElementById('hdr-stat').textContent=filteredSkus.length+' รายการ';
+  if(!filteredSkus.length){el.innerHTML='<div class="state-msg"><div class="icon">🔍</div><p>ไม่พบ Spec ที่ตรงกัน</p></div>';return;}
+  var h='<div class="grid-wrap"><div class="grid-hdr"><h2>ผลการค้นหา</h2><span>'+filteredSkus.length+' รายการ</span></div><div class="grid">';
+  filteredSkus.forEach(function(s,i){
+    var stock=parseInt(s.STOCK_QTY)||0,sc=stock===0?'red':stock<10?'yellow':'green';
+    var dc=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
+    h+='<div class="card">'+
+      '<div class="card-img" onclick="openSpec('+i+')">'+
+        '<canvas id="cv-'+i+'" width="280" height="140"></canvas>'+
+        '<div class="status-dot" style="background:'+dc+'"></div>'+
+      '</div>'+
+      '<div class="card-body">'+
+        '<div class="c-sku">'+(s.SKU||'')+'</div>'+
+        '<div class="c-sub">'+(s.SURFACE||'')+' · '+(s.GRADE||'')+' · '+(s.STANDARD||'')+'</div>'+
+        '<div class="c-specs">'+
+          '<div class="cs"><label>หนา</label><span>'+s.THICKNESS_MM+' mm</span></div>'+
+          '<div class="cs"><label>กว้าง</label><span>'+parseInt(s.WIDTH_MM)+'</span></div>'+
+          '<div class="cs"><label>ยาว</label><span>'+parseInt(s.LENGTH_MM)+'</span></div>'+
+        '</div>'+
+        '<div class="c-divider"></div>'+
+        '<div class="c-bottom">'+
+          '<div class="c-stock"><div class="stock-num '+sc+'">'+stock+'</div><div class="stock-unit">แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg</div></div>'+
+          '<div class="c-price"><div class="price-main">฿ '+(parseInt(s.PRICE_PER_SHEET_THB)||0).toLocaleString()+' / แผ่น</div><div class="price-sub">'+(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1)+' ฿/kg</div></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="card-foot">'+
+        '<button class="btn-spec" onclick="openSpec('+i+')">ดู Spec Sheet →</button>'+
+        '<button class="btn-order" '+(stock===0?'disabled':'')+' onclick="openOrderDirect('+i+')">เลือกรายการนี้</button>'+
+      '</div>'+
     '</div>';
   });
+  h+='</div></div>';
+  el.innerHTML=h;
+  setTimeout(function(){filteredSkus.forEach(function(s,i){drawBundle('cv-'+i,s,0.45,0.22,false);});},50);
+}
 
-  html += '</div></div>';
-  el.innerHTML = html;
-
-  // Draw mini 3D bundles
+// ── OPEN SPEC ─────────────────────────────────────
+function openSpec(idx){
+  currentSku=filteredSkus[idx];
+  var s=currentSku,stock=parseInt(s.STOCK_QTY)||0;
+  document.getElementById('sm-cat').textContent=(s.SURFACE||'')+' · '+(s.GRADE||'');
+  document.getElementById('sm-sku').textContent=s.SKU||'—';
+  document.getElementById('sm-grade').textContent=(s.GRADE||'')+' · '+(s.STANDARD||'');
+  document.getElementById('sm-dot').style.background=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
+  document.getElementById('sm-stock').textContent=stock===0?'หมดสต็อก':'มีสต็อก · '+stock+' แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg';
+  document.getElementById('sm-t').textContent=s.THICKNESS_MM||'—';
+  document.getElementById('sm-w').textContent=parseInt(s.WIDTH_MM)||'—';
+  document.getElementById('sm-l').textContent=parseInt(s.LENGTH_MM)||'—';
+  document.getElementById('sm-kg').textContent=parseFloat(s.WEIGHT_PER_SHEET_KG)||'—';
+  document.getElementById('sm-ts').textContent=s.TENSILE_STRENGTH||'—';
+  document.getElementById('sm-ys').textContent=s.YIELD_STRENGTH||'—';
+  document.getElementById('sm-el').textContent=s.ELONGATION||'—';
+  document.getElementById('sm-hd').textContent=s.HARDNESS||'—';
+  document.getElementById('sm-tol').textContent=s.TOLERANCE_THICKNESS||'—';
+  document.getElementById('sm-std').textContent=s.STANDARD||'—';
+  var bnd=parseInt(s.BUNDLE_SIZE)||5,bwt=bnd*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0);
+  document.getElementById('sm-bnd').textContent=bnd+' แผ่น / มัด';
+  document.getElementById('sm-bwt').textContent=bwt.toLocaleString()+' kg';
+  document.getElementById('sm-strap').textContent=s.STRAP_TYPE||'เหล็กรัด 2 เส้น';
+  document.getElementById('sm-wrap').textContent=s.WRAP_TYPE||'ฟิล์ม+กระดาษกันสนิม';
+  document.getElementById('sm-lift').textContent=s.LIFTING||'Forklift (รองไม้)';
+  var ob=document.getElementById('sm-btn-order');
+  ob.disabled=stock===0; ob.textContent=stock===0?'หมดสต็อก':'เลือกรายการนี้';
+  document.getElementById('sm-qty').value=10; smCalc();
+  document.getElementById('specOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  smRotY=0.5;smRotX=0.25;smTargetY=0.5;smTargetX=0.25;smAutoRot=true;
+  document.getElementById('sm-sw').classList.add('on');
+  document.getElementById('sm-hint').style.opacity='1';
+  document.querySelectorAll('.sm-vb').forEach(function(b,i){b.classList.toggle('on',i===0);});
   setTimeout(function(){
-    filteredSkus.forEach(function(s, i){
-      drawMiniBundle('cv-'+i, s);
-    });
-  }, 50);
+    var cv=document.getElementById('sm-canvas');
+    cv.width=cv.parentElement.clientWidth||300;
+    cv.height=cv.parentElement.clientHeight||220;
+    if(!smRunning) smLoop();
+  },60);
+  setTimeout(function(){document.getElementById('sm-hint').style.opacity='0';},3000);
 }
-
-// ── MINI 3D BUNDLE (Canvas 2D) ─────────────────────────
-function drawMiniBundle(id, s) {
-  var cv  = document.getElementById(id);
-  if (!cv) return;
-  var ctx = cv.getContext('2d');
-  var W = cv.width, H = cv.height;
-  ctx.clearRect(0,0,W,H);
-
-  var N     = Math.min(parseInt(s.BUNDLE_SIZE)||5, 8);
-  var thick = Math.max(0.03, parseFloat(s.THICKNESS_MM) * 0.042);
-  var bw    = 3.6, bl = 4.2, gap = 0.01;
-  var totalH= N*(thick+gap)-gap;
-
-  var rotY = 0.45, rotX = 0.22;
-  var cosY=Math.cos(rotY),sinY=Math.sin(rotY);
-  var cosX=Math.cos(rotX),sinX=Math.sin(rotX);
-
-  function tp(x,y,z){
-    var x2=x*cosY+z*sinY, z2=-x*sinY+z*cosY;
-    var y2=y*cosX-z2*sinX, z3=y*sinX+z2*cosX;
-    return [x2,y2,z3];
-  }
-  function pr(p){
-    var fov=180, z=p[2]+9;
-    return [W/2+p[0]*fov/z, H/2-p[1]*fov/z];
-  }
-  function shade(nx,ny,nz){
-    var d=nx*0.45+ny*0.75+nz*0.35;
-    return Math.max(0.28,Math.min(1,d));
-  }
-  function drawFace(pts,r,g,b,nx,ny,nz){
-    var s2=shade(nx,ny,nz);
-    var pts2=pts.map(function(p){return pr(tp(p[0],p[1]+Math.sin(0)*0.03,p[2]));});
-    // backface cull
-    var e1=[pts2[1][0]-pts2[0][0],pts2[1][1]-pts2[0][1]];
-    var e2=[pts2[2][0]-pts2[0][0],pts2[2][1]-pts2[0][1]];
-    if(e1[0]*e2[1]-e1[1]*e2[0]>0) return;
-    ctx.beginPath();
-    ctx.moveTo(pts2[0][0],pts2[0][1]);
-    for(var i=1;i<pts2.length;i++) ctx.lineTo(pts2[i][0],pts2[i][1]);
-    ctx.closePath();
-    ctx.fillStyle='rgb('+Math.round(r*s2)+','+Math.round(g*s2)+','+Math.round(b*s2)+')';
-    ctx.fill();
-    ctx.strokeStyle='rgba(20,20,18,0.3)';ctx.lineWidth=0.5;ctx.stroke();
-  }
-  function drawBox(cx,cy,cz,bW,bH,bL,tr,tg,tb,sr,sg,sb){
-    var hw=bW/2,hh=bH/2,hl=bL/2;
-    var c=[[cx-hw,cy-hh,cz-hl],[cx+hw,cy-hh,cz-hl],[cx+hw,cy+hh,cz-hl],[cx-hw,cy+hh,cz-hl],
-           [cx-hw,cy-hh,cz+hl],[cx+hw,cy-hh,cz+hl],[cx+hw,cy+hh,cz+hl],[cx-hw,cy+hh,cz+hl]];
-    var faces=[
-      {f:[c[3],c[2],c[1],c[0]],n:[0,0,-1],r:sr,g:sg,b:sb},
-      {f:[c[4],c[5],c[6],c[7]],n:[0,0,1], r:sr,g:sg,b:sb},
-      {f:[c[7],c[6],c[2],c[3]],n:[0,1,0], r:tr,g:tg,b:tb},
-      {f:[c[0],c[1],c[5],c[4]],n:[0,-1,0],r:tr,g:tg,b:tb},
-      {f:[c[0],c[4],c[7],c[3]],n:[-1,0,0],r:sr,g:sg,b:sb},
-      {f:[c[1],c[2],c[6],c[5]],n:[1,0,0], r:sr,g:sg,b:sb},
-    ];
-    faces.forEach(function(fc){drawFace(fc.f,fc.r,fc.g,fc.b,fc.n[0],fc.n[1],fc.n[2]);});
-  }
-
-  var yOff=-totalH/2;
-  // Steel color based on surface
-  var surf = (s.SURFACE||'').toLowerCase();
-  var sr,sg,sb,tr,tg,tb;
-  if(surf.indexOf('galvanized')>-1||surf.indexOf('สังกะสี')>-1){
-    tr=160;tg=168;tb=160; sr=140;sg=148;sb=140;
-  } else if(surf.indexOf('cold')>-1||surf.indexOf('spcc')>-1){
-    tr=120;tg=120;tb=125; sr=100;sg=100;sb=105;
-  } else {
-    tr=72;tg=72;tb=70; sr=58;sg=58;sb=56;
-  }
-
-  for(var i=0;i<N;i++){
-    var cy=yOff+i*(thick+gap)+thick/2;
-    drawBox(0,cy,0,bw,thick,bl,tr,tg,tb,sr,sg,sb);
-  }
-  // Straps
-  [-bl*.28,bl*.28].forEach(function(sz){
-    var sH=totalH+.04;
-    drawBox(0,yOff+totalH+.03,sz,bw+.06,.05,.04,148,148,140,130,130,122);
-    drawBox(0,yOff-.03,sz,bw+.06,.05,.04,148,148,140,130,130,122);
-    drawBox(-bw/2-.03,yOff+totalH/2,sz,.04,sH+.1,.04,130,130,122,120,120,112);
-    drawBox(bw/2+.03,yOff+totalH/2,sz,.04,sH+.1,.04,130,130,122,120,120,112);
-  });
-  // Label
-  drawBox(bw/2+.04,yOff+totalH/2,-bl*.28,.01,.28,.42,235,235,230,225,225,220);
-  // Info text
-  ctx.fillStyle='#a0a09c';
-  ctx.font='600 9px Courier New';
-  ctx.fillText(s.SURFACE ? s.SURFACE.split('(')[0].trim() : '', 8, H-8);
+function closeSpec(e){
+  if(e&&e.target!==document.getElementById('specOverlay'))return;
+  document.getElementById('specOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  smAutoRot=false;
 }
+function smCalc(){
+  if(!currentSku)return;
+  var q=parseInt(document.getElementById('sm-qty').value)||0;
+  var p=parseInt(currentSku.PRICE_PER_SHEET_THB)||0,w=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0,b=parseInt(currentSku.BUNDLE_SIZE)||5;
+  document.getElementById('sm-cw').textContent=(q*w).toLocaleString()+' kg';
+  document.getElementById('sm-cp').textContent='฿ '+(q*p).toLocaleString();
+  document.getElementById('sm-cb').textContent=Math.ceil(q/b)+' มัด';
+}
+function openOrderFromSpec(){closeSpec();setTimeout(buildOrderForm,150);}
+function openOrderDirect(idx){currentSku=filteredSkus[idx];buildOrderForm();}
 
-// ── OPEN ORDER MODAL ───────────────────────────────────
-function openOrder(idx) {
-  currentSku = filteredSkus[idx];
-  var s = currentSku;
-  var pricePerSheet = parseInt(s.PRICE_PER_SHEET_THB) || 0;
-  var weightPerSheet = parseFloat(s.WEIGHT_PER_SHEET_KG) || 0;
-
-  document.getElementById('modal-body').innerHTML =
-    '<div class="form-section">' +
-      '<div class="form-section-title">Spec ที่เลือก</div>' +
-      '<div class="spec-preview">' +
-        '<div class="sp-item"><label>SKU</label><span style="font-size:10px">' + s.SKU + '</span></div>' +
-        '<div class="sp-item"><label>หนา</label><span>' + s.THICKNESS_MM + ' mm</span></div>' +
-        '<div class="sp-item"><label>กว้าง×ยาว</label><span>' + parseInt(s.WIDTH_MM) + '×' + parseInt(s.LENGTH_MM) + '</span></div>' +
-        '<div class="sp-item"><label>สต็อก</label><span style="color:var(--green)">' + (parseInt(s.STOCK_QTY)||0) + ' แผ่น</span></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div class="form-section">' +
-      '<div class="form-section-title">ข้อมูลลูกค้า</div>' +
-      '<div class="form-grid">' +
-        '<div class="frow"><label>ชื่อลูกค้า *</label><input type="text" id="o-name" placeholder="บริษัท / ชื่อ"></div>' +
-        '<div class="frow"><label>เบอร์โทร</label><input type="text" id="o-phone" placeholder="0xx-xxx-xxxx"></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div class="form-section">' +
-      '<div class="form-section-title">รายการสั่งซื้อ</div>' +
-      '<div class="form-grid">' +
-        '<div class="frow"><label>จำนวน (แผ่น) *</label><input type="number" id="o-qty" value="10" min="1" oninput="updateOrderSummary()"></div>' +
-        '<div class="frow"><label>ราคา/แผ่น (฿)</label><input type="number" id="o-price" value="' + pricePerSheet + '" oninput="updateOrderSummary()"></div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div class="order-summary">' +
-      '<div class="os-item"><label>น้ำหนักรวม</label><span id="os-weight">—</span></div>' +
-      '<div class="os-item"><label>ราคารวม</label><span id="os-price">—</span></div>' +
-      '<div class="os-item"><label>จำนวนมัด</label><span id="os-bundle">—</span></div>' +
-    '</div>' +
-
-    '<div class="form-section">' +
-      '<div class="form-section-title">หมายเหตุ</div>' +
-      '<div class="form-grid full">' +
-        '<div class="frow"><label>หมายเหตุเพิ่มเติม</label><textarea id="o-note" rows="2" style="resize:none" placeholder="เช่น วันที่ต้องการรับของ, เงื่อนไขพิเศษ..."></textarea></div>' +
-      '</div>' +
-    '</div>' +
-
+// ── ORDER ─────────────────────────────────────────
+function buildOrderForm(){
+  var s=currentSku,price=parseInt(s.PRICE_PER_SHEET_THB)||0;
+  document.getElementById('modal-body').innerHTML=
+    '<div class="spec-pill">'+
+      '<div class="sp-item"><label>SKU</label><span style="font-size:10px">'+s.SKU+'</span></div>'+
+      '<div class="sp-item"><label>หนา</label><span>'+s.THICKNESS_MM+' mm</span></div>'+
+      '<div class="sp-item"><label>W×L</label><span>'+parseInt(s.WIDTH_MM)+'×'+parseInt(s.LENGTH_MM)+'</span></div>'+
+      '<div class="sp-item"><label>สต็อก</label><span style="color:var(--green)">'+(parseInt(s.STOCK_QTY)||0)+' แผ่น</span></div>'+
+    '</div>'+
+    '<div class="fsec"><div class="fsec-ttl">ข้อมูลลูกค้า</div>'+
+      '<div class="f2"><div class="frow"><label>ชื่อลูกค้า *</label><input type="text" id="o-name" placeholder="บริษัท / ชื่อ"></div>'+
+      '<div class="frow"><label>เบอร์โทร</label><input type="text" id="o-phone" placeholder="0xx-xxx-xxxx"></div></div></div>'+
+    '<div class="fsec"><div class="fsec-ttl">รายการสั่งซื้อ</div>'+
+      '<div class="f2"><div class="frow"><label>จำนวน (แผ่น) *</label><input type="number" id="o-qty" value="10" min="1" oninput="updOrd()"></div>'+
+      '<div class="frow"><label>ราคา/แผ่น (฿)</label><input type="number" id="o-price" value="'+price+'" oninput="updOrd()"></div></div></div>'+
+    '<div class="order-sum">'+
+      '<div class="os-item"><label>น้ำหนักรวม</label><span id="os-w">—</span></div>'+
+      '<div class="os-item"><label>ราคารวม</label><span id="os-p">—</span></div>'+
+      '<div class="os-item"><label>มัด</label><span id="os-b">—</span></div>'+
+    '</div>'+
+    '<div class="fsec"><div class="fsec-ttl">หมายเหตุ</div>'+
+      '<div class="f1"><div class="frow"><label>หมายเหตุ</label><textarea id="o-note" rows="2" style="resize:none" placeholder="วันที่รับ, เงื่อนไขพิเศษ..."></textarea></div></div></div>'+
     '<button class="btn-submit" onclick="submitOrder()">ยืนยัน Order →</button>';
-
-  updateOrderSummary();
+  updOrd();
   document.getElementById('orderOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
 }
-
-function updateOrderSummary() {
-  if (!currentSku) return;
-  var qty = parseInt(document.getElementById('o-qty').value) || 0;
-  var price = parseInt(document.getElementById('o-price').value) || 0;
-  var w = parseFloat(currentSku.WEIGHT_PER_SHEET_KG) || 0;
-  var bundle = parseInt(currentSku.BUNDLE_SIZE) || 5;
-  document.getElementById('os-weight').textContent = (qty*w).toLocaleString()+' kg';
-  document.getElementById('os-price').textContent  = '฿ '+(qty*price).toLocaleString();
-  document.getElementById('os-bundle').textContent = Math.ceil(qty/bundle)+' มัด';
+function updOrd(){
+  if(!currentSku)return;
+  var q=parseInt(document.getElementById('o-qty').value)||0,p=parseInt(document.getElementById('o-price').value)||0;
+  var w=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0,b=parseInt(currentSku.BUNDLE_SIZE)||5;
+  document.getElementById('os-w').textContent=(q*w).toLocaleString()+' kg';
+  document.getElementById('os-p').textContent='฿ '+(q*p).toLocaleString();
+  document.getElementById('os-b').textContent=Math.ceil(q/b)+' มัด';
 }
-
-function closeModal(e) {
-  if (e && e.target !== document.getElementById('orderOverlay')) return;
+function closeOrder(e){
+  if(e&&e.target!==document.getElementById('orderOverlay'))return;
   document.getElementById('orderOverlay').classList.remove('open');
+  document.body.style.overflow='';
 }
-
-// ── SUBMIT ORDER ───────────────────────────────────────
-function submitOrder() {
-  var name  = (document.getElementById('o-name').value||'').trim();
-  var qty   = parseInt(document.getElementById('o-qty').value)||0;
-  var price = parseInt(document.getElementById('o-price').value)||0;
-
-  if (!name) { alert('กรุณากรอกชื่อลูกค้าครับ'); return; }
-  if (!qty)  { alert('กรุณากรอกจำนวนแผ่นครับ'); return; }
-
-  var btn = document.querySelector('.btn-submit');
-  btn.disabled = true; btn.textContent = 'กำลังส่ง...';
-
-  var s = currentSku;
-  var payload = {
-    action:        'createOrder',
-    customerName:  name,
-    customerPhone: (document.getElementById('o-phone').value||'').trim(),
-    sku:           s.SKU,
-    grade:         s.GRADE,
-    surface:       s.SURFACE,
-    thickness:     s.THICKNESS_MM,
-    width:         s.WIDTH_MM,
-    length:        s.LENGTH_MM,
-    qty:           qty,
-    weightTotal:   qty * (parseFloat(s.WEIGHT_PER_SHEET_KG)||0),
-    pricePerSheet: price,
-    priceTotal:    qty * price,
-    note:          (document.getElementById('o-note').value||'').trim()
-  };
-
-  fetch(SCRIPT_URL, {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  })
-  .then(function(r){ return r.json(); })
+function submitOrder(){
+  var name=(document.getElementById('o-name').value||'').trim(),qty=parseInt(document.getElementById('o-qty').value)||0,price=parseInt(document.getElementById('o-price').value)||0;
+  if(!name){alert('กรุณากรอกชื่อลูกค้าครับ');return;}
+  if(!qty){alert('กรุณากรอกจำนวนแผ่นครับ');return;}
+  var btn=document.querySelector('.btn-submit');btn.disabled=true;btn.textContent='กำลังส่ง...';
+  var s=currentSku;
+  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'createOrder',customerName:name,customerPhone:(document.getElementById('o-phone').value||'').trim(),sku:s.SKU,grade:s.GRADE,surface:s.SURFACE,thickness:s.THICKNESS_MM,width:s.WIDTH_MM,length:s.LENGTH_MM,qty:qty,weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),pricePerSheet:price,priceTotal:qty*price,note:(document.getElementById('o-note').value||'').trim()})})
+  .then(function(r){return r.json();})
   .then(function(res){
-    if (res.success) {
-      document.getElementById('modal-body').innerHTML =
-        '<div class="success-box">' +
-          '<div class="check">✓</div>' +
-          '<h3>Order สำเร็จ!</h3>' +
-          '<div class="order-no">' + res.orderNo + '</div>' +
-          '<button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button>' +
-        '</div>';
-    } else {
-      alert('เกิดข้อผิดพลาด: ' + (res.error||'unknown'));
-      btn.disabled = false; btn.textContent = 'ยืนยัน Order →';
-    }
+    if(res.success){
+      document.getElementById('modal-body').innerHTML='<div class="success-box"><div class="check">✓</div><h3>Order สำเร็จ!</h3><div class="order-no">'+res.orderNo+'</div><button class="btn-done" onclick="closeOrder()">ปิด</button></div>';
+    }else{alert('เกิดข้อผิดพลาด: '+(res.error||'unknown'));btn.disabled=false;btn.textContent='ยืนยัน Order →';}
   })
-  .catch(function(){
-    alert('ไม่สามารถส่งข้อมูลได้ — กรุณาตรวจสอบ SCRIPT_URL');
-    btn.disabled = false; btn.textContent = 'ยืนยัน Order →';
-  });
+  .catch(function(){alert('ส่งข้อมูลไม่ได้ — ตรวจสอบ SCRIPT_URL');btn.disabled=false;btn.textContent='ยืนยัน Order →';});
 }
+function showError(msg){document.getElementById('main-content').innerHTML='<div class="state-msg"><div class="icon">⚠️</div><p>'+msg+'</p></div>';}
 
-// ── ERROR ──────────────────────────────────────────────
-function showError(msg) {
-  document.getElementById('main-content').innerHTML =
-    '<div class="state-msg"><div class="icon">⚠️</div><p>' + msg + '</p></div>';
-}
+// ══ 3D BUNDLE ENGINE ══
+var smRotY=0.5,smRotX=0.25,smTargetY=0.5,smTargetX=0.25;
+var smAutoRot=false,smDrag=false,smLX=0,smLY=0,smRunning=false,smT=0;
+var smViews={iso:{y:0.5,x:0.25},front:{y:0,x:0},top:{y:0,x:1.55},side:{y:1.57,x:0.1}};
 
-// ── INIT ───────────────────────────────────────────────
-window.addEventListener('load', function(){
-  if (SHEET_ID === 'YOUR_GOOGLE_SHEET_ID_HERE') {
-    showError('กรุณาแก้ไข SHEET_ID ในโค้ด JS ก่อนใช้งาน');
-    return;
+function drawBundle(cvId,s,rotY,rotX,floating){
+  var cv=document.getElementById(cvId);if(!cv)return;
+  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  var isLarge=(W>200);
+  ctx.clearRect(0,0,W,H);
+  var N=Math.min(parseInt(s.BUNDLE_SIZE)||5,8);
+  var thick=Math.max(0.03,parseFloat(s.THICKNESS_MM)*(isLarge?0.044:0.042));
+  var bw=isLarge?4.1:3.6,bl=isLarge?5.0:4.2,gap=0.012;
+  var totalH=N*(thick+gap)-gap;
+  var fov=isLarge?Math.min(W,H)*1.3:180,zBase=isLarge?10:9;
+  var fl=floating?Math.sin(smT*0.6)*0.04:0;
+  var cosY=Math.cos(rotY),sinY=Math.sin(rotY),cosX=Math.cos(rotX),sinX=Math.sin(rotX);
+  function tp(x,y,z){var x2=x*cosY+z*sinY,z2=-x*sinY+z*cosY,y2=y*cosX-z2*sinX,z3=y*sinX+z2*cosX;return[x2,y2,z3];}
+  function pr(p){var z=p[2]+zBase;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H/2-p[1]*fov/z];}
+  function sh(nx,ny,nz){return Math.max(0.28,Math.min(1,nx*0.45+ny*0.75+nz*0.35));}
+  function face(pts,r,g,b,nx,ny,nz){
+    var s2=sh(nx,ny,nz),p2=pts.map(function(p){return pr(tp(p[0],p[1]+fl,p[2]));});
+    var e1=[p2[1][0]-p2[0][0],p2[1][1]-p2[0][1]],e2=[p2[2][0]-p2[0][0],p2[2][1]-p2[0][1]];
+    if(e1[0]*e2[1]-e1[1]*e2[0]>0)return;
+    ctx.beginPath();ctx.moveTo(p2[0][0],p2[0][1]);
+    for(var i=1;i<p2.length;i++)ctx.lineTo(p2[i][0],p2[i][1]);
+    ctx.closePath();ctx.fillStyle='rgb('+Math.round(r*s2)+','+Math.round(g*s2)+','+Math.round(b*s2)+')';
+    ctx.fill();ctx.strokeStyle='rgba(20,20,18,0.22)';ctx.lineWidth=0.5;ctx.stroke();
   }
+  function box(cx,cy,cz,bW,bH,bL,tr,tg,tb,sr,sg,sb){
+    var hw=bW/2,hh=bH/2,hl=bL/2;
+    var c=[[cx-hw,cy-hh,cz-hl],[cx+hw,cy-hh,cz-hl],[cx+hw,cy+hh,cz-hl],[cx-hw,cy+hh,cz-hl],[cx-hw,cy-hh,cz+hl],[cx+hw,cy-hh,cz+hl],[cx+hw,cy+hh,cz+hl],[cx-hw,cy+hh,cz+hl]];
+    [[c[3],c[2],c[1],c[0],0,0,-1,sr,sg,sb],[c[4],c[5],c[6],c[7],0,0,1,sr,sg,sb],[c[7],c[6],c[2],c[3],0,1,0,tr,tg,tb],[c[0],c[1],c[5],c[4],0,-1,0,tr,tg,tb],[c[0],c[4],c[7],c[3],-1,0,0,sr,sg,sb],[c[1],c[2],c[6],c[5],1,0,0,sr,sg,sb]].forEach(function(f){face([f[0],f[1],f[2],f[3]],f[7],f[8],f[9],f[4],f[5],f[6]);});
+  }
+  var surf=(s.SURFACE||'').toLowerCase(),tr,tg,tb,sr,sg,sb;
+  if(surf.indexOf('galvanized')>-1||surf.indexOf('สังกะสี')>-1){tr=162;tg=170;tb=162;sr=142;sg=150;sb=142;}
+  else if(surf.indexOf('cold')>-1||surf.indexOf('spcc')>-1){tr=122;tg=122;tb=128;sr=102;sg=102;sb=108;}
+  else{tr=72;tg=72;tb=70;sr=58;sg=58;sb=56;}
+  var yOff=-totalH/2;
+  // shadow
+  var sp=[];for(var a=0;a<=Math.PI*2;a+=0.3)sp.push(pr(tp(Math.cos(a)*bw*0.52,yOff-0.06+fl,Math.sin(a)*bl*0.46)));
+  ctx.save();ctx.beginPath();sp.forEach(function(p,i){i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);});ctx.closePath();ctx.fillStyle='rgba(0,0,0,0.07)';ctx.fill();ctx.restore();
+  for(var i=0;i<N;i++){var cy=yOff+i*(thick+gap)+thick/2;box(0,cy,0,bw,thick,bl,tr,tg,tb,sr,sg,sb);}
+  [-bl*.28,bl*.28].forEach(function(sz){
+    var sH=totalH+.05;
+    box(0,yOff+totalH+.03,sz,bw+.07,.055,.038,150,150,142,132,132,124);
+    box(0,yOff-.03,sz,bw+.07,.055,.038,150,150,142,132,132,124);
+    box(-bw/2-.03,yOff+totalH/2,sz,.038,sH+.11,.038,132,132,124,122,122,114);
+    box(bw/2+.03,yOff+totalH/2,sz,.038,sH+.11,.038,132,132,124,122,122,114);
+  });
+  box(bw/2+.05,yOff+totalH/2,-bl*.28,.01,.30,.46,236,236,230,226,226,220);
+  if(!isLarge){ctx.fillStyle='#a0a09c';ctx.font='600 9px Courier New';ctx.fillText((s.SURFACE?s.SURFACE.split('(')[0].trim():''),8,H-8);}
+}
+
+// controls
+var smCv=document.getElementById('sm-canvas');
+smCv.addEventListener('mousedown',function(e){smDrag=true;smLX=e.clientX;smLY=e.clientY;smAutoRot=false;document.getElementById('sm-sw').classList.remove('on');document.getElementById('sm-hint').style.opacity='0';});
+window.addEventListener('mousemove',function(e){if(!smDrag)return;smTargetY+=(e.clientX-smLX)*0.009;smTargetX+=(e.clientY-smLY)*0.006;smTargetX=Math.max(-1.3,Math.min(1.3,smTargetX));smLX=e.clientX;smLY=e.clientY;});
+window.addEventListener('mouseup',function(){smDrag=false;});
+smCv.addEventListener('touchstart',function(e){smDrag=true;smLX=e.touches[0].clientX;smLY=e.touches[0].clientY;smAutoRot=false;},{passive:true});
+smCv.addEventListener('touchmove',function(e){if(!smDrag)return;smTargetY+=(e.touches[0].clientX-smLX)*0.009;smTargetX+=(e.touches[0].clientY-smLY)*0.006;smTargetX=Math.max(-1.3,Math.min(1.3,smTargetX));smLX=e.touches[0].clientX;smLY=e.touches[0].clientY;},{passive:true});
+smCv.addEventListener('touchend',function(){smDrag=false;});
+function smToggleAuto(){smAutoRot=!smAutoRot;document.getElementById('sm-sw').classList.toggle('on',smAutoRot);}
+function smSetView(n,btn){document.querySelectorAll('.sm-vb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');var v=smViews[n];smTargetY=v.y;smTargetX=v.x;smAutoRot=false;document.getElementById('sm-sw').classList.remove('on');}
+function smLoop(){
+  smRunning=true;
+  (function tick(){
+    if(!document.getElementById('specOverlay').classList.contains('open')){smRunning=false;return;}
+    requestAnimationFrame(tick);smT+=0.016;
+    if(smAutoRot&&!smDrag)smTargetY+=0.004;
+    smRotY+=(smTargetY-smRotY)*0.08;smRotX+=(smTargetX-smRotX)*0.08;
+    if(currentSku)drawBundle('sm-canvas',currentSku,smRotY,smRotX,true);
+  })();
+}
+
+// ── INIT ──────────────────────────────────────────
+window.addEventListener('load',function(){
+  if(SHEET_ID==='YOUR_GOOGLE_SHEET_ID_HERE'){showError('กรุณาแก้ไข SHEET_ID ในโค้ด JS ก่อนใช้งาน');return;}
   loadCatalog();
 });
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeOrder();closeSpec();document.body.style.overflow='';}});
 </script>
 </body>
 </html>
