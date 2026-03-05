@@ -70,24 +70,24 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .tab-btn:hover{border-color:var(--black);color:var(--black);}
 .tab-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
 
-.vp-main{display:grid;grid-template-columns:1fr clamp(300px,28vw,420px);flex:1;min-height:0;overflow:hidden;}
+.vp-main{display:grid;grid-template-columns:1fr 320px;flex:1;min-height:0;overflow:hidden;}
 
 /* Canvas */
-.canvas-wrap{position:relative;background:var(--g100);overflow:hidden;display:flex;align-items:center;justify-content:center;width:100%;height:100%;}
+.canvas-wrap{position:relative;background:var(--g100);overflow:hidden;display:flex;align-items:center;justify-content:center;}
 .canvas-wrap::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--g200) 1px,transparent 1px),linear-gradient(90deg,var(--g200) 1px,transparent 1px);background-size:34px 34px;opacity:.5;}
-#c3d{position:absolute;inset:0;cursor:grab;display:block;width:100%;height:100%;}
+#c3d{position:relative;z-index:1;cursor:grab;display:block;}
 #c3d:active{cursor:grabbing;}
-.view-btns{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:3px;z-index:10;}
+.view-btns{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:3px;z-index:2;}
 .vb{background:var(--white);border:1px solid var(--g200);font-size:9px;letter-spacing:1px;padding:5px 9px;cursor:pointer;color:var(--g600);min-width:46px;text-align:center;font-family:inherit;transition:all .15s;}
 .vb:hover,.vb.on{background:var(--black);color:var(--white);border-color:var(--black);}
-.cv-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);z-index:10;pointer-events:none;transition:opacity .6s;white-space:nowrap;}
-.cv-auto{position:absolute;bottom:12px;right:12px;z-index:10;display:flex;align-items:center;gap:6px;cursor:pointer;}
+.cv-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);z-index:2;pointer-events:none;transition:opacity .6s;white-space:nowrap;}
+.cv-auto{position:absolute;bottom:12px;right:12px;z-index:2;display:flex;align-items:center;gap:6px;cursor:pointer;}
 .cv-auto span{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);}
 .sw{width:30px;height:15px;background:var(--g200);border-radius:8px;position:relative;border:none;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .sw.on{background:var(--black);}
 .sw-k{position:absolute;top:2px;left:2px;width:11px;height:11px;background:var(--white);border-radius:50%;transition:transform .2s;}
 .sw.on .sw-k{transform:translateX(15px);}
-.cv-info{position:absolute;bottom:12px;left:12px;font-size:9px;font-family:'Courier New',monospace;color:var(--g400);z-index:10;}
+.cv-info{position:absolute;bottom:12px;left:12px;font-size:9px;font-family:'Courier New',monospace;color:var(--g400);z-index:2;}
 
 /* Sidebar */
 .sidebar{border-left:1px solid var(--g200);display:flex;flex-direction:column;overflow:hidden;}
@@ -143,22 +143,24 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .geo-val-item span{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
 .geo-desc{font-size:9px;color:var(--g600);line-height:1.5;padding-top:8px;border-top:1px solid var(--g200);}
 
-/* Responsive */
-@media(min-width:1600px){
-  .vp-main{grid-template-columns:1fr clamp(360px,24vw,480px);}
-}
-@media(max-width:900px){
-  .vp-main{grid-template-columns:1fr;grid-template-rows:55vh 1fr;}
-  .sidebar{border-left:none;border-top:1px solid var(--g200);}
-  .cat-hdr{grid-template-columns:auto 1fr;flex-wrap:wrap;}
-  .search-bar{flex-wrap:wrap;gap:6px;}
-}
-@media(max-width:600px){
-  .vp-main{grid-template-rows:45vh 1fr;}
-  .vp-hdr{padding:8px 14px;}
-  .vp-tabs{gap:2px;}
-  .tab-btn{padding:4px 8px;font-size:8px;}
-}
+/* Appearance / Packing / Tag geo cards */
+.geo-sec-divider{padding:8px 18px 4px;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;background:var(--g100);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);display:flex;align-items:center;gap:8px;}
+.geo-sec-divider::after{content:'';flex:1;height:1px;background:var(--g200);}
+.geo-grade-row{display:flex;gap:6px;margin-top:8px;}
+.geo-grade{flex:1;text-align:center;padding:5px 4px;border:1px solid var(--g200);cursor:pointer;transition:all .15s;}
+.geo-grade .ggl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:3px;color:var(--g400);}
+.geo-grade .ggv{font-size:10px;font-weight:700;}
+.geo-grade.good{background:#eef8f2;border-color:var(--green);} .geo-grade.good .ggl{color:var(--green);}
+.geo-grade.fair{background:#fff8e8;border-color:var(--yellow);} .geo-grade.fair .ggl{color:var(--yellow);}
+.geo-grade.reject{background:#fef0ee;border-color:var(--red);} .geo-grade.reject .ggl{color:var(--red);}
+.geo-appear-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px;}
+.geo-appear-item{border:1px solid var(--g200);padding:6px 5px;text-align:center;cursor:pointer;transition:all .15s;background:var(--white);}
+.geo-appear-item svg{display:block;margin:0 auto 4px;}
+.geo-appear-item span{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--g600);}
+.geo-appear-item.selected{background:var(--black);border-color:var(--black);}
+.geo-appear-item.selected span{color:var(--white);}
+
+/* Admin panel */
 .admin-hdr{padding:12px 18px;background:var(--black);flex-shrink:0;}
 .admin-hdr h3{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--white);font-weight:600;}
 .admin-hdr p{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-top:2px;}
@@ -241,7 +243,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 </head>
 <body>
 
-<div class="config-banner" id="configBanner" style="display:none">
+<div class="config-banner" id="configBanner">
   ⚙️ ยังไม่ได้ตั้งค่า — แก้ไข <code>SHEET_ID</code> และ <code>SCRIPT_URL</code> ในโค้ด JS
   <a href="#" onclick="this.parentElement.style.display='none'">ปิด</a>
 </div>
@@ -471,6 +473,311 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
             <div class="geo-desc">รัศมีดัดงอขั้นต่ำโดยไม่แตกร้าว R คือรัศมี, t คือความหนาแผ่น ทิศตัดขวางดัดได้ง่ายกว่าตามยาว</div>
           </div>
 
+          <!-- DIVIDER -->
+          <div class="geo-sec-divider">Appearance</div>
+
+          <!-- EDGE CONDITION -->
+          <div class="geo-card">
+            <div class="geo-title">Edge Condition</div>
+            <div class="geo-std">ระดับปลายกระดก และขอบดึง</div>
+            <div class="geo-diagram">
+              <svg width="240" height="90" viewBox="0 0 240 90" fill="none">
+                <!-- Mill edge (good) -->
+                <rect x="10" y="30" width="80" height="14" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
+                <text x="14" y="26" font-size="8" fill="#1a7a4a" font-family="Courier New" font-weight="700">Mill Edge</text>
+                <text x="14" y="56" font-size="8" fill="#a0a09c" font-family="Courier New">ขอบตรง ไม่กระดก</text>
+                <!-- Slit edge lifted (defect) -->
+                <path d="M148 44 L148 30 L218 30 L218 44 L210 36 L200 44 L192 34 L184 44 L176 36 L166 44 L158 36 L148 44Z" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
+                <text x="148" y="26" font-size="8" fill="#c0392b" font-family="Courier New" font-weight="700">Lifted Edge</text>
+                <text x="148" y="56" font-size="8" fill="#a0a09c" font-family="Courier New">ขอบกระดก / เป็นคลื่น</text>
+                <!-- arrows showing lift -->
+                <line x1="166" y1="37" x2="166" y2="28" stroke="#c0392b" stroke-width="1.2"/>
+                <polygon points="166,24 163,30 169,30" fill="#c0392b"/>
+                <line x1="192" y1="35" x2="192" y2="26" stroke="#c0392b" stroke-width="1.2"/>
+                <polygon points="192,22 189,28 195,28" fill="#c0392b"/>
+                <!-- label bottom -->
+                <text x="10" y="82" font-size="8" fill="#a0a09c" font-family="Courier New">Slit edge · Mill edge · Burr-free</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val-item"><label>ขอบ Mill</label><span>ตัดตรง ไม่มีรอย</span></div>
+              <div class="geo-val-item"><label>ขอบ Slit</label><span>ยอมรับ ≤ 0.5 mm</span></div>
+            </div>
+            <div class="geo-appear-grid" id="edge-grade">
+              <div class="geo-appear-item good selected" onclick="selectGrade('edge-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="1" y="5" width="26" height="8" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.2"/></svg>
+                <span>Good</span>
+              </div>
+              <div class="geo-appear-item fair" onclick="selectGrade('edge-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><path d="M1 13 L1 5 L27 5 L27 13 L24 9 L21 13 L18 9 L15 13 L12 9 L9 13 L6 9 L1 13Z" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.2"/></svg>
+                <span>Fair</span>
+              </div>
+              <div class="geo-appear-item reject" onclick="selectGrade('edge-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><path d="M1 13 L1 5 L27 5 L27 13 L22 6 L17 13 L12 6 L7 13 L1 13Z" fill="#e0e0dc" stroke="#c0392b" stroke-width="1.5"/></svg>
+                <span>Reject</span>
+              </div>
+            </div>
+            <div class="geo-desc">Mill edge = ขอบที่ตัดจากโรงงาน ไม่มีรอย Slit edge = ตัดจากม้วนใหญ่ ยอมรับได้หากกระดกน้อยกว่า 0.5 mm</div>
+          </div>
+
+          <!-- WAVE / BUCKLE -->
+          <div class="geo-card">
+            <div class="geo-title">Wave &amp; Buckle</div>
+            <div class="geo-std">ระดับรอยหักและเป็นคลื่น</div>
+            <div class="geo-diagram">
+              <svg width="240" height="88" viewBox="0 0 240 88" fill="none">
+                <!-- flat (good) view -->
+                <rect x="10" y="30" width="65" height="10" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
+                <rect x="10" y="40" width="65" height="4" fill="#c8c8c4" stroke="none"/>
+                <text x="14" y="26" font-size="8" fill="#1a7a4a" font-family="Courier New" font-weight="700">Flat</text>
+                <!-- center buckle -->
+                <path d="M90 40 C100 28,110 34,120 28 C130 22,140 34,150 40" stroke="#0a0a0a" stroke-width="2" fill="none"/>
+                <path d="M90 46 C100 34,110 40,120 34 C130 28,140 40,150 46" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
+                <path d="M90 40 C100 28,110 34,120 28 C130 22,140 34,150 40 L150 46 C140 40,130 28,120 34 C110 40,100 34,90 46Z" fill="#e0e0dc" opacity="0.7"/>
+                <text x="90" y="26" font-size="8" fill="#d4a017" font-family="Courier New" font-weight="700">Center Buckle</text>
+                <line x1="120" y1="40" x2="120" y2="21" stroke="#d4a017" stroke-width="1"/>
+                <polygon points="120,17 117,24 123,24" fill="#d4a017"/>
+                <!-- edge wave -->
+                <path d="M172 40 C178 32,185 36,190 30 C195 24,200 36,206 40" stroke="#c0392b" stroke-width="2" fill="none"/>
+                <path d="M172 46 C178 38,185 42,190 36 C195 30,200 42,206 46" stroke="#c0392b" stroke-width="1.5" fill="none"/>
+                <path d="M172 40 C178 32,185 36,190 30 C195 24,200 36,206 40 L206 46 C200 42,195 30,190 36 C185 42,178 38,172 46Z" fill="#fef0ee" opacity="0.8"/>
+                <text x="168" y="26" font-size="8" fill="#c0392b" font-family="Courier New" font-weight="700">Edge Wave</text>
+                <text x="10" y="80" font-size="8" fill="#a0a09c" font-family="Courier New">ตรวจบน Surface plate / ไม้บรรทัด 1m</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val-item"><label>Center Buckle</label><span>≤ 10 mm/m</span></div>
+              <div class="geo-val-item"><label>Edge Wave</label><span>≤ 15 mm/m</span></div>
+            </div>
+            <div class="geo-appear-grid" id="wave-grade">
+              <div class="geo-appear-item good selected" onclick="selectGrade('wave-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="1" y="6" width="26" height="6" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.2"/></svg>
+                <span>Flat</span>
+              </div>
+              <div class="geo-appear-item fair" onclick="selectGrade('wave-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><path d="M1 12 C6 6,12 10,14 6 C16 2,22 8,27 12" stroke="#0a0a0a" stroke-width="1.5" fill="none"/><path d="M1 16 C6 10,12 14,14 10 C16 6,22 12,27 16" stroke="#0a0a0a" stroke-width="1.2" fill="none"/></svg>
+                <span>Slight</span>
+              </div>
+              <div class="geo-appear-item reject" onclick="selectGrade('wave-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><path d="M1 14 C4 4,8 14,12 4 C16 -6,20 14,24 4 L27 6" stroke="#c0392b" stroke-width="1.8" fill="none"/></svg>
+                <span>Reject</span>
+              </div>
+            </div>
+            <div class="geo-desc">Center Buckle = คลื่นตรงกลาง, Edge Wave = คลื่นที่ขอบ ตรวจด้วยไม้บรรทัดตรง 1 เมตรบน Surface plate</div>
+          </div>
+
+          <!-- SURFACE CONDITION -->
+          <div class="geo-card">
+            <div class="geo-title">Surface Condition</div>
+            <div class="geo-std">ระดับครามน้ำ / สนิม / Scale</div>
+            <div class="geo-diagram">
+              <svg width="240" height="88" viewBox="0 0 240 88" fill="none">
+                <!-- Clean surface -->
+                <rect x="10" y="28" width="58" height="22" fill="#d8d8d4" stroke="#0a0a0a" stroke-width="1.5"/>
+                <text x="14" y="24" font-size="8" fill="#1a7a4a" font-family="Courier New" font-weight="700">Clean</text>
+                <text x="10" y="62" font-size="7" fill="#a0a09c" font-family="Courier New">ผิวสม่ำเสมอ</text>
+                <!-- Mill scale -->
+                <rect x="84" y="28" width="58" height="22" fill="#b8b0a4" stroke="#0a0a0a" stroke-width="1.5"/>
+                <ellipse cx="100" cy="37" rx="5" ry="3" fill="#8a8078" opacity="0.8"/>
+                <ellipse cx="116" cy="41" rx="6" ry="2.5" fill="#8a8078" opacity="0.7"/>
+                <ellipse cx="126" cy="35" rx="4" ry="3" fill="#7a7068" opacity="0.8"/>
+                <text x="84" y="24" font-size="8" fill="#d4a017" font-family="Courier New" font-weight="700">Mill Scale</text>
+                <text x="84" y="62" font-size="7" fill="#a0a09c" font-family="Courier New">ยอมรับได้ใน HR</text>
+                <!-- Heavy rust -->
+                <rect x="160" y="28" width="68" height="22" fill="#c0b090" stroke="#c0392b" stroke-width="1.5"/>
+                <ellipse cx="176" cy="36" rx="7" ry="4" fill="#9a6030" opacity="0.85"/>
+                <ellipse cx="194" cy="42" rx="8" ry="3.5" fill="#a06828" opacity="0.8"/>
+                <ellipse cx="212" cy="35" rx="6" ry="4.5" fill="#883c18" opacity="0.9"/>
+                <text x="160" y="24" font-size="8" fill="#c0392b" font-family="Courier New" font-weight="700">Heavy Rust</text>
+                <text x="160" y="62" font-size="7" fill="#c0392b" font-family="Courier New">Reject</text>
+                <!-- bottom label -->
+                <text x="10" y="80" font-size="8" fill="#a0a09c" font-family="Courier New">Scale · Light rust · Pitting · Coating loss</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val-item"><label>Mill Scale (HR)</label><span>ยอมรับได้</span></div>
+              <div class="geo-val-item"><label>Rust / Pitting</label><span>Reject</span></div>
+              <div class="geo-val-item"><label>Coating (GI)</label><span>≥ Z27 g/m²</span></div>
+              <div class="geo-val-item"><label>Oil film (CR)</label><span>ฟิล์มบางสม่ำเสมอ</span></div>
+            </div>
+            <div class="geo-appear-grid" id="surface-grade">
+              <div class="geo-appear-item good selected" onclick="selectGrade('surface-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="1" y="3" width="26" height="12" fill="#d8d8d4" stroke="#0a0a0a" stroke-width="1.2"/></svg>
+                <span>Clean</span>
+              </div>
+              <div class="geo-appear-item fair" onclick="selectGrade('surface-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="1" y="3" width="26" height="12" fill="#b8b0a4" stroke="#0a0a0a" stroke-width="1.2"/><ellipse cx="10" cy="9" rx="3" ry="2" fill="#8a8078"/><ellipse cx="20" cy="9" rx="4" ry="2" fill="#8a8078"/></svg>
+                <span>Scale</span>
+              </div>
+              <div class="geo-appear-item reject" onclick="selectGrade('surface-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="1" y="3" width="26" height="12" fill="#c0b090" stroke="#c0392b" stroke-width="1.5"/><ellipse cx="9" cy="9" rx="4" ry="3" fill="#9a6030"/><ellipse cx="20" cy="9" rx="5" ry="3" fill="#883c18"/></svg>
+                <span>Rust</span>
+              </div>
+            </div>
+            <div class="geo-desc">HR: Mill scale ยอมรับได้ตาม JIS G3131 · GI: ตรวจ Coating weight ≥ Z27 · CR: ต้องมีฟิล์มน้ำมันบางสม่ำเสมอ ไม่มีสนิม</div>
+          </div>
+
+          <!-- DIVIDER: Marking -->
+          <div class="geo-sec-divider">Marking Format</div>
+
+          <!-- MARKING -->
+          <div class="geo-card">
+            <div class="geo-title">Marking Format</div>
+            <div class="geo-std">Std. รูปแบบการพิมพ์มิลล์แยกแบบไหนบ้าง</div>
+            <div class="geo-diagram">
+              <svg width="240" height="100" viewBox="0 0 240 100" fill="none">
+                <!-- sheet outline -->
+                <rect x="10" y="12" width="220" height="68" fill="#e8e8e4" stroke="#0a0a0a" stroke-width="1.5"/>
+                <!-- mill stamp area top-left -->
+                <rect x="18" y="20" width="90" height="24" fill="none" stroke="#606060" stroke-width="1" stroke-dasharray="3,2"/>
+                <text x="22" y="29" font-size="7" fill="#606060" font-family="Courier New" font-weight="700">MILL MARK</text>
+                <text x="22" y="38" font-size="7" fill="#0a0a0a" font-family="Courier New">SPHC · JIS G3131</text>
+                <!-- heat number bottom-left -->
+                <text x="18" y="68" font-size="7" fill="#606060" font-family="Courier New">Heat:</text>
+                <text x="38" y="68" font-size="7" fill="#0a0a0a" font-family="Courier New" font-weight="700">HT2024-0892</text>
+                <!-- grade stamp right side -->
+                <rect x="154" y="20" width="68" height="24" fill="none" stroke="#606060" stroke-width="1" stroke-dasharray="3,2"/>
+                <text x="158" y="29" font-size="7" fill="#606060" font-family="Courier New">GRADE</text>
+                <text x="158" y="38" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700">SS400</text>
+                <!-- arrows -->
+                <line x1="63" y1="44" x2="63" y2="55" stroke="#a0a09c" stroke-width="1" stroke-dasharray="2,2"/>
+                <text x="22" y="62" font-size="7" fill="#a0a09c" font-family="Courier New">พิมพ์นูน / สี / เลเซอร์</text>
+                <text x="10" y="90" font-size="8" fill="#a0a09c" font-family="Courier New">JIS: Mill · Grade · Heat · Standard</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val-item"><label>ตำแหน่ง</label><span>มุมซ้ายบน</span></div>
+              <div class="geo-val-item"><label>วิธีพิมพ์</label><span>นูน / สี / Laser</span></div>
+              <div class="geo-val-item"><label>ข้อมูล</label><span>Mill · Grade · Heat</span></div>
+              <div class="geo-val-item"><label>Standard</label><span>JIS / ASTM / EN</span></div>
+            </div>
+            <div class="geo-desc">ตามมาตรฐาน JIS ต้องมี Mill name, Grade, Heat No., Standard ทุกแผ่น ตรวจว่าตัวอักษรชัดเจน อ่านได้ ไม่ลบเลือน</div>
+          </div>
+
+          <!-- DIVIDER: Packing -->
+          <div class="geo-sec-divider">Packing &amp; Tag</div>
+
+          <!-- PACKING STD -->
+          <div class="geo-card">
+            <div class="geo-title">Packing Standard</div>
+            <div class="geo-std">Std. การ Pack ของทาง WH</div>
+            <div class="geo-diagram">
+              <svg width="240" height="110" viewBox="0 0 240 110" fill="none">
+                <!-- bundle sheets (isometric-ish side view) -->
+                <!-- sheets stack -->
+                <rect x="20" y="50" width="150" height="7" fill="#ccc8c2" stroke="#0a0a0a" stroke-width="1.2"/>
+                <rect x="20" y="43" width="150" height="7" fill="#d0ccc6" stroke="#0a0a0a" stroke-width="1.2"/>
+                <rect x="20" y="36" width="150" height="7" fill="#d4d0ca" stroke="#0a0a0a" stroke-width="1.2"/>
+                <rect x="20" y="29" width="150" height="7" fill="#d8d4ce" stroke="#0a0a0a" stroke-width="1.2"/>
+                <rect x="20" y="22" width="150" height="7" fill="#dcdad6" stroke="#0a0a0a" stroke-width="1.2"/>
+                <!-- straps vertical left -->
+                <rect x="46" y="18" width="5" height="43" fill="none" stroke="#606060" stroke-width="2"/>
+                <!-- straps vertical right -->
+                <rect x="118" y="18" width="5" height="43" fill="none" stroke="#606060" stroke-width="2"/>
+                <!-- wooden pallet -->
+                <rect x="14" y="57" width="162" height="8" fill="#c8a870" stroke="#0a0a0a" stroke-width="1.2"/>
+                <rect x="20" y="65" width="20" height="10" fill="#b89860" stroke="#0a0a0a" stroke-width="1"/>
+                <rect x="74" y="65" width="20" height="10" fill="#b89860" stroke="#0a0a0a" stroke-width="1"/>
+                <rect x="140" y="65" width="20" height="10" fill="#b89860" stroke="#0a0a0a" stroke-width="1"/>
+                <!-- label arrow left strap -->
+                <line x1="48" y1="38" x2="40" y2="25" stroke="#0a0a0a" stroke-width="1"/>
+                <text x="4" y="23" font-size="7" fill="#0a0a0a" font-family="Courier New">strap</text>
+                <!-- label pallet -->
+                <text x="178" y="72" font-size="7" fill="#a0a09c" font-family="Courier New">ไม้รอง</text>
+                <!-- rust paper wrap line -->
+                <rect x="19" y="21" width="152" height="37" fill="none" stroke="#d4a017" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
+                <text x="178" y="30" font-size="7" fill="#d4a017" font-family="Courier New">ฟิล์ม</text>
+                <text x="178" y="39" font-size="7" fill="#d4a017" font-family="Courier New">กันสนิม</text>
+                <!-- bottom note -->
+                <text x="10" y="95" font-size="8" fill="#a0a09c" font-family="Courier New">หนา: ไม้รัด · บาง: สายรัดเหล็ก · ห่อกันสนิม</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val-item"><label>Thk หนา</label><span>ไม้รัด 2 เส้น</span></div>
+              <div class="geo-val-item"><label>Thk บาง</label><span>สายรัดเหล็ก 2 เส้น</span></div>
+              <div class="geo-val-item"><label>ห่อ</label><span>ฟิล์ม + กระดาษกันสนิม</span></div>
+              <div class="geo-val-item"><label>รองพื้น</label><span>ไม้รอง Forklift</span></div>
+            </div>
+            <div class="geo-appear-grid" id="pack-grade">
+              <div class="geo-appear-item good selected" onclick="selectGrade('pack-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="24" height="10" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1"/><line x1="8" y1="2" x2="8" y2="16" stroke="#606060" stroke-width="2"/><line x1="20" y1="2" x2="20" y2="16" stroke="#606060" stroke-width="2"/></svg>
+                <span>Pass</span>
+              </div>
+              <div class="geo-appear-item fair" onclick="selectGrade('pack-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="24" height="10" fill="#e0e0dc" stroke="#d4a017" stroke-width="1.5"/><line x1="8" y1="2" x2="8" y2="16" stroke="#d4a017" stroke-width="1.5"/></svg>
+                <span>Partial</span>
+              </div>
+              <div class="geo-appear-item reject" onclick="selectGrade('pack-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="24" height="10" fill="#fef0ee" stroke="#c0392b" stroke-width="1.5"/><text x="8" y="13" font-size="9" fill="#c0392b">✕</text></svg>
+                <span>Fail</span>
+              </div>
+            </div>
+            <div class="geo-desc">ตรวจว่ามัดแน่น ฟิล์มห่อครบ ไม่มีรอยเปียก ไม้รองครบ ป้าย Tag ติดอยู่ครบทุกมัด</div>
+          </div>
+
+          <!-- TAG / STICKER -->
+          <div class="geo-card">
+            <div class="geo-title">Tag &amp; Sticker</div>
+            <div class="geo-std">ติด Tag บนเหล็ก อีกอันแลบออกมาเพื่อสแกน</div>
+            <div class="geo-diagram">
+              <svg width="240" height="105" viewBox="0 0 240 105" fill="none">
+                <!-- bundle side view -->
+                <rect x="10" y="28" width="130" height="42" fill="#d8d4ce" stroke="#0a0a0a" stroke-width="1.5"/>
+                <rect x="10" y="28" width="130" height="7" fill="#dedad6" stroke="#0a0a0a" stroke-width="1"/>
+                <rect x="10" y="35" width="130" height="7" fill="#d8d4ce" stroke="#0a0a0a" stroke-width="1"/>
+                <rect x="10" y="42" width="130" height="7" fill="#d4d0ca" stroke="#0a0a0a" stroke-width="1"/>
+                <rect x="10" y="49" width="130" height="7" fill="#d0ccc6" stroke="#0a0a0a" stroke-width="1"/>
+                <rect x="10" y="56" width="130" height="7" fill="#ccc8c2" stroke="#0a0a0a" stroke-width="1"/>
+                <rect x="10" y="63" width="130" height="7" fill="#c8c4be" stroke="#0a0a0a" stroke-width="1"/>
+                <!-- strap -->
+                <rect x="55" y="24" width="4" height="52" fill="none" stroke="#606060" stroke-width="2"/>
+                <!-- TAG on bundle (visible) -->
+                <rect x="118" y="34" width="34" height="22" fill="#fef9c3" stroke="#d4a017" stroke-width="1.5"/>
+                <text x="122" y="43" font-size="6" fill="#0a0a0a" font-family="Courier New" font-weight="700">SPHC-HR</text>
+                <text x="122" y="51" font-size="6" fill="#606060" font-family="Courier New">2.0×1200</text>
+                <!-- TAG dangling out (for scanning) -->
+                <line x1="152" y1="45" x2="175" y2="45" stroke="#d4a017" stroke-width="1" stroke-dasharray="2,2"/>
+                <rect x="175" y="33" width="54" height="32" fill="#fef9c3" stroke="#d4a017" stroke-width="1.5"/>
+                <!-- QR placeholder -->
+                <rect x="179" y="37" width="18" height="18" fill="#0a0a0a" opacity="0.85"/>
+                <rect x="181" y="39" width="5" height="5" fill="#fef9c3"/>
+                <rect x="190" y="39" width="5" height="5" fill="#fef9c3"/>
+                <rect x="181" y="48" width="5" height="5" fill="#fef9c3"/>
+                <rect x="187" y="46" width="3" height="3" fill="#fef9c3"/>
+                <text x="200" y="44" font-size="6" fill="#0a0a0a" font-family="Courier New" font-weight="700">SKU</text>
+                <text x="200" y="52" font-size="6" fill="#606060" font-family="Courier New">Heat No</text>
+                <text x="200" y="59" font-size="6" fill="#606060" font-family="Courier New">Prod Date</text>
+                <!-- scan arrow -->
+                <text x="185" y="72" font-size="8" fill="#d4a017" font-family="Courier New">← scan</text>
+                <!-- labels bottom -->
+                <text x="118" y="90" font-size="7" fill="#a0a09c" font-family="Courier New">Tag บนมัด</text>
+                <text x="175" y="90" font-size="7" fill="#d4a017" font-family="Courier New">Tab แลบสแกน</text>
+                <text x="10" y="100" font-size="8" fill="#a0a09c" font-family="Courier New">ตรวจ: ครบ · อ่านได้ · QR scan ได้ · ไม่หลุด</text>
+              </svg>
+            </div>
+            <div class="geo-vals">
+              <div class="geo-val-item"><label>Tag บนมัด</label><span>ครบทุกมัด</span></div>
+              <div class="geo-val-item"><label>Tab แลบ</label><span>พับออกด้านข้าง</span></div>
+              <div class="geo-val-item"><label>QR / Barcode</label><span>Scan ได้ 100%</span></div>
+              <div class="geo-val-item"><label>ข้อมูล</label><span>SKU · Heat · วันผลิต</span></div>
+            </div>
+            <div class="geo-appear-grid" id="tag-grade">
+              <div class="geo-appear-item good selected" onclick="selectGrade('tag-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="16" height="11" fill="#fef9c3" stroke="#d4a017" stroke-width="1.2"/><rect x="18" y="6" width="8" height="8" fill="#fef9c3" stroke="#d4a017" stroke-width="1"/><text x="19" y="13" font-size="8" fill="#1a7a4a">✓</text></svg>
+                <span>Pass</span>
+              </div>
+              <div class="geo-appear-item fair" onclick="selectGrade('tag-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="16" height="11" fill="#fef9c3" stroke="#d4a017" stroke-width="1.2"/><text x="10" y="13" font-size="8" fill="#d4a017">?</text></svg>
+                <span>Partial</span>
+              </div>
+              <div class="geo-appear-item reject" onclick="selectGrade('tag-grade',this)">
+                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="16" height="11" fill="#fef0ee" stroke="#c0392b" stroke-width="1.5"/><text x="5" y="13" font-size="8" fill="#c0392b">miss</text></svg>
+                <span>Missing</span>
+              </div>
+            </div>
+            <div class="geo-desc">Tag ต้องติดแน่น ไม่หลุด QR/Barcode scan ได้ · Tab แลบต้องพับออกด้านข้างมัดเพื่อสแกนโดยไม่ต้องแกะ</div>
+          </div>
+
         </div>
       </div>
 
@@ -589,7 +896,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
   <div class="order-modal" onclick="event.stopPropagation()">
     <div class="modal-hdr">
       <h2>เปิด Sales Order</h2>
-      <button class="modal-close" onclick="closeOrderModalForce()">×</button>
+      <button class="modal-close" onclick="closeOrderModal()">×</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
@@ -597,12 +904,20 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 
 <script>
 // ══ CONFIG ══
-var SHEET_ID   = '1cRyakqWceoB18RrQKUoTCkNbqpPJaku1uCcmZB74ScE';
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0L4mq9Be83pe0VMpFkE9zRl5revOPgUyNxocUK7VzpyrdkOyVBSLWBcEPe7x8RgKafg/exec';
+var SHEET_ID   = 'YOUR_GOOGLE_SHEET_ID_HERE';
+var SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
 // ═══════════
 
 var allSkus=[], filteredSkus=[], currentSku=null;
 var S={sheets:5,thick:2.0,w:1200,l:2400}; // 3D state
+
+// ── GRADE SELECTOR ───────────────────────────────
+function selectGrade(groupId, el){
+  var group=document.getElementById(groupId);
+  if(!group)return;
+  group.querySelectorAll('.geo-appear-item').forEach(function(b){b.classList.remove('selected');});
+  el.classList.add('selected');
+}
 
 // ── LOAD ─────────────────────────────────────────
 function loadCatalog(){
@@ -621,42 +936,12 @@ function parseGvizObj(json){
     var o={};cols.forEach(function(c,i){var cell=row.c[i];o[c]=(cell&&cell.v!=null)?cell.v:'';});return o;
   });
   if(!allSkus.length){showError('ไม่พบข้อมูลใน SKU_CATALOG sheet');return;}
-  buildFilterOptions(); // สร้าง dropdown จากข้อมูลจริง
   filteredSkus=allSkus.slice(); renderGrid();
-}
-
-function buildFilterOptions(){
-  function fillSelect(id,values){
-    var sel=document.getElementById(id);
-    var cur=sel.value;
-    sel.innerHTML='<option value="">— ทั้งหมด —</option>';
-    values.sort().forEach(function(v){
-      var o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);
-    });
-    if(cur)sel.value=cur;
-  }
-  var surfaces=[],grades=[],thicks=[],widths=[],lengths=[];
-  allSkus.forEach(function(s){
-    if(s.SURFACE&&surfaces.indexOf(s.SURFACE)<0)surfaces.push(s.SURFACE);
-    if(s.GRADE&&grades.indexOf(s.GRADE)<0)grades.push(s.GRADE);
-    var t=String(parseFloat(s.THICKNESS_MM));if(t&&thicks.indexOf(t)<0)thicks.push(t);
-    var w=String(parseInt(s.WIDTH_MM));if(w&&widths.indexOf(w)<0)widths.push(w);
-    var l=String(parseInt(s.LENGTH_MM));if(l&&lengths.indexOf(l)<0)lengths.push(l);
-  });
-  fillSelect('f-surface',surfaces);
-  fillSelect('f-grade',grades);
-  fillSelect('f-thick',thicks);
-  fillSelect('f-width',widths);
-  fillSelect('f-length',lengths);
 }
 function loadViaJsonp(){
   var cb='gcb'+Date.now(),sc=document.createElement('script');
-  var timer=setTimeout(function(){
-    delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);
-    showError('โหลดข้อมูลหมดเวลา — ตรวจสอบ Sheet Permission หรือ Network');
-  },12000);
-  window[cb]=function(j){clearTimeout(timer);delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);try{parseGvizObj(j);}catch(e){showError('โหลดข้อมูลไม่ได้ — ตรวจสอบ Sheet Permission');}};
-  sc.onerror=function(){clearTimeout(timer);delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);showError('SHEET_ID ผิด หรือ Sheet ยังไม่ Public');};
+  window[cb]=function(j){delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);try{parseGvizObj(j);}catch(e){showError('โหลดข้อมูลไม่ได้ — ตรวจสอบ Sheet Permission');}};
+  sc.onerror=function(){delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);showError('SHEET_ID ผิด หรือ Sheet ยังไม่ Public');};
   sc.src='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&callback='+cb;
   document.body.appendChild(sc);
 }
@@ -670,7 +955,7 @@ function applyFilter(){
     if(fv('f-thick')&&String(parseFloat(s.THICKNESS_MM))!==fv('f-thick'))return false;
     if(fv('f-width')&&String(parseInt(s.WIDTH_MM))!==fv('f-width'))return false;
     if(fv('f-length')&&String(parseInt(s.LENGTH_MM))!==fv('f-length'))return false;
-    if(s.STATUS==='INACTIVE')return false; // กรองเฉพาะที่ตั้ง INACTIVE ชัดเจน
+    if(s.STATUS&&s.STATUS!=='ACTIVE')return false;
     return true;
   });
   renderGrid();
@@ -780,20 +1065,17 @@ function openViewer(idx){
   document.getElementById('cat-hdr').style.display='none';
   document.getElementById('viewer-page').classList.add('open');
 
-  // reset tab — หา tab-btn ที่ตรงกับ 'spec' จริงๆ
-  var specBtn=document.querySelector('.tab-btn[onclick*="spec"]');
-  switchTab('spec', specBtn||document.querySelector('.tab-btn'));
-  // reset 3D - ปรับ canvas ให้เต็มพื้นที่ทันที
+  // reset tab
+  switchTab('spec', document.querySelector('.tab-btn'));
+  // reset 3D
   camTargetY=0.5; camTargetX=0.25; autoRot=true;
   document.getElementById('cv-sw').classList.add('on');
   document.querySelectorAll('.vb').forEach(function(b,i){b.classList.toggle('on',i===0);});
-  // ใช้ requestAnimationFrame เพื่อให้ layout เสร็จก่อน resize
-  requestAnimationFrame(function(){
-    resizeCanvas();
+  setTimeout(function(){
+    var cw=document.querySelector('.canvas-wrap');
+    canvas.width=cw.clientWidth; canvas.height=cw.clientHeight;
     if(!loopRunning)startLoop();
-    // resize อีกรอบหลัง transition เสร็จ
-    setTimeout(resizeCanvas, 100);
-  });
+  },60);
   setTimeout(function(){document.getElementById('cv-hint').style.opacity='0';},3000);
 }
 
@@ -856,21 +1138,8 @@ function applyAdmin(){
   if(currentSku){
     currentSku.PRICE_PER_SHEET_THB=document.getElementById('a-price').value;
     currentSku.STOCK_QTY=document.getElementById('a-stock').value;
-    var newStock=parseInt(currentSku.STOCK_QTY)||0;
     document.getElementById('v-price').innerHTML='฿ '+parseInt(currentSku.PRICE_PER_SHEET_THB).toLocaleString()+'<span>/ แผ่น</span>';
-    // อัปเดต stock display ใน spec panel
-    var dc=newStock===0?'var(--red)':newStock<10?'var(--yellow)':'var(--green)';
-    document.getElementById('v-dot').style.background=dc;
-    document.getElementById('v-stock').textContent=newStock===0?'หมดสต็อก':'มีสต็อก · '+newStock+' แผ่น · '+((parseFloat(currentSku.STOCK_KG)||0).toLocaleString())+' kg';
-    var ctaBtn=document.getElementById('btn-cta');
-    ctaBtn.disabled=newStock===0;ctaBtn.textContent=newStock===0?'หมดสต็อก':'เลือกรายการนี้';
     calcUpdate();
-    // Persist stock change to Google Sheet
-    var form=new FormData();
-    form.append('payload',JSON.stringify({action:'updateStock',sku:currentSku.SKU,newStock:newStock}));
-    fetch(SCRIPT_URL,{method:'POST',body:form,redirect:'follow'})
-      .then(function(){/* silent success */})
-      .catch(function(){/* ignore CORS opaque */});
   }
   syncMech(); syncGeoAdmin(); syncLabel();
   alert('อัปเดตแล้วครับ');
@@ -894,7 +1163,6 @@ function syncLabel(){
 function printLabel(){
   var el=document.getElementById('sticker');
   var win=window.open('','_blank','width=500,height=420');
-  if(!win){alert('กรุณาอนุญาต Popup สำหรับหน้าต่างนี้ในการพิมพ์ label ครับ');return;}
   win.document.write('<html><head><title>Label</title><style>body{margin:20px;font-family:Helvetica,Arial,sans-serif}*{box-sizing:border-box}.sticker{border:2px solid #0a0a0a;width:300px;box-shadow:3px 3px 0 #0a0a0a}.stk-top{background:#0a0a0a;padding:7px 10px;display:flex;justify-content:space-between;align-items:center}.stk-co{font-size:15px;font-weight:700;letter-spacing:3px;color:#f8f8f6}.stk-cert{font-size:7px;letter-spacing:1px;color:#a0a09c}.stk-body{padding:8px 10px}.stk-sku{font-size:15px;font-weight:700;letter-spacing:.5px;border-bottom:1px solid #e0e0dc;padding-bottom:6px;margin-bottom:6px}.stk-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}.stk-field label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:#a0a09c;display:block}.stk-field span{font-size:11px;font-weight:600;font-family:Courier New,monospace}.stk-btm{border-top:1px solid #e0e0dc;padding:6px 10px;display:flex;justify-content:space-between;align-items:center}.heat{font-size:8px;letter-spacing:.5px;color:#606060;font-family:Courier New,monospace}.qr{width:38px;height:38px;background:#f0f0ee;border:1px solid #e0e0dc;display:flex;align-items:center;justify-content:center;font-size:6px;text-align:center;color:#a0a09c;line-height:1.4}@media print{body{margin:0}}</style></head><body>');
   win.document.write(el.outerHTML);
   win.document.write('</body></html>');
@@ -934,11 +1202,7 @@ function updOrd(){
   document.getElementById('os-b').textContent=Math.ceil(q/b)+' มัด';
 }
 function closeOrderModal(e){
-  // ถ้าเรียกจาก overlay click ให้เช็คว่ากดบน overlay จริงๆ ไม่ใช่ modal ด้านใน
   if(e&&e.target!==document.getElementById('orderOverlay'))return;
-  document.getElementById('orderOverlay').classList.remove('open');
-}
-function closeOrderModalForce(){
   document.getElementById('orderOverlay').classList.remove('open');
 }
 function submitOrder(){
@@ -947,31 +1211,13 @@ function submitOrder(){
   if(!qty){alert('กรุณากรอกจำนวนแผ่นครับ');return;}
   var btn=document.querySelector('.btn-submit');btn.disabled=true;btn.textContent='กำลังส่ง...';
   var s=currentSku;
-  var payload={action:'createOrder',customerName:name,customerPhone:(document.getElementById('o-phone').value||'').trim(),sku:s.SKU,grade:s.GRADE,surface:s.SURFACE,thickness:s.THICKNESS_MM,width:s.WIDTH_MM,length:s.LENGTH_MM,qty:qty,weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),pricePerSheet:price,priceTotal:qty*price,note:(document.getElementById('o-note').value||'').trim()};
-  // ใช้ FormData เพื่อหลีกเลี่ยง CORS preflight ของ GAS
-  var form=new FormData();
-  form.append('payload',JSON.stringify(payload));
-  fetch(SCRIPT_URL,{method:'POST',body:form,redirect:'follow'})
-  .then(function(r){
-    if(!r.ok&&r.status!==0)throw new Error('HTTP '+r.status);
-    // GAS no-cors returns opaque — treat as success and generate orderNo client-side
-    return r.text().catch(function(){return '';});
+  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'createOrder',customerName:name,customerPhone:(document.getElementById('o-phone').value||'').trim(),sku:s.SKU,grade:s.GRADE,surface:s.SURFACE,thickness:s.THICKNESS_MM,width:s.WIDTH_MM,length:s.LENGTH_MM,qty:qty,weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),pricePerSheet:price,priceTotal:qty*price,note:(document.getElementById('o-note').value||'').trim()})})
+  .then(function(r){return r.json();})
+  .then(function(res){
+    if(res.success){document.getElementById('modal-body').innerHTML='<div class="success-box"><div class="check">✓</div><h3>Order สำเร็จ!</h3><div class="order-no">'+res.orderNo+'</div><button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button></div>';}
+    else{alert('เกิดข้อผิดพลาด: '+(res.error||'unknown'));btn.disabled=false;btn.textContent='ยืนยัน Order →';}
   })
-  .then(function(text){
-    var res={};
-    try{res=JSON.parse(text);}catch(e){/* opaque response — assume success */}
-    if(res.error){throw new Error(res.error);}
-    var orderNo=res.orderNo||('ORD-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+String(Date.now()).slice(-4));
-    document.getElementById('modal-body').innerHTML='<div class="success-box"><div class="check">✓</div><h3>Order สำเร็จ!</h3><div class="order-no">'+orderNo+'</div><button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button></div>';
-  })
-  .catch(function(err){
-    // Fallback: ถ้า CORS block แต่ GAS อาจรับไปแล้ว — ยืนยันกับผู้ใช้
-    if(err.message==='Failed to fetch'||err.message.indexOf('NetworkError')>-1){
-      document.getElementById('modal-body').innerHTML='<div class="success-box"><div class="check">✓</div><h3>ส่ง Order แล้ว!</h3><p style="font-size:11px;color:var(--g600);margin-bottom:12px">กรุณาตรวจสอบใน Google Sheet</p><button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button></div>';
-    } else {
-      alert('เกิดข้อผิดพลาด: '+(err.message||'unknown'));btn.disabled=false;btn.textContent='ยืนยัน Order →';
-    }
-  });
+  .catch(function(){alert('ส่งข้อมูลไม่ได้ — ตรวจสอบ SCRIPT_URL');btn.disabled=false;btn.textContent='ยืนยัน Order →';});
 }
 function showError(m){document.getElementById('catalog-view').innerHTML='<div class="state-msg"><div class="icon">⚠️</div><p>'+m+'</p></div>';}
 
@@ -986,9 +1232,7 @@ var viewPresets={iso:{y:0.5,x:0.25},front:{y:0,x:0},top:{y:0,x:Math.PI/2-0.01},s
 function resizeCanvas(){
   var cw=document.querySelector('.canvas-wrap');
   if(!cw)return;
-  W=cw.offsetWidth||cw.clientWidth;
-  H=cw.offsetHeight||cw.clientHeight;
-  if(W<10||H<10)return; // ยังไม่ render
+  W=cw.clientWidth; H=cw.clientHeight;
   canvas.width=W; canvas.height=H;
 }
 
@@ -996,7 +1240,7 @@ function mat3Y(a){return[Math.cos(a),0,Math.sin(a),0,1,0,-Math.sin(a),0,Math.cos
 function mat3X(a){return[1,0,0,0,Math.cos(a),-Math.sin(a),0,Math.sin(a),Math.cos(a)];}
 function mulM(m,v){return[m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];}
 function tp(p){return mulM(mat3X(camRotX),mulM(mat3Y(camRotY),p));}
-function pr(p){var fov=Math.min(W,H)*1.35;var z=p[2]+12;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H/2-p[1]*fov/z];}
+function pr(p){var fov=520,z=p[2]+12;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H/2-p[1]*fov/z];}
 function shade(nx,ny,nz){var lx=0.5,ly=0.8,lz=0.4,ln=Math.sqrt(lx*lx+ly*ly+lz*lz);lx/=ln;ly/=ln;lz/=ln;return Math.max(0.25,nx*lx+ny*ly+nz*lz);}
 
 function drawBox3d(cx,cy,cz,bW,bH,bL,topCol,sideCol,floatY){
@@ -1109,11 +1353,7 @@ canvas.addEventListener('touchmove',function(e){if(!drag)return;camTargetY+=(e.t
 canvas.addEventListener('touchend',function(){drag=false;});
 function toggleAuto(){autoRot=!autoRot;document.getElementById('cv-sw').classList.toggle('on',autoRot);}
 function setView(name,btn){document.querySelectorAll('.vb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');var v=viewPresets[name];camTargetY=v.y;camTargetX=v.x;autoRot=false;document.getElementById('cv-sw').classList.remove('on');}
-new ResizeObserver(function(){
-  if(document.getElementById('viewer-page').classList.contains('open')){
-    resizeCanvas();
-  }
-}).observe(document.querySelector('.vp-main')||document.body);
+new ResizeObserver(function(){if(document.getElementById('viewer-page').classList.contains('open')){resizeCanvas();}}).observe(document.body);
 
 function startLoop(){
   loopRunning=true;
@@ -1129,15 +1369,10 @@ function startLoop(){
 
 // ── INIT ─────────────────────────────────────────
 window.addEventListener('load',function(){
-  var notConfigured = SHEET_ID==='YOUR_GOOGLE_SHEET_ID_HERE' || SCRIPT_URL==='YOUR_SCRIPT_URL_HERE';
-  if(notConfigured){
-    document.getElementById('configBanner').style.display='flex';
-    showError('กรุณาแก้ไข SHEET_ID และ SCRIPT_URL ในโค้ด JS ก่อนใช้งาน');
-    return;
-  }
+  if(SHEET_ID==='YOUR_GOOGLE_SHEET_ID_HERE'){showError('กรุณาแก้ไข SHEET_ID ในโค้ด JS ก่อนใช้งาน');return;}
   loadCatalog();
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeOrderModalForce();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('orderOverlay').classList.remove('open');}});
 </script>
 </body>
 </html>
