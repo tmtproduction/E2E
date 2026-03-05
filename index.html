@@ -1453,11 +1453,16 @@ function openViewer(idx){
   camTargetY=0.5; camTargetX=0.25; autoRot=true;
   var cvSw=document.getElementById('cv-sw'); if(cvSw) cvSw.classList.add('on');
   document.querySelectorAll('.vb').forEach(function(b,i){b.classList.toggle('on',i===0);});
-  setTimeout(function(){
+  // rAF loop until canvas-wrap is measured, then start
+  camRotY=0.5; camRotX=0.25;
+  function initCanvas(){
     var cw=document.querySelector('.canvas-wrap');
-    if(cw){canvas.width=cw.clientWidth; canvas.height=cw.clientHeight;}
-    if(!loopRunning) startLoop();
-  },60);
+    if(!cw||cw.clientWidth<10){ requestAnimationFrame(initCanvas); return; }
+    W=cw.clientWidth; H=cw.clientHeight;
+    canvas.width=W; canvas.height=H;
+    if(!loopRunning) startLoop(); else render3d();
+  }
+  requestAnimationFrame(initCanvas);
   setTimeout(function(){
     var hint=document.getElementById('cv-hint'); if(hint) hint.style.opacity='0';
   },3000);
@@ -1734,10 +1739,12 @@ var viewPresets={iso:{y:0.5,x:0.25},front:{y:0,x:0},top:{y:0,x:Math.PI/2-0.01},s
 
 function resizeCanvas(){
   var cw=document.querySelector('.canvas-wrap');
-  if(!cw)return;
+  if(!cw||cw.clientWidth<10)return;
   W=cw.clientWidth; H=cw.clientHeight;
   canvas.width=W; canvas.height=H;
+  if(typeof render3d==='function') render3d();
 }
+window.addEventListener('resize', resizeCanvas);
 
 function mat3Y(a){return[Math.cos(a),0,Math.sin(a),0,1,0,-Math.sin(a),0,Math.cos(a)];}
 function mat3X(a){return[1,0,0,0,Math.cos(a),-Math.sin(a),0,Math.sin(a),Math.cos(a)];}
