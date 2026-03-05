@@ -233,7 +233,29 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .btn-print{width:100%;border:1px solid var(--black);background:var(--white);font-size:11px;letter-spacing:4px;text-transform:uppercase;padding:10px;cursor:pointer;margin-top:10px;font-family:inherit;}
 .btn-print:hover{background:var(--black);color:var(--white);}
 
-/* ── LARGE SCREEN RESPONSIVE ── */
+/* ── TOOLTIP ── */
+.tip-btn{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--g400);background:none;font-size:9px;color:var(--g400);cursor:pointer;margin-left:5px;font-family:inherit;vertical-align:middle;line-height:1;flex-shrink:0;}
+.tip-btn:hover{border-color:var(--black);color:var(--black);}
+.tooltip-box{display:none;position:fixed;z-index:300;background:var(--black);color:var(--white);padding:10px 14px;max-width:220px;font-size:11px;line-height:1.6;box-shadow:0 4px 20px rgba(0,0,0,.3);}
+.tooltip-box.show{display:block;}
+.tooltip-box strong{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;color:var(--g400);}
+
+/* ── ORDER PREVIEW ── */
+.order-preview{background:var(--g100);border:1px solid var(--g200);padding:14px 16px;margin-bottom:14px;}
+.op-title{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g400);font-weight:600;margin-bottom:12px;}
+.op-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--g200);}
+.op-row:last-child{border-bottom:none;}
+.op-label{font-size:11px;color:var(--g600);}
+.op-val{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
+.op-total{background:var(--black);color:var(--white);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.op-total-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);}
+.op-total-val{font-size:22px;font-weight:700;font-family:'Courier New',monospace;}
+.order-steps{display:flex;gap:0;margin-bottom:20px;}
+.step{flex:1;text-align:center;padding:8px 4px;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);border-bottom:2px solid var(--g200);}
+.step.active{color:var(--black);border-bottom-color:var(--black);font-weight:700;}
+.step.done{color:var(--green);border-bottom-color:var(--green);}
+.warn-box{background:#fff8e8;border:1px solid var(--yellow);padding:10px 12px;margin-bottom:12px;font-size:11px;color:#7a5800;line-height:1.5;}
+.warn-box strong{display:block;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;color:var(--yellow);}
 @media(min-width:1400px){
   .vp-hdr{padding:15px 40px;}
   .vp-title{font-size:12px;letter-spacing:6px;}
@@ -410,10 +432,10 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
     <button class="vp-back" onclick="closePage()">← กลับรายการทั้งหมด</button>
     <div class="vp-title" id="vp-title">Steel Product Viewer</div>
     <div class="vp-tabs">
-      <button class="tab-btn active" onclick="switchTab('spec',this)">Spec Sheet</button>
-      <button class="tab-btn" onclick="switchTab('geo',this)">Geometry</button>
-      <button class="tab-btn" onclick="switchTab('admin',this)">Admin</button>
-      <button class="tab-btn" onclick="switchTab('label',this)">Label</button>
+      <button class="tab-btn active" onclick="switchTab('spec',this)">📋 ข้อมูลสินค้า</button>
+      <button class="tab-btn" onclick="switchTab('geo',this)">🔍 ตรวจสอบ</button>
+      <button class="tab-btn" onclick="switchTab('admin',this)">✏️ แก้ไขข้อมูล</button>
+      <button class="tab-btn" onclick="switchTab('label',this)">🏷️ พิมพ์ Tag</button>
     </div>
   </div>
 
@@ -452,15 +474,18 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
             </div>
           </div>
           <div class="sec">
-            <div class="sec-lbl">Dimensions</div>
+            <div class="sec-lbl">ขนาดและน้ำหนัก</div>
             <div class="dim-grid">
-              <div class="df"><label>ความหนา</label><div class="dv" id="v-t">—<span class="du">mm</span></div></div>
-              <div class="df"><label>ความกว้าง</label><div class="dv" id="v-w">—<span class="du">mm</span></div></div>
-              <div class="df"><label>ความยาว</label><div class="dv" id="v-l">—<span class="du">mm</span></div></div>
+              <div class="df"><label>ความหนา <button class="tip-btn" onclick="showTip(this,'ความหนา','ค่าหนาจริงของแผ่นเหล็ก ± tolerance เล็กน้อย เช่น 2.0mm จริงอาจเป็น 1.90–2.10mm')">?</button></label><div class="dv" id="v-t">—<span class="du">mm</span></div></div>
+              <div class="df"><label>ความกว้าง <button class="tip-btn" onclick="showTip(this,'ความกว้าง','ความกว้างแผ่นหลังตัด วัดตั้งฉากกับแนวรีด')">?</button></label><div class="dv" id="v-w">—<span class="du">mm</span></div></div>
+              <div class="df"><label>ความยาว <button class="tip-btn" onclick="showTip(this,'ความยาว','ความยาวแผ่น ค่าจริงมักยาวกว่าตาม spec +0 ถึง +8mm')">?</button></label><div class="dv" id="v-l">—<span class="du">mm</span></div></div>
               <div class="df"><label>น้ำหนัก/แผ่น</label><div class="dv" id="v-kg">—<span class="du">kg</span></div></div>
             </div>
           </div>
           <div class="sec" style="padding:0">
+            <div style="padding:16px 20px 10px;display:flex;align-items:center;gap:6px;">
+              <span class="sec-lbl" style="margin-bottom:0;flex:1">Limit Spec <button class="tip-btn" onclick="showTip(this,'Limit Spec Summary','ตารางนี้แสดงค่ามาตรฐาน JIS ที่แผ่นเหล็กต้องผ่าน ไม่ใช่ค่าที่วัดจริง — ใช้เพื่อ confirm กับลูกค้าว่าสินค้าตรงมาตรฐานอะไร')">?</button></span>
+            </div>
             <div class="lss-wrap" style="margin:0">
               <div class="lss-head">
                 <span class="lss-title">Limit Spec Summary</span>
@@ -1101,6 +1126,28 @@ function selectGrade(groupId, el){
   el.classList.add('selected');
 }
 
+// ── TOOLTIP ───────────────────────────────────────
+var _tipEl = null;
+function showTip(btn, title, body){
+  var box = document.getElementById('tooltip-box');
+  if(_tipEl===btn && box.classList.contains('show')){
+    box.classList.remove('show'); _tipEl=null; return;
+  }
+  box.innerHTML = '<strong>'+title+'</strong>'+body;
+  var r = btn.getBoundingClientRect();
+  box.style.left = Math.min(r.left, window.innerWidth-240)+'px';
+  box.style.top  = (r.bottom+6)+'px';
+  box.classList.add('show');
+  _tipEl = btn;
+}
+document.addEventListener('click', function(e){
+  if(!e.target.classList.contains('tip-btn')){
+    var box=document.getElementById('tooltip-box');
+    if(box) box.classList.remove('show');
+    _tipEl=null;
+  }
+});
+
 // ── LOAD ─────────────────────────────────────────
 function loadCatalog(){
   var url='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&nocache='+Date.now();
@@ -1407,52 +1454,114 @@ function printLabel(){
 
 // ── ORDER ─────────────────────────────────────────
 function openOrderModal(){currentSku&&buildOrderForm();}
+
 function buildOrderForm(){
-  var s=currentSku,price=parseInt(s.PRICE_PER_SHEET_THB)||0;
+  var s=currentSku, price=parseInt(s.PRICE_PER_SHEET_THB)||0;
+  var stock=parseInt(s.STOCK_QTY)||0;
+  var stockWarn = stock < 20 ? '<div class="warn-box"><strong>⚠ สต็อกเหลือน้อย</strong>มีสินค้า '+stock+' แผ่น — แนะนำยืนยันกับ Warehouse ก่อนรับ order จำนวนมาก</div>' : '';
+
   document.getElementById('modal-body').innerHTML=
+    '<div class="order-steps"><div class="step active" id="st1">1 · กรอกข้อมูล</div><div class="step" id="st2">2 · ยืนยัน order</div></div>'+
     '<div class="spec-pill">'+
-      '<div class="sp-item"><label>SKU</label><span>'+s.SKU+'</span></div>'+
-      '<div class="sp-item"><label>หนา</label><span>'+s.THICKNESS_MM+' mm</span></div>'+
-      '<div class="sp-item"><label>W×L</label><span>'+parseInt(s.WIDTH_MM)+'×'+parseInt(s.LENGTH_MM)+'</span></div>'+
-      '<div class="sp-item"><label>สต็อก</label><span style="color:var(--green)">'+(parseInt(s.STOCK_QTY)||0)+' แผ่น</span></div>'+
+      '<div class="sp-item"><label>สินค้า</label><span>'+makeName(s)+'</span></div>'+
+      '<div class="sp-item"><label>เกรด</label><span>'+(s.GRADE||'—')+'</span></div>'+
+      '<div class="sp-item"><label>สต็อก</label><span style="color:'+(stock<10?'var(--red)':stock<20?'var(--yellow)':'var(--green)')+'">'+stock+' แผ่น</span></div>'+
+      '<div class="sp-item"><label>ราคา/แผ่น</label><span>฿ '+price.toLocaleString()+'</span></div>'+
     '</div>'+
+    stockWarn+
     '<div class="fsec"><div class="fsec-ttl">ข้อมูลลูกค้า</div>'+
-      '<div class="f2g"><div class="frow-m"><label>ชื่อลูกค้า *</label><input type="text" id="o-name" placeholder="บริษัท / ชื่อ"></div>'+
-      '<div class="frow-m"><label>เบอร์โทร</label><input type="text" id="o-phone" placeholder="0xx-xxx-xxxx"></div></div></div>'+
-    '<div class="fsec"><div class="fsec-ttl">รายการสั่งซื้อ</div>'+
-      '<div class="f2g"><div class="frow-m"><label>จำนวน (แผ่น) *</label><input type="number" id="o-qty" value="10" min="1" oninput="updOrd()"></div>'+
-      '<div class="frow-m"><label>ราคา/แผ่น (฿)</label><input type="number" id="o-price" value="'+price+'" oninput="updOrd()"></div></div></div>'+
+      '<div class="f2g">'+
+        '<div class="frow-m"><label>ชื่อลูกค้า *</label><input type="text" id="o-name" placeholder="บริษัท / ชื่อลูกค้า"></div>'+
+        '<div class="frow-m"><label>เบอร์โทร</label><input type="text" id="o-phone" placeholder="0xx-xxx-xxxx"></div>'+
+      '</div></div>'+
+    '<div class="fsec"><div class="fsec-ttl">จำนวนที่ต้องการ</div>'+
+      '<div class="f2g">'+
+        '<div class="frow-m"><label>จำนวน (แผ่น) *</label><input type="number" id="o-qty" value="10" min="1" oninput="updOrd()"></div>'+
+        '<div class="frow-m"><label>ราคา/แผ่น (฿)</label><input type="number" id="o-price" value="'+price+'" oninput="updOrd()"></div>'+
+      '</div></div>'+
     '<div class="order-sum"><div class="os-item"><label>น้ำหนักรวม</label><span id="os-w">—</span></div><div class="os-item"><label>ราคารวม</label><span id="os-p">—</span></div><div class="os-item"><label>มัด</label><span id="os-b">—</span></div></div>'+
-    '<div class="fsec"><div class="fsec-ttl">หมายเหตุ</div><div class="frow-m"><label>หมายเหตุ</label><textarea id="o-note" rows="2" style="resize:none" placeholder="วันที่รับ, เงื่อนไขพิเศษ..."></textarea></div></div>'+
-    '<button class="btn-submit" onclick="submitOrder()">ยืนยัน Order →</button>';
+    '<div class="fsec"><div class="fsec-ttl">หมายเหตุ</div><div class="frow-m"><textarea id="o-note" rows="2" style="resize:none;width:100%;border:1px solid var(--g200);padding:8px;font-family:inherit;font-size:12px;" placeholder="วันที่รับ, เงื่อนไขพิเศษ..."></textarea></div></div>'+
+    '<button class="btn-submit" onclick="goToPreview()" style="background:var(--black)">ดูสรุป Order →</button>';
+
   updOrd();
   document.getElementById('orderOverlay').classList.add('open');
 }
+
+function goToPreview(){
+  var name=(document.getElementById('o-name').value||'').trim();
+  var qty=parseInt(document.getElementById('o-qty').value)||0;
+  var price=parseInt(document.getElementById('o-price').value)||0;
+  if(!name){alert('กรุณากรอกชื่อลูกค้าครับ');return;}
+  if(!qty){alert('กรุณากรอกจำนวนแผ่นครับ');return;}
+
+  var s=currentSku;
+  var w=parseFloat(s.WEIGHT_PER_SHEET_KG)||0;
+  var b=parseInt(s.BUNDLE_SIZE)||5;
+  var totalW=(qty*w).toLocaleString();
+  var totalP=(qty*price).toLocaleString();
+  var bundles=Math.ceil(qty/b);
+  var phone=(document.getElementById('o-phone').value||'').trim();
+  var note=(document.getElementById('o-note').value||'').trim();
+
+  document.getElementById('modal-body').innerHTML=
+    '<div class="order-steps"><div class="step done" id="st1">✓ กรอกข้อมูล</div><div class="step active" id="st2">2 · ยืนยัน order</div></div>'+
+    '<div class="order-preview">'+
+      '<div class="op-title">สรุปรายการสั่งซื้อ</div>'+
+      '<div class="op-row"><span class="op-label">สินค้า</span><span class="op-val">'+makeName(s)+'</span></div>'+
+      '<div class="op-row"><span class="op-label">เกรด / มาตรฐาน</span><span class="op-val">'+(s.GRADE||'—')+' · '+(s.STANDARD||'—')+'</span></div>'+
+      '<div class="op-row"><span class="op-label">ชื่อลูกค้า</span><span class="op-val">'+name+'</span></div>'+
+      (phone?'<div class="op-row"><span class="op-label">โทร</span><span class="op-val">'+phone+'</span></div>':'')+
+      '<div class="op-row"><span class="op-label">จำนวน</span><span class="op-val">'+qty.toLocaleString()+' แผ่น · '+bundles+' มัด</span></div>'+
+      '<div class="op-row"><span class="op-label">น้ำหนักรวม</span><span class="op-val">'+totalW+' kg</span></div>'+
+      '<div class="op-row"><span class="op-label">ราคา/แผ่น</span><span class="op-val">฿ '+price.toLocaleString()+'</span></div>'+
+      (note?'<div class="op-row"><span class="op-label">หมายเหตุ</span><span class="op-val" style="font-family:inherit;font-size:11px;">'+note+'</span></div>':'')+
+    '</div>'+
+    '<div class="op-total"><span class="op-total-label">ราคารวมทั้งหมด</span><span class="op-total-val">฿ '+totalP+'</span></div>'+
+    '<div style="display:flex;gap:8px;">'+
+      '<button onclick="buildOrderForm()" style="flex:1;border:1px solid var(--g200);background:var(--white);padding:12px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;">← แก้ไข</button>'+
+      '<button class="btn-submit" onclick="submitOrder(\''+name.replace(/'/g,"\\'")+"','"+phone.replace(/'/g,"\\'")+'\','+qty+','+price+",'"+note.replace(/'/g,"\\'")+'\')'+'" style="flex:2;">✓ ยืนยัน Order</button>'+
+    '</div>';
+}
+
 function updOrd(){
   if(!currentSku)return;
   var q=parseInt(document.getElementById('o-qty').value)||0,p=parseInt(document.getElementById('o-price').value)||0;
   var w=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0,b=parseInt(currentSku.BUNDLE_SIZE)||5;
-  document.getElementById('os-w').textContent=(q*w).toLocaleString()+' kg';
-  document.getElementById('os-p').textContent='฿ '+(q*p).toLocaleString();
-  document.getElementById('os-b').textContent=Math.ceil(q/b)+' มัด';
+  var osW=document.getElementById('os-w'); if(osW) osW.textContent=(q*w).toLocaleString()+' kg';
+  var osP=document.getElementById('os-p'); if(osP) osP.textContent='฿ '+(q*p).toLocaleString();
+  var osB=document.getElementById('os-b'); if(osB) osB.textContent=Math.ceil(q/b)+' มัด';
 }
+
 function closeOrderModal(e){
   if(e&&e.target!==document.getElementById('orderOverlay'))return;
   document.getElementById('orderOverlay').classList.remove('open');
 }
-function submitOrder(){
-  var name=(document.getElementById('o-name').value||'').trim(),qty=parseInt(document.getElementById('o-qty').value)||0,price=parseInt(document.getElementById('o-price').value)||0;
-  if(!name){alert('กรุณากรอกชื่อลูกค้าครับ');return;}
-  if(!qty){alert('กรุณากรอกจำนวนแผ่นครับ');return;}
-  var btn=document.querySelector('.btn-submit');btn.disabled=true;btn.textContent='กำลังส่ง...';
+
+function submitOrder(name,phone,qty,price,note){
+  var btn=document.querySelector('.btn-submit');
+  if(btn){btn.disabled=true;btn.textContent='กำลังส่ง...';}
   var s=currentSku;
-  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'createOrder',customerName:name,customerPhone:(document.getElementById('o-phone').value||'').trim(),sku:s.SKU,grade:s.GRADE,surface:s.SURFACE,thickness:s.THICKNESS_MM,width:s.WIDTH_MM,length:s.LENGTH_MM,qty:qty,weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),pricePerSheet:price,priceTotal:qty*price,note:(document.getElementById('o-note').value||'').trim()})})
+  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'createOrder',customerName:name,customerPhone:phone,sku:s.SKU,grade:s.GRADE,surface:s.SURFACE,thickness:s.THICKNESS_MM,width:s.WIDTH_MM,length:s.LENGTH_MM,qty:qty,weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),pricePerSheet:price,priceTotal:qty*price,note:note})})
   .then(function(r){return r.json();})
   .then(function(res){
-    if(res.success){document.getElementById('modal-body').innerHTML='<div class="success-box"><div class="check">✓</div><h3>Order สำเร็จ!</h3><div class="order-no">'+res.orderNo+'</div><button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button></div>';}
-    else{alert('เกิดข้อผิดพลาด: '+(res.error||'unknown'));btn.disabled=false;btn.textContent='ยืนยัน Order →';}
+    if(res.success){
+      document.getElementById('modal-body').innerHTML=
+        '<div class="success-box">'+
+          '<div class="check">✓</div>'+
+          '<h3>Order สำเร็จ!</h3>'+
+          '<div class="order-no">'+res.orderNo+'</div>'+
+          '<p style="font-size:11px;color:var(--g600);margin-top:8px;">ทีมงานจะติดต่อกลับภายใน 1 วันทำการ</p>'+
+          '<button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button>'+
+        '</div>';
+    } else {
+      alert('เกิดข้อผิดพลาด: '+(res.error||'unknown'));
+      if(btn){btn.disabled=false;btn.textContent='✓ ยืนยัน Order';}
+    }
   })
-  .catch(function(){alert('ส่งข้อมูลไม่ได้ — ตรวจสอบ SCRIPT_URL');btn.disabled=false;btn.textContent='ยืนยัน Order →';});
+  .catch(function(){
+    alert('ส่งข้อมูลไม่ได้ — ตรวจสอบ SCRIPT_URL');
+    if(btn){btn.disabled=false;btn.textContent='✓ ยืนยัน Order';}
+  });
 }
 function showError(m){document.getElementById('catalog-view').innerHTML='<div class="state-msg"><div class="icon">⚠️</div><p>'+m+'</p></div>';}
 
@@ -1609,5 +1718,6 @@ window.addEventListener('load',function(){
 });
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('orderOverlay').classList.remove('open');}});
 </script>
+<div id="tooltip-box" class="tooltip-box"></div>
 </body>
 </html>
