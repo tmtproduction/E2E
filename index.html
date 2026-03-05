@@ -1451,13 +1451,17 @@ function switchTab(name,btn){
 }
 
 // ── CALC ─────────────────────────────────────────
+function calcKgPerSheet(){
+  // T(mm) × W(mm) × L(mm) × 0.00785 g/cm³ ÷ 1000 = kg
+  return (S.thick/10) * (S.w/10) * (S.l/10) * 0.00785;
+}
 function calcUpdate(){
   if(!currentSku)return;
   var q=parseInt(document.getElementById('qty').value)||0;
   var p=parseInt(currentSku.PRICE_PER_SHEET_THB)||0;
-  var w=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0;
-  var b=parseInt(currentSku.BUNDLE_SIZE)||5;
-  document.getElementById('r-w').textContent=(q*w).toLocaleString()+' kg';
+  var w=calcKgPerSheet();
+  var b=S.sheets||parseInt(currentSku.BUNDLE_SIZE)||5;
+  document.getElementById('r-w').textContent=(q*w).toFixed(1)+' kg';
   document.getElementById('r-p').textContent='฿ '+(q*p).toLocaleString();
   document.getElementById('r-b').textContent=Math.ceil(q/b)+' มัด';
 }
@@ -1517,16 +1521,22 @@ function liveUpdate(){
   if(tv){tv.textContent=S.thick.toFixed(1);tv.style.color=outOfRange?'var(--red)':'';}
   var sv=document.getElementById('a-sheets-v'); if(sv) sv.textContent=S.sheets;
 
-  // update packing live
+  // update packing live — recalculate weight from dimensions
   if(currentSku){
-    var kg=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0;
+    // steel density 7.85 g/cm³ = 0.00785 kg/cm³
+    // weight = T(mm)/10 × W(mm)/10 × L(mm)/10 × 0.00785 × density_factor
+    var density = 0.00785; // kg/cm³
+    var calcKg = (S.thick/10) * (S.w/10) * (S.l/10) * density;
+    var calcKgRound = calcKg.toFixed(1);
     var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=S.sheets+' แผ่น/มัด';
-    var vBwt=document.getElementById('v-bwt'); if(vBwt) vBwt.textContent=(S.sheets*kg).toFixed(0)+' kg';
+    var vBwt=document.getElementById('v-bwt'); if(vBwt) vBwt.textContent=(S.sheets*calcKg).toFixed(0)+' kg';
+    var vKg=document.getElementById('v-kg'); if(vKg) vKg.innerHTML=calcKgRound+'<span class="du">kg</span>';
   }
   var inf=document.getElementById('cv-info');
   if(inf) inf.textContent='W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(1)+'mm  N:'+S.sheets;
 
   if(typeof render3d==='function') render3d();
+  calcUpdate();
   syncLabel();
 }
 function applyAdmin(){
