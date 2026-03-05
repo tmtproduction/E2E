@@ -233,6 +233,20 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .btn-print{width:100%;border:1px solid var(--black);background:var(--white);font-size:11px;letter-spacing:4px;text-transform:uppercase;padding:10px;cursor:pointer;margin-top:10px;font-family:inherit;}
 .btn-print:hover{background:var(--black);color:var(--white);}
 
+/* ── PACKING 3D CONTROLS ── */
+.ctrl-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.ctrl-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);white-space:nowrap;min-width:80px;}
+.ctrl-right{display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;}
+.ctrl-val{font-family:'Courier New',monospace;font-size:13px;font-weight:700;min-width:32px;text-align:right;}
+.live-range{width:90px;-webkit-appearance:none;height:2px;background:var(--g200);outline:none;cursor:pointer;border-radius:1px;}
+.live-range::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--black);cursor:pointer;}
+.live-range.out-of-range::-webkit-slider-thumb{background:var(--red);}
+.live-num{border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:14px;font-weight:700;font-family:'Courier New',monospace;width:100%;outline:none;padding:2px 0;transition:border-color .2s;}
+.live-num:focus{border-bottom-color:var(--black);}
+.strap-btn{font-size:8px;letter-spacing:.5px;text-transform:uppercase;border:1px solid var(--g200);background:var(--white);color:var(--g600);padding:4px 8px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.strap-btn:hover{border-color:var(--black);color:var(--black);}
+.strap-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
+
 /* ── TOOLTIP ── */
 .tip-btn{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--g400);background:none;font-size:9px;color:var(--g400);cursor:pointer;margin-left:5px;font-family:inherit;vertical-align:middle;line-height:1;flex-shrink:0;}
 .tip-btn:hover{border-color:var(--black);color:var(--black);}
@@ -510,26 +524,59 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
               <div class="pack-item"><div class="pack-icon">🔗</div><div class="pack-text"><label>มัดด้วย</label><span id="v-strap">—</span></div></div>
               <div class="pack-item"><div class="pack-icon">🗞️</div><div class="pack-text"><label>ห่อ</label><span id="v-wrap">—</span></div></div>
             </div>
-            <!-- 3D controls moved here -->
-            <div style="border-top:1px solid var(--g200);padding-top:12px;display:flex;flex-direction:column;gap:10px;">
-              <div class="calc-r">
-                <label style="font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);">แผ่น / มัด</label>
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <input type="range" id="a-sheets" min="1" max="10" value="5" oninput="liveUpdate()" style="width:100px;-webkit-appearance:none;height:2px;background:var(--g200);outline:none;cursor:pointer;">
-                  <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;min-width:20px;" id="a-sheets-v">5</span>
+            <!-- 3D LIVE controls -->
+            <div style="border-top:1px solid var(--g200);padding-top:12px;display:flex;flex-direction:column;gap:12px;">
+
+              <!-- แผ่น/มัด -->
+              <div class="ctrl-row">
+                <label class="ctrl-lbl">แผ่น / มัด</label>
+                <div class="ctrl-right">
+                  <input type="range" id="a-sheets" min="1" max="10" value="5" oninput="liveUpdate()" class="live-range">
+                  <span class="ctrl-val" id="a-sheets-v">5</span>
                 </div>
               </div>
-              <div class="calc-r">
-                <label style="font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);">ความหนา (mm)</label>
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <input type="range" id="a-thick" min="5" max="60" value="20" oninput="liveUpdate()" style="width:100px;-webkit-appearance:none;height:2px;background:var(--g200);outline:none;cursor:pointer;">
-                  <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;min-width:30px;" id="a-thick-v">2.0</span>
+
+              <!-- ความหนา — limited to SKU range -->
+              <div class="ctrl-row">
+                <label class="ctrl-lbl">ความหนา (mm)</label>
+                <div class="ctrl-right">
+                  <div style="position:relative;">
+                    <input type="range" id="a-thick" min="5" max="60" value="20" oninput="liveUpdate()" class="live-range" id="a-thick">
+                    <div id="thick-limit-bar" style="position:absolute;bottom:-4px;left:0;right:0;height:2px;pointer-events:none;"></div>
+                  </div>
+                  <span class="ctrl-val" id="a-thick-v">2.0</span>
+                  <span id="thick-warn" style="font-size:8px;color:var(--red);display:none;margin-left:4px;">!</span>
                 </div>
               </div>
+
+              <!-- กว้าง / ยาว -->
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div class="df"><label>กว้าง (mm)</label><input id="a-w" type="number" value="1200" oninput="liveUpdate()" style="border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:14px;font-weight:700;font-family:'Courier New',monospace;width:100%;outline:none;padding:2px 0;"></div>
-                <div class="df"><label>ยาว (mm)</label><input id="a-l" type="number" value="2400" oninput="liveUpdate()" style="border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:14px;font-weight:700;font-family:'Courier New',monospace;width:100%;outline:none;padding:2px 0;"></div>
+                <div class="df"><label>กว้าง (mm)</label><input id="a-w" type="number" value="1200" oninput="liveUpdate()" class="live-num"></div>
+                <div class="df"><label>ยาว (mm)</label><input id="a-l" type="number" value="2400" oninput="liveUpdate()" class="live-num"></div>
               </div>
+
+              <!-- จำนวนสายรัด -->
+              <div class="ctrl-row">
+                <label class="ctrl-lbl">สายรัด</label>
+                <div style="display:flex;gap:6px;">
+                  <button class="strap-btn active" onclick="setStraps(0,this)">ไม่มี</button>
+                  <button class="strap-btn" onclick="setStraps(1,this)">1 เส้น</button>
+                  <button class="strap-btn" onclick="setStraps(2,this)">2 เส้น</button>
+                  <button class="strap-btn" onclick="setStraps(3,this)">3 เส้น</button>
+                </div>
+              </div>
+
+              <!-- Marking -->
+              <div class="ctrl-row">
+                <label class="ctrl-lbl">Marking</label>
+                <div style="display:flex;gap:6px;">
+                  <button class="strap-btn active" onclick="setMarking('none',this)">ไม่มี</button>
+                  <button class="strap-btn" onclick="setMarking('mill',this)">Mill</button>
+                  <button class="strap-btn" onclick="setMarking('grade',this)">Grade</button>
+                  <button class="strap-btn" onclick="setMarking('both',this)">ทั้งคู่</button>
+                </div>
+              </div>
+
             </div>
           </div>
           <div class="sec" style="padding-bottom:0">
@@ -1071,7 +1118,8 @@ var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0L4mq9Be83pe0VMpFkE9
 // ═══════════
 
 var allSkus=[], filteredSkus=[], currentSku=null;
-var S={sheets:5,thick:2.0,w:1200,l:2400}; // 3D state
+var S={sheets:5,thick:2.0,w:1200,l:2400,straps:2,marking:'none'};
+var S_thickMin=1.0, S_thickMax=6.0;
 
 // ── LIMIT SPEC SUMMARY ───────────────────────────
 function buildLSS(s) {
@@ -1299,13 +1347,31 @@ function openViewer(idx){
 
   // 3D controls in Packing
   var th=parseFloat(s.THICKNESS_MM)||2.0;
-  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400};
-  var elSheets=document.getElementById('a-sheets'); if(elSheets){elSheets.value=S.sheets;}
-  var elSheetsV=document.getElementById('a-sheets-v'); if(elSheetsV){elSheetsV.textContent=S.sheets;}
-  var elThick=document.getElementById('a-thick'); if(elThick){elThick.value=Math.round(th*10);}
-  var elThickV=document.getElementById('a-thick-v'); if(elThickV){elThickV.textContent=th.toFixed(1);}
-  var elW=document.getElementById('a-w'); if(elW){elW.value=S.w;}
-  var elL=document.getElementById('a-l'); if(elL){elL.value=S.l;}
+  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:2,marking:'none'};
+
+  // set thickness slider limits based on JIS tolerance tier
+  S_thickMin = th <= 1.6 ? 0.8 : th <= 2.5 ? 1.0 : th <= 4.0 ? 1.6 : 2.5;
+  S_thickMax = th <= 1.6 ? 2.0 : th <= 2.5 ? 4.0 : th <= 4.0 ? 6.0 : 9.0;
+  var thickSlider=document.getElementById('a-thick');
+  if(thickSlider){
+    thickSlider.min=Math.round(S_thickMin*10);
+    thickSlider.max=Math.round(S_thickMax*10);
+    thickSlider.value=Math.round(th*10);
+    thickSlider.classList.remove('out-of-range');
+  }
+
+  // reset strap buttons to 2
+  document.querySelectorAll('.strap-btn').forEach(function(b){
+    var oc=b.getAttribute('onclick')||'';
+    b.classList.toggle('active', oc==='setStraps(2,this)' || oc==="setMarking('none',this)");
+  });
+
+  var elSheets=document.getElementById('a-sheets'); if(elSheets) elSheets.value=S.sheets;
+  var elSheetsV=document.getElementById('a-sheets-v'); if(elSheetsV) elSheetsV.textContent=S.sheets;
+  var elThickV=document.getElementById('a-thick-v'); if(elThickV){elThickV.textContent=th.toFixed(1);elThickV.style.color='';}
+  var elW=document.getElementById('a-w'); if(elW) elW.value=S.w;
+  var elL=document.getElementById('a-l'); if(elL) elL.value=S.l;
+  var thWarn=document.getElementById('thick-warn'); if(thWarn) thWarn.style.display='none';
 
   // Price + Calc
   var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
@@ -1414,37 +1480,53 @@ function syncGeoAdmin(){
   if(b1&&s1)s1.textContent=b1.value;
   if(b2&&s2)s2.textContent=b2.value;
 }
+function setStraps(n,btn){
+  S.straps=n;
+  document.querySelectorAll('.strap-btn').forEach(function(b){
+    var oc=b.getAttribute('onclick')||'';
+    b.classList.toggle('active', oc==='setStraps('+n+',this)');
+  });
+  if(typeof render3d==='function') render3d();
+}
+function setMarking(mode,btn){
+  S.marking=mode;
+  document.querySelectorAll('.strap-btn').forEach(function(b){
+    var oc=b.getAttribute('onclick')||'';
+    b.classList.toggle('active', oc==="setMarking('"+mode+"',this)");
+  });
+  if(typeof render3d==='function') render3d();
+}
 function liveUpdate(){
   var sheetsEl=document.getElementById('a-sheets');
-  var thickEl=document.getElementById('a-thick');
-  var wEl=document.getElementById('a-w');
-  var lEl=document.getElementById('a-l');
+  var thickEl =document.getElementById('a-thick');
+  var wEl     =document.getElementById('a-w');
+  var lEl     =document.getElementById('a-l');
   if(!sheetsEl||!thickEl||!wEl||!lEl) return;
 
-  S.sheets = parseInt(sheetsEl.value)||1;
-  S.thick  = parseInt(thickEl.value)/10;
-  S.w      = parseInt(wEl.value)||1200;
-  S.l      = parseInt(lEl.value)||2400;
+  S.sheets=parseInt(sheetsEl.value)||1;
+  S.thick =parseInt(thickEl.value)/10;
+  S.w     =parseInt(wEl.value)||1200;
+  S.l     =parseInt(lEl.value)||2400;
 
-  // update display labels
+  // thick limit feedback
+  var outOfRange=S.thick<S_thickMin||S.thick>S_thickMax;
+  thickEl.classList.toggle('out-of-range',outOfRange);
+  var warn=document.getElementById('thick-warn');
+  if(warn) warn.style.display=outOfRange?'inline':'none';
+  var tv=document.getElementById('a-thick-v');
+  if(tv){tv.textContent=S.thick.toFixed(1);tv.style.color=outOfRange?'var(--red)':'';}
   var sv=document.getElementById('a-sheets-v'); if(sv) sv.textContent=S.sheets;
-  var tv=document.getElementById('a-thick-v');  if(tv) tv.textContent=S.thick.toFixed(1);
 
-  // update 3D info overlay
+  // update packing live
+  if(currentSku){
+    var kg=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0;
+    var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=S.sheets+' แผ่น/มัด';
+    var vBwt=document.getElementById('v-bwt'); if(vBwt) vBwt.textContent=(S.sheets*kg).toFixed(0)+' kg';
+  }
   var inf=document.getElementById('cv-info');
   if(inf) inf.textContent='W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(1)+'mm  N:'+S.sheets;
 
-  // update packing bundle weight live
-  if(currentSku){
-    var kgPerSheet = parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0;
-    var bundleWt   = (S.sheets * kgPerSheet).toFixed(0);
-    var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=S.sheets+' แผ่น/มัด';
-    var vBwt=document.getElementById('v-bwt'); if(vBwt) vBwt.textContent=parseFloat(bundleWt).toLocaleString()+' kg';
-  }
-
-  // force 3D redraw immediately
-  if(typeof render3d === 'function') render3d();
-
+  if(typeof render3d==='function') render3d();
   syncLabel();
 }
 function applyAdmin(){
@@ -1615,7 +1697,7 @@ function mat3Y(a){return[Math.cos(a),0,Math.sin(a),0,1,0,-Math.sin(a),0,Math.cos
 function mat3X(a){return[1,0,0,0,Math.cos(a),-Math.sin(a),0,Math.sin(a),Math.cos(a)];}
 function mulM(m,v){return[m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];}
 function tp(p){return mulM(mat3X(camRotX),mulM(mat3Y(camRotY),p));}
-function pr(p){var fov=520,z=p[2]+12;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H/2-p[1]*fov/z];}
+function pr(p){var fov=680,z=p[2]+12;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H/2-p[1]*fov/z];}
 function shade(nx,ny,nz){var lx=0.5,ly=0.8,lz=0.4,ln=Math.sqrt(lx*lx+ly*ly+lz*lz);lx/=ln;ly/=ln;lz/=ln;return Math.max(0.25,nx*lx+ny*ly+nz*lz);}
 
 function drawBox3d(cx,cy,cz,bW,bH,bL,topCol,sideCol,floatY){
@@ -1653,29 +1735,81 @@ function drawBox3d(cx,cy,cz,bW,bH,bL,topCol,sideCol,floatY){
 
 function render3d(){
   ctx.clearRect(0,0,W,H);
-  var N=S.sheets,thick=Math.max(0.04,S.thick*0.045);
-  var bw=Math.max(0.8,S.w/280),bl=Math.max(0.8,S.l/460),gap=0.012;
+  var N=S.sheets;
+  var thick=Math.max(0.05,S.thick*0.052);   // ← bigger (was 0.045)
+  var bw=Math.max(1.0,S.w/220),bl=Math.max(1.0,S.l/360),gap=0.014;
   var totalH=N*(thick+gap)-gap,yOff=-totalH/2;
   var fl=Math.sin(animT*0.6)*0.04;
 
   // shadow
-  var sp=[];for(var a=0;a<=Math.PI*2;a+=0.28)sp.push(pr(tp([Math.cos(a)*bw*0.52,yOff+fl-0.04,Math.sin(a)*bl*0.46])));
-  ctx.save();ctx.beginPath();sp.forEach(function(p,i){i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);});ctx.closePath();ctx.fillStyle='rgba(0,0,0,0.07)';ctx.fill();ctx.restore();
+  var sp=[];
+  for(var a=0;a<=Math.PI*2;a+=0.28)
+    sp.push(pr(tp([Math.cos(a)*bw*0.54,yOff+fl-0.04,Math.sin(a)*bl*0.48])));
+  ctx.save();ctx.beginPath();
+  sp.forEach(function(p,i){i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);});
+  ctx.closePath();ctx.fillStyle='rgba(0,0,0,0.08)';ctx.fill();ctx.restore();
 
+  // sheets
   for(var i=0;i<N;i++){
     var cy=yOff+i*(thick+gap)+thick/2;
     drawBox3d(0,cy,0,bw,thick,bl,'#484440','#3c3a38',fl);
   }
-  [-bl*0.28,bl*0.28].forEach(function(sz){
-    var sH=totalH+0.05;
-    drawBox3d(0,yOff+totalH+0.025,sz,bw+0.06,0.05,0.035,'#989890','#888880',fl);
-    drawBox3d(0,yOff-0.025,sz,bw+0.06,0.05,0.035,'#989890','#888880',fl);
-    drawBox3d(-bw/2-0.03,yOff+totalH/2,sz,0.035,sH+0.1,0.035,'#888880','#787870',fl);
-    drawBox3d(bw/2+0.03,yOff+totalH/2,sz,0.035,sH+0.1,0.035,'#888880','#787870',fl);
-  });
-  drawBox3d(bw/2+0.04,yOff+totalH/2,-bl*0.28,0.01,0.30,0.48,'#f0f0ee','#e8e8e4',fl);
+
+  // ── STRAPS ──
+  var strapCount=S.straps||0;
+  if(strapCount>0){
+    var strapPositions=[];
+    if(strapCount===1) strapPositions=[0];
+    else if(strapCount===2) strapPositions=[-bl*0.28,bl*0.28];
+    else strapPositions=[-bl*0.34,0,bl*0.34];
+
+    strapPositions.forEach(function(sz){
+      var sH=totalH+0.06;
+      // top bar
+      drawBox3d(0,yOff+totalH+0.028,sz,bw+0.07,0.055,0.038,'#989890','#888880',fl);
+      // bottom bar
+      drawBox3d(0,yOff-0.028,sz,bw+0.07,0.055,0.038,'#989890','#888880',fl);
+      // left vertical
+      drawBox3d(-bw/2-0.035,yOff+totalH/2,sz,0.038,sH+0.12,0.038,'#888880','#787870',fl);
+      // right vertical
+      drawBox3d(bw/2+0.035,yOff+totalH/2,sz,0.038,sH+0.12,0.038,'#888880','#787870',fl);
+    });
+  }
+
+  // ── TAG ──
+  drawBox3d(bw/2+0.045,yOff+totalH/2,-bl*0.28,0.012,0.32,0.52,'#f0f0ee','#e8e8e4',fl);
+
+  // ── MARKING on top sheet ──
+  if(S.marking!=='none' && N>0){
+    var topCy=yOff+(N-1)*(thick+gap)+thick;
+    var topP=pr(tp([0,topCy+fl,0]));
+    var leftP=pr(tp([-bw*0.38,topCy+fl,-bl*0.3]));
+    var rightP=pr(tp([bw*0.38,topCy+fl,-bl*0.3]));
+    var markW=Math.abs(rightP[0]-leftP[0]);
+    var markX=Math.min(leftP[0],rightP[0]);
+
+    ctx.save();
+    ctx.font='bold '+(Math.max(7,markW*0.12))+'px "Courier New",monospace';
+    ctx.fillStyle='rgba(255,255,255,0.55)';
+    ctx.textAlign='center';
+
+    if(S.marking==='mill'||S.marking==='both'){
+      var mill=currentSku?(currentSku.GRADE||'SPHC'):'SPHC';
+      ctx.fillText(mill, topP[0], topP[1]-6);
+    }
+    if(S.marking==='grade'||S.marking==='both'){
+      var std=currentSku?(currentSku.STANDARD||'JIS G3131'):'JIS G3131';
+      ctx.font='bold '+(Math.max(6,markW*0.09))+'px "Courier New",monospace';
+      ctx.fillStyle='rgba(255,255,255,0.38)';
+      ctx.fillText(std, topP[0], topP[1]+8);
+    }
+    ctx.restore();
+  }
+
+  // ── INFO ──
   ctx.save();ctx.font='600 10px "Courier New",monospace';ctx.fillStyle='#a0a09c';
-  ctx.fillText('W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(1)+'mm  N:'+S.sheets,12,H-12);ctx.restore();
+  ctx.fillText('W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(1)+'mm  N:'+S.sheets,12,H-12);
+  ctx.restore();
 }
 
 // card thumbnail renderer (simple, no float)
@@ -1688,7 +1822,7 @@ function drawBundleCard(cvId,s){
   var bw=3.4,bl=4.0,gap=0.012,totalH=N*(thick+gap)-gap;
   var rY=0.45,rX=0.22,cY=Math.cos(rY),sY=Math.sin(rY),cX=Math.cos(rX),sX=Math.sin(rX);
   function tpc(x,y,z){var x2=x*cY+z*sY,z2=-x*sY+z*cY,y2=y*cX-z2*sX,z3=y*sX+z2*cX;return[x2,y2,z3];}
-  function prc(p){var fov=170,z=p[2]+9;if(z<0.1)z=0.1;return[W2/2+p[0]*fov/z,H2/2-p[1]*fov/z];}
+  function prc(p){var fov=220,z=p[2]+9;if(z<0.1)z=0.1;return[W2/2+p[0]*fov/z,H2/2-p[1]*fov/z];}
   function shc(nx,ny,nz){return Math.max(0.28,Math.min(1,nx*0.45+ny*0.75+nz*0.35));}
   function faceC(pts,r,g,b,nx,ny,nz){
     var s2=shc(nx,ny,nz),p2=pts.map(function(p){return prc(tpc(p[0],p[1],p[2]));});
