@@ -460,22 +460,43 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
               <div class="df"><label>น้ำหนัก/แผ่น</label><div class="dv" id="v-kg">—<span class="du">kg</span></div></div>
             </div>
           </div>
-          <div class="sec">
-            <div class="sec-lbl">Mechanical Properties</div>
-            <div class="mrow"><span class="mk">ความแข็งแรงดึง</span><span class="mv" id="v-ts">—</span></div>
-            <div class="mrow"><span class="mk">ความแข็งแรงคราก</span><span class="mv" id="v-ys">—</span></div>
-            <div class="mrow"><span class="mk">การยืดตัว</span><span class="mv" id="v-el">—</span></div>
-            <div class="mrow"><span class="mk">ความแข็ง (Hardness)</span><span class="mv" id="v-hd">—</span></div>
-            <div class="mrow"><span class="mk">Tolerance ความหนา</span><span class="mv" id="v-tol">—</span></div>
-            <div class="mrow"><span class="mk">มาตรฐาน</span><span class="mv" id="v-std">—</span></div>
+          <div class="sec" style="padding:0">
+            <div class="lss-wrap" style="margin:0">
+              <div class="lss-head">
+                <span class="lss-title">Limit Spec Summary</span>
+                <span class="lss-sku" id="lss-sku">—</span>
+              </div>
+              <table class="lss-table" id="lss-table"><!-- filled by buildLSS() --></table>
+            </div>
           </div>
           <div class="sec">
-            <div class="sec-lbl">Packing</div>
-            <div class="pack-grid">
+            <div class="sec-lbl">Packing <span style="font-size:8px;letter-spacing:1px;background:var(--black);color:var(--white);padding:1px 5px;margin-left:4px;vertical-align:middle;">3D LIVE</span></div>
+            <div class="pack-grid" style="margin-bottom:14px">
               <div class="pack-item"><div class="pack-icon">📦</div><div class="pack-text"><label>Bundle</label><span id="v-bnd">—</span></div></div>
               <div class="pack-item"><div class="pack-icon">⚖️</div><div class="pack-text"><label>น้ำหนัก/มัด</label><span id="v-bwt">—</span></div></div>
               <div class="pack-item"><div class="pack-icon">🔗</div><div class="pack-text"><label>มัดด้วย</label><span id="v-strap">—</span></div></div>
               <div class="pack-item"><div class="pack-icon">🗞️</div><div class="pack-text"><label>ห่อ</label><span id="v-wrap">—</span></div></div>
+            </div>
+            <!-- 3D controls moved here -->
+            <div style="border-top:1px solid var(--g200);padding-top:12px;display:flex;flex-direction:column;gap:10px;">
+              <div class="calc-r">
+                <label style="font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);">แผ่น / มัด</label>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <input type="range" id="a-sheets" min="1" max="10" value="5" oninput="liveUpdate()" style="width:100px;-webkit-appearance:none;height:2px;background:var(--g200);outline:none;cursor:pointer;">
+                  <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;min-width:20px;" id="a-sheets-v">5</span>
+                </div>
+              </div>
+              <div class="calc-r">
+                <label style="font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);">ความหนา (mm)</label>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <input type="range" id="a-thick" min="5" max="60" value="20" oninput="liveUpdate()" style="width:100px;-webkit-appearance:none;height:2px;background:var(--g200);outline:none;cursor:pointer;">
+                  <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;min-width:30px;" id="a-thick-v">2.0</span>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div class="df"><label>กว้าง (mm)</label><input id="a-w" type="number" value="1200" oninput="liveUpdate()" style="border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:14px;font-weight:700;font-family:'Courier New',monospace;width:100%;outline:none;padding:2px 0;"></div>
+                <div class="df"><label>ยาว (mm)</label><input id="a-l" type="number" value="2400" oninput="liveUpdate()" style="border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:14px;font-weight:700;font-family:'Courier New',monospace;width:100%;outline:none;padding:2px 0;"></div>
+              </div>
             </div>
           </div>
           <div class="sec" style="padding-bottom:0">
@@ -500,18 +521,6 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
       <!-- GEOMETRY -->
       <div class="panel" id="panel-geo">
         <div class="panel-scroll">
-
-          <!-- ══ LIMIT SPEC SUMMARY ══ -->
-          <div class="lss-wrap">
-            <div class="lss-head">
-              <span class="lss-title">Limit Spec Summary</span>
-              <span class="lss-sku" id="lss-sku">—</span>
-            </div>
-            <table class="lss-table" id="lss-table">
-              <!-- filled by buildLSS() -->
-            </table>
-          </div>
-          <!-- /LIMIT SPEC SUMMARY -->
 
           <div class="geo-card">
             <div class="geo-title">Flatness</div>
@@ -926,30 +935,9 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
       <div class="panel" id="panel-admin">
         <div class="admin-hdr">
           <h3>Admin — Edit Product</h3>
-          <p>แก้ไขค่าแล้ว 3D อัปเดตทันที</p>
+          <p>แก้ไขข้อมูล Spec และราคา</p>
         </div>
         <div class="panel-scroll">
-          <div class="admin-sec">
-            <div class="admin-sec-title">3D Model <span class="tag3d">LIVE</span></div>
-            <div class="frow">
-              <label>จำนวนแผ่นใน Bundle <span class="tag3d">3D</span></label>
-              <div class="range-wrap">
-                <input type="range" id="a-sheets" min="1" max="10" value="5" oninput="liveUpdate()">
-                <span class="range-val" id="a-sheets-v">5</span>
-              </div>
-            </div>
-            <div class="frow">
-              <label>ความหนา (mm) <span class="tag3d">3D</span></label>
-              <div class="range-wrap">
-                <input type="range" id="a-thick" min="5" max="60" value="20" oninput="liveUpdate()">
-                <span class="range-val" id="a-thick-v">2.0</span>
-              </div>
-            </div>
-            <div class="f2col">
-              <div class="frow"><label>กว้าง (mm) <span class="tag3d">3D</span></label><input type="number" id="a-w" value="1200" oninput="liveUpdate()"></div>
-              <div class="frow"><label>ยาว (mm) <span class="tag3d">3D</span></label><input type="number" id="a-l" value="2400" oninput="liveUpdate()"></div>
-            </div>
-          </div>
           <div class="admin-sec">
             <div class="admin-sec-title">Mechanical Properties</div>
             <div class="f2col">
