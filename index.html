@@ -193,12 +193,15 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .geo-grade.good{background:#eef8f2;border-color:var(--green);} .geo-grade.good .ggl{color:var(--green);}
 .geo-grade.fair{background:#fff8e8;border-color:var(--yellow);} .geo-grade.fair .ggl{color:var(--yellow);}
 .geo-grade.reject{background:#fef0ee;border-color:var(--red);} .geo-grade.reject .ggl{color:var(--red);}
-.geo-appear-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;}
-.geo-appear-item{border:1px solid var(--g200);padding:10px 8px;text-align:center;cursor:pointer;transition:all .15s;background:var(--white);}
-.geo-appear-item svg{display:block;margin:0 auto 6px;}
-.geo-appear-item span{font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--g600);}
-.geo-appear-item.selected{background:var(--black);border-color:var(--black);}
-.geo-appear-item.selected span{color:var(--white);}
+.geo-appear-grid{display:none;} /* deprecated — kept for safety */
+
+/* ── GEO INSIGHT PILLS (read-only reference) ── */
+.geo-insight{display:flex;flex-direction:column;gap:6px;margin-top:12px;}
+.gi-pill{font-size:11px;line-height:1.5;padding:8px 12px;border-left:3px solid transparent;}
+.gi-pill.ok{background:#f0faf4;border-color:var(--green);color:#1a4a2e;}
+.gi-pill.warn{background:#fffbf0;border-color:var(--yellow);color:#5a3e00;}
+.gi-pill.bad{background:#fff5f4;border-color:var(--red);color:#6a1a10;}
+.gi-pill.info{background:var(--g100);border-color:var(--g300);color:var(--g600);font-style:italic;}
 
 /* Admin panel */
 .admin-hdr{padding:12px 18px;background:var(--black);flex-shrink:0;}
@@ -634,6 +637,12 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
       <!-- GEOMETRY -->
       <div class="panel" id="panel-geo">
         <div class="panel-scroll">
+          <!-- Intro header -->
+          <div style="padding:20px 26px 0;border-bottom:1px solid var(--g200);margin-bottom:0;">
+            <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:6px;">ข้อมูลอ้างอิง</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:4px;">มาตรฐานและลักษณะสินค้า</div>
+            <div style="font-size:11px;color:var(--g600);line-height:1.6;padding-bottom:16px;">หน้านี้แสดงข้อมูลอ้างอิงเพื่อทำความเข้าใจสินค้า — ไม่ต้องกรอกหรือตรวจสอบอะไร</div>
+          </div>
 
           <div class="geo-card">
             <div class="geo-title">Flatness</div>
@@ -766,21 +775,11 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
               <div class="geo-val-item"><label>ขอบ Mill</label><span>ตัดตรง ไม่มีรอย</span></div>
               <div class="geo-val-item"><label>ขอบ Slit</label><span>ยอมรับ ≤ 0.5 mm</span></div>
             </div>
-            <div class="geo-appear-grid" id="edge-grade">
-              <div class="geo-appear-item good selected" onclick="selectGrade('edge-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="1" y="5" width="26" height="8" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.2"/></svg>
-                <span>Good</span>
-              </div>
-              <div class="geo-appear-item fair" onclick="selectGrade('edge-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><path d="M1 13 L1 5 L27 5 L27 13 L24 9 L21 13 L18 9 L15 13 L12 9 L9 13 L6 9 L1 13Z" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.2"/></svg>
-                <span>Fair</span>
-              </div>
-              <div class="geo-appear-item reject" onclick="selectGrade('edge-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><path d="M1 13 L1 5 L27 5 L27 13 L22 6 L17 13 L12 6 L7 13 L1 13Z" fill="#e0e0dc" stroke="#c0392b" stroke-width="1.5"/></svg>
-                <span>Reject</span>
-              </div>
+            <div class="geo-insight">
+              <div class="gi-pill ok">Mill Edge — ขอบตรงจากโรงงาน ดีที่สุด</div>
+              <div class="gi-pill warn">Slit Edge — ขอบจากการตัดม้วน ยอมรับได้ถ้ากระดก &lt; 0.5 mm</div>
+              <div class="gi-pill info">💬 Sales tip: ถ้าลูกค้าจะเชื่อม ให้ถามว่าต้องการ Mill edge หรือไม่</div>
             </div>
-            <div class="geo-desc">Mill edge = ขอบที่ตัดจากโรงงาน ไม่มีรอย Slit edge = ตัดจากม้วนใหญ่ ยอมรับได้หากกระดกน้อยกว่า 0.5 mm</div>
           </div>
 
           <!-- WAVE / BUCKLE -->
@@ -812,21 +811,12 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
               <div class="geo-val-item"><label>Center Buckle</label><span>≤ 10 mm/m</span></div>
               <div class="geo-val-item"><label>Edge Wave</label><span>≤ 15 mm/m</span></div>
             </div>
-            <div class="geo-appear-grid" id="wave-grade">
-              <div class="geo-appear-item good selected" onclick="selectGrade('wave-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="1" y="6" width="26" height="6" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.2"/></svg>
-                <span>Flat</span>
-              </div>
-              <div class="geo-appear-item fair" onclick="selectGrade('wave-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><path d="M1 12 C6 6,12 10,14 6 C16 2,22 8,27 12" stroke="#0a0a0a" stroke-width="1.5" fill="none"/><path d="M1 16 C6 10,12 14,14 10 C16 6,22 12,27 16" stroke="#0a0a0a" stroke-width="1.2" fill="none"/></svg>
-                <span>Slight</span>
-              </div>
-              <div class="geo-appear-item reject" onclick="selectGrade('wave-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><path d="M1 14 C4 4,8 14,12 4 C16 -6,20 14,24 4 L27 6" stroke="#c0392b" stroke-width="1.8" fill="none"/></svg>
-                <span>Reject</span>
-              </div>
+            <div class="geo-insight">
+              <div class="gi-pill ok">Flatness ≤ 12 mm/m — วางบนพื้นไม่โยก ใช้งานได้ทันที</div>
+              <div class="gi-pill warn">Center Buckle — คลื่นตรงกลาง อาจมีปัญหาตอนเชื่อมหรือพับ</div>
+              <div class="gi-pill bad">Edge Wave — คลื่นที่ขอบ ตัดแต่งเพิ่มก่อนใช้งาน</div>
+              <div class="gi-pill info">💬 Sales tip: งานโครงสร้างทั่วไปยอมรับ slight wave ได้ แต่งานชิ้นส่วนต้องการ flat</div>
             </div>
-            <div class="geo-desc">Center Buckle = คลื่นตรงกลาง, Edge Wave = คลื่นที่ขอบ ตรวจด้วยไม้บรรทัดตรง 1 เมตรบน Surface plate</div>
           </div>
 
           <!-- SURFACE CONDITION -->
@@ -863,21 +853,12 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
               <div class="geo-val-item"><label>Coating (GI)</label><span>≥ Z27 g/m²</span></div>
               <div class="geo-val-item"><label>Oil film (CR)</label><span>ฟิล์มบางสม่ำเสมอ</span></div>
             </div>
-            <div class="geo-appear-grid" id="surface-grade">
-              <div class="geo-appear-item good selected" onclick="selectGrade('surface-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="1" y="3" width="26" height="12" fill="#d8d8d4" stroke="#0a0a0a" stroke-width="1.2"/></svg>
-                <span>Clean</span>
-              </div>
-              <div class="geo-appear-item fair" onclick="selectGrade('surface-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="1" y="3" width="26" height="12" fill="#b8b0a4" stroke="#0a0a0a" stroke-width="1.2"/><ellipse cx="10" cy="9" rx="3" ry="2" fill="#8a8078"/><ellipse cx="20" cy="9" rx="4" ry="2" fill="#8a8078"/></svg>
-                <span>Scale</span>
-              </div>
-              <div class="geo-appear-item reject" onclick="selectGrade('surface-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="1" y="3" width="26" height="12" fill="#c0b090" stroke="#c0392b" stroke-width="1.5"/><ellipse cx="9" cy="9" rx="4" ry="3" fill="#9a6030"/><ellipse cx="20" cy="9" rx="5" ry="3" fill="#883c18"/></svg>
-                <span>Rust</span>
-              </div>
+            <div class="geo-insight">
+              <div class="gi-pill ok">Clean / Light Scale — ผิวปกติสำหรับ Hot Rolled ใช้งานได้เลย</div>
+              <div class="gi-pill warn">Heavy Scale / Flaking — ต้องทำ Shot blast หรือ Pickle ก่อนทาสี</div>
+              <div class="gi-pill bad">Surface Rust — สนิมเกิดจากเก็บในที่ชื้น ต้องขัดก่อนใช้</div>
+              <div class="gi-pill info">💬 Sales tip: ถ้าลูกค้าจะทาสีทันที ควรแนะนำแผ่นที่ผ่าน Pickling มาแล้ว</div>
             </div>
-            <div class="geo-desc">HR: Mill scale ยอมรับได้ตาม JIS G3131 · GI: ตรวจ Coating weight ≥ Z27 · CR: ต้องมีฟิล์มน้ำมันบางสม่ำเสมอ ไม่มีสนิม</div>
           </div>
 
           <!-- DIVIDER: Marking -->
@@ -961,21 +942,11 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
               <div class="geo-val-item"><label>ห่อ</label><span>ฟิล์ม + กระดาษกันสนิม</span></div>
               <div class="geo-val-item"><label>รองพื้น</label><span>ไม้รอง Forklift</span></div>
             </div>
-            <div class="geo-appear-grid" id="pack-grade">
-              <div class="geo-appear-item good selected" onclick="selectGrade('pack-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="24" height="10" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1"/><line x1="8" y1="2" x2="8" y2="16" stroke="#606060" stroke-width="2"/><line x1="20" y1="2" x2="20" y2="16" stroke="#606060" stroke-width="2"/></svg>
-                <span>Pass</span>
-              </div>
-              <div class="geo-appear-item fair" onclick="selectGrade('pack-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="24" height="10" fill="#e0e0dc" stroke="#d4a017" stroke-width="1.5"/><line x1="8" y1="2" x2="8" y2="16" stroke="#d4a017" stroke-width="1.5"/></svg>
-                <span>Partial</span>
-              </div>
-              <div class="geo-appear-item reject" onclick="selectGrade('pack-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="24" height="10" fill="#fef0ee" stroke="#c0392b" stroke-width="1.5"/><text x="8" y="13" font-size="9" fill="#c0392b">✕</text></svg>
-                <span>Fail</span>
-              </div>
+            <div class="geo-insight">
+              <div class="gi-pill ok">มัดแน่น · ฟิล์มครบ · ไม้รองครบ · Tag ติด — พร้อมส่ง</div>
+              <div class="gi-pill warn">สายรัดหลวม หรือฟิล์มฉีก — แนะนำให้ repack ก่อนส่งลูกค้า</div>
+              <div class="gi-pill info">💬 Sales tip: ถ้าลูกค้า export ต้องการ export packing ที่แน่นกว่า ถามก่อนยืนยัน order</div>
             </div>
-            <div class="geo-desc">ตรวจว่ามัดแน่น ฟิล์มห่อครบ ไม่มีรอยเปียก ไม้รองครบ ป้าย Tag ติดอยู่ครบทุกมัด</div>
           </div>
 
           <!-- TAG / STICKER -->
@@ -1024,21 +995,11 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
               <div class="geo-val-item"><label>QR / Barcode</label><span>Scan ได้ 100%</span></div>
               <div class="geo-val-item"><label>ข้อมูล</label><span>SKU · Heat · วันผลิต</span></div>
             </div>
-            <div class="geo-appear-grid" id="tag-grade">
-              <div class="geo-appear-item good selected" onclick="selectGrade('tag-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="16" height="11" fill="#fef9c3" stroke="#d4a017" stroke-width="1.2"/><rect x="18" y="6" width="8" height="8" fill="#fef9c3" stroke="#d4a017" stroke-width="1"/><text x="19" y="13" font-size="8" fill="#1a7a4a">✓</text></svg>
-                <span>Pass</span>
-              </div>
-              <div class="geo-appear-item fair" onclick="selectGrade('tag-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="16" height="11" fill="#fef9c3" stroke="#d4a017" stroke-width="1.2"/><text x="10" y="13" font-size="8" fill="#d4a017">?</text></svg>
-                <span>Partial</span>
-              </div>
-              <div class="geo-appear-item reject" onclick="selectGrade('tag-grade',this)">
-                <svg width="28" height="18" viewBox="0 0 28 18"><rect x="2" y="4" width="16" height="11" fill="#fef0ee" stroke="#c0392b" stroke-width="1.5"/><text x="5" y="13" font-size="8" fill="#c0392b">miss</text></svg>
-                <span>Missing</span>
-              </div>
+            <div class="geo-insight">
+              <div class="gi-pill ok">Tag ครบ · QR scan ได้ · Tab แลบพร้อมสแกน — ผ่าน</div>
+              <div class="gi-pill bad">ไม่มี Tag หรือ scan ไม่ได้ — ต้องปริ้น Tag ใหม่ก่อนจ่ายสินค้า</div>
+              <div class="gi-pill info">💬 Sales tip: Tab ที่แลบออกมาช่วยให้ Warehouse scan ได้โดยไม่ต้องแกะมัด ประหยัดเวลา</div>
             </div>
-            <div class="geo-desc">Tag ต้องติดแน่น ไม่หลุด QR/Barcode scan ได้ · Tab แลบต้องพับออกด้านข้างมัดเพื่อสแกนโดยไม่ต้องแกะ</div>
           </div>
 
         </div>
