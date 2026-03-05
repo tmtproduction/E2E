@@ -572,9 +572,9 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
               <!-- แผ่น/มัด -->
               <div class="ctrl-row">
                 <label class="ctrl-lbl">แผ่น / มัด</label>
-                <div class="ctrl-right">
-                  <input type="range" id="a-sheets" min="1" max="10" value="5" oninput="liveUpdate()" class="live-range">
-                  <span class="ctrl-val" id="a-sheets-v">5</span>
+                <div style="display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;">
+                  <input type="range" id="a-sheets" min="1" max="50" value="5" oninput="liveUpdate()" class="live-range">
+                  <input type="number" id="a-sheets-v" min="1" max="50" value="5" oninput="syncSheetsFromNum()" style="width:44px;border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:14px;font-weight:700;font-family:'Courier New',monospace;outline:none;padding:2px 0;text-align:right;">
                 </div>
               </div>
 
@@ -1372,7 +1372,7 @@ function openViewer(idx){
   });
 
   var elSheets=document.getElementById('a-sheets'); if(elSheets) elSheets.value=S.sheets;
-  var elSheetsV=document.getElementById('a-sheets-v'); if(elSheetsV) elSheetsV.textContent=S.sheets;
+  var elSheetsV=document.getElementById('a-sheets-v'); if(elSheetsV) elSheetsV.value=S.sheets;
   var elThickV=document.getElementById('a-thick-v'); if(elThickV){elThickV.textContent=th.toFixed(1);elThickV.style.color='';}
   var elW=document.getElementById('a-w'); if(elW) elW.value=S.w;
   var elL=document.getElementById('a-l'); if(elL) elL.value=S.l;
@@ -1494,6 +1494,37 @@ function syncGeoAdmin(){
   if(b1&&s1)s1.textContent=b1.value;
   if(b2&&s2)s2.textContent=b2.value;
 }
+function syncSheetsFromNum(){
+  var numEl=document.getElementById('a-sheets-v');
+  var rangeEl=document.getElementById('a-sheets');
+  if(!numEl||!rangeEl) return;
+  var v=Math.min(50,Math.max(1,parseInt(numEl.value)||1));
+  numEl.value=v;
+  rangeEl.value=v;
+  S.sheets=v;
+  if(currentSku){
+    var kg=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0;
+    var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=v+' แผ่น/มัด';
+    var vBwt=document.getElementById('v-bwt'); if(vBwt) vBwt.textContent=(v*kg).toFixed(0)+' kg';
+  }
+  if(typeof render3d==='function') render3d();
+  calcUpdate(); syncLabel();
+}
+function syncSheetsNum(el){
+  var v=Math.min(50,Math.max(1,parseInt(el.value)||1));
+  el.value=v;
+  S.sheets=v;
+  var rng=document.getElementById('a-sheets'); if(rng) rng.value=v;
+  if(typeof render3d==='function') render3d();
+  if(typeof calcUpdate==='function') calcUpdate();
+  if(typeof syncLabel==='function') syncLabel();
+  // update bundle weight display
+  if(currentSku){
+    var kg=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0;
+    var vBwt=document.getElementById('v-bwt'); if(vBwt) vBwt.textContent=(v*kg).toFixed(0)+' kg';
+    var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=v+' แผ่น/มัด';
+  }
+}
 function setStraps(n,btn){
   S.straps=n;
   document.querySelectorAll('.strap-btn').forEach(function(b){
@@ -1518,6 +1549,9 @@ function liveUpdate(){
   if(!sheetsEl||!thickEl||!wEl||!lEl) return;
 
   S.sheets=parseInt(sheetsEl.value)||1;
+  // sync number input with slider
+  var sheetsNum=document.getElementById('a-sheets-v');
+  if(sheetsNum && sheetsNum.tagName==='INPUT' && sheetsNum.type==='number') sheetsNum.value=S.sheets;
   S.thick =parseInt(thickEl.value)/10;
   S.w     =parseInt(wEl.value)||1200;
   S.l     =parseInt(lEl.value)||2400;
@@ -1529,7 +1563,7 @@ function liveUpdate(){
   if(warn) warn.style.display=outOfRange?'inline':'none';
   var tv=document.getElementById('a-thick-v');
   if(tv){tv.textContent=S.thick.toFixed(1);tv.style.color=outOfRange?'var(--red)':'';}
-  var sv=document.getElementById('a-sheets-v'); if(sv) sv.textContent=S.sheets;
+
 
   // update packing live — recalculate weight from dimensions
   if(currentSku){
@@ -1771,10 +1805,34 @@ function render3d(){
   sp.forEach(function(p,i){i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);});
   ctx.closePath();ctx.fillStyle='rgba(0,0,0,0.08)';ctx.fill();ctx.restore();
 
-  // sheets
-  for(var i=0;i<N;i++){
-    var cy=yOff+i*(thick+gap)+thick/2;
-    drawBox3d(0,cy,0,bw,thick,bl,'#484440','#3c3a38',fl);
+  // sheets — ปรับ scale อัตโนมัติตามจำนวน ให้มัดพอดี canvas เสมอ
+  // คำนวณ totalH จาก target height ไม่ให้เกิน 70% ของ canvas
+  var maxBundleH = 2.8; // หน่วย scene units (ปรับได้)
+  var rawH = N*(thick+gap)-gap;
+  var scaleY = rawH > maxBundleH ? maxBundleH/rawH : 1.0;
+  var thick2 = thick*scaleY;
+  var gap2   = gap*scaleY;
+  totalH = N*(thick2+gap2)-gap2;
+  yOff   = -totalH/2;
+
+  // วาดไม่เกิน 32 layer จริง — แผ่นที่เหลือ compress เข้าไปใน gap
+  var drawN = Math.min(N, 32);
+  for(var i=0;i<drawN;i++){
+    var frac = drawN===1 ? 0.5 : i/(drawN-1);
+    var cy   = yOff + frac*(totalH-thick2) + thick2/2;
+    var alt  = (i%2===0)?'#484440':'#525050';
+    var alt2 = (i%2===0)?'#3c3a38':'#46443c';
+    drawBox3d(0,cy,0,bw,thick2,bl,alt,alt2,fl);
+  }
+  // label จำนวนจริงถ้า compress
+  if(N>32){
+    var midScreen=pr(tp([bw/2+0.12, fl, 0]));
+    ctx.save();
+    ctx.font='bold 11px "Courier New",monospace';
+    ctx.fillStyle='rgba(10,10,10,0.5)';
+    ctx.textAlign='left';
+    ctx.fillText('×'+N+' pcs', midScreen[0]+4, midScreen[1]);
+    ctx.restore();
   }
 
   // ── STRAPS ──
