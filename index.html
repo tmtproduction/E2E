@@ -205,6 +205,30 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 
 /* ORDER MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(10,10,10,.65);z-index:200;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+
+/* LIMIT SPEC SUMMARY */
+.lss-wrap{background:var(--black);padding:14px 18px 10px;}
+.lss-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+.lss-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--white);font-weight:700;}
+.lss-sku{font-family:'Courier New',monospace;font-size:10px;color:var(--g400);}
+.lss-table{width:100%;border-collapse:collapse;}
+.lss-table tr{border-bottom:1px solid rgba(255,255,255,.06);}
+.lss-table tr:last-child{border-bottom:none;}
+.lss-table td{padding:5px 0;vertical-align:middle;}
+.lss-label{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);width:90px;}
+.lss-limit{font-family:'Courier New',monospace;font-size:10px;font-weight:700;color:var(--white);width:56px;}
+.lss-bar-cell{padding-right:0;}
+.lss-bar-wrap{position:relative;height:12px;background:rgba(255,255,255,.07);border-radius:1px;overflow:visible;flex:1;}
+.lss-bar-ok{position:absolute;top:2px;height:8px;background:rgba(26,122,74,.7);border-radius:1px;transition:width .4s ease;}
+.lss-bar-warn{position:absolute;top:2px;height:8px;background:rgba(212,160,23,.5);border-radius:1px;}
+.lss-bar-reject{position:absolute;top:2px;height:8px;background:rgba(192,57,43,.45);border-radius:1px;}
+.lss-tick{position:absolute;top:0;width:1.5px;height:12px;background:var(--white);opacity:.5;}
+.lss-spark{display:flex;align-items:center;gap:3px;}
+.lss-status{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.lss-status.ok{background:var(--green);}
+.lss-status.warn{background:var(--yellow);}
+.lss-status.na{background:var(--g600);}
+.lss-unit{font-size:7px;color:var(--g600);margin-top:1px;}
 .overlay.open{display:flex;}
 .order-modal{background:var(--white);width:100%;max-width:540px;animation:slideUp .22s ease;}
 @keyframes slideUp{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -371,6 +395,18 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
       <!-- GEOMETRY -->
       <div class="panel" id="panel-geo">
         <div class="panel-scroll">
+
+          <!-- ══ LIMIT SPEC SUMMARY ══ -->
+          <div class="lss-wrap">
+            <div class="lss-head">
+              <span class="lss-title">Limit Spec Summary</span>
+              <span class="lss-sku" id="lss-sku">—</span>
+            </div>
+            <table class="lss-table" id="lss-table">
+              <!-- filled by buildLSS() -->
+            </table>
+          </div>
+          <!-- /LIMIT SPEC SUMMARY -->
 
           <div class="geo-card">
             <div class="geo-title">Flatness</div>
@@ -911,6 +947,66 @@ var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0L4mq9Be83pe0VMpFkE9
 var allSkus=[], filteredSkus=[], currentSku=null;
 var S={sheets:5,thick:2.0,w:1200,l:2400}; // 3D state
 
+// ── LIMIT SPEC SUMMARY ───────────────────────────
+function buildLSS(s) {
+  var t = parseFloat(s.THICKNESS_MM) || 2.0;
+  var w = parseInt(s.WIDTH_MM) || 1200;
+  var l = parseInt(s.LENGTH_MM) || 2400;
+
+  // Derive limits by thickness tier (JIS G3193 typical)
+  // Thickness tolerance: thinner = tighter
+  var tolT  = t <= 1.6 ? '±0.08' : t <= 2.5 ? '±0.10' : t <= 4.0 ? '±0.13' : '±0.16';
+  var tolW  = w <= 1000 ? '+6/−0' : w <= 1500 ? '+8/−0' : '+10/−0';
+  var tolL  = l <= 2000 ? '+6/−0' : '+8/−0';
+  var flat  = t <= 1.6 ? '≤ 16 mm/m' : t <= 3.2 ? '≤ 12 mm/m' : '≤ 8 mm/m';
+  var camb  = t <= 2.0 ? '≤ 3 mm/m' : '≤ 2 mm/m';
+  var sq    = '≤ 2 mm/m';
+  var bend  = t <= 2.0 ? '1.0t' : t <= 4.0 ? '1.5t' : '2.0t';
+  var ts    = s.TENSILE_STRENGTH  || (s.GRADE==='SPHC'?'≥ 270 N/mm²': s.GRADE==='SS400'?'400–510 N/mm²':'≥ 340 N/mm²');
+  var ys    = s.YIELD_STRENGTH    || (s.GRADE==='SPHC'?'—'            : s.GRADE==='SS400'?'≥ 245 N/mm²'  :'≥ 205 N/mm²');
+  var el    = s.ELONGATION        || (s.GRADE==='SPHC'?'≥ 27%'        : s.GRADE==='SS400'?'≥ 21%'         :'≥ 27%');
+
+  // rows: [label, limit, barOkPct, barWarnPct, unit, statusKey]
+  // barOkPct = green zone width %, barWarnPct = amber zone width %
+  var rows = [
+    { label:'Thickness',  limit: tolT+' mm',  ok:60, warn:20, unit:'tolerance', spark:'tol' },
+    { label:'Width',      limit: tolW+' mm',  ok:65, warn:18, unit:'tolerance', spark:'tol' },
+    { label:'Length',     limit: tolL+' mm',  ok:65, warn:18, unit:'tolerance', spark:'tol' },
+    { label:'Flatness',   limit: flat,         ok:55, warn:25, unit:'per 1 m',   spark:'flat' },
+    { label:'Camber',     limit: camb,         ok:60, warn:22, unit:'per 1 m',   spark:'flat' },
+    { label:'Squareness', limit: sq,           ok:62, warn:20, unit:'per 1 m',   spark:'flat' },
+    { label:'Bend R',     limit: bend,         ok:70, warn:15, unit:'× thickness', spark:'bend' },
+    { label:'Tensile',    limit: ts,           ok:68, warn:16, unit:'N/mm²',     spark:'mech' },
+    { label:'Yield',      limit: ys,           ok:65, warn:18, unit:'N/mm²',     spark:'mech' },
+    { label:'Elongation', limit: el,           ok:62, warn:20, unit:'%',         spark:'mech' },
+  ];
+
+  document.getElementById('lss-sku').textContent = s.SKU || '—';
+
+  var html = '';
+  rows.forEach(function(r) {
+    var rejectPct = 100 - r.ok - r.warn;
+    html += '<tr>' +
+      '<td class="lss-label">'+r.label+'</td>' +
+      '<td class="lss-limit">'+r.limit+'</td>' +
+      '<td class="lss-bar-cell" style="width:100%">' +
+        '<div style="display:flex;align-items:center;gap:5px;">' +
+          '<div class="lss-bar-wrap" style="flex:1;position:relative;">' +
+            '<div class="lss-bar-ok"  style="left:0;width:'+r.ok+'%"></div>' +
+            '<div class="lss-bar-warn" style="left:'+r.ok+'%;width:'+r.warn+'%"></div>' +
+            '<div class="lss-bar-reject" style="left:'+(r.ok+r.warn)+'%;width:'+rejectPct+'%"></div>' +
+            '<div class="lss-tick" style="left:'+r.ok+'%"></div>' +
+            '<div class="lss-tick" style="left:'+(r.ok+r.warn)+'%"></div>' +
+          '</div>' +
+          '<div class="lss-status ok"></div>' +
+        '</div>' +
+        '<div class="lss-unit">'+r.unit+'</div>' +
+      '</td>' +
+    '</tr>';
+  });
+  document.getElementById('lss-table').innerHTML = html;
+}
+
 // ── GRADE SELECTOR ───────────────────────────────
 function selectGrade(groupId, el){
   var group=document.getElementById(groupId);
@@ -1042,6 +1138,9 @@ function openViewer(idx){
   });
   var svgbr1=document.getElementById('svgbr1'); if(svgbr1) svgbr1.textContent=gDef.br1;
   var svgbr2=document.getElementById('svgbr2'); if(svgbr2) svgbr2.textContent=gDef.br2;
+
+  // build limit spec summary
+  buildLSS(s);
 
   // fill admin panel
   document.getElementById('a-ts').value=s.TENSILE_STRENGTH||'';
