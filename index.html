@@ -1211,89 +1211,99 @@ function renderGrid(){
 }
 
 // ── OPEN VIEWER ───────────────────────────────────
+function setText(id,val){ var e=document.getElementById(id); if(e) e.textContent=val; }
+function setHTML(id,val){ var e=document.getElementById(id); if(e) e.innerHTML=val; }
+function setStyle(id,prop,val){ var e=document.getElementById(id); if(e) e.style[prop]=val; }
+
 function openViewer(idx){
   currentSku=filteredSkus[idx];
   var s=currentSku;
   var stock=parseInt(s.STOCK_QTY)||0;
 
-  // Product identity — Apple language
-  document.getElementById('vp-title').textContent=s.SKU||'—';
-  document.getElementById('v-eyebrow').textContent=surfaceLabel(s.SURFACE);
-  document.getElementById('v-sku').textContent=makeName(s);
-  document.getElementById('v-tagline').textContent=makeTagline(s);
-  document.getElementById('v-dot').style.background=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
-  document.getElementById('v-stock').textContent=stock===0?'หมดสต็อก':'มีสต็อก · '+stock+' แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg';
+  // Product identity
+  setText('vp-title', s.SKU||'—');
+  setText('v-eyebrow', surfaceLabel(s.SURFACE));
+  setText('v-sku', makeName(s));
+  setText('v-tagline', makeTagline(s));
+  setStyle('v-dot','background', stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)');
+  setText('v-stock', stock===0?'หมดสต็อก':'มีสต็อก · '+stock+' แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg');
 
   // Dimensions
-  document.getElementById('v-t').innerHTML=s.THICKNESS_MM+'<span class="du">mm</span>';
-  document.getElementById('v-w').innerHTML=(parseInt(s.WIDTH_MM)||0).toLocaleString()+'<span class="du">mm</span>';
-  document.getElementById('v-l').innerHTML=(parseInt(s.LENGTH_MM)||0).toLocaleString()+'<span class="du">mm</span>';
-  document.getElementById('v-kg').innerHTML=(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+'<span class="du">kg</span>';
-
-  // Mechanical
-  document.getElementById('v-ts').textContent=s.TENSILE_STRENGTH||'—';
-  document.getElementById('v-ys').textContent=s.YIELD_STRENGTH||'—';
-  document.getElementById('v-el').textContent=s.ELONGATION||'—';
-  document.getElementById('v-hd').textContent=s.HARDNESS||'—';
-  document.getElementById('v-tol').textContent=s.TOLERANCE_THICKNESS||'—';
-  document.getElementById('v-std').textContent=s.STANDARD||'—';
+  setHTML('v-t', s.THICKNESS_MM+'<span class="du">mm</span>');
+  setHTML('v-w', (parseInt(s.WIDTH_MM)||0).toLocaleString()+'<span class="du">mm</span>');
+  setHTML('v-l', (parseInt(s.LENGTH_MM)||0).toLocaleString()+'<span class="du">mm</span>');
+  setHTML('v-kg', (parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+'<span class="du">kg</span>');
 
   // Packing
-  var bnd=parseInt(s.BUNDLE_SIZE)||5,bwt=(bnd*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)).toLocaleString();
-  document.getElementById('v-bnd').textContent=bnd+' แผ่น/มัด';
-  document.getElementById('v-bwt').textContent=bwt+' kg';
-  document.getElementById('v-strap').textContent=s.STRAP_TYPE||'เหล็กรัด 2 เส้น';
-  document.getElementById('v-wrap').textContent=s.WRAP_TYPE||'ฟิล์ม+กระดาษกันสนิม';
+  var bnd=parseInt(s.BUNDLE_SIZE)||5;
+  var bwt=(bnd*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)).toLocaleString();
+  setText('v-bnd', bnd+' แผ่น/มัด');
+  setText('v-bwt', bwt+' kg');
+  setText('v-strap', s.STRAP_TYPE||'เหล็กรัด 2 เส้น');
+  setText('v-wrap', s.WRAP_TYPE||'ฟิล์ม+กระดาษกันสนิม');
+
+  // 3D controls in Packing
+  var th=parseFloat(s.THICKNESS_MM)||2.0;
+  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400};
+  var elSheets=document.getElementById('a-sheets'); if(elSheets){elSheets.value=S.sheets;}
+  var elSheetsV=document.getElementById('a-sheets-v'); if(elSheetsV){elSheetsV.textContent=S.sheets;}
+  var elThick=document.getElementById('a-thick'); if(elThick){elThick.value=Math.round(th*10);}
+  var elThickV=document.getElementById('a-thick-v'); if(elThickV){elThickV.textContent=th.toFixed(1);}
+  var elW=document.getElementById('a-w'); if(elW){elW.value=S.w;}
+  var elL=document.getElementById('a-l'); if(elL){elL.value=S.l;}
 
   // Price + Calc
   var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
-  document.getElementById('v-price').innerHTML='฿ '+price.toLocaleString()+'<span>/ แผ่น</span>';
-  document.getElementById('v-prickg').textContent=(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1)+' ฿/kg';
+  setHTML('v-price', '฿ '+price.toLocaleString()+'<span>/ แผ่น</span>');
+  setText('v-prickg', (parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1)+' ฿/kg');
   var btn=document.getElementById('btn-cta');
-  btn.disabled=stock===0; btn.textContent=stock===0?'หมดสต็อก':'เลือกรายการนี้';
+  if(btn){btn.disabled=stock===0; btn.textContent=stock===0?'หมดสต็อก':'เลือกรายการนี้';}
   calcUpdate();
 
-  // Geo panel defaults
+  // Geo panel
   var gDef={flat:s.FLATNESS||'≤ 12 mm/m',flat2:'≤ 20 mm',camb:s.CAMBER||'≤ 2 mm/m',camb2:'≤ 4 mm',sq:s.SQUARENESS||'≤ 2 mm/m',sq2:'≤ 3 mm',br1:s.BEND_RADIUS_TRANS||'1.0t',br2:s.BEND_RADIUS_LONG||'1.5t',ba:'90°',sb:'~ 2–3°'};
   Object.keys(gDef).forEach(function(k){
-    var el=document.getElementById('g-'+k);if(el)el.textContent=gDef[k];
-    var ai=document.getElementById('a-'+k);if(ai)ai.value=gDef[k];
+    var el=document.getElementById('g-'+k); if(el) el.textContent=gDef[k];
+    var ai=document.getElementById('a-'+k); if(ai) ai.value=gDef[k];
   });
-  var svgbr1=document.getElementById('svgbr1');if(svgbr1)svgbr1.textContent=gDef.br1;
-  var svgbr2=document.getElementById('svgbr2');if(svgbr2)svgbr2.textContent=gDef.br2;
+  var svgbr1=document.getElementById('svgbr1'); if(svgbr1) svgbr1.textContent=gDef.br1;
+  var svgbr2=document.getElementById('svgbr2'); if(svgbr2) svgbr2.textContent=gDef.br2;
 
+  // Limit Spec Summary
   buildLSS(s);
 
-  // Admin panel
-  document.getElementById('a-ts').value=s.TENSILE_STRENGTH||'';
-  document.getElementById('a-ys').value=s.YIELD_STRENGTH||'';
-  document.getElementById('a-el').value=s.ELONGATION||'';
-  document.getElementById('a-hd').value=s.HARDNESS||'';
-  document.getElementById('a-tol').value=s.TOLERANCE_THICKNESS||'';
-  document.getElementById('a-price').value=price;
-  document.getElementById('a-stock').value=stock;
-  var th=parseFloat(s.THICKNESS_MM)||2.0;
-  S={sheets:parseInt(s.BUNDLE_SIZE)||5,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400};
-  document.getElementById('a-sheets').value=S.sheets;document.getElementById('a-sheets-v').textContent=S.sheets;
-  document.getElementById('a-thick').value=Math.round(th*10);document.getElementById('a-thick-v').textContent=th;
-  document.getElementById('a-w').value=S.w;document.getElementById('a-l').value=S.l;
+  // Admin fields
+  var adminMap={
+    'a-ts':s.TENSILE_STRENGTH||'',
+    'a-ys':s.YIELD_STRENGTH||'',
+    'a-el':s.ELONGATION||'',
+    'a-hd':s.HARDNESS||'',
+    'a-tol':s.TOLERANCE_THICKNESS||'',
+    'a-price':price,
+    'a-stock':stock
+  };
+  Object.keys(adminMap).forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value=adminMap[id];
+  });
 
   syncLabel();
 
-  // Switch view
+  // Switch to viewer
   document.getElementById('catalog-view').style.display='none';
   document.getElementById('cat-hdr').style.display='none';
   document.getElementById('viewer-page').classList.add('open');
   switchTab('spec',document.querySelector('.tab-btn'));
-  camTargetY=0.5;camTargetX=0.25;autoRot=true;
-  document.getElementById('cv-sw').classList.add('on');
+  camTargetY=0.5; camTargetX=0.25; autoRot=true;
+  var cvSw=document.getElementById('cv-sw'); if(cvSw) cvSw.classList.add('on');
   document.querySelectorAll('.vb').forEach(function(b,i){b.classList.toggle('on',i===0);});
   setTimeout(function(){
     var cw=document.querySelector('.canvas-wrap');
-    canvas.width=cw.clientWidth;canvas.height=cw.clientHeight;
-    if(!loopRunning)startLoop();
+    if(cw){canvas.width=cw.clientWidth; canvas.height=cw.clientHeight;}
+    if(!loopRunning) startLoop();
   },60);
-  setTimeout(function(){document.getElementById('cv-hint').style.opacity='0';},3000);
+  setTimeout(function(){
+    var hint=document.getElementById('cv-hint'); if(hint) hint.style.opacity='0';
+  },3000);
 }
 
 function closePage(){
