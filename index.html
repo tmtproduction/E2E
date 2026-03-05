@@ -559,6 +559,12 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
                 </div>
                 <div class="pack-text"><label>ห่อ</label><span id="v-wrap">—</span></div>
               </div>
+              <div class="pack-item">
+                <div class="pack-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M5 8l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="pack-text"><label>ยก / Lifting</label><span id="v-lift">—</span></div>
+              </div>
             </div>
             <!-- 3D LIVE controls -->
             <div style="border-top:1px solid var(--g200);padding-top:12px;display:flex;flex-direction:column;gap:12px;">
@@ -1121,33 +1127,34 @@ function buildLSS(s) {
   var w = parseInt(s.WIDTH_MM)       || 1200;
   var l = parseInt(s.LENGTH_MM)      || 2400;
 
-  // ── Sheet-first: อ่านจาก Sheet ก่อน fallback ไป formula ──
-  var tolT = s.TOL_THICKNESS  || (t <= 1.6 ? '±0.08 mm' : t <= 2.5 ? '±0.10 mm' : t <= 4.0 ? '±0.13 mm' : '±0.16 mm');
-  var tolW = s.TOL_WIDTH      || (w <= 1000 ? '+6 / 0 mm' : w <= 1500 ? '+8 / 0 mm' : '+10 / 0 mm');
-  var tolL = s.TOL_LENGTH     || (l <= 2000 ? '+6 / 0 mm' : '+8 / 0 mm');
-  var flat = s.FLATNESS       || ('≤ '+(t <= 1.6 ? '16' : t <= 3.2 ? '12' : '8')+' mm/m');
-  var camb = s.CAMBER         || ('≤ '+(t <= 2.0 ? '3' : '2')+' mm/m');
-  var sq   = s.SQUARENESS     || '≤ 2 mm/m';
-  var bend = s.MIN_BEND_R     || (t <= 2.0 ? '1.0 × t' : t <= 4.0 ? '1.5 × t' : '2.0 × t');
-  var ts   = s.TENSILE_STRENGTH || (s.GRADE==='SPHC' ? '≥ 270 N/mm²' : s.GRADE==='SS400' ? '400–510 N/mm²' : '≥ 340 N/mm²');
-  var ys   = s.YIELD_STRENGTH   || (s.GRADE==='SPHC' ? '—'           : s.GRADE==='SS400' ? '≥ 245 N/mm²'  : '≥ 205 N/mm²');
-  var el   = s.ELONGATION       || (s.GRADE==='SPHC' ? '≥ 27 %'      : s.GRADE==='SS400' ? '≥ 21 %'       : '≥ 27 %');
+  // ── อ่านจาก Sheet ก่อน (ชื่อคอลัมน์ตาม Sheet จริง) fallback → formula ──
+  var tolT = s.TOLERANCE_THICKNESS || (t<=1.6?'±0.08 mm':t<=2.5?'±0.10 mm':t<=4.0?'±0.13 mm':'±0.16 mm');
+  var tolW = s.TOL_WIDTH           || (w<=1000?'+6 / 0 mm':w<=1500?'+8 / 0 mm':'+10 / 0 mm');
+  var tolL = s.TOL_LENGTH          || (l<=2000?'+6 / 0 mm':'+8 / 0 mm');
+  var flat = s.FLATNESS            || '≤ '+(t<=1.6?'16':t<=3.2?'12':'8')+' mm/m';
+  var camb = s.CAMBER              || '≤ '+(t<=2.0?'3':'2')+' mm/m';
+  var sq   = s.SQUARENESS          || '≤ 2 mm/m';
+  var bendT= s.BEND_RADIUS_TRANS   || (t<=2.0?'1.0 × t':t<=4.0?'1.5 × t':'2.0 × t');
+  var bendL= s.BEND_RADIUS_LONG    || (t<=2.0?'1.5 × t':t<=4.0?'2.0 × t':'2.5 × t');
+  var ts   = s.TENSILE_STRENGTH    || (s.GRADE==='SPHC'?'≥ 270 N/mm²':s.GRADE==='SS400'?'400–510 N/mm²':'≥ 340 N/mm²');
+  var ys   = s.YIELD_STRENGTH      || (s.GRADE==='SPHC'?'—':s.GRADE==='SS400'?'≥ 245 N/mm²':'≥ 205 N/mm²');
+  var el   = s.ELONGATION          || (s.GRADE==='SPHC'?'≥ 27 %':s.GRADE==='SS400'?'≥ 21 %':'≥ 27 %');
 
-  // แสดง * ถ้าค่ามาจาก Sheet (ไม่ใช่ formula)
-  function src(sheetVal, computed){ return sheetVal ? sheetVal : computed; }
-  function tag(sheetVal){ return sheetVal ? '<sup style="color:var(--green);font-size:7px;margin-left:2px;">S</sup>' : ''; }
+  // S tag = ค่ามาจาก Sheet (ไม่ใช่ formula)
+  function tag(v){ return v?'<sup style="color:var(--green);font-size:7px;margin-left:2px;">S</sup>':''; }
 
   var groups = [
     { heading:'Dimension Tolerance', rows:[
-      { label:'ความหนา',   value: tolT + tag(s.TOL_THICKNESS),  note:'per sheet' },
-      { label:'ความกว้าง', value: tolW + tag(s.TOL_WIDTH),      note:'slit/mill' },
-      { label:'ความยาว',   value: tolL + tag(s.TOL_LENGTH),     note:'shear cut' },
+      { label:'ความหนา',   value: tolT+tag(s.TOLERANCE_THICKNESS), note:'per sheet' },
+      { label:'ความกว้าง', value: tolW+tag(s.TOL_WIDTH),           note:'slit/mill' },
+      { label:'ความยาว',   value: tolL+tag(s.TOL_LENGTH),          note:'shear cut' },
     ]},
     { heading:'Geometric', rows:[
-      { label:'Flatness',   value:'≤ '+flat.replace('≤ ','')+tag(s.FLATNESS),     note:'per 1 m' },
-      { label:'Camber',     value:'≤ '+camb.replace('≤ ','')+tag(s.CAMBER),       note:'per 1 m' },
-      { label:'Squareness', value: sq+tag(s.SQUARENESS),                           note:'corner' },
-      { label:'Min Bend R', value: bend+tag(s.MIN_BEND_R),                         note:'no crack' },
+      { label:'Flatness',      value: flat+tag(s.FLATNESS),          note:'per 1 m' },
+      { label:'Camber',        value: camb+tag(s.CAMBER),            note:'per 1 m' },
+      { label:'Squareness',    value: sq+tag(s.SQUARENESS),          note:'corner' },
+      { label:'Bend R (ตัด⊥)', value: bendT+tag(s.BEND_RADIUS_TRANS),note:'transverse' },
+      { label:'Bend R (ตัด∥)', value: bendL+tag(s.BEND_RADIUS_LONG), note:'longitudinal' },
     ]},
     { heading:'Mechanical ('+(s.GRADE||'—')+')', rows:[
       { label:'Tensile',    value: ts+tag(s.TENSILE_STRENGTH), note:'' },
@@ -1164,8 +1171,7 @@ function buildLSS(s) {
       html += '<tr class="lss-row"><td class="lss-label">'+r.label+'</td><td class="lss-value">'+r.value+'</td><td class="lss-note">'+r.note+'</td></tr>';
     });
   });
-  // legend
-  html += '<tr><td colspan="3" style="padding:6px 10px 8px;font-size:8px;color:var(--g400);"><sup style="color:var(--green);">S</sup> = ค่าจาก Google Sheet &nbsp;·&nbsp; ไม่มีสัญลักษณ์ = คำนวณจาก formula</td></tr>';
+  html += '<tr><td colspan="3" style="padding:6px 10px 8px;font-size:8px;color:var(--g400);"><sup style="color:var(--green);">S</sup> = ค่าจาก Google Sheet &nbsp;·&nbsp; ไม่มีสัญลักษณ์ = formula JIS</td></tr>';
   document.getElementById('lss-table').innerHTML = html;
 }
 
@@ -1341,7 +1347,8 @@ function openViewer(idx){
   setText('v-bnd', bnd+' แผ่น/มัด');
   setText('v-bwt', bwt+' kg');
   setText('v-strap', s.STRAP_TYPE||'เหล็กรัด 2 เส้น');
-  setText('v-wrap', s.WRAP_TYPE||'ฟิล์ม+กระดาษกันสนิม');
+  setText('v-wrap',  s.WRAP_TYPE||'ฟิล์ม+กระดาษกันสนิม');
+  setText('v-lift',  s.LIFTING||'Forklift / ไม้รอง');
 
   // 3D controls in Packing
   var th=parseFloat(s.THICKNESS_MM)||2.0;
