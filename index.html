@@ -10,16 +10,24 @@
 body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color:var(--black);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 
 /* ── CATALOG HEADER ── */
-.cat-hdr{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;padding:12px 28px;border-bottom:1px solid var(--g200);background:var(--white);flex-shrink:0;}
-.brand{font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;line-height:1.2;}
-.search-bar{display:flex;gap:8px;flex-wrap:wrap;}
-.sf{display:flex;flex-direction:column;gap:2px;}
-.sf label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);}
-.sf select{border:1px solid var(--g200);background:var(--white);font-size:11px;padding:4px 7px;outline:none;color:var(--black);font-family:inherit;min-width:90px;}
-.sf select:focus{border-color:var(--black);}
-.btn-search{background:var(--black);color:var(--white);border:none;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:7px 16px;cursor:pointer;align-self:flex-end;font-family:inherit;font-weight:600;}
-.btn-search:hover{background:var(--g600);}
-.hdr-stat{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);white-space:nowrap;}
+.cat-hdr{display:flex;flex-direction:column;flex-shrink:0;background:var(--white);}
+.cat-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 36px;border-bottom:1px solid var(--g200);}
+.brand{display:flex;flex-direction:column;gap:1px;}
+.brand-name{font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;}
+.brand-sub{font-size:8px;font-weight:400;letter-spacing:2px;color:var(--g400);}
+.hdr-stat{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);}
+.cat-hero{padding:28px 36px 20px;border-bottom:1px solid var(--g200);}
+.cat-hero-eyebrow{font-size:9px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--g400);margin-bottom:5px;}
+.cat-hero-title{font-size:24px;font-weight:700;letter-spacing:-.4px;color:var(--black);line-height:1.15;margin-bottom:20px;}
+.search-bar{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;}
+.sf{display:flex;flex-direction:column;gap:5px;}
+.sf label{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-weight:500;}
+.sf select{border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:13px;font-weight:500;padding:3px 0 5px;outline:none;color:var(--black);font-family:inherit;min-width:100px;cursor:pointer;transition:border-color .2s;}
+.sf select:focus{border-bottom-color:var(--black);}
+.btn-search{background:var(--black);color:var(--white);border:none;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:9px 22px;cursor:pointer;font-family:inherit;font-weight:600;transition:opacity .15s;}
+.btn-search:hover{opacity:.75;}
+.btn-clear{background:none;border:none;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);cursor:pointer;font-family:inherit;padding:9px 0;text-decoration:underline;text-underline-offset:3px;}
+.btn-clear:hover{color:var(--black);}
 
 /* ── CATALOG VIEW ── */
 #catalog-view{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
@@ -28,35 +36,42 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .state-msg p{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);}
 .spinner{width:24px;height:24px;border:2px solid var(--g200);border-top-color:var(--black);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.grid-wrap{padding:20px 28px;flex:1;}
-.grid-hdr{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;border-bottom:1px solid var(--g200);padding-bottom:8px;}
-.grid-hdr h2{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;}
-.grid-hdr span{font-size:10px;color:var(--g400);font-family:'Courier New',monospace;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1px;background:var(--g200);}
-.card{background:var(--white);transition:background .15s;}
-.card:hover{background:#fafaf8;}
-.card-img{height:130px;background:var(--g100);position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.status-dot{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%;}
-.card-body{padding:14px 16px;border-top:1px solid var(--g200);}
-.c-sku{font-size:11px;font-weight:700;font-family:'Courier New',monospace;letter-spacing:.5px;margin-bottom:2px;}
-.c-sub{font-size:8px;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
-.c-specs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;}
-.cs label{font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:1px;}
-.cs span{font-family:'Courier New',monospace;font-size:11px;font-weight:600;}
-.c-divider{height:1px;background:var(--g200);margin:8px 0;}
+.grid-wrap{padding:24px 36px;flex:1;}
+.grid-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.grid-meta-left{display:flex;flex-direction:column;gap:2px;}
+.grid-count{font-size:11px;font-weight:700;letter-spacing:-.2px;}
+.grid-sub{font-size:9px;color:var(--g400);letter-spacing:.5px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2px;background:var(--g200);}
+.card{background:var(--white);transition:all .2s;cursor:pointer;}
+.card:hover{background:#fafaf8;transform:none;}
+.card-img{height:150px;background:var(--g100);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(10,10,10,.04));pointer-events:none;}
+.status-badge{position:absolute;top:12px;left:12px;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:3px 8px;}
+.status-badge.in-stock{background:rgba(26,122,74,.12);color:var(--green);}
+.status-badge.low-stock{background:rgba(212,160,23,.14);color:var(--yellow);}
+.status-badge.out-stock{background:rgba(192,57,43,.1);color:var(--red);}
+.card-body{padding:16px 18px 12px;}
+.c-eyebrow{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:4px;font-weight:500;}
+.c-name{font-size:16px;font-weight:700;letter-spacing:-.2px;line-height:1.15;margin-bottom:2px;color:var(--black);}
+.c-tagline{font-size:11px;color:var(--g600);margin-bottom:14px;line-height:1.4;}
+.c-specs{display:flex;gap:16px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--g100);}
+.cs{display:flex;flex-direction:column;gap:1px;}
+.cs label{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--g400);}
+.cs span{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--black);}
 .c-bottom{display:flex;justify-content:space-between;align-items:flex-end;}
-.c-stock .stock-num{font-size:20px;font-weight:700;line-height:1;}
-.c-stock .stock-num.green{color:var(--green);} .c-stock .stock-num.yellow{color:var(--yellow);} .c-stock .stock-num.red{color:var(--red);}
-.c-stock .stock-unit{font-size:8px;color:var(--g400);text-transform:uppercase;margin-top:1px;}
-.c-price{text-align:right;}
-.c-price .price-main{font-family:'Courier New',monospace;font-size:12px;font-weight:700;}
-.c-price .price-sub{font-size:8px;color:var(--g400);margin-top:1px;}
-.card-foot{padding:8px 16px;border-top:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center;}
-.btn-spec{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g600);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;}
+.c-stock-info{display:flex;flex-direction:column;gap:1px;}
+.c-stock-num{font-size:13px;font-weight:700;}
+.c-stock-num.green{color:var(--green);} .c-stock-num.yellow{color:var(--yellow);} .c-stock-num.red{color:var(--red);}
+.c-stock-label{font-size:8px;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;}
+.c-price-info{text-align:right;}
+.c-price-main{font-family:'Courier New',monospace;font-size:14px;font-weight:700;}
+.c-price-sub{font-size:8px;color:var(--g400);margin-top:1px;}
+.card-foot{padding:10px 18px;border-top:1px solid var(--g100);display:flex;justify-content:space-between;align-items:center;}
+.btn-spec{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g600);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:3px;}
 .btn-spec:hover{color:var(--black);}
-.btn-order-card{background:var(--black);color:var(--white);border:none;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;cursor:pointer;font-family:inherit;font-weight:600;}
-.btn-order-card:hover{background:var(--g600);}
-.btn-order-card:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
+.btn-order-card{background:var(--black);color:var(--white);border:none;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;cursor:pointer;font-family:inherit;font-weight:600;transition:opacity .15s;}
+.btn-order-card:hover{opacity:.75;}
+.btn-order-card:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;opacity:1;}
 
 /* ── VIEWER PAGE (full-screen, hidden by default) ── */
 #viewer-page{display:none;flex:1;flex-direction:column;overflow:hidden;}
@@ -96,41 +111,54 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .panel-scroll{flex:1;overflow-y:auto;}
 
 /* Spec panel */
-.sec{padding:14px 18px;border-bottom:1px solid var(--g200);flex-shrink:0;}
-.sec-lbl{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:600;}
+.sec{padding:16px 20px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.sec-lbl{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g400);margin-bottom:12px;display:flex;align-items:center;gap:8px;font-weight:600;}
 .sec-lbl::after{content:'';flex:1;height:1px;background:var(--g200);}
-.prod-sku{font-size:20px;font-weight:700;letter-spacing:.5px;line-height:1.1;margin-bottom:3px;}
-.prod-sub{font-size:9px;color:var(--g400);letter-spacing:.5px;text-transform:uppercase;}
-.stock-pill{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 10px;background:var(--g100);}
+
+/* Product identity */
+.prod-eyebrow{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g400);margin-bottom:4px;font-weight:500;}
+.prod-name{font-size:18px;font-weight:700;letter-spacing:-.2px;line-height:1.15;margin-bottom:3px;color:var(--black);}
+.prod-tagline{font-size:11px;color:var(--g600);line-height:1.5;margin-bottom:10px;}
+.stock-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--g100);}
 .stock-pill .dot{width:6px;height:6px;border-radius:50%;}
 .stock-pill span{font-size:10px;font-family:'Courier New',monospace;}
-.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.df label{display:block;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;}
-.df .dv{font-family:'Courier New',monospace;font-size:14px;font-weight:600;}
-.df .du{font-size:9px;color:var(--g400);margin-left:1px;}
-.mrow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--g100);}
+
+/* Dimensions — Apple-style large value */
+.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.df{display:flex;flex-direction:column;gap:2px;}
+.df label{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-weight:500;}
+.df .dv{font-size:17px;font-weight:700;letter-spacing:-.2px;line-height:1;}
+.df .du{font-size:10px;color:var(--g600);font-weight:400;margin-left:2px;}
+
+/* Mechanical — clean list like Apple spec rows */
+.mrow{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--g100);}
 .mrow:last-child{border-bottom:none;}
-.mk{font-size:9px;letter-spacing:.5px;color:var(--g400);text-transform:uppercase;}
-.mv{font-family:'Courier New',monospace;font-size:11px;font-weight:600;}
-.price-big{font-size:26px;font-weight:700;letter-spacing:1px;line-height:1;}
-.price-big span{font-size:11px;color:var(--g400);font-weight:400;margin-left:3px;}
-.price-sub2{font-size:10px;color:var(--g400);margin-top:2px;}
-.calc-box{background:var(--g100);padding:10px 12px;margin-top:10px;}
+.mk{font-size:10px;color:var(--g600);}
+.mv{font-size:11px;font-weight:600;font-family:'Courier New',monospace;color:var(--black);text-align:right;max-width:55%;}
+
+/* Price */
+.price-big{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1;}
+.price-big span{font-size:12px;color:var(--g400);font-weight:400;margin-left:4px;letter-spacing:0;}
+.price-sub2{font-size:10px;color:var(--g400);margin-top:3px;}
+.calc-box{background:var(--g100);padding:12px 14px;margin-top:12px;}
 .calc-r{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.calc-r label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);}
-.calc-inp{width:58px;border:1px solid var(--g200);background:var(--white);font-family:'Courier New',monospace;font-size:13px;font-weight:600;padding:4px 6px;outline:none;text-align:center;}
+.calc-r label{font-size:9px;text-transform:uppercase;color:var(--g400);letter-spacing:.5px;}
+.calc-inp{width:60px;border:1px solid var(--g200);background:var(--white);font-family:'Courier New',monospace;font-size:14px;font-weight:700;padding:4px 6px;outline:none;text-align:center;transition:border-color .2s;}
 .calc-inp:focus{border-color:var(--black);}
-.calc-res{display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--g200);}
-.cr label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
-.cr .crv{font-size:14px;font-weight:700;letter-spacing:.5px;}
-.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.pack-item{display:flex;gap:7px;align-items:flex-start;}
-.pack-icon{width:22px;height:22px;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
-.pack-text label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:1px;}
-.pack-text span{font-family:'Courier New',monospace;font-size:10px;font-weight:600;}
-.btn-cta{width:100%;background:var(--black);color:var(--white);border:none;font-size:12px;letter-spacing:4px;text-transform:uppercase;padding:14px;cursor:pointer;flex-shrink:0;font-family:inherit;font-weight:600;}
-.btn-cta:hover{background:var(--g600);}
-.btn-cta:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
+.calc-res{display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid var(--g200);}
+.cr label{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:3px;}
+.cr .crv{font-size:15px;font-weight:700;}
+
+/* Packing */
+.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pack-item{display:flex;gap:8px;align-items:flex-start;}
+.pack-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+.pack-text label{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px;}
+.pack-text span{font-size:11px;font-weight:600;line-height:1.4;}
+
+.btn-cta{width:100%;background:var(--black);color:var(--white);border:none;font-size:11px;letter-spacing:4px;text-transform:uppercase;padding:15px;cursor:pointer;flex-shrink:0;font-family:inherit;font-weight:700;transition:opacity .15s;}
+.btn-cta:hover{opacity:.75;}
+.btn-cta:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;opacity:1;}
 
 /* Geometry panel */
 .geo-card{padding:14px 18px;border-bottom:1px solid var(--g200);}
@@ -274,26 +302,36 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 
 <!-- ══ CATALOG VIEW ══ -->
 <div class="cat-hdr" id="cat-hdr">
-  <div class="brand">Steel<br>Catalog</div>
-  <div class="search-bar">
-    <div class="sf"><label>ประเภทผิว</label>
-      <select id="f-surface"><option value="">— ทั้งหมด —</option><option>ดำ (Hot Rolled)</option><option>ชุบสังกะสี (Galvanized)</option><option>Cold Rolled</option><option>สเตนเลส</option></select>
+  <div class="cat-nav">
+    <div class="brand">
+      <div class="brand-name">Steel Catalog</div>
+      <div class="brand-sub">Product Specifications</div>
     </div>
-    <div class="sf"><label>เกรด</label>
-      <select id="f-grade"><option value="">— ทั้งหมด —</option><option>SPHC</option><option>SS400</option><option>SPCC</option><option>SGHC</option></select>
-    </div>
-    <div class="sf"><label>หนา (mm)</label>
-      <select id="f-thick"><option value="">— ทั้งหมด —</option><option>1.2</option><option>1.5</option><option>2.0</option><option>2.3</option><option>3.2</option></select>
-    </div>
-    <div class="sf"><label>กว้าง (mm)</label>
-      <select id="f-width"><option value="">— ทั้งหมด —</option><option>900</option><option>1200</option><option>1500</option></select>
-    </div>
-    <div class="sf"><label>ยาว (mm)</label>
-      <select id="f-length"><option value="">— ทั้งหมด —</option><option>2000</option><option>2400</option><option>3000</option></select>
-    </div>
-    <button class="btn-search" onclick="applyFilter()">ค้นหา</button>
+    <div class="hdr-stat" id="hdr-stat"></div>
   </div>
-  <div class="hdr-stat" id="hdr-stat">—</div>
+  <div class="cat-hero">
+    <div class="cat-hero-eyebrow">เหล็กแผ่นดำ · ชุบสังกะสี · Cold Rolled</div>
+    <div class="cat-hero-title">เลือก Spec ที่ใช่<br>สำหรับงานของคุณ</div>
+    <div class="search-bar">
+      <div class="sf"><label>ประเภทผิว</label>
+        <select id="f-surface"><option value="">ทั้งหมด</option><option>ดำ (Hot Rolled)</option><option>ชุบสังกะสี (Galvanized)</option><option>Cold Rolled</option><option>สเตนเลส</option></select>
+      </div>
+      <div class="sf"><label>เกรด</label>
+        <select id="f-grade"><option value="">ทั้งหมด</option><option>SPHC</option><option>SS400</option><option>SPCC</option><option>SGHC</option></select>
+      </div>
+      <div class="sf"><label>ความหนา</label>
+        <select id="f-thick"><option value="">ทั้งหมด</option><option>1.2</option><option>1.5</option><option>2.0</option><option>2.3</option><option>3.2</option></select>
+      </div>
+      <div class="sf"><label>ความกว้าง</label>
+        <select id="f-width"><option value="">ทั้งหมด</option><option>900</option><option>1200</option><option>1500</option></select>
+      </div>
+      <div class="sf"><label>ความยาว</label>
+        <select id="f-length"><option value="">ทั้งหมด</option><option>2000</option><option>2400</option><option>3000</option></select>
+      </div>
+      <button class="btn-search" onclick="applyFilter()">ค้นหา</button>
+      <button class="btn-clear" onclick="clearFilter()">ล้างตัวกรอง</button>
+    </div>
+  </div>
 </div>
 
 <div id="catalog-view">
@@ -303,7 +341,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 <!-- ══ VIEWER PAGE ══ -->
 <div id="viewer-page">
   <div class="vp-hdr">
-    <button class="vp-back" onclick="closePage()">← กลับค้นหา</button>
+    <button class="vp-back" onclick="closePage()">← กลับรายการทั้งหมด</button>
     <div class="vp-title" id="vp-title">Steel Product Viewer</div>
     <div class="vp-tabs">
       <button class="tab-btn active" onclick="switchTab('spec',this)">Spec Sheet</button>
@@ -339,8 +377,9 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
         <div class="panel-scroll">
           <div class="sec">
             <div class="sec-lbl">Product</div>
-            <div class="prod-sku" id="v-sku">—</div>
-            <div class="prod-sub" id="v-sub">—</div>
+            <div class="prod-eyebrow" id="v-eyebrow">เหล็กแผ่น</div>
+            <div class="prod-name" id="v-sku">—</div>
+            <div class="prod-tagline" id="v-tagline">—</div>
             <div class="stock-pill">
               <div class="dot" id="v-dot" style="background:var(--green)"></div>
               <span id="v-stock">—</span>
@@ -357,12 +396,12 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
           </div>
           <div class="sec">
             <div class="sec-lbl">Mechanical Properties</div>
-            <div class="mrow"><span class="mk">Tensile Strength</span><span class="mv" id="v-ts">—</span></div>
-            <div class="mrow"><span class="mk">Yield Strength</span><span class="mv" id="v-ys">—</span></div>
-            <div class="mrow"><span class="mk">Elongation</span><span class="mv" id="v-el">—</span></div>
-            <div class="mrow"><span class="mk">Hardness</span><span class="mv" id="v-hd">—</span></div>
-            <div class="mrow"><span class="mk">Tolerance หนา</span><span class="mv" id="v-tol">—</span></div>
-            <div class="mrow"><span class="mk">Standard</span><span class="mv" id="v-std">—</span></div>
+            <div class="mrow"><span class="mk">ความแข็งแรงดึง</span><span class="mv" id="v-ts">—</span></div>
+            <div class="mrow"><span class="mk">ความแข็งแรงคราก</span><span class="mv" id="v-ys">—</span></div>
+            <div class="mrow"><span class="mk">การยืดตัว</span><span class="mv" id="v-el">—</span></div>
+            <div class="mrow"><span class="mk">ความแข็ง (Hardness)</span><span class="mv" id="v-hd">—</span></div>
+            <div class="mrow"><span class="mk">Tolerance ความหนา</span><span class="mv" id="v-tol">—</span></div>
+            <div class="mrow"><span class="mk">มาตรฐาน</span><span class="mv" id="v-std">—</span></div>
           </div>
           <div class="sec">
             <div class="sec-lbl">Packing</div>
@@ -1058,36 +1097,64 @@ function applyFilter(){
 }
 
 // ── RENDER GRID ───────────────────────────────────
+function surfaceLabel(s){
+  if(!s)return'—';
+  if(s.indexOf('Hot')>-1||s.indexOf('ดำ')>-1)return'เหล็กดำ Hot Rolled';
+  if(s.indexOf('Galvanized')>-1||s.indexOf('สังกะสี')>-1)return'เหล็กชุบสังกะสี';
+  if(s.indexOf('Cold')>-1)return'เหล็ก Cold Rolled';
+  if(s.indexOf('สเตน')>-1)return'สเตนเลส';
+  return s;
+}
+function makeName(s){
+  var t=parseFloat(s.THICKNESS_MM)||0,w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
+  return 'หนา '+t+' mm · '+w+'×'+l+' mm';
+}
+function makeTagline(s){
+  var parts=[];
+  if(s.GRADE)parts.push('เกรด '+s.GRADE);
+  if(s.STANDARD)parts.push(s.STANDARD);
+  if(s.WEIGHT_PER_SHEET_KG)parts.push((parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+' kg/แผ่น');
+  return parts.join(' · ');
+}
+
 function renderGrid(){
   var el=document.getElementById('catalog-view');
-  document.getElementById('hdr-stat').textContent=filteredSkus.length+' รายการ';
+  var stat=document.getElementById('hdr-stat');
+  stat.textContent=filteredSkus.length+' รายการ';
   if(!filteredSkus.length){el.innerHTML='<div class="state-msg"><div class="icon">🔍</div><p>ไม่พบ Spec ที่ตรงกัน</p></div>';return;}
-  var h='<div class="grid-wrap"><div class="grid-hdr"><h2>ผลการค้นหา</h2><span>'+filteredSkus.length+' รายการ</span></div><div class="grid">';
+  var h='<div class="grid-wrap"><div class="grid-meta"><div class="grid-meta-left"><div class="grid-count">'+filteredSkus.length+' รายการ</div><div class="grid-sub">เหล็กแผ่นทุกประเภท · พร้อมส่ง</div></div></div><div class="grid">';
   filteredSkus.forEach(function(s,i){
-    var stock=parseInt(s.STOCK_QTY)||0,sc=stock===0?'red':stock<10?'yellow':'green';
+    var stock=parseInt(s.STOCK_QTY)||0;
+    var sc=stock===0?'red':stock<10?'yellow':'green';
+    var sbadge=stock===0?'out-stock':stock<10?'low-stock':'in-stock';
+    var slabel=stock===0?'หมดสต็อก':stock<10?'เหลือน้อย':'มีสต็อก';
     var dc=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
+    var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
+    var prickg=(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1);
+    var t=parseFloat(s.THICKNESS_MM)||0,w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
     h+='<div class="card">'+
       '<div class="card-img" onclick="openViewer('+i+')">'+
-        '<canvas id="cv-'+i+'" width="260" height="130"></canvas>'+
-        '<div class="status-dot" style="background:'+dc+'"></div>'+
+        '<canvas id="cv-'+i+'" width="280" height="150"></canvas>'+
+        '<div class="status-badge '+sbadge+'">'+slabel+'</div>'+
       '</div>'+
       '<div class="card-body">'+
-        '<div class="c-sku">'+(s.SKU||'')+'</div>'+
-        '<div class="c-sub">'+(s.SURFACE||'')+' · '+(s.GRADE||'')+'</div>'+
+        '<div class="c-eyebrow">'+surfaceLabel(s.SURFACE)+'</div>'+
+        '<div class="c-name">'+makeName(s)+'</div>'+
+        '<div class="c-tagline">'+makeTagline(s)+'</div>'+
         '<div class="c-specs">'+
-          '<div class="cs"><label>หนา</label><span>'+s.THICKNESS_MM+' mm</span></div>'+
-          '<div class="cs"><label>กว้าง</label><span>'+parseInt(s.WIDTH_MM)+'</span></div>'+
-          '<div class="cs"><label>ยาว</label><span>'+parseInt(s.LENGTH_MM)+'</span></div>'+
+          '<div class="cs"><label>หนา</label><span>'+t+'</span></div>'+
+          '<div class="cs"><label>กว้าง</label><span>'+w+'</span></div>'+
+          '<div class="cs"><label>ยาว</label><span>'+l+'</span></div>'+
+          '<div class="cs"><label>kg/แผ่น</label><span>'+(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+'</span></div>'+
         '</div>'+
-        '<div class="c-divider"></div>'+
         '<div class="c-bottom">'+
-          '<div class="c-stock"><div class="stock-num '+sc+'">'+stock+'</div><div class="stock-unit">แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg</div></div>'+
-          '<div class="c-price"><div class="price-main">฿ '+(parseInt(s.PRICE_PER_SHEET_THB)||0).toLocaleString()+'</div><div class="price-sub">'+(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1)+' ฿/kg</div></div>'+
+          '<div class="c-stock-info"><div class="c-stock-num '+sc+'">'+stock+' แผ่น</div><div class="c-stock-label">'+(parseFloat(s.STOCK_KG)||0).toLocaleString()+' kg พร้อมส่ง</div></div>'+
+          '<div class="c-price-info"><div class="c-price-main">฿ '+price.toLocaleString()+'</div><div class="c-price-sub">'+prickg+' ฿/kg</div></div>'+
         '</div>'+
       '</div>'+
       '<div class="card-foot">'+
-        '<button class="btn-spec" onclick="openViewer('+i+')">ดู Spec →</button>'+
-        '<button class="btn-order-card" '+(stock===0?'disabled':'')+' onclick="currentSku=filteredSkus['+i+'];buildOrderForm()">เลือก</button>'+
+        '<button class="btn-spec" onclick="openViewer('+i+')">ดู Spec Sheet →</button>'+
+        '<button class="btn-order-card" '+(stock===0?'disabled':'')+' onclick="currentSku=filteredSkus['+i+'];buildOrderForm()">เลือกรายการ</button>'+
       '</div>'+
     '</div>';
   });
@@ -1102,27 +1169,36 @@ function openViewer(idx){
   var s=currentSku;
   var stock=parseInt(s.STOCK_QTY)||0;
 
-  // fill spec panel
+  // Product identity — Apple language
   document.getElementById('vp-title').textContent=s.SKU||'—';
-  document.getElementById('v-sku').textContent=s.SKU||'—';
-  document.getElementById('v-sub').textContent=(s.SURFACE||'')+' · '+(s.GRADE||'')+' · '+(s.STANDARD||'');
+  document.getElementById('v-eyebrow').textContent=surfaceLabel(s.SURFACE);
+  document.getElementById('v-sku').textContent=makeName(s);
+  document.getElementById('v-tagline').textContent=makeTagline(s);
   document.getElementById('v-dot').style.background=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
   document.getElementById('v-stock').textContent=stock===0?'หมดสต็อก':'มีสต็อก · '+stock+' แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg';
+
+  // Dimensions
   document.getElementById('v-t').innerHTML=s.THICKNESS_MM+'<span class="du">mm</span>';
   document.getElementById('v-w').innerHTML=(parseInt(s.WIDTH_MM)||0).toLocaleString()+'<span class="du">mm</span>';
   document.getElementById('v-l').innerHTML=(parseInt(s.LENGTH_MM)||0).toLocaleString()+'<span class="du">mm</span>';
   document.getElementById('v-kg').innerHTML=(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+'<span class="du">kg</span>';
+
+  // Mechanical
   document.getElementById('v-ts').textContent=s.TENSILE_STRENGTH||'—';
   document.getElementById('v-ys').textContent=s.YIELD_STRENGTH||'—';
   document.getElementById('v-el').textContent=s.ELONGATION||'—';
   document.getElementById('v-hd').textContent=s.HARDNESS||'—';
   document.getElementById('v-tol').textContent=s.TOLERANCE_THICKNESS||'—';
   document.getElementById('v-std').textContent=s.STANDARD||'—';
+
+  // Packing
   var bnd=parseInt(s.BUNDLE_SIZE)||5,bwt=(bnd*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)).toLocaleString();
   document.getElementById('v-bnd').textContent=bnd+' แผ่น/มัด';
   document.getElementById('v-bwt').textContent=bwt+' kg';
   document.getElementById('v-strap').textContent=s.STRAP_TYPE||'เหล็กรัด 2 เส้น';
   document.getElementById('v-wrap').textContent=s.WRAP_TYPE||'ฟิล์ม+กระดาษกันสนิม';
+
+  // Price + Calc
   var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
   document.getElementById('v-price').innerHTML='฿ '+price.toLocaleString()+'<span>/ แผ่น</span>';
   document.getElementById('v-prickg').textContent=(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1)+' ฿/kg';
@@ -1130,19 +1206,18 @@ function openViewer(idx){
   btn.disabled=stock===0; btn.textContent=stock===0?'หมดสต็อก':'เลือกรายการนี้';
   calcUpdate();
 
-  // fill geo panel from sheet data (or defaults)
+  // Geo panel defaults
   var gDef={flat:s.FLATNESS||'≤ 12 mm/m',flat2:'≤ 20 mm',camb:s.CAMBER||'≤ 2 mm/m',camb2:'≤ 4 mm',sq:s.SQUARENESS||'≤ 2 mm/m',sq2:'≤ 3 mm',br1:s.BEND_RADIUS_TRANS||'1.0t',br2:s.BEND_RADIUS_LONG||'1.5t',ba:'90°',sb:'~ 2–3°'};
   Object.keys(gDef).forEach(function(k){
-    var el=document.getElementById('g-'+k); if(el) el.textContent=gDef[k];
-    var ai=document.getElementById('a-'+k); if(ai) ai.value=gDef[k];
+    var el=document.getElementById('g-'+k);if(el)el.textContent=gDef[k];
+    var ai=document.getElementById('a-'+k);if(ai)ai.value=gDef[k];
   });
-  var svgbr1=document.getElementById('svgbr1'); if(svgbr1) svgbr1.textContent=gDef.br1;
-  var svgbr2=document.getElementById('svgbr2'); if(svgbr2) svgbr2.textContent=gDef.br2;
+  var svgbr1=document.getElementById('svgbr1');if(svgbr1)svgbr1.textContent=gDef.br1;
+  var svgbr2=document.getElementById('svgbr2');if(svgbr2)svgbr2.textContent=gDef.br2;
 
-  // build limit spec summary
   buildLSS(s);
 
-  // fill admin panel
+  // Admin panel
   document.getElementById('a-ts').value=s.TENSILE_STRENGTH||'';
   document.getElementById('a-ys').value=s.YIELD_STRENGTH||'';
   document.getElementById('a-el').value=s.ELONGATION||'';
@@ -1152,27 +1227,23 @@ function openViewer(idx){
   document.getElementById('a-stock').value=stock;
   var th=parseFloat(s.THICKNESS_MM)||2.0;
   S={sheets:parseInt(s.BUNDLE_SIZE)||5,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400};
-  document.getElementById('a-sheets').value=S.sheets; document.getElementById('a-sheets-v').textContent=S.sheets;
-  document.getElementById('a-thick').value=Math.round(th*10); document.getElementById('a-thick-v').textContent=th;
-  document.getElementById('a-w').value=S.w; document.getElementById('a-l').value=S.l;
+  document.getElementById('a-sheets').value=S.sheets;document.getElementById('a-sheets-v').textContent=S.sheets;
+  document.getElementById('a-thick').value=Math.round(th*10);document.getElementById('a-thick-v').textContent=th;
+  document.getElementById('a-w').value=S.w;document.getElementById('a-l').value=S.l;
 
-  // fill label
   syncLabel();
 
-  // show viewer page
+  // Switch view
   document.getElementById('catalog-view').style.display='none';
   document.getElementById('cat-hdr').style.display='none';
   document.getElementById('viewer-page').classList.add('open');
-
-  // reset tab
-  switchTab('spec', document.querySelector('.tab-btn'));
-  // reset 3D
-  camTargetY=0.5; camTargetX=0.25; autoRot=true;
+  switchTab('spec',document.querySelector('.tab-btn'));
+  camTargetY=0.5;camTargetX=0.25;autoRot=true;
   document.getElementById('cv-sw').classList.add('on');
   document.querySelectorAll('.vb').forEach(function(b,i){b.classList.toggle('on',i===0);});
   setTimeout(function(){
     var cw=document.querySelector('.canvas-wrap');
-    canvas.width=cw.clientWidth; canvas.height=cw.clientHeight;
+    canvas.width=cw.clientWidth;canvas.height=cw.clientHeight;
     if(!loopRunning)startLoop();
   },60);
   setTimeout(function(){document.getElementById('cv-hint').style.opacity='0';},3000);
@@ -1183,6 +1254,14 @@ function closePage(){
   document.getElementById('catalog-view').style.display='';
   document.getElementById('cat-hdr').style.display='';
   autoRot=false;
+}
+
+function clearFilter(){
+  ['f-surface','f-grade','f-thick','f-width','f-length'].forEach(function(id){
+    document.getElementById(id).value='';
+  });
+  filteredSkus=allSkus.slice();
+  renderGrid();
 }
 
 // ── TABS ─────────────────────────────────────────
