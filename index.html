@@ -11,67 +11,77 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 
 /* ── CATALOG HEADER ── */
 .cat-hdr{display:flex;flex-direction:column;flex-shrink:0;background:var(--white);}
-.cat-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 36px;border-bottom:1px solid var(--g200);}
+.cat-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 48px;border-bottom:1px solid var(--g200);}
 .brand{display:flex;flex-direction:column;gap:1px;}
 .brand-name{font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;}
 .brand-sub{font-size:8px;font-weight:400;letter-spacing:2px;color:var(--g400);}
 .hdr-stat{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);}
-.cat-hero{padding:28px 36px 20px;border-bottom:1px solid var(--g200);}
-.cat-hero-eyebrow{font-size:9px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--g400);margin-bottom:5px;}
-.cat-hero-title{font-size:24px;font-weight:700;letter-spacing:-.4px;color:var(--black);line-height:1.15;margin-bottom:20px;}
-.search-bar{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;}
-.sf{display:flex;flex-direction:column;gap:5px;}
+
+/* Hero — Apple-style big title + inline filters */
+.cat-hero{padding:52px 48px 36px;border-bottom:1px solid var(--g200);text-align:center;}
+.cat-hero-eyebrow{font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--g400);margin-bottom:8px;}
+.cat-hero-title{font-size:38px;font-weight:700;letter-spacing:-.8px;color:var(--black);line-height:1.1;margin-bottom:6px;}
+.cat-hero-sub{font-size:15px;color:var(--g600);margin-bottom:32px;font-weight:400;}
+.search-bar{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:flex-end;}
+.sf{display:flex;flex-direction:column;gap:5px;text-align:left;}
 .sf label{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-weight:500;}
-.sf select{border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:13px;font-weight:500;padding:3px 0 5px;outline:none;color:var(--black);font-family:inherit;min-width:100px;cursor:pointer;transition:border-color .2s;}
+.sf select{border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:13px;font-weight:500;padding:3px 0 5px;outline:none;color:var(--black);font-family:inherit;min-width:96px;cursor:pointer;transition:border-color .2s;}
 .sf select:focus{border-bottom-color:var(--black);}
-.btn-search{background:var(--black);color:var(--white);border:none;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:9px 22px;cursor:pointer;font-family:inherit;font-weight:600;transition:opacity .15s;}
+.btn-search{background:var(--black);color:var(--white);border:none;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:10px 24px;cursor:pointer;font-family:inherit;font-weight:600;transition:opacity .15s;border-radius:20px;}
 .btn-search:hover{opacity:.75;}
-.btn-clear{background:none;border:none;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);cursor:pointer;font-family:inherit;padding:9px 0;text-decoration:underline;text-underline-offset:3px;}
+.btn-clear{background:none;border:none;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);cursor:pointer;font-family:inherit;padding:10px 0;text-decoration:underline;text-underline-offset:3px;}
 .btn-clear:hover{color:var(--black);}
 
-/* ── CATALOG VIEW ── */
-#catalog-view{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+/* ── CATALOG GRID — Apple product card style ── */
+#catalog-view{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--white);}
 .state-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;padding:60px 20px;}
 .state-msg .icon{font-size:32px;opacity:.3;}
 .state-msg p{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);}
 .spinner{width:24px;height:24px;border:2px solid var(--g200);border-top-color:var(--black);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.grid-wrap{padding:24px 36px;flex:1;}
-.grid-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-.grid-meta-left{display:flex;flex-direction:column;gap:2px;}
-.grid-count{font-size:11px;font-weight:700;letter-spacing:-.2px;}
-.grid-sub{font-size:9px;color:var(--g400);letter-spacing:.5px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2px;background:var(--g200);}
-.card{background:var(--white);transition:all .2s;cursor:pointer;}
-.card:hover{background:#fafaf8;transform:none;}
-.card-img{height:150px;background:var(--g100);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
-.card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(10,10,10,.04));pointer-events:none;}
-.status-badge{position:absolute;top:12px;left:12px;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:3px 8px;}
+.grid-wrap{padding:48px 48px;flex:1;}
+.grid-section-title{font-size:24px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px;}
+.grid-section-sub{font-size:13px;color:var(--g600);margin-bottom:28px;}
+
+/* Grid — 3 columns, generous spacing like Apple */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px;}
+
+/* Card — Apple-style: white bg, soft hover shadow, no border grid */
+.card{background:var(--white);border:1px solid var(--g200);transition:box-shadow .25s,transform .25s;cursor:pointer;display:flex;flex-direction:column;}
+.card:hover{box-shadow:0 8px 32px rgba(0,0,0,.10);transform:translateY(-2px);}
+.card-img{height:180px;background:var(--g100);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,rgba(10,10,10,.05));pointer-events:none;}
+
+/* stock badge */
+.status-badge{position:absolute;top:14px;left:14px;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:20px;}
 .status-badge.in-stock{background:rgba(26,122,74,.12);color:var(--green);}
 .status-badge.low-stock{background:rgba(212,160,23,.14);color:var(--yellow);}
 .status-badge.out-stock{background:rgba(192,57,43,.1);color:var(--red);}
-.card-body{padding:16px 18px 12px;}
-.c-eyebrow{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:4px;font-weight:500;}
-.c-name{font-size:16px;font-weight:700;letter-spacing:-.2px;line-height:1.15;margin-bottom:2px;color:var(--black);}
-.c-tagline{font-size:11px;color:var(--g600);margin-bottom:14px;line-height:1.4;}
-.c-specs{display:flex;gap:16px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--g100);}
-.cs{display:flex;flex-direction:column;gap:1px;}
+
+.card-body{padding:20px 22px 14px;flex:1;}
+.c-eyebrow{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:5px;font-weight:500;}
+.c-name{font-size:18px;font-weight:700;letter-spacing:-.3px;line-height:1.15;margin-bottom:4px;color:var(--black);}
+.c-tagline{font-size:12px;color:var(--g600);margin-bottom:18px;line-height:1.5;}
+.c-specs{display:flex;gap:20px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--g100);}
+.cs{display:flex;flex-direction:column;gap:2px;}
 .cs label{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--g400);}
-.cs span{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--black);}
+.cs span{font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:var(--black);}
 .c-bottom{display:flex;justify-content:space-between;align-items:flex-end;}
-.c-stock-info{display:flex;flex-direction:column;gap:1px;}
-.c-stock-num{font-size:13px;font-weight:700;}
+.c-stock-info{display:flex;flex-direction:column;gap:2px;}
+.c-stock-num{font-size:14px;font-weight:700;}
 .c-stock-num.green{color:var(--green);} .c-stock-num.yellow{color:var(--yellow);} .c-stock-num.red{color:var(--red);}
-.c-stock-label{font-size:8px;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;}
+.c-stock-label{font-size:9px;color:var(--g400);letter-spacing:.5px;}
 .c-price-info{text-align:right;}
-.c-price-main{font-family:'Courier New',monospace;font-size:14px;font-weight:700;}
-.c-price-sub{font-size:8px;color:var(--g400);margin-top:1px;}
-.card-foot{padding:10px 18px;border-top:1px solid var(--g100);display:flex;justify-content:space-between;align-items:center;}
-.btn-spec{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g600);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:3px;}
+.c-price-main{font-size:17px;font-weight:700;letter-spacing:-.2px;}
+.c-price-sub{font-size:9px;color:var(--g400);margin-top:2px;}
+
+/* Card footer — Apple style: small link left, pill button right */
+.card-foot{padding:14px 22px;border-top:1px solid var(--g100);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.btn-spec{font-size:9px;letter-spacing:.5px;color:var(--g600);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;}
 .btn-spec:hover{color:var(--black);}
-.btn-order-card{background:var(--black);color:var(--white);border:none;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;cursor:pointer;font-family:inherit;font-weight:600;transition:opacity .15s;}
+.btn-order-card{background:var(--black);color:var(--white);border:none;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:9px 18px;cursor:pointer;font-family:inherit;font-weight:600;transition:opacity .15s;border-radius:20px;white-space:nowrap;}
 .btn-order-card:hover{opacity:.75;}
-.btn-order-card:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;opacity:1;}
+.btn-order-card:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;opacity:1;border-radius:0;}
 
 /* ── VIEWER PAGE (full-screen, hidden by default) ── */
 #viewer-page{display:none;flex:1;flex-direction:column;overflow:hidden;}
@@ -154,7 +164,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 /* Packing */
 .pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .pack-item{display:flex;gap:10px;align-items:flex-start;}
-.pack-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.pack-icon{width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--g100);color:var(--g600);}
 .pack-text label{font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:3px;}
 .pack-text span{font-size:12px;font-weight:600;line-height:1.4;}
 
@@ -411,26 +421,29 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
     </div>
     <div class="hdr-stat" id="hdr-stat"></div>
   </div>
+
+  <!-- Apple-style hero: big centered title + subtitle -->
   <div class="cat-hero">
     <div class="cat-hero-eyebrow">เหล็กแผ่นดำ · ชุบสังกะสี · Cold Rolled</div>
-    <div class="cat-hero-title">เลือก Spec ที่ใช่<br>สำหรับงานของคุณ</div>
+    <div class="cat-hero-title">เลือก Spec ที่ใช่สำหรับงานของคุณ</div>
+    <div class="cat-hero-sub">คลังสินค้าพร้อมส่ง · ข้อมูลครบ · ดู 3D ได้จริง</div>
+    <!-- Filters as compact inline row -->
     <div class="search-bar">
       <div class="sf"><label>ประเภทผิว</label>
-        <select id="f-surface"><option value="">ทั้งหมด</option><option>ดำ (Hot Rolled)</option><option>ชุบสังกะสี (Galvanized)</option><option>Cold Rolled</option><option>สเตนเลส</option></select>
+        <select id="f-surface" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>ดำ (Hot Rolled)</option><option>ชุบสังกะสี (Galvanized)</option><option>Cold Rolled</option><option>สเตนเลส</option></select>
       </div>
       <div class="sf"><label>เกรด</label>
-        <select id="f-grade"><option value="">ทั้งหมด</option><option>SPHC</option><option>SS400</option><option>SPCC</option><option>SGHC</option></select>
+        <select id="f-grade" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>SPHC</option><option>SS400</option><option>SPCC</option><option>SGHC</option></select>
       </div>
       <div class="sf"><label>ความหนา</label>
-        <select id="f-thick"><option value="">ทั้งหมด</option><option>1.2</option><option>1.5</option><option>2.0</option><option>2.3</option><option>3.2</option></select>
+        <select id="f-thick" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>1.2</option><option>1.5</option><option>2.0</option><option>2.3</option><option>3.2</option></select>
       </div>
       <div class="sf"><label>ความกว้าง</label>
-        <select id="f-width"><option value="">ทั้งหมด</option><option>900</option><option>1200</option><option>1500</option></select>
+        <select id="f-width" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>900</option><option>1200</option><option>1500</option></select>
       </div>
       <div class="sf"><label>ความยาว</label>
-        <select id="f-length"><option value="">ทั้งหมด</option><option>2000</option><option>2400</option><option>3000</option></select>
+        <select id="f-length" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>2000</option><option>2400</option><option>3000</option></select>
       </div>
-      <button class="btn-search" onclick="applyFilter()">ค้นหา</button>
       <button class="btn-clear" onclick="clearFilter()">ล้างตัวกรอง</button>
     </div>
   </div>
@@ -519,10 +532,30 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
           <div class="sec">
             <div class="sec-lbl">Packing <span style="font-size:8px;letter-spacing:1px;background:var(--black);color:var(--white);padding:1px 5px;margin-left:4px;vertical-align:middle;">3D LIVE</span></div>
             <div class="pack-grid" style="margin-bottom:14px">
-              <div class="pack-item"><div class="pack-icon">📦</div><div class="pack-text"><label>Bundle</label><span id="v-bnd">—</span></div></div>
-              <div class="pack-item"><div class="pack-icon">⚖️</div><div class="pack-text"><label>น้ำหนัก/มัด</label><span id="v-bwt">—</span></div></div>
-              <div class="pack-item"><div class="pack-icon">🔗</div><div class="pack-text"><label>มัดด้วย</label><span id="v-strap">—</span></div></div>
-              <div class="pack-item"><div class="pack-icon">🗞️</div><div class="pack-text"><label>ห่อ</label><span id="v-wrap">—</span></div></div>
+              <div class="pack-item">
+                <div class="pack-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="5" width="12" height="9" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M5 5V4a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.2"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1"/></svg>
+                </div>
+                <div class="pack-text"><label>Bundle</label><span id="v-bnd">—</span></div>
+              </div>
+              <div class="pack-item">
+                <div class="pack-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="4" x2="8" y2="8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="8" y1="8.5" x2="10.5" y2="10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="pack-text"><label>น้ำหนัก/มัด</label><span id="v-bwt">—</span></div>
+              </div>
+              <div class="pack-item">
+                <div class="pack-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="4" width="13" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><line x1="5" y1="4" x2="5" y2="12" stroke="currentColor" stroke-width="1"/><line x1="11" y1="4" x2="11" y2="12" stroke="currentColor" stroke-width="1"/></svg>
+                </div>
+                <div class="pack-text"><label>มัดด้วย</label><span id="v-strap">—</span></div>
+              </div>
+              <div class="pack-item">
+                <div class="pack-icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M2 6h12M6 6v8" stroke="currentColor" stroke-width="1"/></svg>
+                </div>
+                <div class="pack-text"><label>ห่อ</label><span id="v-wrap">—</span></div>
+              </div>
             </div>
             <!-- 3D LIVE controls -->
             <div style="border-top:1px solid var(--g200);padding-top:12px;display:flex;flex-direction:column;gap:12px;">
@@ -1272,7 +1305,10 @@ function renderGrid(){
   var stat=document.getElementById('hdr-stat');
   stat.textContent=filteredSkus.length+' รายการ';
   if(!filteredSkus.length){el.innerHTML='<div class="state-msg"><div class="icon">🔍</div><p>ไม่พบ Spec ที่ตรงกัน</p></div>';return;}
-  var h='<div class="grid-wrap"><div class="grid-meta"><div class="grid-meta-left"><div class="grid-count">'+filteredSkus.length+' รายการ</div><div class="grid-sub">เหล็กแผ่นทุกประเภท · พร้อมส่ง</div></div></div><div class="grid">';
+  var h='<div class="grid-wrap">'+
+    '<div class="grid-section-title">สินค้าทั้งหมด</div>'+
+    '<div class="grid-section-sub">'+filteredSkus.length+' รายการ · เหล็กแผ่นทุกประเภท · พร้อมส่ง</div>'+
+    '<div class="grid">';
   filteredSkus.forEach(function(s,i){
     var stock=parseInt(s.STOCK_QTY)||0;
     var sc=stock===0?'red':stock<10?'yellow':'green';
