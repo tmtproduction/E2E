@@ -431,9 +431,9 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 
   <!-- Apple-style hero: big centered title + subtitle -->
   <div class="cat-hero">
-    <div class="cat-hero-eyebrow">เหล็กแผ่นรีดร้อน · เหล็กเพลท · เหล็กม้วนสลิต · เหล็กแบน · เหล็กแผ่นลาย</div>
-    <div class="cat-hero-title">เลือก Spec สำหรับงาน</div>
-    <div class="cat-hero-sub">"E2E Bridge: Complex Processes, Simplified."</div>
+    <div class="cat-hero-eyebrow">เหล็กแผ่นดำ · ชุบสังกะสี · Cold Rolled</div>
+    <div class="cat-hero-title">เลือก Spec ที่ใช่สำหรับงานของคุณ</div>
+    <div class="cat-hero-sub">คลังสินค้าพร้อมส่ง · ข้อมูลครบ · ดู 3D ได้จริง</div>
     <!-- Filters as compact inline row -->
     <div class="search-bar">
       <div class="sf"><label>ประเภทผิว</label>
@@ -1368,15 +1368,37 @@ function openViewer(idx){
   var sheetMarking=markingMap[String(s.MARKING||'').trim()]||'none';
   S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:2,marking:sheetMarking};
 
-  // set thickness slider limits based on JIS tolerance tier
-  S_thickMin = th <= 1.6 ? 0.8 : th <= 2.5 ? 1.0 : th <= 4.0 ? 1.6 : 2.5;
-  S_thickMax = th <= 1.6 ? 2.0 : th <= 2.5 ? 4.0 : th <= 4.0 ? 6.0 : 9.0;
+  // set thickness slider limits — Sheet THICK_MIN/THICK_MAX ก่อน fallback ล็อค nominal
+  var hasMin = s.THICK_MIN !== '' && s.THICK_MIN != null && !isNaN(parseFloat(s.THICK_MIN));
+  var hasMax = s.THICK_MAX !== '' && s.THICK_MAX != null && !isNaN(parseFloat(s.THICK_MAX));
+  if(hasMin && hasMax){
+    S_thickMin = parseFloat(s.THICK_MIN);
+    S_thickMax = parseFloat(s.THICK_MAX);
+  } else {
+    // ไม่มีใน Sheet — ล็อคที่ nominal อย่างเดียว
+    S_thickMin = th;
+    S_thickMax = th;
+  }
   var thickSlider=document.getElementById('a-thick');
+  var thickLocked = S_thickMin === S_thickMax;
   if(thickSlider){
     thickSlider.min=Math.round(S_thickMin*10);
     thickSlider.max=Math.round(S_thickMax*10);
     thickSlider.value=Math.round(th*10);
+    thickSlider.disabled = thickLocked;
+    thickSlider.classList.toggle('locked', thickLocked);
     thickSlider.classList.remove('out-of-range');
+  }
+  // แสดง label hint ใต้ slider
+  var thickHint = document.getElementById('thick-hint');
+  if(thickHint){
+    if(thickLocked){
+      thickHint.textContent = 'ล็อคที่ '+th.toFixed(1)+' mm (ไม่มี range ใน Sheet)';
+      thickHint.style.color = 'var(--g400)';
+    } else {
+      thickHint.textContent = S_thickMin.toFixed(1)+' – '+S_thickMax.toFixed(1)+' mm  (จาก Sheet)';
+      thickHint.style.color = 'var(--green)';
+    }
   }
 
   // reset strap buttons — marking highlight ตาม Sheet MARKING column
