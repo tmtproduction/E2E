@@ -268,7 +268,148 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .strap-btn:hover{border-color:var(--black);color:var(--black);}
 .strap-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
 
-/* ── CTRL3D — new visual control rows ── */
+/* ── SEGMENTED UNDERLINE INPUT SYSTEM ── */
+
+/* row: label left, control right */
+.seg-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 14px;border-bottom:1px solid var(--g100);
+  gap:10px;
+}
+.seg-label{
+  font-size:10px;letter-spacing:.3px;color:var(--g600);
+  white-space:nowrap;flex-shrink:0;min-width:72px;
+}
+
+/* number input + unit — underline only */
+.seg-input-unit{display:flex;align-items:baseline;gap:3px;}
+.seg-num{
+  border:none;border-bottom:1.5px solid var(--black);
+  background:transparent;
+  font-family:'Courier New',monospace;
+  font-size:16px;font-weight:700;
+  color:var(--black);
+  outline:none;padding:1px 0 2px;
+  text-align:right;
+  width:54px;
+  transition:border-color .15s;
+  -moz-appearance:textfield;
+}
+.seg-num::-webkit-inner-spin-button,
+.seg-num::-webkit-outer-spin-button{-webkit-appearance:none;}
+.seg-num:focus{border-bottom-color:var(--green);color:var(--green);}
+.seg-num--wide{width:68px;font-size:17px;}
+.seg-num--lg{width:66px;font-size:18px;}
+.seg-num--readonly{
+  font-family:'Courier New',monospace;font-size:16px;font-weight:700;
+  color:var(--black);min-width:36px;text-align:right;
+  border-bottom:1.5px solid var(--g200);
+  padding:1px 0 2px;display:inline-block;
+}
+.seg-unit{
+  font-size:9px;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--g400);white-space:nowrap;
+}
+
+/* W × L pair */
+.seg-pair{display:flex;align-items:baseline;gap:6px;}
+.seg-pair-sep{
+  font-size:13px;font-weight:300;color:var(--g400);
+  flex-shrink:0;padding:0 1px;
+}
+
+/* slider */
+.seg-slider-wrap{
+  display:flex;flex-direction:column;align-items:flex-end;gap:2px;
+}
+.seg-slider{
+  -webkit-appearance:none;appearance:none;
+  width:88px;height:1.5px;
+  background:var(--g200);outline:none;cursor:pointer;
+  border-radius:1px;
+}
+.seg-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:13px;height:13px;border-radius:50%;
+  background:var(--black);cursor:pointer;
+  border:2px solid var(--white);
+  box-shadow:0 0 0 1.5px var(--black);
+  transition:transform .12s;
+}
+.seg-slider:active::-webkit-slider-thumb{transform:scale(1.25);}
+.seg-slider:disabled{opacity:.3;cursor:not-allowed;}
+.seg-slider:disabled::-webkit-slider-thumb{background:var(--g400);}
+.seg-slider.out-of-range::-webkit-slider-thumb{background:var(--red);box-shadow:0 0 0 1.5px var(--red);}
+.seg-range-hint{
+  font-size:8px;color:var(--g400);letter-spacing:.3px;white-space:nowrap;
+}
+
+/* toggle pill group — underline active marker */
+.seg-toggle-group{display:flex;gap:0;border-bottom:1.5px solid var(--g200);}
+.seg-toggle{
+  font-size:10px;letter-spacing:.3px;
+  background:none;border:none;
+  color:var(--g400);
+  padding:4px 10px;
+  cursor:pointer;font-family:inherit;
+  position:relative;
+  transition:color .15s;
+  white-space:nowrap;
+}
+.seg-toggle::after{
+  content:'';position:absolute;bottom:-1.5px;left:0;right:0;
+  height:1.5px;background:transparent;transition:background .15s;
+}
+.seg-toggle:hover{color:var(--black);}
+.seg-toggle.active{color:var(--black);font-weight:700;}
+.seg-toggle.active::after{background:var(--black);}
+
+/* field-group: slider + input side by side */
+.seg-field-group{
+  display:flex;align-items:center;gap:12px;
+}
+
+/* calc result cells */
+.calc-seg-result{
+  display:flex;flex-direction:column;gap:3px;
+  padding:0 10px;text-align:center;
+}
+.calc-seg-lbl{font-size:8px;letter-spacing:.5px;text-transform:uppercase;color:var(--g400);}
+.calc-seg-val{font-family:'Courier New',monospace;font-size:14px;font-weight:700;}
+
+/* order modal inputs — same underline style */
+.seg-form-row{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
+.seg-form-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-weight:600;}
+.seg-form-input{
+  border:none;border-bottom:1.5px solid var(--black);
+  background:transparent;font-size:15px;font-weight:500;
+  color:var(--black);outline:none;padding:4px 0 5px;
+  width:100%;font-family:inherit;
+  transition:border-color .15s;
+}
+.seg-form-input:focus{border-bottom-color:var(--green);}
+.seg-form-input::placeholder{color:var(--g200);font-weight:400;}
+.seg-form-textarea{
+  border:none;border-bottom:1.5px solid var(--g200);
+  background:transparent;font-size:13px;
+  color:var(--black);outline:none;padding:4px 0;
+  width:100%;font-family:inherit;resize:none;
+  transition:border-color .15s;
+}
+.seg-form-textarea:focus{border-bottom-color:var(--black);}
+
+/* mobile compact */
+@media(max-width:767px){
+  .seg-slider{width:68px;}
+  .seg-num--wide{font-size:15px;width:58px;}
+  .seg-toggle{font-size:9px;padding:4px 7px;}
+  .seg-row{padding:9px 14px;}
+}
+/* order form 2-col */
+.seg-order-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 0 4px;}
+@media(max-width:420px){.seg-order-pair{grid-template-columns:1fr;}}
+
+/* ── end segmented ── */
 .ctrl3d-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--g100);}
 .ctrl3d-row--2col{display:block;padding:10px 14px;}
 .ctrl3d-left{display:flex;align-items:center;gap:6px;min-width:100px;}
@@ -911,107 +1052,84 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
                 <div class="pack-text"><label>ยก / Lifting</label><span id="v-lift">—</span></div>
               </div>
             </div>
-            <!-- 3D LIVE controls -->
-            <div style="border-top:2px solid var(--black);padding-top:0;display:flex;flex-direction:column;gap:0;" id="controls-3d">
+            <!-- 3D LIVE controls — underline segmented style -->
+            <div style="border-top:1.5px solid var(--black);padding-top:0;" id="controls-3d">
 
-              <!-- ── Header bar ── -->
-              <div style="background:var(--black);padding:7px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
-                <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--white);font-weight:700;">3D Controls</span>
-                <span style="font-size:8px;color:var(--g400);letter-spacing:1px;">ปรับได้ → 3D อัปเดตทันที</span>
+              <!-- header -->
+              <div style="padding:8px 14px 7px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200);">
+                <span style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g600);font-weight:700;">3D Live Controls</span>
+                <span style="font-size:8px;color:var(--g400);">→ 3D อัปเดตทันที</span>
               </div>
 
-              <!-- ── แผ่น/มัด ── -->
-              <div class="ctrl3d-row">
-                <div class="ctrl3d-left">
-                  <span class="ctrl3d-tag ctrl3d-tag--drag">⟺ ลาก</span>
-                  <span class="ctrl3d-label">แผ่น / มัด</span>
-                </div>
-                <div class="ctrl3d-right">
-                  <div class="ctrl3d-track-wrap">
-                    <input type="range" id="a-sheets" min="1" max="50" value="5" oninput="liveUpdate()" class="live-range ctrl3d-range">
-                    <div class="ctrl3d-track-hint">1 ── 50 แผ่น</div>
+              <!-- ── แผ่น/มัด — slider + inline number ── -->
+              <div class="seg-row">
+                <span class="seg-label">แผ่น / มัด</span>
+                <div class="seg-field-group">
+                  <div class="seg-slider-wrap">
+                    <input type="range" id="a-sheets" min="1" max="50" value="5" oninput="liveUpdate()" class="seg-slider">
+                    <span class="seg-range-hint">1 – 50</span>
                   </div>
-                  <input type="number" id="a-sheets-v" min="1" max="50" value="5" oninput="syncSheetsFromNum()" class="ctrl3d-num-inp" title="พิมพ์ตัวเลขได้โดยตรง">
-                  <span class="ctrl3d-unit">แผ่น</span>
-                </div>
-              </div>
-
-              <!-- ── ความหนา (อาจล็อค) ── -->
-              <div class="ctrl3d-row" id="thick-row">
-                <div class="ctrl3d-left">
-                  <span class="ctrl3d-tag ctrl3d-tag--drag" id="thick-tag">⟺ ลาก</span>
-                  <span class="ctrl3d-label">ความหนา</span>
-                </div>
-                <div class="ctrl3d-right">
-                  <div class="ctrl3d-track-wrap">
-                    <div style="position:relative;">
-                      <input type="range" id="a-thick" min="5" max="60" value="20" oninput="liveUpdate()" class="live-range ctrl3d-range">
-                      <div id="thick-limit-bar" style="position:absolute;bottom:-4px;left:0;right:0;height:2px;pointer-events:none;"></div>
-                    </div>
-                    <div class="ctrl3d-track-hint" id="thick-hint">— mm</div>
-                  </div>
-                  <span class="ctrl3d-val-badge" id="a-thick-v">2.0</span>
-                  <span class="ctrl3d-unit">mm</span>
-                  <span id="thick-warn" style="font-size:9px;color:var(--red);display:none;margin-left:2px;font-weight:700;" title="นอก range">⚠</span>
-                </div>
-              </div>
-              <!-- ล็อคแจ้งเตือน -->
-              <div id="thick-locked-note" style="display:none;background:#fff8e8;border-left:3px solid var(--yellow);padding:6px 14px;font-size:10px;color:#7a5800;line-height:1.5;">
-                🔒 ความหนาของ SKU นี้ล็อคค่าไว้ที่ค่า Nominal — ไม่สามารถปรับ slider ได้<br>
-                <span style="font-size:9px;color:var(--g400);">หากต้องการเปลี่ยน ให้แก้ใน Google Sheet คอลัมน์ THICK_MIN / THICK_MAX</span>
-              </div>
-
-              <!-- ── กว้าง / ยาว ── -->
-              <div class="ctrl3d-row ctrl3d-row--2col">
-                <div class="ctrl3d-2col-inner">
-                  <div class="ctrl3d-numfield">
-                    <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">
-                      <span class="ctrl3d-tag ctrl3d-tag--type">⌨ พิมพ์</span>
-                      <label class="ctrl3d-label" style="margin:0;">กว้าง</label>
-                    </div>
-                    <div style="display:flex;align-items:baseline;gap:4px;">
-                      <input id="a-w" type="number" value="1200" oninput="liveUpdate()" class="live-num ctrl3d-num-big" placeholder="mm">
-                      <span class="ctrl3d-unit">mm</span>
-                    </div>
-                  </div>
-                  <div class="ctrl3d-numfield">
-                    <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">
-                      <span class="ctrl3d-tag ctrl3d-tag--type">⌨ พิมพ์</span>
-                      <label class="ctrl3d-label" style="margin:0;">ยาว</label>
-                    </div>
-                    <div style="display:flex;align-items:baseline;gap:4px;">
-                      <input id="a-l" type="number" value="2400" oninput="liveUpdate()" class="live-num ctrl3d-num-big" placeholder="mm">
-                      <span class="ctrl3d-unit">mm</span>
-                    </div>
+                  <div class="seg-input-unit">
+                    <input type="number" id="a-sheets-v" min="1" max="50" value="5" oninput="syncSheetsFromNum()" class="seg-num">
+                    <span class="seg-unit">แผ่น</span>
                   </div>
                 </div>
               </div>
 
-              <!-- ── สายรัด ── -->
-              <div class="ctrl3d-row">
-                <div class="ctrl3d-left">
-                  <span class="ctrl3d-tag ctrl3d-tag--press">● กด</span>
-                  <span class="ctrl3d-label">สายรัด</span>
+              <!-- ── ความหนา — slider + lock state ── -->
+              <div class="seg-row" id="thick-row">
+                <span class="seg-label">ความหนา</span>
+                <div class="seg-field-group">
+                  <div class="seg-slider-wrap">
+                    <input type="range" id="a-thick" min="5" max="60" value="20" oninput="liveUpdate()" class="seg-slider">
+                    <span class="seg-range-hint" id="thick-hint">—</span>
+                  </div>
+                  <div class="seg-input-unit">
+                    <span class="seg-num seg-num--readonly" id="a-thick-v">2.0</span>
+                    <span class="seg-unit">mm</span>
+                    <span id="thick-warn" style="font-size:9px;color:var(--red);display:none;margin-left:2px;" title="นอก range">⚠</span>
+                  </div>
                 </div>
-                <div class="ctrl3d-right" style="gap:5px;">
-                  <button class="strap-btn active" onclick="setStraps(0,this)">ไม่มี</button>
-                  <button class="strap-btn" onclick="setStraps(1,this)">1 เส้น</button>
-                  <button class="strap-btn" onclick="setStraps(2,this)">2 เส้น</button>
-                  <button class="strap-btn" onclick="setStraps(3,this)">3 เส้น</button>
+              </div>
+              <div id="thick-locked-note" style="display:none;padding:6px 14px 8px;font-size:9px;color:var(--g400);letter-spacing:.3px;border-bottom:1px solid var(--g200);">
+                🔒 ล็อคที่ค่า Nominal — ตั้งค่า THICK_MIN/MAX ใน Sheet เพื่อปลดล็อค
+              </div>
+
+              <!-- ── กว้าง × ยาว — segmented pair ── -->
+              <div class="seg-row">
+                <span class="seg-label">ขนาด W × L</span>
+                <div class="seg-pair">
+                  <div class="seg-input-unit">
+                    <input id="a-w" type="number" value="1200" oninput="liveUpdate()" class="seg-num seg-num--wide" placeholder="1200">
+                    <span class="seg-unit">mm</span>
+                  </div>
+                  <span class="seg-pair-sep">×</span>
+                  <div class="seg-input-unit">
+                    <input id="a-l" type="number" value="2400" oninput="liveUpdate()" class="seg-num seg-num--wide" placeholder="2400">
+                    <span class="seg-unit">mm</span>
+                  </div>
                 </div>
               </div>
 
-              <!-- ── Marking ── -->
-              <div class="ctrl3d-row" style="border-bottom:none;">
-                <div class="ctrl3d-left">
-                  <span class="ctrl3d-tag ctrl3d-tag--press">● กด</span>
-                  <span class="ctrl3d-label">Marking</span>
+              <!-- ── สายรัด — pill toggle ── -->
+              <div class="seg-row">
+                <span class="seg-label">สายรัด</span>
+                <div class="seg-toggle-group">
+                  <button class="seg-toggle active" onclick="setStraps(0,this)">ไม่มี</button>
+                  <button class="seg-toggle" onclick="setStraps(1,this)">1</button>
+                  <button class="seg-toggle" onclick="setStraps(2,this)">2</button>
+                  <button class="seg-toggle" onclick="setStraps(3,this)">3</button>
                 </div>
-                <div class="ctrl3d-right" style="gap:5px;">
-                  <button class="strap-btn active" onclick="setMarking('none',this)">ไม่มี</button>
-                  <button class="strap-btn" onclick="setMarking('mill',this)">Mill</button>
-                  <button class="strap-btn" onclick="setMarking('grade',this)">Grade</button>
-                  <button class="strap-btn" onclick="setMarking('both',this)">ทั้งคู่</button>
+              </div>
+
+              <!-- ── Marking — pill toggle ── -->
+              <div class="seg-row" style="border-bottom:none;">
+                <span class="seg-label">Marking</span>
+                <div class="seg-toggle-group">
+                  <button class="seg-toggle active" onclick="setMarking('none',this)">ไม่มี</button>
+                  <button class="seg-toggle" onclick="setMarking('mill',this)">Mill</button>
+                  <button class="seg-toggle" onclick="setMarking('grade',this)">Grade</button>
+                  <button class="seg-toggle" onclick="setMarking('both',this)">ทั้งคู่</button>
                 </div>
               </div>
 
@@ -1020,15 +1138,33 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
           <div class="sec" style="padding-bottom:0">
             <div class="price-big" id="v-price">฿ —<span>/ แผ่น</span></div>
             <div class="price-sub2" id="v-prickg">— ฿/kg</div>
-            <div class="calc-box">
-              <div class="calc-r">
-                <label>จำนวน (แผ่น)</label>
-                <input type="number" class="calc-inp" id="qty" value="10" min="1" oninput="calcUpdate()">
+            <!-- calc — segmented underline style -->
+            <div style="margin-top:16px;border-top:1.5px solid var(--black);padding-top:0;">
+              <div style="padding:7px 0 6px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200);">
+                <span style="font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g600);font-weight:700;">คำนวณราคา</span>
               </div>
-              <div class="calc-res">
-                <div class="cr"><label>น้ำหนัก</label><div class="crv" id="r-w">—</div></div>
-                <div class="cr"><label>ราคารวม</label><div class="crv" id="r-p">—</div></div>
-                <div class="cr"><label>มัด</label><div class="crv" id="r-b">—</div></div>
+              <!-- qty input row -->
+              <div class="seg-row" style="padding:10px 0;">
+                <span class="seg-label">จำนวน</span>
+                <div class="seg-input-unit">
+                  <input type="number" class="seg-num seg-num--lg" id="qty" value="10" min="1" oninput="calcUpdate()">
+                  <span class="seg-unit">แผ่น</span>
+                </div>
+              </div>
+              <!-- result row -->
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--g200);padding-top:10px;padding-bottom:4px;">
+                <div class="calc-seg-result">
+                  <span class="calc-seg-lbl">น้ำหนัก</span>
+                  <span class="calc-seg-val" id="r-w">—</span>
+                </div>
+                <div class="calc-seg-result" style="border-left:1px solid var(--g200);border-right:1px solid var(--g200);">
+                  <span class="calc-seg-lbl">ราคารวม</span>
+                  <span class="calc-seg-val" id="r-p">—</span>
+                </div>
+                <div class="calc-seg-result">
+                  <span class="calc-seg-lbl">มัด</span>
+                  <span class="calc-seg-val" id="r-b">—</span>
+                </div>
               </div>
             </div>
           </div>
@@ -2145,18 +2281,17 @@ function syncSheetsNum(el){
 }
 function setStraps(n,btn){
   S.straps=n;
-  document.querySelectorAll('.strap-btn').forEach(function(b){
-    var oc=b.getAttribute('onclick')||'';
-    b.classList.toggle('active', oc==='setStraps('+n+',this)');
-  });
+  // support both old .strap-btn and new .seg-toggle inside same group
+  var group=btn.parentElement;
+  group.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
   if(typeof render3d==='function') render3d();
 }
 function setMarking(mode,btn){
   S.marking=mode;
-  document.querySelectorAll('.strap-btn').forEach(function(b){
-    var oc=b.getAttribute('onclick')||'';
-    b.classList.toggle('active', oc==="setMarking('"+mode+"',this)");
-  });
+  var group=btn.parentElement;
+  group.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
   if(typeof render3d==='function') render3d();
 }
 function liveUpdate(){
@@ -2243,30 +2378,57 @@ function openOrderModal(){currentSku&&buildOrderForm();}
 function buildOrderForm(){
   var s=currentSku, price=parseInt(s.PRICE_PER_SHEET_THB)||0;
   var stock=parseInt(s.STOCK_QTY)||0;
-  var stockWarn = stock < 20 ? '<div class="warn-box"><strong>⚠ สต็อกเหลือน้อย</strong>มีสินค้า '+stock+' แผ่น — แนะนำยืนยันกับ Warehouse ก่อนรับ order จำนวนมาก</div>' : '';
+  var stockWarn = stock < 20
+    ? '<div class="warn-box"><strong>⚠ สต็อกเหลือน้อย</strong>มีสินค้า '+stock+' แผ่น</div>'
+    : '';
 
   document.getElementById('modal-body').innerHTML=
-    '<div class="order-steps"><div class="step active" id="st1">1 · กรอกข้อมูล</div><div class="step" id="st2">2 · ยืนยัน order</div></div>'+
+    // ── steps ──
+    '<div class="order-steps"><div class="step active" id="st1">1 · กรอกข้อมูล</div><div class="step" id="st2">2 · ยืนยัน</div></div>'+
+    // ── SKU pill ──
     '<div class="spec-pill">'+
       '<div class="sp-item"><label>สินค้า</label><span>'+makeName(s)+'</span></div>'+
       '<div class="sp-item"><label>เกรด</label><span>'+(s.GRADE||'—')+'</span></div>'+
-      '<div class="sp-item"><label>สต็อก</label><span style="color:'+(stock<10?'var(--red)':stock<20?'var(--yellow)':'var(--green)')+'">'+stock+' แผ่น</span></div>'+
-      '<div class="sp-item"><label>ราคา/แผ่น</label><span>฿ '+price.toLocaleString()+'</span></div>'+
+      '<div class="sp-item"><label>สต็อก</label><span style="color:'+(stock<10?'var(--red)':stock<20?'var(--yellow)':'var(--green)')+'">'+stock+'</span></div>'+
+      '<div class="sp-item"><label>฿/แผ่น</label><span>'+price.toLocaleString()+'</span></div>'+
     '</div>'+
     stockWarn+
-    '<div class="fsec"><div class="fsec-ttl">ข้อมูลลูกค้า</div>'+
-      '<div class="f2g">'+
-        '<div class="frow-m"><label>ชื่อลูกค้า *</label><input type="text" id="o-name" placeholder="บริษัท / ชื่อลูกค้า"></div>'+
-        '<div class="frow-m"><label>เบอร์โทร</label><input type="text" id="o-phone" placeholder="0xx-xxx-xxxx"></div>'+
-      '</div></div>'+
-    '<div class="fsec"><div class="fsec-ttl">จำนวนที่ต้องการ</div>'+
-      '<div class="f2g">'+
-        '<div class="frow-m"><label>จำนวน (แผ่น) *</label><input type="number" id="o-qty" value="10" min="1" oninput="updOrd()"></div>'+
-        '<div class="frow-m"><label>ราคา/แผ่น (฿)</label><input type="number" id="o-price" value="'+price+'" oninput="updOrd()"></div>'+
-      '</div></div>'+
-    '<div class="order-sum"><div class="os-item"><label>น้ำหนักรวม</label><span id="os-w">—</span></div><div class="os-item"><label>ราคารวม</label><span id="os-p">—</span></div><div class="os-item"><label>มัด</label><span id="os-b">—</span></div></div>'+
-    '<div class="fsec"><div class="fsec-ttl">หมายเหตุ</div><div class="frow-m"><textarea id="o-note" rows="2" style="resize:none;width:100%;border:1px solid var(--g200);padding:8px;font-family:inherit;font-size:12px;" placeholder="วันที่รับ, เงื่อนไขพิเศษ..."></textarea></div></div>'+
-    '<button class="btn-submit" onclick="goToPreview()" style="background:var(--black)">ดูสรุป Order →</button>';
+    // ── customer — 2 fields side by side ──
+    '<div style="border-top:1.5px solid var(--black);margin-top:4px;">'+
+      '<div style="padding:7px 0 5px;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g600);font-weight:700;border-bottom:1px solid var(--g200);">ข้อมูลลูกค้า</div>'+
+      '<div class="seg-order-pair">'+
+        '<div class="seg-form-row"><span class="seg-form-label">ชื่อลูกค้า *</span><input class="seg-form-input" type="text" id="o-name" placeholder="บริษัท / ชื่อลูกค้า" autocomplete="off"></div>'+
+        '<div class="seg-form-row"><span class="seg-form-label">เบอร์โทร</span><input class="seg-form-input" type="tel" id="o-phone" placeholder="0xx-xxx-xxxx"></div>'+
+      '</div>'+
+    '</div>'+
+    // ── qty + price — segmented row ──
+    '<div style="border-top:1px solid var(--g200);margin-top:2px;">'+
+      '<div style="padding:7px 0 5px;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g600);font-weight:700;border-bottom:1px solid var(--g200);">จำนวน &amp; ราคา</div>'+
+      '<div class="seg-order-pair">'+
+        '<div class="seg-form-row">'+
+          '<span class="seg-form-label">จำนวน *</span>'+
+          '<div class="seg-input-unit" style="margin-top:2px;">'+
+            '<input type="number" id="o-qty" value="10" min="1" oninput="updOrd()" class="seg-num seg-num--lg">'+
+            '<span class="seg-unit">แผ่น</span>'+
+          '</div>'+
+        '</div>'+
+        '<div class="seg-form-row">'+
+          '<span class="seg-form-label">ราคา / แผ่น</span>'+
+          '<div class="seg-input-unit" style="margin-top:2px;">'+
+            '<span style="font-size:11px;color:var(--g400);align-self:flex-end;padding-bottom:4px;margin-right:1px;">฿</span>'+
+            '<input type="number" id="o-price" value="'+price+'" oninput="updOrd()" class="seg-num seg-num--lg">'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    // ── live summary bar ──
+    '<div class="order-sum" style="margin-top:6px;"><div class="os-item"><label>น้ำหนักรวม</label><span id="os-w">—</span></div><div class="os-item"><label>ราคารวม</label><span id="os-p">—</span></div><div class="os-item"><label>มัด</label><span id="os-b">—</span></div></div>'+
+    // ── note ──
+    '<div class="seg-form-row" style="margin-top:10px;">'+
+      '<span class="seg-form-label">หมายเหตุ</span>'+
+      '<textarea id="o-note" rows="2" class="seg-form-textarea" placeholder="วันที่รับ, เงื่อนไขพิเศษ..."></textarea>'+
+    '</div>'+
+    '<button class="btn-submit" onclick="goToPreview()" style="margin-top:14px;">ดูสรุป Order →</button>';
 
   updOrd();
   document.getElementById('orderOverlay').classList.add('open');
