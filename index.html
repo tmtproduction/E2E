@@ -1362,7 +1362,11 @@ function openViewer(idx){
 
   // 3D controls in Packing
   var th=parseFloat(s.THICKNESS_MM)||2.0;
-  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:2,marking:'none'};
+  // แปลงค่า MARKING จาก Sheet → mode ที่ใช้ใน 3D (col AE)
+  var markingMap={'none':'none','ไม่มี':'none','mill':'mill','Mill':'mill','MILL':'mill',
+    'grade':'grade','Grade':'grade','GRADE':'grade','both':'both','Both':'both','BOTH':'both','ทั้งคู่':'both'};
+  var sheetMarking=markingMap[String(s.MARKING||'').trim()]||'none';
+  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:2,marking:sheetMarking};
 
   // set thickness slider limits based on JIS tolerance tier
   S_thickMin = th <= 1.6 ? 0.8 : th <= 2.5 ? 1.0 : th <= 4.0 ? 1.6 : 2.5;
@@ -1375,10 +1379,12 @@ function openViewer(idx){
     thickSlider.classList.remove('out-of-range');
   }
 
-  // reset strap buttons to 2
+  // reset strap buttons — marking highlight ตาม Sheet MARKING column
   document.querySelectorAll('.strap-btn').forEach(function(b){
     var oc=b.getAttribute('onclick')||'';
-    b.classList.toggle('active', oc==='setStraps(2,this)' || oc==="setMarking('none',this)");
+    var isStrap=oc==='setStraps(2,this)';
+    var isMarking=oc==="setMarking('"+sheetMarking+"',this)";
+    b.classList.toggle('active', isStrap||isMarking);
   });
 
   var elSheets=document.getElementById('a-sheets'); if(elSheets) elSheets.value=S.sheets;
@@ -1480,10 +1486,10 @@ function calcUpdate(){
   var q=parseInt(document.getElementById('qty').value)||0;
   var p=parseInt(currentSku.PRICE_PER_SHEET_THB)||0;
   var w=calcKgPerSheet();
-  var b=S.sheets||parseInt(currentSku.BUNDLE_SIZE)||5;
-  document.getElementById('r-w').textContent=(q*w).toFixed(1)+' kg';
-  document.getElementById('r-p').textContent='฿ '+(q*p).toLocaleString();
-  document.getElementById('r-b').textContent=Math.ceil(q/b)+' มัด';
+  var b=parseInt(currentSku.BUNDLE_SIZE)||5;   // ใช้ BUNDLE_SIZE จาก Sheet เท่านั้น ไม่ปนกับ 3D slider
+  setText('r-w',(q*w).toFixed(1)+' kg');
+  setText('r-p','฿ '+(q*p).toLocaleString());
+  setText('r-b',q+' แผ่น · '+Math.ceil(q/b)+' มัด');
 }
 
 // ── ADMIN SYNC ────────────────────────────────────
