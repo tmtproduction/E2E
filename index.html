@@ -845,16 +845,10 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .btn-done{border:1px solid var(--black);background:none;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:8px 20px;cursor:pointer;font-family:inherit;}
 .btn-done:hover{background:var(--black);color:var(--white);}
 
-.config-banner{background:#fef9c3;border-bottom:2px solid #d4a017;padding:8px 28px;font-size:11px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.config-banner a{color:var(--black);font-weight:700;}
+.config-banner{display:none;}
 </style>
 </head>
 <body>
-
-<div class="config-banner" id="configBanner">
-  ⚙️ ยังไม่ได้ตั้งค่า — แก้ไข <code>SHEET_ID</code> และ <code>SCRIPT_URL</code> ในโค้ด JS
-  <a href="#" onclick="this.parentElement.style.display='none'">ปิด</a>
-</div>
 
 <!-- ══ CATALOG VIEW ══ -->
 <div class="cat-hdr" id="cat-hdr">
@@ -2013,11 +2007,11 @@ function openViewer(idx){
   if(vpMain) vpMain.scrollTop=0;
   var sidebar=document.querySelector('.sidebar');
   if(sidebar) sidebar.scrollTop=0;
-  camTargetY=0.785; camTargetX=0.615; autoRot=true;
+  camTargetY=0.55; camTargetX=-0.22; autoRot=true;
   var cvSw=document.getElementById('cv-sw'); if(cvSw) cvSw.classList.add('on');
   document.querySelectorAll('.vb').forEach(function(b,i){b.classList.toggle('on',i===0);});
   // rAF loop until canvas-wrap is measured, then start
-  camRotY=0.785; camRotX=0.615;
+  camRotY=0.55; camRotX=-0.22;
   function initCanvas(){
     var cw=document.querySelector('.canvas-wrap');
     if(!cw||cw.clientWidth<10){ requestAnimationFrame(initCanvas); return; }
@@ -2543,9 +2537,9 @@ function showError(m){document.getElementById('catalog-view').innerHTML='<div cl
 var canvas=document.getElementById('c3d');
 var ctx=canvas.getContext('2d');
 var W=300,H=300;
-var camRotY=0.785,camRotX=0.615,camTargetY=0.785,camTargetX=0.615;
+var camRotY=0.55,camRotX=-0.22,camTargetY=0.55,camTargetX=-0.22;
 var autoRot=false,drag=false,lastX=0,lastY=0,animT=0,loopRunning=false;
-var viewPresets={iso:{y:0.785,x:0.615},front:{y:0,x:0},top:{y:0,x:Math.PI/2-0.01},side:{y:Math.PI/2,x:0.1}};
+var viewPresets={iso:{y:0.55,x:-0.22},front:{y:0,x:0},top:{y:0,x:-(Math.PI/2-0.01)},side:{y:Math.PI/2,x:-0.1}};
 
 function resizeCanvas(){
   var cw=document.querySelector('.canvas-wrap');
