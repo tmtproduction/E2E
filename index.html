@@ -2077,112 +2077,132 @@ function render3d(){
   // ── TAG ──
   drawBox3d(bw/2+0.045,yOff+totalH/2,-bl*0.28,0.012,0.32,0.52,'#f0f0ee','#e8e8e4',fl);
 
-  // ── MARKING on top sheet — factory inkjet style ──
+  // ── MARKING — floating AR label above model ──
   if(S.marking!=='none' && N>0){
-    var s2=currentSku||{};
-    // จุดอ้างอิงบนผิวแผ่นบนสุด (ตาม 3D coordinates)
-    var topY = yOff + totalH*(drawN===1?1:1) + fl;  // top surface y
+    var s2 = currentSku||{};
+    var grade   = s2.GRADE || 'SPHC';
+    var thick2  = parseFloat(s2.THICKNESS_MM||2).toFixed(2);
+    var ww      = s2.WIDTH_MM  || '1200';
+    var ll      = s2.LENGTH_MM || '2400';
+    var std2    = s2.STANDARD  || 'JIS G3131';
+    var surf2   = (s2.SURFACE||'Hot Rolled').replace('ดำ (','').replace(')','').toUpperCase();
 
-    // anchor points บนผิวเหล็ก — left-aligned เหมือนรูปจริง
-    var aL = pr(tp([-bw*0.42, topY, -bl*0.05]));   // anchor ซ้าย
-    var aR = pr(tp([ bw*0.38, topY, -bl*0.05]));   // anchor ขวา
-    var aT = pr(tp([-bw*0.42, topY,  bl*0.28]));   // anchor บน (depth)
-    var aB = pr(tp([-bw*0.42, topY, -bl*0.35]));   // anchor ล่าง (depth)
+    // anchor = จุดบนผิวแผ่นบนสุด ฝั่งซ้ายใกล้กล้อง
+    var topSurface = yOff + totalH + fl;
+    var anchor3d   = pr(tp([-bw*0.22, topSurface,  bl*0.12]));
+    var anchorAx   = anchor3d[0];
+    var anchorAy   = anchor3d[1];
 
-    // vector ตามแกน W (ซ้าย→ขวา บนผิว) และ L (ใกล้→ไกล บนผิว)
-    var vWx = aR[0]-aL[0], vWy = aR[1]-aL[1];    // direction along width
-    var vLx = aB[0]-aT[0], vLy = aB[1]-aT[1];    // direction along length
-    var wLen = Math.sqrt(vWx*vWx+vWy*vWy);
-    var lLen = Math.sqrt(vLx*vLx+vLy*vLy);
-    if(wLen<1||lLen<1){ctx.restore&&ctx.restore();} else {
+    // label ลอยขึ้น — อยู่เหนือ model เสมอ
+    var lw  = Math.min(230, W*0.45);
+    var pad = 10;
+    var lineH = 15;
+    // คำนวณ lh ก่อนเพื่อวาง ly ให้ถูก
+    var rowsTemp = [];
+    if(S.marking==='mill'||S.marking==='both') rowsTemp.push(1,1);
+    if(S.marking==='grade'||S.marking==='both') rowsTemp.push(1,1,1);
+    rowsTemp.push(1);
+    var lhEst = pad*2 + rowsTemp.length*lineH + 4;
 
-    // normalize
-    var uwx=vWx/wLen, uwy=vWy/wLen;
-    var ulx=vLx/lLen, uly=vLy/lLen;
+    // lx: ชิดซ้ายของ anchor แต่ไม่เกินขอบ canvas
+    var lx = Math.min(Math.max(8, anchorAx - lw*0.18), W - lw - 8);
+    // ly: ลอยขึ้นเหนือ anchor เสมอ, ไม่เกินขอบบน
+    var ly = Math.max(8, anchorAy - lhEst - 52);
 
-    // font sizes ตามขนาด canvas
-    var fBig  = Math.max(8,  wLen*0.065);
-    var fMed  = Math.max(6,  wLen*0.048);
-    var fSm   = Math.max(5,  wLen*0.036);
+    // สร้างบรรทัด
+    var rows = [];
+    if(S.marking==='mill'||S.marking==='both'){
+      rows.push({text: thick2+' × '+ww+' × '+ll+' mm', size:11, bold:true,  color:'#0a0a0a'});
+      rows.push({text: 'NON SKINPASSED · '+grade,        size: 9, bold:false, color:'#404040'});
+    }
+    if(S.marking==='grade'||S.marking==='both'){
+      rows.push({text: std2,                              size: 9, bold:true,  color:'#0a0a0a'});
+      rows.push({text: surf2+' STEEL SHEET',              size: 8, bold:false, color:'#505050'});
+      rows.push({text: 'MILL EDGE · THAILAND',            size: 8, bold:false, color:'#606060'});
+    }
+    rows.push({text:'TIS 528 · '+new Date().getFullYear(), size:7, bold:false, color:'#888888'});
 
-    // ข้อมูลจาก SKU
-    var grade  = s2.GRADE    || 'SPHC';
-    var thick2 = s2.THICKNESS_MM || '2.00';
-    var ww     = s2.WIDTH_MM    || '1219';
-    var ll     = s2.LENGTH_MM   || '2438';
-    var std2   = s2.STANDARD    || 'JIS G3131';
-    var surf2  = (s2.SURFACE||'Hot Rolled').replace('ดำ (','').replace(')','');
-    var sku2   = s2.SKU || '';
-    var line1  = parseFloat(thick2).toFixed(2)+' X '+ww+' X '+ll+' MM';
-    var line2  = std2+'  '+surf2.toUpperCase()+' STEEL SHEET  MILL EDGE  THAILAND';
-    var line3  = 'TIS 528  '+new Date().getFullYear();
-    var logo   = 'TMT';
+    // คำนวณความสูง label
+    var lineH = 15;
+    var lh = pad*2 + rows.length*lineH + 4;
 
     ctx.save();
 
-    // helper: วาดข้อความบนผิว 3D โดย transform ตาม vW + vL
-    function drawOnSurface(text, ox, oy, fSize, alpha, bold){
-      // ox=offset ตาม width, oy=offset ตาม length (0=ใกล้, 1=ไกล)
-      var px = aL[0] + uwx*ox + ulx*oy;
-      var py = aL[1] + uwy*ox + uly*oy;
-      ctx.save();
-      ctx.translate(px, py);
-      // rotate ตาม angle ของแกน W บนหน้าจอ
-      var ang = Math.atan2(uwy, uwx);
-      ctx.rotate(ang);
-      ctx.font=(bold?'bold ':'')+fSize+'px "Courier New",monospace';
-      ctx.fillStyle='rgba(28,28,30,'+alpha+')';
-      ctx.textAlign='left';
-      ctx.textBaseline='alphabetic';
-      ctx.fillText(text, 0, 0);
-      ctx.restore();
-    }
+    // leader line: anchor → ขอบล่างกลาง label  (L-shape คมชัด)
+    var leaderMidX = lx + lw*0.22;
+    var leaderBotY = ly + lh;
+    ctx.beginPath();
+    ctx.moveTo(anchorAx,   anchorAy - 3);
+    ctx.lineTo(anchorAx,   leaderBotY + 18);
+    ctx.lineTo(leaderMidX, leaderBotY + 18);
+    ctx.lineTo(leaderMidX, leaderBotY);
+    ctx.strokeStyle = 'rgba(10,10,10,0.32)';
+    ctx.lineWidth   = 1;
+    ctx.setLineDash([3,3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
 
-    // helper: วาด circle logo
-    function drawLogoCircle(ox, oy, r, alpha){
-      var px=aL[0]+uwx*ox+ulx*oy;
-      var py=aL[1]+uwy*ox+uly*oy;
-      ctx.save();
-      ctx.translate(px,py);
-      ctx.rotate(Math.atan2(uwy,uwx));
-      // วงกลม
-      ctx.beginPath();
-      ctx.ellipse(0,0,r,r*0.62,0,0,Math.PI*2);
-      ctx.strokeStyle='rgba(28,28,30,'+alpha+')';
-      ctx.lineWidth=1.2;
-      ctx.stroke();
-      // ข้อความใน circle
-      ctx.font='bold '+(r*0.7)+'px "Courier New",monospace';
-      ctx.fillStyle='rgba(28,28,30,'+alpha+')';
-      ctx.textAlign='center';
-      ctx.textBaseline='middle';
-      ctx.fillText(logo, 0, 0);
-      ctx.restore();
-    }
+    // dot ที่ anchor
+    ctx.beginPath();
+    ctx.arc(anchorAx, anchorAy, 2.5, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(10,10,10,0.45)';
+    ctx.fill();
 
-    var al = 0.72;  // alpha ของ marking
+    // label background — frosted card
+    ctx.save();
+    ctx.shadowColor   = 'rgba(0,0,0,0.12)';
+    ctx.shadowBlur    = 12;
+    ctx.shadowOffsetY = 4;
+    ctx.fillStyle = 'rgba(248,248,246,0.92)';
+    // rounded rect
+    var rx=5;
+    ctx.beginPath();
+    ctx.moveTo(lx+rx,ly); ctx.lineTo(lx+lw-rx,ly);
+    ctx.quadraticCurveTo(lx+lw,ly,lx+lw,ly+rx);
+    ctx.lineTo(lx+lw,ly+lh-rx);
+    ctx.quadraticCurveTo(lx+lw,ly+lh,lx+lw-rx,ly+lh);
+    ctx.lineTo(lx+rx,ly+lh);
+    ctx.quadraticCurveTo(lx,ly+lh,lx,ly+lh-rx);
+    ctx.lineTo(lx,ly+rx);
+    ctx.quadraticCurveTo(lx,ly,lx+rx,ly);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
 
-    if(S.marking==='mill'||S.marking==='both'){
-      // แถว 1: ขนาด T × W × L ใหญ่สุด
-      drawOnSurface(line1, fBig*3.5, lLen*0.18, fBig, al, true);
-      // "NON SKINPASSED  TMT" ต่อท้าย
-      drawOnSurface('NON SKINPASSED  '+grade, fBig*3.5+wLen*0.44, lLen*0.18, fSm, al*0.85, false);
-    }
-    if(S.marking==='grade'||S.marking==='both'){
-      // แถว 2: standard + surface + country
-      drawOnSurface(line2, fBig*3.2, lLen*0.36, fMed, al*0.9, false);
-    }
-    if(S.marking!=='none'){
-      // Logo circle ซ้ายสุด
-      drawLogoCircle(fBig*0.6, lLen*0.27, fBig*1.1, al*0.9);
-      // แถว 3 (ล่าง): TIS + serial
-      drawOnSurface(line3, fBig*3.2, lLen*0.52, fSm, al*0.7, false);
-      // FLAT / STAY FLAT (brand) ใต้ logo
-      drawOnSurface('FLAT', fBig*0.1, lLen*0.40, fMed*1.1, al*0.85, true);
-    }
+    // border บนสุดของ card — accent line
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(lx, ly, lw, 2.5);
+
+    // TMT logo circle ซ้ายบน
+    var logoR = 13;
+    var logoCx = lx + pad + logoR;
+    var logoCy = ly + pad + logoR + 2;
+    ctx.beginPath();
+    ctx.arc(logoCx, logoCy, logoR, 0, Math.PI*2);
+    ctx.strokeStyle = '#0a0a0a';
+    ctx.lineWidth   = 1.5;
+    ctx.stroke();
+    ctx.font        = 'bold 7px "Courier New",monospace';
+    ctx.fillStyle   = '#0a0a0a';
+    ctx.textAlign   = 'center';
+    ctx.textBaseline= 'middle';
+    ctx.fillText('TMT', logoCx, logoCy-2);
+    ctx.font        = '500 5.5px "Courier New",monospace';
+    ctx.fillText('FLAT', logoCx, logoCy+5);
+
+    // ข้อความแต่ละบรรทัด
+    var textX = lx + pad*2 + logoR*2 + 2;
+    var textY = ly + pad + 4;
+    ctx.textAlign   = 'left';
+    ctx.textBaseline= 'top';
+    rows.forEach(function(r){
+      ctx.font = (r.bold?'bold ':'')+r.size+'px "Courier New",monospace';
+      ctx.fillStyle = r.color;
+      ctx.fillText(r.text, textX, textY, lw - pad*2 - logoR*2 - 4);
+      textY += lineH;
+    });
 
     ctx.restore();
-    } // end wLen check
   }
 
   // ── INFO ──
