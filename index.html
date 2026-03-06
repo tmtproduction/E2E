@@ -487,7 +487,68 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .filter-panel-wrap{overflow:hidden;max-height:0;transition:max-height .3s ease;background:var(--g100);border-top:1px solid var(--g200);}
 .filter-panel-wrap.open{max-height:600px;}
 
-/* Mobile filter rows inside collapsible panel */
+/* ── HERO SVG TECHNICAL DRAWING ── */
+.hero-svg-wrap{
+  width:100%;max-width:480px;margin:0 auto 28px;
+  opacity:0;animation:svgFadeIn .4s ease .1s forwards;
+}
+@keyframes svgFadeIn{to{opacity:1;}}
+.hero-svg{width:100%;height:auto;display:block;}
+
+/* base line styles */
+.svg-ln{stroke:var(--black);stroke-width:.8;fill:none;}
+.svg-dim{stroke:var(--g400);stroke-width:.5;fill:none;}
+.svg-grain{stroke:var(--g200);stroke-width:.5;}
+.svg-strap{stroke:var(--black);stroke-width:.7;fill:none;}
+.svg-dot{fill:var(--black);stroke:none;}
+.svg-callout{stroke:var(--g400);stroke-width:.5;}
+.svg-mark{stroke:var(--g400);stroke-width:.6;fill:none;}
+.svg-center{stroke:var(--g400);stroke-width:.5;fill:none;}
+.svg-txt{font-family:'Courier New',monospace;font-size:9px;fill:var(--g600);letter-spacing:.3px;}
+.svg-lbl{font-family:'Courier New',monospace;font-size:7px;fill:var(--g400);letter-spacing:.5px;text-transform:uppercase;}
+
+/* stroke-dasharray draw-on animation */
+.hero-svg path,.hero-svg line,.hero-svg rect,.hero-svg circle{
+  stroke-dasharray:1000;
+  stroke-dashoffset:1000;
+}
+.hero-svg text{opacity:0;}
+
+/* staggered draw — each svg-ln-N class gets a delay */
+.svg-ln-1{animation:svgDraw .6s ease .2s forwards;}
+.svg-ln-2{animation:svgDraw .5s ease .55s forwards;}
+.svg-ln-3{animation:svgDraw .3s ease .75s forwards;}
+.svg-ln-4{animation:svgDraw .5s ease .4s forwards;}
+.svg-ln-5{animation:svgDraw .5s ease .55s forwards;}
+.svg-ln-6{animation:svgDraw .5s ease .68s forwards;}
+.svg-ln-7{animation:svgDraw .5s ease .80s forwards;}
+.svg-ln-8{animation:svgDraw .4s ease 1.0s forwards;}
+.svg-ln-9{animation:svgFadeTxt .3s ease 1.3s forwards;}
+.svg-ln-10{animation:svgDraw .4s ease 1.1s forwards;}
+.svg-ln-11{animation:svgFadeTxt .3s ease 1.4s forwards;}
+.svg-ln-12{animation:svgDraw .5s ease .9s forwards;}
+.svg-ln-13{animation:svgDraw .4s ease 1.05s forwards;}
+.svg-ln-14{animation:svgDraw .4s ease 1.2s forwards;}
+.svg-ln-15{animation:svgDraw .4s ease 1.35s forwards;}
+.svg-ln-16{animation:svgDraw .4s ease 1.5s forwards;}
+.svg-ln-17{animation:svgDraw .5s ease 1.6s forwards;}
+
+@keyframes svgDraw{
+  to{stroke-dashoffset:0;}
+}
+@keyframes svgFadeTxt{
+  from{opacity:0;} to{opacity:1;}
+}
+/* text elements override (no dash needed) */
+.hero-svg text{
+  stroke-dasharray:unset;stroke-dashoffset:unset;
+}
+
+/* mobile — smaller */
+@media(max-width:767px){
+  .hero-svg-wrap{max-width:320px;margin-bottom:20px;}
+}
+/* ── end hero SVG ── */
 .mobile-filter-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--g200);}
 .mobile-filter-row:last-child{border-bottom:none;}
 .mobile-filter-row label{font-size:13px;font-weight:500;color:var(--black);}
@@ -862,6 +923,73 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 
   <!-- Apple-style hero: big centered title + subtitle -->
   <div class="cat-hero">
+    <!-- Animated SVG technical graphic -->
+    <div class="hero-svg-wrap">
+      <svg class="hero-svg" viewBox="0 0 420 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- isometric steel sheet stack — technical drawing style -->
+
+        <!-- sheet face top -->
+        <path class="svg-ln svg-ln-1" d="M105 72 L315 72 L315 86 L105 86 Z"/>
+        <!-- sheet face front -->
+        <path class="svg-ln svg-ln-2" d="M105 86 L105 100 L315 100 L315 86"/>
+        <!-- sheet right side -->
+        <path class="svg-ln svg-ln-3" d="M315 72 L315 100"/>
+
+        <!-- sheet 2 -->
+        <path class="svg-ln svg-ln-4" d="M105 66 L315 66 L315 72 L105 72 Z"/>
+        <!-- sheet 3 -->
+        <path class="svg-ln svg-ln-5" d="M105 60 L315 60 L315 66 L105 66 Z"/>
+        <!-- sheet 4 -->
+        <path class="svg-ln svg-ln-6" d="M105 54 L315 54 L315 60 L105 60 Z"/>
+        <!-- sheet 5 -->
+        <path class="svg-ln svg-ln-7" d="M105 48 L315 48 L315 54 L105 54 Z"/>
+
+        <!-- dimension line — width -->
+        <line class="svg-dim svg-ln-8" x1="105" y1="114" x2="315" y2="114"/>
+        <line class="svg-dim svg-ln-8" x1="105" y1="110" x2="105" y2="118"/>
+        <line class="svg-dim svg-ln-8" x1="315" y1="110" x2="315" y2="118"/>
+        <text class="svg-txt svg-ln-9" x="210" y="126" text-anchor="middle">1219 mm</text>
+
+        <!-- dimension line — height (thickness) -->
+        <line class="svg-dim svg-ln-10" x1="330" y1="48" x2="330" y2="100"/>
+        <line class="svg-dim svg-ln-10" x1="326" y1="48" x2="334" y2="48"/>
+        <line class="svg-dim svg-ln-10" x1="326" y1="100" x2="334" y2="100"/>
+        <text class="svg-txt svg-ln-11" x="348" y="78" text-anchor="start">×5</text>
+
+        <!-- grain lines on top face -->
+        <line class="svg-grain svg-ln-12" x1="140" y1="72" x2="140" y2="48"/>
+        <line class="svg-grain svg-ln-12" x1="175" y1="72" x2="175" y2="48"/>
+        <line class="svg-grain svg-ln-12" x1="210" y1="72" x2="210" y2="48"/>
+        <line class="svg-grain svg-ln-12" x1="245" y1="72" x2="245" y2="48"/>
+        <line class="svg-grain svg-ln-12" x1="280" y1="72" x2="280" y2="48"/>
+
+        <!-- strap left -->
+        <rect class="svg-strap svg-ln-13" x="148" y="44" width="8" height="60" rx="1"/>
+        <!-- strap right -->
+        <rect class="svg-strap svg-ln-13" x="264" y="44" width="8" height="60" rx="1"/>
+
+        <!-- callout dot + line top-left -->
+        <circle class="svg-dot svg-ln-14" cx="105" cy="48" r="3"/>
+        <line class="svg-callout svg-ln-14" x1="105" y1="48" x2="72" y2="32"/>
+        <text class="svg-lbl svg-ln-14" x="68" y="29" text-anchor="end">HOT ROLLED</text>
+
+        <!-- callout dot + line top-right -->
+        <circle class="svg-dot svg-ln-15" cx="315" cy="48" r="3"/>
+        <line class="svg-callout svg-ln-15" x1="315" y1="48" x2="356" y2="30"/>
+        <text class="svg-lbl svg-ln-15" x="358" y="27" text-anchor="start">SPHC · SS400</text>
+
+        <!-- crosshair corner marks -->
+        <path class="svg-mark svg-ln-16" d="M88 48 L96 48 M92 44 L92 52"/>
+        <path class="svg-mark svg-ln-16" d="M332 48 L324 48 M328 44 L328 52"/>
+        <path class="svg-mark svg-ln-16" d="M88 100 L96 100 M92 96 L92 104"/>
+        <path class="svg-mark svg-ln-16" d="M332 100 L324 100 M328 96 L328 104"/>
+
+        <!-- center cross -->
+        <path class="svg-center svg-ln-17" d="M207 68 L213 68 M210 65 L210 71"/>
+        <circle class="svg-center svg-ln-17" cx="210" cy="68" r="5"/>
+      </svg>
+    </div>
+
     <div class="cat-hero-eyebrow">เหล็กแผ่นดำ · ชุบสังกะสี · Cold Rolled</div>
     <div class="cat-hero-title">เลือก Spec ที่ใช่สำหรับงานของคุณ</div>
     <div class="cat-hero-sub">คลังสินค้าพร้อมส่ง · ข้อมูลครบ · ดู 3D ได้จริง</div>
