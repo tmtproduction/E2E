@@ -1973,10 +1973,11 @@ function drawStrap3d(cx,cy,cz,bW,bH,bL,floatY){
       var gx0=p2d[0][0],gy0=p2d[0][1],gx1=p2d[2][0],gy1=p2d[2][1];
       try{
         var grad=ctx.createLinearGradient(gx0,gy0,gx1,gy1);
-        grad.addColorStop(0,   'rgba('+Math.round(80*s)+','+Math.round(80*s)+','+Math.round(85*s)+',1)');
-        grad.addColorStop(0.25,'rgba('+Math.round(160*s)+','+Math.round(165*s)+','+Math.round(170*s)+',1)'); // highlight
-        grad.addColorStop(0.5, 'rgba('+Math.round(40*s)+','+Math.round(40*s)+','+Math.round(45*s)+',1)');
-        grad.addColorStop(1,   'rgba('+Math.round(25*s)+','+Math.round(25*s)+','+Math.round(28*s)+',1)');
+        grad.addColorStop(0,   'rgba('+Math.round(30*s)+','+Math.round(30*s)+','+Math.round(32*s)+',1)');
+        grad.addColorStop(0.18,'rgba('+Math.round(180*s)+','+Math.round(185*s)+','+Math.round(190*s)+',1)'); // bright highlight
+        grad.addColorStop(0.38,'rgba('+Math.round(20*s)+','+Math.round(20*s)+','+Math.round(22*s)+',1)');
+        grad.addColorStop(0.62,'rgba('+Math.round(50*s)+','+Math.round(50*s)+','+Math.round(54*s)+',1)');
+        grad.addColorStop(1,   'rgba('+Math.round(15*s)+','+Math.round(15*s)+','+Math.round(18*s)+',1)');
         ctx.fillStyle=grad;
       } catch(e){
         ctx.fillStyle='rgb('+Math.round(60*s)+','+Math.round(60*s)+','+Math.round(65*s)+')';
@@ -2007,7 +2008,7 @@ function drawStrap3d(cx,cy,cz,bW,bH,bL,floatY){
 function render3d(){
   ctx.clearRect(0,0,W,H);
   var N=S.sheets;
-  var thick=Math.max(0.05,S.thick*0.052);   // ← bigger (was 0.045)
+  var thick=Math.max(0.028,S.thick*0.032);  // thinner — match real photo
   var bw=Math.max(1.0,S.w/220),bl=Math.max(1.0,S.l/360),gap=0.014;
   var totalH=N*(thick+gap)-gap,yOff=-totalH/2;
   var fl=Math.sin(animT*0.6)*0.04;
@@ -2035,8 +2036,8 @@ function render3d(){
   for(var i=0;i<drawN;i++){
     var frac = drawN===1 ? 0.5 : i/(drawN-1);
     var cy   = yOff + frac*(totalH-thick2) + thick2/2;
-    var alt  = (i%2===0)?'#484440':'#525050';
-    var alt2 = (i%2===0)?'#3c3a38':'#46443c';
+    var alt  = (i%2===0)?'#808080':'#8a8a88';
+    var alt2 = (i%2===0)?'#686866':'#727270';
     drawBox3d(0,cy,0,bw,thick2,bl,alt,alt2,fl);
   }
   // label จำนวนจริงถ้า compress
@@ -2059,16 +2060,17 @@ function render3d(){
     else strapPositions=[-bl*0.34,0,bl*0.34];
 
     strapPositions.forEach(function(sz){
-      var sH=totalH+0.13;          // สูงกว่ามัดนิดหน่อย
-      var sw=0.048;                 // กว้าง ~32mm ในสัดส่วน scene
-      var st=0.010;                 // บาง ~1.2mm
+      var sH=totalH+0.04;          // แนบมัดใกล้ขึ้น
+      var sw=0.095;                 // กว้าง ~60mm สมจริง
+      var st=0.009;                 // บางมาก ~1mm
 
-      // วาด 4 segment: บน / ล่าง / ซ้าย / ขวา
-      // ใช้ drawStrap3d ที่ให้ highlight เส้นบางบนขอบ
-      drawStrap3d(0,         yOff+totalH+st/2+0.005, sz, bw+sw, st, sw); // top
-      drawStrap3d(0,         yOff-st/2-0.005,         sz, bw+sw, st, sw); // bottom
-      drawStrap3d(-bw/2-st/2,yOff+totalH/2,           sz, st, sH, sw);    // left
-      drawStrap3d( bw/2+st/2,yOff+totalH/2,           sz, st, sH, sw);    // right
+      // วาดเฉพาะส่วนที่มองเห็นได้จริง (ไม่วาดส่วนที่เหล็กบัง)
+      // บน+ล่าง: เต็มแถบ
+      drawStrap3d(0,          yOff+totalH+st*0.5, sz, bw+st*2, st, sw); // top band
+      drawStrap3d(0,          yOff-st*0.5,         sz, bw+st*2, st, sw); // bottom band
+      // ด้านข้าง: เฉพาะขอบซ้ายขวา ไม่เข้าไปใต้มัด
+      drawStrap3d(-bw/2-st*0.5, yOff+totalH/2, sz, st, sH, sw);          // left edge
+      drawStrap3d( bw/2+st*0.5, yOff+totalH/2, sz, st, sH, sw);          // right edge
     });
   }
 
@@ -2114,7 +2116,7 @@ function drawBundleCard(cvId,s){
   var c2=cv.getContext('2d'),W2=cv.width,H2=cv.height;
   c2.clearRect(0,0,W2,H2);
   var N=Math.min(parseInt(s.BUNDLE_SIZE)||5,8);
-  var thick=Math.max(0.03,parseFloat(s.THICKNESS_MM)*0.042);
+  var thick=Math.max(0.02,parseFloat(s.THICKNESS_MM)*0.026);  // thinner cards
   var bw=3.4,bl=4.0,gap=0.012,totalH=N*(thick+gap)-gap;
   var rY=0.45,rX=0.22,cY=Math.cos(rY),sY=Math.sin(rY),cX=Math.cos(rX),sX=Math.sin(rX);
   function tpc(x,y,z){var x2=x*cY+z*sY,z2=-x*sY+z*cY,y2=y*cX-z2*sX,z3=y*sX+z2*cX;return[x2,y2,z3];}
@@ -2133,17 +2135,24 @@ function drawBundleCard(cvId,s){
     var cc=[[cx-hw,cy-hh,cz-hl],[cx+hw,cy-hh,cz-hl],[cx+hw,cy+hh,cz-hl],[cx-hw,cy+hh,cz-hl],[cx-hw,cy-hh,cz+hl],[cx+hw,cy-hh,cz+hl],[cx+hw,cy+hh,cz+hl],[cx-hw,cy+hh,cz+hl]];
     [[cc[3],cc[2],cc[1],cc[0],0,0,-1,sr,sg,sb],[cc[4],cc[5],cc[6],cc[7],0,0,1,sr,sg,sb],[cc[7],cc[6],cc[2],cc[3],0,1,0,tr,tg,tb],[cc[0],cc[1],cc[5],cc[4],0,-1,0,tr,tg,tb],[cc[0],cc[4],cc[7],cc[3],-1,0,0,sr,sg,sb],[cc[1],cc[2],cc[6],cc[5],1,0,0,sr,sg,sb]].forEach(function(f){faceC([f[0],f[1],f[2],f[3]],f[7],f[8],f[9],f[4],f[5],f[6]);});
   }
+  // ปรับสีตาม surface — โทนเทาสมจริง
   var surf=(s.SURFACE||'').toLowerCase(),tr,tg,tb,sr,sg,sb;
-  if(surf.indexOf('galvanized')>-1||surf.indexOf('สังกะสี')>-1){tr=162;tg=170;tb=162;sr=142;sg=150;sb=142;}
-  else if(surf.indexOf('cold')>-1||surf.indexOf('spcc')>-1){tr=122;tg=122;tb=128;sr=102;sg=102;sb=108;}
-  else{tr=72;tg=72;tb=70;sr=58;sg=58;sb=56;}
+  if(surf.indexOf('galvanized')>-1||surf.indexOf('สังกะสี')>-1){tr=175;tg=182;tb=175;sr=150;sg=158;sb=150;}
+  else if(surf.indexOf('cold')>-1||surf.indexOf('spcc')>-1){tr=155;tg=155;tb=158;sr=128;sg=128;sb=132;}
+  else{tr=128;tg=128;tb=126;sr=100;sg=100;sb=98;}  // Hot Rolled — เทากลาง
   var yOff2=-totalH/2;
-  for(var i=0;i<N;i++){var cy2=yOff2+i*(thick+gap)+thick/2;boxC(0,cy2,0,bw,thick,bl,tr,tg,tb,sr,sg,sb);}
+  for(var i=0;i<N;i++){
+    var cy2=yOff2+i*(thick+gap)+thick/2;
+    var alt=(i%2===0)?0:8;  // สลับแถวสว่าง-มืดนิดหน่อย
+    boxC(0,cy2,0,bw,thick,bl,tr+alt,tg+alt,tb+alt,sr,sg,sb);
+  }
+  // สายรัดดำ กว้างขึ้น บางลง
+  var sw2=0.08,st2=0.008;
   [-bl*.28,bl*.28].forEach(function(sz){
-    boxC(0,yOff2+totalH+.025,sz,bw+.06,.05,.034,148,148,140,130,130,122);
-    boxC(0,yOff2-.025,sz,bw+.06,.05,.034,148,148,140,130,130,122);
-    boxC(-bw/2-.03,yOff2+totalH/2,sz,.034,totalH+.1,.034,130,130,122,120,120,112);
-    boxC(bw/2+.03,yOff2+totalH/2,sz,.034,totalH+.1,.034,130,130,122,120,120,112);
+    boxC(0,yOff2+totalH+st2*0.5,sz,bw+st2*2,st2,sw2,20,20,22,15,15,18);
+    boxC(0,yOff2-st2*0.5,sz,bw+st2*2,st2,sw2,20,20,22,15,15,18);
+    boxC(-bw/2-st2*0.5,yOff2+totalH/2,sz,st2,totalH+.04,sw2,18,18,20,12,12,15);
+    boxC(bw/2+st2*0.5,yOff2+totalH/2,sz,st2,totalH+.04,sw2,18,18,20,12,12,15);
   });
   boxC(bw/2+.04,yOff2+totalH/2,-bl*.28,.01,.28,.44,236,236,230,226,226,220);
   c2.fillStyle='#a0a09c';c2.font='600 8px Courier New';c2.fillText((s.SURFACE?s.SURFACE.split('(')[0].trim():''),7,H2-7);
