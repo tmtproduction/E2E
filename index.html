@@ -87,14 +87,21 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 /* ── VIEWER PAGE (full-screen, hidden by default) ── */
 #viewer-page{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;}
 #viewer-page.open{display:flex;}
-.vp-hdr{display:grid;grid-template-columns:200px 1fr 200px;align-items:center;padding:13px 32px;border-bottom:1px solid var(--g200);flex-shrink:0;background:var(--white);}
-.vp-back{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--g600);cursor:pointer;background:none;border:none;font-family:inherit;display:flex;align-items:center;gap:8px;}
+.vp-hdr{display:grid;grid-template-columns:120px 1fr auto;align-items:center;padding:10px 24px;border-bottom:1px solid var(--g200);flex-shrink:0;background:var(--white);gap:12px;}
+.vp-back{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--g600);cursor:pointer;background:none;border:none;font-family:inherit;display:flex;align-items:center;gap:6px;padding:0;transition:color .15s;}
 .vp-back:hover{color:var(--black);}
-.vp-title{font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--g400);text-align:center;font-weight:600;}
+.vp-back-txt{display:inline;}
+.vp-title{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--g400);text-align:center;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .vp-tabs{display:flex;gap:4px;justify-content:flex-end;}
 .tab-btn{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 16px;border:1px solid var(--g200);background:none;cursor:pointer;color:var(--g600);transition:all .15s;font-family:inherit;}
 .tab-btn:hover{border-color:var(--black);color:var(--black);}
 .tab-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
+/* mobile tab bar */
+.vp-tabs-mobile{display:none;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.vtm-btn{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);padding:10px 4px;position:relative;transition:color .15s;}
+.vtm-btn::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;background:transparent;transition:background .15s;}
+.vtm-btn.active{color:var(--black);font-weight:700;}
+.vtm-btn.active::after{background:var(--black);}
 
 .vp-main{display:grid;grid-template-columns:1fr 480px;flex:1;min-height:0;overflow:hidden;}
 
@@ -470,13 +477,12 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .warn-box{background:#fff8e8;border:1px solid var(--yellow);padding:10px 12px;margin-bottom:12px;font-size:11px;color:#7a5800;line-height:1.5;}
 .warn-box strong{display:block;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;color:var(--yellow);}
 /* ── MOBILE FILTER TOGGLE ── */
-.filter-toggle-bar{display:none;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid var(--g200);cursor:pointer;background:var(--white);user-select:none;}
+.filter-toggle-bar{display:none;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--g200);cursor:pointer;background:var(--white);user-select:none;}
 .filter-toggle-bar .ftb-left{display:flex;align-items:center;gap:8px;}
-.filter-toggle-bar .ftb-icon{font-size:14px;}
-.filter-toggle-bar .ftb-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
-.filter-toggle-bar .ftb-count{font-size:9px;background:var(--black);color:var(--white);border-radius:10px;padding:2px 7px;letter-spacing:.5px;display:none;}
+.filter-toggle-bar .ftb-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--black);}
+.filter-toggle-bar .ftb-count{font-size:8px;background:var(--black);color:var(--white);padding:1px 6px;letter-spacing:.5px;display:none;}
 .filter-toggle-bar .ftb-count.has-filter{display:inline;}
-.filter-toggle-bar .ftb-arrow{font-size:10px;color:var(--g400);transition:transform .25s;}
+.filter-toggle-bar .ftb-arrow{color:var(--g400);transition:transform .25s;flex-shrink:0;}
 .filter-toggle-bar.open .ftb-arrow{transform:rotate(180deg);}
 .filter-panel-wrap{overflow:hidden;max-height:0;transition:max-height .3s ease;background:var(--g100);border-top:1px solid var(--g200);}
 .filter-panel-wrap.open{max-height:600px;}
@@ -594,14 +600,12 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
   .btn-spec{font-size:8px;}
   .btn-order-card{font-size:8px;letter-spacing:1.5px;padding:8px 14px;}
 
-  /* Viewer header */
-  .vp-hdr{grid-template-columns:auto 1fr auto;padding:10px 12px;gap:8px;}
-  .vp-back{font-size:10px;gap:5px;}
-  .vp-title{font-size:9px;letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  /* Tabs — scrollable row */
-  .vp-tabs{gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;scrollbar-width:none;}
-  .vp-tabs::-webkit-scrollbar{display:none;}
-  .tab-btn{font-size:9px;letter-spacing:1px;padding:6px 10px;white-space:nowrap;flex-shrink:0;}
+  /* Viewer header mobile */
+  .vp-hdr{grid-template-columns:44px 1fr;padding:9px 14px;gap:6px;}
+  .vp-tabs{display:none !important;}            /* hide desktop tabs */
+  .vp-tabs-mobile{display:flex;}                /* show mobile tab bar */
+  .vp-back-txt{display:none;}                   /* icon only on mobile */
+  .vp-title{text-align:left;font-size:9px;letter-spacing:2px;}
 
   /* Viewer main — stack canvas on top, sidebar below */
   .vp-main{grid-template-columns:1fr;grid-template-rows:260px 1fr;overflow-y:auto;}
@@ -891,11 +895,10 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
   <!-- Mobile filter toggle bar (shown only on mobile) -->
   <div class="filter-toggle-bar" id="filter-toggle-bar" onclick="toggleMobileFilter()">
     <div class="ftb-left">
-      <span class="ftb-icon">⚙️</span>
-      <span class="ftb-label">ตัวกรองสินค้า</span>
+      <span class="ftb-label">ตัวกรอง</span>
       <span class="ftb-count" id="ftb-count">0</span>
     </div>
-    <span class="ftb-arrow">▼</span>
+    <svg class="ftb-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </div>
   <!-- Mobile filter panel (collapsible) -->
   <div class="filter-panel-wrap" id="filter-panel-wrap">
@@ -945,22 +948,27 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 <!-- ══ VIEWER PAGE ══ -->
 <div id="viewer-page">
   <div class="vp-hdr">
-    <button class="vp-back" onclick="closePage()">← กลับรายการทั้งหมด</button>
+    <!-- back -->
+    <button class="vp-back" onclick="closePage()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="vp-back-txt">กลับ</span>
+    </button>
+    <!-- title -->
     <div class="vp-title" id="vp-title">Steel Product Viewer</div>
+    <!-- tabs desktop -->
     <div class="vp-tabs">
-      <button class="tab-btn active" onclick="switchTab('spec',this)">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:5px;vertical-align:middle"><rect x="1" y="1" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="3" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="1"/><line x1="3" y1="6" x2="9" y2="6" stroke="currentColor" stroke-width="1"/><line x1="3" y1="8" x2="7" y2="8" stroke="currentColor" stroke-width="1"/></svg>ข้อมูลสินค้า
-      </button>
-      <button class="tab-btn" onclick="switchTab('geo',this)">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:5px;vertical-align:middle"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="6" y1="1.5" x2="6" y2="10.5" stroke="currentColor" stroke-width="1"/><line x1="1.5" y1="6" x2="10.5" y2="6" stroke="currentColor" stroke-width="1"/></svg>ตรวจสอบ
-      </button>
-      <button class="tab-btn" onclick="switchTab('admin',this)">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:5px;vertical-align:middle"><path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/><line x1="7" y1="3" x2="9" y2="5" stroke="currentColor" stroke-width="1"/></svg>แก้ไขข้อมูล
-      </button>
-      <button class="tab-btn" onclick="switchTab('label',this)">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:5px;vertical-align:middle"><path d="M1.5 4L6 1.5L10.5 4V8L6 10.5L1.5 8V4Z" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="6" cy="6" r="1.2" fill="currentColor"/></svg>พิมพ์ Tag
-      </button>
+      <button class="tab-btn active" onclick="switchTab('spec',this)">ข้อมูลสินค้า</button>
+      <button class="tab-btn" onclick="switchTab('geo',this)">ตรวจสอบ</button>
+      <button class="tab-btn" onclick="switchTab('admin',this)">แก้ไข</button>
+      <button class="tab-btn" onclick="switchTab('label',this)">พิมพ์ Tag</button>
     </div>
+  </div>
+  <!-- mobile tab bar — sits below header, full width -->
+  <div class="vp-tabs-mobile">
+    <button class="vtm-btn active" onclick="switchTabAll('spec',this)">สินค้า</button>
+    <button class="vtm-btn" onclick="switchTabAll('geo',this)">ตรวจสอบ</button>
+    <button class="vtm-btn" onclick="switchTabAll('admin',this)">แก้ไข</button>
+    <button class="vtm-btn" onclick="switchTabAll('label',this)">Tag</button>
   </div>
 
   <div class="vp-main">
@@ -2005,11 +2013,11 @@ function openViewer(idx){
   if(vpMain) vpMain.scrollTop=0;
   var sidebar=document.querySelector('.sidebar');
   if(sidebar) sidebar.scrollTop=0;
-  camTargetY=0.5; camTargetX=0.25; autoRot=true;
+  camTargetY=0.785; camTargetX=0.615; autoRot=true;
   var cvSw=document.getElementById('cv-sw'); if(cvSw) cvSw.classList.add('on');
   document.querySelectorAll('.vb').forEach(function(b,i){b.classList.toggle('on',i===0);});
   // rAF loop until canvas-wrap is measured, then start
-  camRotY=0.5; camRotX=0.25;
+  camRotY=0.785; camRotX=0.615;
   function initCanvas(){
     var cw=document.querySelector('.canvas-wrap');
     if(!cw||cw.clientWidth<10){ requestAnimationFrame(initCanvas); return; }
@@ -2071,16 +2079,35 @@ function updateFilterBadge(){
   var bar=document.getElementById('filter-toggle-bar');
   if(bar){
     var lbl=bar.querySelector('.ftb-label');
-    if(lbl) lbl.textContent = count>0 ? 'ตัวกรอง ('+count+' ตัว)' : 'ตัวกรองสินค้า';
+    if(lbl) lbl.textContent = 'ตัวกรอง';
   }
 }
 
 // ── TABS ─────────────────────────────────────────
 function switchTab(name,btn){
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.vtm-btn').forEach(function(b){b.classList.remove('active');});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   btn.classList.add('active');
+  // sync the other bar
+  var idx=Array.from(btn.parentElement.children).indexOf(btn);
+  var mBtns=document.querySelectorAll('.vtm-btn');
+  if(mBtns[idx]) mBtns[idx].classList.add('active');
   document.getElementById('panel-'+name).classList.add('active');
+}
+function switchTabAll(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.vtm-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  // sync desktop tab
+  var idx=Array.from(btn.parentElement.children).indexOf(btn);
+  var dBtns=document.querySelectorAll('.tab-btn');
+  if(dBtns[idx]) dBtns[idx].classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+  // scroll sidebar to top when switching tab on mobile
+  var sidebar=document.querySelector('.sidebar');
+  if(sidebar) sidebar.scrollTop=0;
 }
 
 // ── CALC ─────────────────────────────────────────
@@ -2516,9 +2543,9 @@ function showError(m){document.getElementById('catalog-view').innerHTML='<div cl
 var canvas=document.getElementById('c3d');
 var ctx=canvas.getContext('2d');
 var W=300,H=300;
-var camRotY=0.5,camRotX=0.25,camTargetY=0.5,camTargetX=0.25;
+var camRotY=0.785,camRotX=0.615,camTargetY=0.785,camTargetX=0.615;
 var autoRot=false,drag=false,lastX=0,lastY=0,animT=0,loopRunning=false;
-var viewPresets={iso:{y:0.5,x:0.25},front:{y:0,x:0},top:{y:0,x:Math.PI/2-0.01},side:{y:Math.PI/2,x:0.1}};
+var viewPresets={iso:{y:0.785,x:0.615},front:{y:0,x:0},top:{y:0,x:Math.PI/2-0.01},side:{y:Math.PI/2,x:0.1}};
 
 function resizeCanvas(){
   var cw=document.querySelector('.canvas-wrap');
@@ -2533,7 +2560,7 @@ function mat3Y(a){return[Math.cos(a),0,Math.sin(a),0,1,0,-Math.sin(a),0,Math.cos
 function mat3X(a){return[1,0,0,0,Math.cos(a),-Math.sin(a),0,Math.sin(a),Math.cos(a)];}
 function mulM(m,v){return[m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];}
 function tp(p){return mulM(mat3X(camRotX),mulM(mat3Y(camRotY),p));}
-function pr(p){var fov=680,z=p[2]+12;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H/2-p[1]*fov/z];}
+function pr(p){var fov=460,z=p[2]+14;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H/2-p[1]*fov/z];}
 function shade(nx,ny,nz){var lx=0.5,ly=0.8,lz=0.4,ln=Math.sqrt(lx*lx+ly*ly+lz*lz);lx/=ln;ly/=ln;lz/=ln;return Math.max(0.25,nx*lx+ny*ly+nz*lz);}
 
 function drawBox3d(cx,cy,cz,bW,bH,bL,topCol,sideCol,floatY){
