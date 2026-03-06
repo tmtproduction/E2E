@@ -168,9 +168,13 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .pack-text label{font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:3px;}
 .pack-text span{font-size:12px;font-weight:600;line-height:1.4;}
 
-.btn-cta{width:100%;background:var(--black);color:var(--white);border:none;font-size:12px;letter-spacing:5px;text-transform:uppercase;padding:18px;cursor:pointer;flex-shrink:0;font-family:inherit;font-weight:700;transition:opacity .15s;}
+.cta-row{display:flex;gap:0;flex-shrink:0;}
+.btn-cta{flex:1;background:var(--black);color:var(--white);border:none;font-size:12px;letter-spacing:5px;text-transform:uppercase;padding:18px;cursor:pointer;font-family:inherit;font-weight:700;transition:opacity .15s;}
 .btn-cta:hover{opacity:.75;}
 .btn-cta:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;opacity:1;}
+.btn-custom{flex-shrink:0;background:var(--white);color:var(--black);border:none;border-left:1px solid var(--g200);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:18px 16px;cursor:pointer;font-family:inherit;font-weight:600;transition:background .15s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.btn-custom:hover{background:var(--g100);}
+.btn-custom svg{flex-shrink:0;}
 
 /* Geometry panel */
 .geo-card{padding:20px 26px;border-bottom:1px solid var(--g200);}
@@ -637,7 +641,13 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
             </div>
           </div>
         </div>
-        <button class="btn-cta" id="btn-cta" onclick="openOrderModal()">เลือกรายการนี้</button>
+        <div class="cta-row">
+          <button class="btn-cta" id="btn-cta" onclick="openOrderModal()">เลือกรายการนี้</button>
+          <button class="btn-custom" onclick="openCustomChecker()">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 6.5h4M6.5 4.5v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            เช็ค Custom
+          </button>
+        </div>
       </div>
 
       <!-- GEOMETRY -->
@@ -1510,6 +1520,137 @@ function syncSheetsFromNum(){
   if(typeof render3d==='function') render3d();
   calcUpdate(); syncLabel();
 }
+// ── CUSTOM CHECKER ────────────────────────────────
+function openCustomChecker(){
+  if(!currentSku) return;
+  var s=currentSku;
+  // sku pill
+  document.getElementById('cc-sku-pill').textContent = s.SKU||'—';
+  // show standard values
+  document.getElementById('cc-std-size').textContent =
+    'Standard: '+(s.WIDTH_MM||'—')+' × '+(s.LENGTH_MM||'—')+' mm';
+  document.getElementById('cc-std-bundle').textContent =
+    'Standard: '+(s.BUNDLE_SIZE||5)+' แผ่น/มัด';
+  // clear inputs
+  ['cc-w','cc-l','cc-bundle','cc-note'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  ['cc-export','cc-smallbundle','cc-individual','cc-pallet','cc-millcert','cc-surface'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.checked=false;
+  });
+  document.getElementById('custom-overlay').classList.add('open');
+}
+function closeCustomChecker(){
+  document.getElementById('custom-overlay').classList.remove('open');
+}
+function closeCustomSummary(){
+  document.getElementById('custom-summary-overlay').classList.remove('open');
+}
+
+function runCustomCheck(){
+  var s=currentSku; if(!s) return;
+  var rows=[];
+
+  // ── 1. Custom Cut ──
+  var reqW=parseInt(document.getElementById('cc-w').value)||0;
+  var reqL=parseInt(document.getElementById('cc-l').value)||0;
+  var stdW=parseInt(s.WIDTH_MM)||1200;
+  var stdL=parseInt(s.LENGTH_MM)||2400;
+  if(reqW>0||reqL>0){
+    var wSame = reqW===0||reqW===stdW;
+    var lSame = reqL===0||reqL===stdL;
+    if(wSame&&lSame){
+      rows.push({status:'ok', label:'ขนาดตัด', detail:'ตรง standard ('+stdW+'×'+stdL+' mm)'});
+    } else {
+      var wTxt = reqW>0&&reqW!==stdW ? reqW+' mm (standard '+stdW+')' : stdW+' mm';
+      var lTxt = reqL>0&&reqL!==stdL ? reqL+' mm (standard '+stdL+')' : stdL+' mm';
+      var canCut = reqW>=500&&reqL>=1000; // simple rule — can be driven from Sheet later
+      rows.push({
+        status: canCut?'warn':'bad',
+        label:'ขนาดตัด Custom',
+        detail: 'W: '+wTxt+' · L: '+lTxt+(canCut?' — ต้องยืนยัน lead time':' — นอก range ที่ตัดได้')
+      });
+    }
+  }
+
+  // ── 2. Bundle Size ──
+  var reqB=parseInt(document.getElementById('cc-bundle').value)||0;
+  var stdB=parseInt(s.BUNDLE_SIZE)||5;
+  if(reqB>0){
+    if(reqB===stdB){
+      rows.push({status:'ok', label:'จำนวนแผ่น/มัด', detail:'ตรง standard ('+stdB+' แผ่น/มัด)'});
+    } else {
+      rows.push({status:'warn', label:'จำนวนแผ่น/มัด Custom',
+        detail: reqB+' แผ่น/มัด (standard '+stdB+') — ต้องยืนยันกับ Warehouse'});
+    }
+  }
+
+  // ── 3. Packing ──
+  var stdStrap = s.STRAP_TYPE||'เหล็กรัด 2 เส้น';
+  var stdWrap  = s.WRAP_TYPE||'ฟิล์ม+กระดาษกันสนิม';
+  if(document.getElementById('cc-export').checked)
+    rows.push({status:'warn', label:'Export Packing', detail:'เสริมไม้กั้น + ฟิล์ม PE กันน้ำ — ต้องยืนยัน cost และ lead time'});
+  if(document.getElementById('cc-smallbundle').checked)
+    rows.push({status:'warn', label:'แยกมัดเล็ก', detail:'ต่างจาก standard ('+stdStrap+') — แจ้ง Warehouse ล่วงหน้า'});
+  if(document.getElementById('cc-individual').checked)
+    rows.push({status:'warn', label:'ห่อแยกแผ่น', detail:'เพิ่มเวลา packing — ต้องเพิ่ม lead time 1–2 วัน'});
+  if(document.getElementById('cc-pallet').checked)
+    rows.push({status:'warn', label:'วางบน Pallet', detail:'ระบุจำนวน Pallet และ weight limit ให้ชัดเจน'});
+
+  // ── 4. อื่นๆ ──
+  if(document.getElementById('cc-millcert').checked)
+    rows.push({status:'warn', label:'Mill Certificate', detail:'ต้องขอจากโรงงาน — ใช้เวลา 3–5 วันทำการ'});
+  if(document.getElementById('cc-surface').checked)
+    rows.push({status:'bad', label:'Surface Treatment พิเศษ', detail:'Pickle/Oiled ไม่ใช่ stock standard — ต้อง confirm กับทีมผลิต'});
+
+  // ── ถ้าไม่มีอะไรเลย ──
+  if(rows.length===0)
+    rows.push({status:'ok', label:'ทุกอย่างตรง standard', detail:'ไม่มี custom requirement เพิ่มเติม'});
+
+  // ── Build summary popup ──
+  document.getElementById('cc-summary-sku').textContent = s.SKU||'—';
+  var icons={ok:'✅',warn:'⚠️',bad:'❌'};
+  var colors={ok:'#f0faf4',warn:'#fffbf0',bad:'#fff5f4'};
+  var borders={ok:'var(--green)',warn:'var(--yellow)',bad:'var(--red)'};
+  var html='';
+  rows.forEach(function(r){
+    html+='<div style="background:'+colors[r.status]+';border-left:3px solid '+borders[r.status]+';padding:9px 12px;">'+
+      '<div style="font-size:11px;font-weight:700;margin-bottom:3px;">'+icons[r.status]+' '+r.label+'</div>'+
+      '<div style="font-size:11px;color:var(--g600);line-height:1.5;">'+r.detail+'</div>'+
+    '</div>';
+  });
+  document.getElementById('cc-summary-rows').innerHTML=html;
+
+  var note=document.getElementById('cc-note').value.trim();
+  var noteEl=document.getElementById('cc-note-display');
+  if(note){noteEl.style.display='block';noteEl.textContent='📝 '+note;}
+  else{noteEl.style.display='none';}
+
+  document.getElementById('cc-copied').style.display='none';
+  closeCustomChecker();
+  document.getElementById('custom-summary-overlay').classList.add('open');
+}
+
+function copySummary(){
+  var s=currentSku; if(!s) return;
+  var rows=document.getElementById('cc-summary-rows').querySelectorAll('div[style]');
+  var lines=['Custom Summary — '+(s.SKU||'—'),''];
+  rows.forEach(function(r){
+    var title=r.querySelector('div:first-child');
+    var detail=r.querySelector('div:last-child');
+    if(title) lines.push(title.textContent.trim());
+    if(detail&&detail!==title) lines.push('  '+detail.textContent.trim());
+    lines.push('');
+  });
+  var note=document.getElementById('cc-note-display');
+  if(note&&note.style.display!=='none') lines.push(note.textContent.trim());
+  navigator.clipboard&&navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var el=document.getElementById('cc-copied');
+    el.style.display='block';
+    setTimeout(function(){el.style.display='none';},2000);
+  });
+}
+
 function syncSheetsNum(el){
   var v=Math.min(50,Math.max(1,parseInt(el.value)||1));
   el.value=v;
@@ -1964,5 +2105,81 @@ window.addEventListener('load',function(){
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('orderOverlay').classList.remove('open');}});
 </script>
 <div id="tooltip-box" class="tooltip-box"></div>
+
+<!-- ══ CUSTOM CHECKER OVERLAY ══ -->
+<div class="overlay" id="custom-overlay" onclick="if(event.target===this)closeCustomChecker()">
+  <div class="order-modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <h2>เช็ค Custom Requirement</h2>
+      <button class="modal-close" onclick="closeCustomChecker()">×</button>
+    </div>
+    <div class="modal-body" id="custom-form-body">
+      <!-- sku pill -->
+      <div id="cc-sku-pill" style="background:var(--g100);padding:8px 12px;margin-bottom:16px;font-size:10px;letter-spacing:1px;font-family:'Courier New',monospace;font-weight:700;"></div>
+
+      <!-- 1. Custom Cut -->
+      <div class="fsec">
+        <div class="fsec-ttl">ขนาดตัด (Custom Cut)</div>
+        <div class="f2g">
+          <div class="frow-m"><label>ความกว้าง (mm)</label><input type="number" id="cc-w" placeholder="เช่น 900"></div>
+          <div class="frow-m"><label>ความยาว (mm)</label><input type="number" id="cc-l" placeholder="เช่น 2000"></div>
+        </div>
+        <div style="font-size:9px;color:var(--g400);margin-top:6px;" id="cc-std-size">Standard: — × — mm</div>
+      </div>
+
+      <!-- 2. Bundle Size -->
+      <div class="fsec">
+        <div class="fsec-ttl">จำนวนแผ่น / มัด</div>
+        <div class="frow-m"><label>ต้องการกี่แผ่น/มัด</label>
+          <input type="number" id="cc-bundle" placeholder="เช่น 3">
+        </div>
+        <div style="font-size:9px;color:var(--g400);margin-top:6px;" id="cc-std-bundle">Standard: — แผ่น/มัด</div>
+      </div>
+
+      <!-- 3. Packing -->
+      <div class="fsec">
+        <div class="fsec-ttl">Packing พิเศษ</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-export"> Export Packing (เสริมไม้ / ห่อกันน้ำ)</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-smallbundle"> แยกมัดเล็ก (น้อยกว่า standard)</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-individual"> ห่อแยกแผ่น</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-pallet"> วางบน Pallet / ห้ามวาง Flat</label>
+        </div>
+      </div>
+
+      <!-- 4. อื่นๆ -->
+      <div class="fsec">
+        <div class="fsec-ttl">อื่นๆ</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-millcert"> ต้องการ Mill Certificate</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-surface"> Surface treatment พิเศษ (Pickle/Oiled)</label>
+        </div>
+        <div class="frow-m" style="margin-top:10px;"><label>หมายเหตุเพิ่มเติม</label><textarea id="cc-note" rows="2" placeholder="เช่น ลูกค้าต้องการ edge deburr"></textarea></div>
+      </div>
+
+      <button class="btn-submit" onclick="runCustomCheck()">ดูสรุป Custom →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CUSTOM SUMMARY POPUP ══ -->
+<div class="overlay" id="custom-summary-overlay" onclick="if(event.target===this)closeCustomSummary()">
+  <div class="order-modal" style="max-width:420px;" onclick="event.stopPropagation()">
+    <div class="modal-hdr" style="background:var(--black);">
+      <h2>Custom Summary</h2>
+      <button class="modal-close" onclick="closeCustomSummary()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="cc-summary-sku" style="font-family:'Courier New',monospace;font-size:10px;color:var(--g400);margin-bottom:14px;letter-spacing:1px;"></div>
+      <div id="cc-summary-rows" style="display:flex;flex-direction:column;gap:6px;margin-bottom:18px;"></div>
+      <div id="cc-note-display" style="display:none;background:var(--g100);padding:10px 12px;font-size:11px;color:var(--g600);margin-bottom:14px;line-height:1.6;"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-submit" style="flex:1;" onclick="copySummary()">📋 Copy สรุป</button>
+        <button class="btn-done" style="flex:1;" onclick="closeCustomSummary()">← แก้ไข</button>
+      </div>
+      <div id="cc-copied" style="display:none;text-align:center;font-size:10px;color:var(--green);margin-top:8px;letter-spacing:1px;">✓ COPIED</div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
