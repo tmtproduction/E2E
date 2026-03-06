@@ -260,11 +260,50 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .live-range{width:90px;-webkit-appearance:none;height:2px;background:var(--g200);outline:none;cursor:pointer;border-radius:1px;}
 .live-range::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--black);cursor:pointer;}
 .live-range.out-of-range::-webkit-slider-thumb{background:var(--red);}
+.live-range:disabled{opacity:.35;cursor:not-allowed;}
+.live-range.locked::-webkit-slider-thumb{background:var(--g400);}
 .live-num{border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:14px;font-weight:700;font-family:'Courier New',monospace;width:100%;outline:none;padding:2px 0;transition:border-color .2s;}
 .live-num:focus{border-bottom-color:var(--black);}
 .strap-btn{font-size:8px;letter-spacing:.5px;text-transform:uppercase;border:1px solid var(--g200);background:var(--white);color:var(--g600);padding:4px 8px;cursor:pointer;font-family:inherit;transition:all .15s;}
 .strap-btn:hover{border-color:var(--black);color:var(--black);}
 .strap-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
+
+/* ── CTRL3D — new visual control rows ── */
+.ctrl3d-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--g100);}
+.ctrl3d-row--2col{display:block;padding:10px 14px;}
+.ctrl3d-left{display:flex;align-items:center;gap:6px;min-width:100px;}
+.ctrl3d-right{display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;flex-wrap:wrap;}
+.ctrl3d-label{font-size:11px;font-weight:600;color:var(--black);}
+/* interaction type tags */
+.ctrl3d-tag{font-size:7px;letter-spacing:.5px;font-weight:700;padding:2px 6px;border-radius:3px;white-space:nowrap;flex-shrink:0;}
+.ctrl3d-tag--drag{background:#e8f0fe;color:#1a56db;border:1px solid #c3d2fd;}   /* blue — drag */
+.ctrl3d-tag--type{background:#e8fdf0;color:#1a7a4a;border:1px solid #b8edcc;}   /* green — type */
+.ctrl3d-tag--press{background:#f5f0fe;color:#6b3fa0;border:1px solid #d9c8f8;}  /* purple — press */
+.ctrl3d-tag--locked{background:#f0f0ee;color:var(--g400);border:1px solid var(--g200);}
+/* slider track wrap */
+.ctrl3d-track-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
+.ctrl3d-track-hint{font-size:8px;color:var(--g400);letter-spacing:.3px;white-space:nowrap;}
+.ctrl3d-range{width:100px;}
+/* number value badge (read display next to slider) */
+.ctrl3d-val-badge{font-family:'Courier New',monospace;font-size:15px;font-weight:700;min-width:36px;text-align:right;color:var(--black);}
+/* inline number input */
+.ctrl3d-num-inp{width:44px;border:none;border-bottom:2px solid var(--black);background:transparent;font-size:15px;font-weight:700;font-family:'Courier New',monospace;outline:none;padding:2px 0;text-align:right;color:var(--black);}
+.ctrl3d-num-inp:focus{border-bottom-color:var(--green);}
+.ctrl3d-unit{font-size:9px;color:var(--g400);letter-spacing:.5px;text-transform:uppercase;}
+/* 2-col number inputs for กว้าง/ยาว */
+.ctrl3d-2col-inner{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ctrl3d-numfield{background:var(--g100);padding:10px 12px;border:1px solid var(--g200);transition:border-color .2s;}
+.ctrl3d-numfield:focus-within{border-color:var(--black);background:var(--white);}
+.ctrl3d-num-big{border:none;border-bottom:2px solid var(--g200);background:transparent;font-size:18px;font-weight:700;font-family:'Courier New',monospace;outline:none;padding:2px 0;width:100%;color:var(--black);transition:border-color .2s;}
+.ctrl3d-num-big:focus{border-bottom-color:var(--black);}
+/* mobile adjustments */
+@media(max-width:767px){
+  .ctrl3d-range{width:70px;}
+  .ctrl3d-row{padding:9px 14px;}
+  .ctrl3d-left{min-width:80px;}
+  .ctrl3d-val-badge{font-size:14px;}
+  .ctrl3d-num-big{font-size:16px;}
+}
 
 /* ── TOOLTIP ── */
 .tip-btn{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--g400);background:none;font-size:9px;color:var(--g400);cursor:pointer;margin-left:5px;font-family:inherit;vertical-align:middle;line-height:1;flex-shrink:0;}
@@ -289,7 +328,87 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .step.done{color:var(--green);border-bottom-color:var(--green);}
 .warn-box{background:#fff8e8;border:1px solid var(--yellow);padding:10px 12px;margin-bottom:12px;font-size:11px;color:#7a5800;line-height:1.5;}
 .warn-box strong{display:block;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;color:var(--yellow);}
-/* ── MOBILE FIRST — ≤ 767px ── */
+/* ── MOBILE FILTER TOGGLE ── */
+.filter-toggle-bar{display:none;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid var(--g200);cursor:pointer;background:var(--white);user-select:none;}
+.filter-toggle-bar .ftb-left{display:flex;align-items:center;gap:8px;}
+.filter-toggle-bar .ftb-icon{font-size:14px;}
+.filter-toggle-bar .ftb-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.filter-toggle-bar .ftb-count{font-size:9px;background:var(--black);color:var(--white);border-radius:10px;padding:2px 7px;letter-spacing:.5px;display:none;}
+.filter-toggle-bar .ftb-count.has-filter{display:inline;}
+.filter-toggle-bar .ftb-arrow{font-size:10px;color:var(--g400);transition:transform .25s;}
+.filter-toggle-bar.open .ftb-arrow{transform:rotate(180deg);}
+.filter-panel-wrap{overflow:hidden;max-height:0;transition:max-height .3s ease;background:var(--g100);border-top:1px solid var(--g200);}
+.filter-panel-wrap.open{max-height:600px;}
+
+/* Mobile filter rows inside collapsible panel */
+.mobile-filter-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--g200);}
+.mobile-filter-row:last-child{border-bottom:none;}
+.mobile-filter-row label{font-size:13px;font-weight:500;color:var(--black);}
+.mobile-filter-row select{font-size:13px;font-weight:600;border:none;background:transparent;color:var(--black);text-align:right;outline:none;cursor:pointer;max-width:160px;}
+
+/* ── EDITABLE FIELD BADGE ── */
+.editable-badge{display:inline-flex;align-items:center;gap:3px;font-size:7px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--white);background:var(--green);padding:2px 6px;border-radius:3px;margin-left:6px;vertical-align:middle;flex-shrink:0;}
+.editable-badge svg{width:8px;height:8px;}
+/* highlight editable inputs on focus */
+.frow input:focus,.frow select:focus,.frow-m input:focus,.frow-m textarea:focus{border-color:var(--black);box-shadow:0 0 0 2px rgba(10,10,10,.08);}
+/* Editable row indicator — shows on hover/focus-within */
+.editable-row{position:relative;}
+.editable-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background .2s;}
+.editable-row:focus-within::before{background:var(--black);}
+/* Admin section header badge */
+.admin-sec-title .edit-chip{font-size:7px;background:rgba(26,122,74,.12);color:var(--green);border:1px solid rgba(26,122,74,.2);padding:2px 6px;border-radius:3px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-left:6px;}
+
+/* ── MOBILE MODAL FIX ── */
+@media(max-width:767px){
+  .filter-toggle-bar{display:flex;}
+  .cat-hero .search-bar{display:none;}  /* hidden on mobile — replaced by toggle */
+  .cat-hero{padding-bottom:0;}
+
+  /* Modal — compact, no overflow */
+  .overlay{padding:0;align-items:flex-end;}
+  .order-modal{
+    width:100%;max-width:100% !important;
+    border-radius:16px 16px 0 0;
+    max-height:88vh;
+    display:flex;flex-direction:column;
+  }
+  .modal-hdr{padding:12px 16px;flex-shrink:0;}
+  .modal-hdr h2{font-size:11px;letter-spacing:2px;}
+  .modal-body{
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:14px 16px 24px;
+    max-height:none !important;
+  }
+  /* modal drag handle */
+  .order-modal::before{
+    content:'';display:block;width:36px;height:4px;
+    background:var(--g200);border-radius:2px;
+    margin:10px auto 0;flex-shrink:0;
+  }
+  /* Compact modal internals */
+  .spec-pill{grid-template-columns:1fr 1fr;gap:6px;padding:8px 10px;}
+  .sp-item label{font-size:7px;}
+  .sp-item span{font-size:10px;}
+  .order-sum{padding:10px 12px;gap:6px;}
+  .os-item label{font-size:7px;}
+  .os-item span{font-size:13px;}
+  .order-steps{margin-bottom:14px;}
+  .step{font-size:7px;padding:7px 2px;}
+  .fsec{margin-bottom:12px;}
+  .fsec-ttl{font-size:7px;letter-spacing:1.5px;}
+  .f2g{grid-template-columns:1fr;}
+  .frow-m input,.frow-m textarea{font-size:14px;padding:9px;}
+  .op-preview{padding:12px 14px;}
+  .op-total{padding:10px 14px;}
+  .op-total-label{font-size:8px;}
+  .op-total-val{font-size:18px;}
+  .btn-submit{font-size:10px;letter-spacing:2px;padding:14px;}
+  .warn-box{font-size:10px;padding:8px 10px;}
+  /* Custom checker modal */
+  #custom-overlay .order-modal,#custom-summary-overlay .order-modal{
+    border-radius:16px 16px 0 0;max-height:88vh;
+  }
+}
 @media(max-width:767px){
   /* Nav */
   .cat-nav{padding:12px 16px;}
@@ -607,7 +726,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
     <div class="cat-hero-eyebrow">เหล็กแผ่นดำ · ชุบสังกะสี · Cold Rolled</div>
     <div class="cat-hero-title">เลือก Spec ที่ใช่สำหรับงานของคุณ</div>
     <div class="cat-hero-sub">คลังสินค้าพร้อมส่ง · ข้อมูลครบ · ดู 3D ได้จริง</div>
-    <!-- Filters as compact inline row -->
+    <!-- Desktop filters (inline row) -->
     <div class="search-bar">
       <div class="sf"><label>ประเภทผิว</label>
         <select id="f-surface" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>ดำ (Hot Rolled)</option><option>ชุบสังกะสี (Galvanized)</option><option>Cold Rolled</option><option>สเตนเลส</option></select>
@@ -625,6 +744,55 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
         <select id="f-length" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>2000</option><option>2400</option><option>3000</option></select>
       </div>
       <button class="btn-clear" onclick="clearFilter()">ล้างตัวกรอง</button>
+    </div>
+  </div>
+
+  <!-- Mobile filter toggle bar (shown only on mobile) -->
+  <div class="filter-toggle-bar" id="filter-toggle-bar" onclick="toggleMobileFilter()">
+    <div class="ftb-left">
+      <span class="ftb-icon">⚙️</span>
+      <span class="ftb-label">ตัวกรองสินค้า</span>
+      <span class="ftb-count" id="ftb-count">0</span>
+    </div>
+    <span class="ftb-arrow">▼</span>
+  </div>
+  <!-- Mobile filter panel (collapsible) -->
+  <div class="filter-panel-wrap" id="filter-panel-wrap">
+    <div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);font-weight:600;">เลือกตัวกรอง</span>
+        <button onclick="clearFilter()" style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;">ล้างทั้งหมด</button>
+      </div>
+      <div class="mobile-filter-row">
+        <label>ประเภทผิว</label>
+        <select id="f-surface-m" onchange="syncMobileFilter('f-surface','f-surface-m')">
+          <option value="">ทั้งหมด</option><option>ดำ (Hot Rolled)</option><option>ชุบสังกะสี (Galvanized)</option><option>Cold Rolled</option><option>สเตนเลส</option>
+        </select>
+      </div>
+      <div class="mobile-filter-row">
+        <label>เกรด</label>
+        <select id="f-grade-m" onchange="syncMobileFilter('f-grade','f-grade-m')">
+          <option value="">ทั้งหมด</option><option>SPHC</option><option>SS400</option><option>SPCC</option><option>SGHC</option>
+        </select>
+      </div>
+      <div class="mobile-filter-row">
+        <label>ความหนา (mm)</label>
+        <select id="f-thick-m" onchange="syncMobileFilter('f-thick','f-thick-m')">
+          <option value="">ทั้งหมด</option><option>1.2</option><option>1.5</option><option>2.0</option><option>2.3</option><option>3.2</option>
+        </select>
+      </div>
+      <div class="mobile-filter-row">
+        <label>ความกว้าง (mm)</label>
+        <select id="f-width-m" onchange="syncMobileFilter('f-width','f-width-m')">
+          <option value="">ทั้งหมด</option><option>900</option><option>1200</option><option>1500</option>
+        </select>
+      </div>
+      <div class="mobile-filter-row">
+        <label>ความยาว (mm)</label>
+        <select id="f-length-m" onchange="syncMobileFilter('f-length','f-length-m')">
+          <option value="">ทั้งหมด</option><option>2000</option><option>2400</option><option>3000</option>
+        </select>
+      </div>
     </div>
   </div>
 </div>
@@ -744,40 +912,88 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
               </div>
             </div>
             <!-- 3D LIVE controls -->
-            <div style="border-top:1px solid var(--g200);padding-top:12px;display:flex;flex-direction:column;gap:12px;">
+            <div style="border-top:2px solid var(--black);padding-top:0;display:flex;flex-direction:column;gap:0;" id="controls-3d">
 
-              <!-- แผ่น/มัด -->
-              <div class="ctrl-row">
-                <label class="ctrl-lbl">แผ่น / มัด</label>
-                <div style="display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;">
-                  <input type="range" id="a-sheets" min="1" max="50" value="5" oninput="liveUpdate()" class="live-range">
-                  <input type="number" id="a-sheets-v" min="1" max="50" value="5" oninput="syncSheetsFromNum()" style="width:44px;border:none;border-bottom:1.5px solid var(--g200);background:transparent;font-size:14px;font-weight:700;font-family:'Courier New',monospace;outline:none;padding:2px 0;text-align:right;">
-                </div>
+              <!-- ── Header bar ── -->
+              <div style="background:var(--black);padding:7px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+                <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--white);font-weight:700;">3D Controls</span>
+                <span style="font-size:8px;color:var(--g400);letter-spacing:1px;">ปรับได้ → 3D อัปเดตทันที</span>
               </div>
 
-              <!-- ความหนา — limited to SKU range -->
-              <div class="ctrl-row">
-                <label class="ctrl-lbl">ความหนา (mm)</label>
-                <div class="ctrl-right">
-                  <div style="position:relative;">
-                    <input type="range" id="a-thick" min="5" max="60" value="20" oninput="liveUpdate()" class="live-range" id="a-thick">
-                    <div id="thick-limit-bar" style="position:absolute;bottom:-4px;left:0;right:0;height:2px;pointer-events:none;"></div>
+              <!-- ── แผ่น/มัด ── -->
+              <div class="ctrl3d-row">
+                <div class="ctrl3d-left">
+                  <span class="ctrl3d-tag ctrl3d-tag--drag">⟺ ลาก</span>
+                  <span class="ctrl3d-label">แผ่น / มัด</span>
+                </div>
+                <div class="ctrl3d-right">
+                  <div class="ctrl3d-track-wrap">
+                    <input type="range" id="a-sheets" min="1" max="50" value="5" oninput="liveUpdate()" class="live-range ctrl3d-range">
+                    <div class="ctrl3d-track-hint">1 ── 50 แผ่น</div>
                   </div>
-                  <span class="ctrl-val" id="a-thick-v">2.0</span>
-                  <span id="thick-warn" style="font-size:8px;color:var(--red);display:none;margin-left:4px;">!</span>
+                  <input type="number" id="a-sheets-v" min="1" max="50" value="5" oninput="syncSheetsFromNum()" class="ctrl3d-num-inp" title="พิมพ์ตัวเลขได้โดยตรง">
+                  <span class="ctrl3d-unit">แผ่น</span>
                 </div>
               </div>
 
-              <!-- กว้าง / ยาว -->
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div class="df"><label>กว้าง (mm)</label><input id="a-w" type="number" value="1200" oninput="liveUpdate()" class="live-num"></div>
-                <div class="df"><label>ยาว (mm)</label><input id="a-l" type="number" value="2400" oninput="liveUpdate()" class="live-num"></div>
+              <!-- ── ความหนา (อาจล็อค) ── -->
+              <div class="ctrl3d-row" id="thick-row">
+                <div class="ctrl3d-left">
+                  <span class="ctrl3d-tag ctrl3d-tag--drag" id="thick-tag">⟺ ลาก</span>
+                  <span class="ctrl3d-label">ความหนา</span>
+                </div>
+                <div class="ctrl3d-right">
+                  <div class="ctrl3d-track-wrap">
+                    <div style="position:relative;">
+                      <input type="range" id="a-thick" min="5" max="60" value="20" oninput="liveUpdate()" class="live-range ctrl3d-range">
+                      <div id="thick-limit-bar" style="position:absolute;bottom:-4px;left:0;right:0;height:2px;pointer-events:none;"></div>
+                    </div>
+                    <div class="ctrl3d-track-hint" id="thick-hint">— mm</div>
+                  </div>
+                  <span class="ctrl3d-val-badge" id="a-thick-v">2.0</span>
+                  <span class="ctrl3d-unit">mm</span>
+                  <span id="thick-warn" style="font-size:9px;color:var(--red);display:none;margin-left:2px;font-weight:700;" title="นอก range">⚠</span>
+                </div>
+              </div>
+              <!-- ล็อคแจ้งเตือน -->
+              <div id="thick-locked-note" style="display:none;background:#fff8e8;border-left:3px solid var(--yellow);padding:6px 14px;font-size:10px;color:#7a5800;line-height:1.5;">
+                🔒 ความหนาของ SKU นี้ล็อคค่าไว้ที่ค่า Nominal — ไม่สามารถปรับ slider ได้<br>
+                <span style="font-size:9px;color:var(--g400);">หากต้องการเปลี่ยน ให้แก้ใน Google Sheet คอลัมน์ THICK_MIN / THICK_MAX</span>
               </div>
 
-              <!-- จำนวนสายรัด -->
-              <div class="ctrl-row">
-                <label class="ctrl-lbl">สายรัด</label>
-                <div style="display:flex;gap:6px;">
+              <!-- ── กว้าง / ยาว ── -->
+              <div class="ctrl3d-row ctrl3d-row--2col">
+                <div class="ctrl3d-2col-inner">
+                  <div class="ctrl3d-numfield">
+                    <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+                      <span class="ctrl3d-tag ctrl3d-tag--type">⌨ พิมพ์</span>
+                      <label class="ctrl3d-label" style="margin:0;">กว้าง</label>
+                    </div>
+                    <div style="display:flex;align-items:baseline;gap:4px;">
+                      <input id="a-w" type="number" value="1200" oninput="liveUpdate()" class="live-num ctrl3d-num-big" placeholder="mm">
+                      <span class="ctrl3d-unit">mm</span>
+                    </div>
+                  </div>
+                  <div class="ctrl3d-numfield">
+                    <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+                      <span class="ctrl3d-tag ctrl3d-tag--type">⌨ พิมพ์</span>
+                      <label class="ctrl3d-label" style="margin:0;">ยาว</label>
+                    </div>
+                    <div style="display:flex;align-items:baseline;gap:4px;">
+                      <input id="a-l" type="number" value="2400" oninput="liveUpdate()" class="live-num ctrl3d-num-big" placeholder="mm">
+                      <span class="ctrl3d-unit">mm</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── สายรัด ── -->
+              <div class="ctrl3d-row">
+                <div class="ctrl3d-left">
+                  <span class="ctrl3d-tag ctrl3d-tag--press">● กด</span>
+                  <span class="ctrl3d-label">สายรัด</span>
+                </div>
+                <div class="ctrl3d-right" style="gap:5px;">
                   <button class="strap-btn active" onclick="setStraps(0,this)">ไม่มี</button>
                   <button class="strap-btn" onclick="setStraps(1,this)">1 เส้น</button>
                   <button class="strap-btn" onclick="setStraps(2,this)">2 เส้น</button>
@@ -785,10 +1001,13 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
                 </div>
               </div>
 
-              <!-- Marking -->
-              <div class="ctrl-row">
-                <label class="ctrl-lbl">Marking</label>
-                <div style="display:flex;gap:6px;">
+              <!-- ── Marking ── -->
+              <div class="ctrl3d-row" style="border-bottom:none;">
+                <div class="ctrl3d-left">
+                  <span class="ctrl3d-tag ctrl3d-tag--press">● กด</span>
+                  <span class="ctrl3d-label">Marking</span>
+                </div>
+                <div class="ctrl3d-right" style="gap:5px;">
                   <button class="strap-btn active" onclick="setMarking('none',this)">ไม่มี</button>
                   <button class="strap-btn" onclick="setMarking('mill',this)">Mill</button>
                   <button class="strap-btn" onclick="setMarking('grade',this)">Grade</button>
@@ -1198,43 +1417,45 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
       <div class="panel" id="panel-admin">
         <div class="admin-hdr">
           <h3>Admin — Edit Product</h3>
-          <p>แก้ไขข้อมูล Spec และราคา</p>
+          <p>แก้ไขข้อมูล Spec และราคา · กด Apply เพื่อบันทึก</p>
         </div>
         <div class="panel-scroll">
-          <div class="admin-sec">
-            <div class="admin-sec-title">Mechanical Properties</div>
+          <!-- ราคา + สต็อก — เด่นสุด ขึ้นก่อน -->
+          <div class="admin-sec" style="background:#fffbf0;border-bottom:2px solid var(--yellow);">
+            <div class="admin-sec-title" style="color:var(--yellow);">💰 ราคา &amp; สต็อก <span class="edit-chip" style="background:rgba(212,160,23,.15);color:#7a5800;border-color:rgba(212,160,23,.3);">✏ แก้ไขได้</span></div>
             <div class="f2col">
-              <div class="frow"><label>Tensile Strength</label><input type="text" id="a-ts" oninput="syncMech()"></div>
-              <div class="frow"><label>Yield Strength</label><input type="text" id="a-ys" oninput="syncMech()"></div>
-              <div class="frow"><label>Elongation</label><input type="text" id="a-el" oninput="syncMech()"></div>
-              <div class="frow"><label>Hardness</label><input type="text" id="a-hd" oninput="syncMech()"></div>
-            </div>
-            <div class="frow"><label>Tolerance ความหนา</label><input type="text" id="a-tol" oninput="syncMech()"></div>
-          </div>
-          <div class="admin-sec">
-            <div class="admin-sec-title">Geometric Tolerances</div>
-            <div class="f2col">
-              <div class="frow"><label>Flatness (mm/m)</label><input type="text" id="a-flat" oninput="syncGeoAdmin()"></div>
-              <div class="frow"><label>Flatness Overall</label><input type="text" id="a-flat2" oninput="syncGeoAdmin()"></div>
-              <div class="frow"><label>Camber (mm/m)</label><input type="text" id="a-camb" oninput="syncGeoAdmin()"></div>
-              <div class="frow"><label>Camber per 2m</label><input type="text" id="a-camb2" oninput="syncGeoAdmin()"></div>
-              <div class="frow"><label>Squareness (mm/m)</label><input type="text" id="a-sq" oninput="syncGeoAdmin()"></div>
-              <div class="frow"><label>Squareness Abs.</label><input type="text" id="a-sq2" oninput="syncGeoAdmin()"></div>
-              <div class="frow"><label>Min R (ตัดขวาง)</label><input type="text" id="a-br1" oninput="syncGeoAdmin()"></div>
-              <div class="frow"><label>Min R (ตามยาว)</label><input type="text" id="a-br2" oninput="syncGeoAdmin()"></div>
-              <div class="frow"><label>Bend Angle</label><input type="text" id="a-ba" oninput="syncGeoAdmin()"></div>
-              <div class="frow"><label>Spring-back</label><input type="text" id="a-sb" oninput="syncGeoAdmin()"></div>
+              <div class="frow editable-row"><label>ราคา (฿/แผ่น)</label><input type="number" id="a-price" placeholder="0"></div>
+              <div class="frow editable-row"><label>สต็อก (แผ่น)</label><input type="number" id="a-stock" placeholder="0"></div>
             </div>
           </div>
           <div class="admin-sec">
+            <div class="admin-sec-title">⚙️ Mechanical Properties <span class="edit-chip">✏ แก้ไขได้</span></div>
             <div class="f2col">
-              <div class="frow"><label>ราคา (฿/แผ่น)</label><input type="number" id="a-price"></div>
-              <div class="frow"><label>สต็อก (แผ่น)</label><input type="number" id="a-stock"></div>
+              <div class="frow editable-row"><label>Tensile Strength</label><input type="text" id="a-ts" oninput="syncMech()" placeholder="เช่น ≥ 270 N/mm²"></div>
+              <div class="frow editable-row"><label>Yield Strength</label><input type="text" id="a-ys" oninput="syncMech()" placeholder="เช่น ≥ 245 N/mm²"></div>
+              <div class="frow editable-row"><label>Elongation</label><input type="text" id="a-el" oninput="syncMech()" placeholder="เช่น ≥ 27 %"></div>
+              <div class="frow editable-row"><label>Hardness</label><input type="text" id="a-hd" oninput="syncMech()" placeholder="เช่น 60 HRB"></div>
+            </div>
+            <div class="frow editable-row"><label>Tolerance ความหนา</label><input type="text" id="a-tol" oninput="syncMech()" placeholder="เช่น ±0.10 mm"></div>
+          </div>
+          <div class="admin-sec">
+            <div class="admin-sec-title">📐 Geometric Tolerances <span class="edit-chip">✏ แก้ไขได้</span></div>
+            <div class="f2col">
+              <div class="frow editable-row"><label>Flatness (mm/m)</label><input type="text" id="a-flat" oninput="syncGeoAdmin()" placeholder="เช่น ≤ 12 mm/m"></div>
+              <div class="frow editable-row"><label>Flatness Overall</label><input type="text" id="a-flat2" oninput="syncGeoAdmin()" placeholder="เช่น ≤ 20 mm"></div>
+              <div class="frow editable-row"><label>Camber (mm/m)</label><input type="text" id="a-camb" oninput="syncGeoAdmin()" placeholder="เช่น ≤ 2 mm/m"></div>
+              <div class="frow editable-row"><label>Camber per 2m</label><input type="text" id="a-camb2" oninput="syncGeoAdmin()" placeholder="เช่น ≤ 4 mm"></div>
+              <div class="frow editable-row"><label>Squareness (mm/m)</label><input type="text" id="a-sq" oninput="syncGeoAdmin()" placeholder="เช่น ≤ 2 mm/m"></div>
+              <div class="frow editable-row"><label>Squareness Abs.</label><input type="text" id="a-sq2" oninput="syncGeoAdmin()" placeholder="เช่น ≤ 3 mm"></div>
+              <div class="frow editable-row"><label>Min R (ตัดขวาง)</label><input type="text" id="a-br1" oninput="syncGeoAdmin()" placeholder="เช่น 1.0t"></div>
+              <div class="frow editable-row"><label>Min R (ตามยาว)</label><input type="text" id="a-br2" oninput="syncGeoAdmin()" placeholder="เช่น 1.5t"></div>
+              <div class="frow editable-row"><label>Bend Angle</label><input type="text" id="a-ba" oninput="syncGeoAdmin()" placeholder="เช่น 90°"></div>
+              <div class="frow editable-row"><label>Spring-back</label><input type="text" id="a-sb" oninput="syncGeoAdmin()" placeholder="เช่น ~ 2–3°"></div>
             </div>
           </div>
         </div>
         <div class="btn-apply-wrap">
-          <button class="btn-apply" onclick="applyAdmin()">Apply Changes</button>
+          <button class="btn-apply" onclick="applyAdmin()">✓ Apply Changes — บันทึกการแก้ไข</button>
         </div>
       </div>
 
@@ -1562,14 +1783,27 @@ function openViewer(idx){
     thickSlider.classList.toggle('locked', thickLocked);
     thickSlider.classList.remove('out-of-range');
   }
+  // update ctrl3d tag and locked note
+  var thickTag = document.getElementById('thick-tag');
+  var lockedNote = document.getElementById('thick-locked-note');
+  if(thickTag){
+    if(thickLocked){
+      thickTag.textContent = '🔒 ล็อค';
+      thickTag.className = 'ctrl3d-tag ctrl3d-tag--locked';
+    } else {
+      thickTag.textContent = '⟺ ลาก';
+      thickTag.className = 'ctrl3d-tag ctrl3d-tag--drag';
+    }
+  }
+  if(lockedNote) lockedNote.style.display = thickLocked ? 'block' : 'none';
   // แสดง label hint ใต้ slider
   var thickHint = document.getElementById('thick-hint');
   if(thickHint){
     if(thickLocked){
-      thickHint.textContent = 'ล็อคที่ '+th.toFixed(1)+' mm (ไม่มี range ใน Sheet)';
+      thickHint.textContent = 'ล็อคที่ '+th.toFixed(1)+' mm';
       thickHint.style.color = 'var(--g400)';
     } else {
-      thickHint.textContent = S_thickMin.toFixed(1)+' – '+S_thickMax.toFixed(1)+' mm  (จาก Sheet)';
+      thickHint.textContent = S_thickMin.toFixed(1)+' – '+S_thickMax.toFixed(1)+' mm (range จาก Sheet)';
       thickHint.style.color = 'var(--green)';
     }
   }
@@ -1664,8 +1898,45 @@ function clearFilter(){
   ['f-surface','f-grade','f-thick','f-width','f-length'].forEach(function(id){
     document.getElementById(id).value='';
   });
+  // sync mobile dropdowns too
+  ['f-surface-m','f-grade-m','f-thick-m','f-width-m','f-length-m'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
   filteredSkus=allSkus.slice();
+  updateFilterBadge();
   renderGrid();
+}
+
+// ── MOBILE FILTER ──────────────────────────────────
+function toggleMobileFilter(){
+  var bar=document.getElementById('filter-toggle-bar');
+  var panel=document.getElementById('filter-panel-wrap');
+  if(!bar||!panel)return;
+  var isOpen=panel.classList.contains('open');
+  panel.classList.toggle('open',!isOpen);
+  bar.classList.toggle('open',!isOpen);
+}
+function syncMobileFilter(mainId, mobileId){
+  var mEl=document.getElementById(mobileId);
+  var dEl=document.getElementById(mainId);
+  if(mEl&&dEl) dEl.value=mEl.value;
+  applyFilter();
+  updateFilterBadge();
+}
+function updateFilterBadge(){
+  var count=['f-surface','f-grade','f-thick','f-width','f-length'].filter(function(id){
+    return document.getElementById(id)&&document.getElementById(id).value!=='';
+  }).length;
+  var badge=document.getElementById('ftb-count');
+  if(!badge)return;
+  badge.textContent=count;
+  badge.classList.toggle('has-filter',count>0);
+  // update toggle bar label
+  var bar=document.getElementById('filter-toggle-bar');
+  if(bar){
+    var lbl=bar.querySelector('.ftb-label');
+    if(lbl) lbl.textContent = count>0 ? 'ตัวกรอง ('+count+' ตัว)' : 'ตัวกรองสินค้า';
+  }
 }
 
 // ── TABS ─────────────────────────────────────────
