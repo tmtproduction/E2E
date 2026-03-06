@@ -1936,6 +1936,74 @@ function drawBox3d(cx,cy,cz,bW,bH,bL,topCol,sideCol,floatY){
   });
 }
 
+// ── drawStrap3d — เหล็กรัดดำมันวาว ──────────────────────────
+function drawStrap3d(cx,cy,cz,bW,bH,bL,floatY){
+  var fy=cy+(floatY||0);
+  var hw=bW/2,hh=bH/2,hl=bL/2;
+  var c=[[cx-hw,fy-hh,cz-hl],[cx+hw,fy-hh,cz-hl],[cx+hw,fy+hh,cz-hl],[cx-hw,fy+hh,cz-hl],
+         [cx-hw,fy-hh,cz+hl],[cx+hw,fy-hh,cz+hl],[cx+hw,fy+hh,cz+hl],[cx-hw,fy+hh,cz+hl]];
+
+  // face definitions เหมือน drawBox3d แต่สีดำมันวาว
+  var faces=[
+    {pts:[c[3],c[2],c[1],c[0]],n:[0,0,-1],top:false},
+    {pts:[c[4],c[5],c[6],c[7]],n:[0,0,1], top:false},
+    {pts:[c[7],c[6],c[2],c[3]],n:[0,1,0], top:true },   // หน้าบน — มันวาว
+    {pts:[c[0],c[1],c[5],c[4]],n:[0,-1,0],top:false},
+    {pts:[c[0],c[4],c[7],c[3]],n:[-1,0,0],top:false},
+    {pts:[c[1],c[2],c[6],c[5]],n:[1,0,0], top:false},
+  ];
+  faces.forEach(function(f){
+    var sum=0;f.pts.forEach(function(p){sum+=tp(p)[2];});f.depth=sum/f.pts.length;
+  });
+  faces.sort(function(a,b){return b.depth-a.depth;});
+
+  faces.forEach(function(f){
+    var t0=tp(f.pts[0]),t1=tp(f.pts[1]),t2=tp(f.pts[2]);
+    var e1=[t1[0]-t0[0],t1[1]-t0[1]],e2=[t2[0]-t0[0],t2[1]-t0[1]];
+    if(e1[0]*e2[1]-e1[1]*e2[0]>0) return;
+    var s=shade(f.n[0],f.n[1],f.n[2]);
+    var p2d=f.pts.map(function(p){return pr(tp(p));});
+    ctx.beginPath();
+    ctx.moveTo(p2d[0][0],p2d[0][1]);
+    for(var i=1;i<p2d.length;i++) ctx.lineTo(p2d[i][0],p2d[i][1]);
+    ctx.closePath();
+
+    if(f.top){
+      // หน้าบน: gradient ดำมันวาว สะท้อนแสงเส้นขาว
+      var gx0=p2d[0][0],gy0=p2d[0][1],gx1=p2d[2][0],gy1=p2d[2][1];
+      try{
+        var grad=ctx.createLinearGradient(gx0,gy0,gx1,gy1);
+        grad.addColorStop(0,   'rgba('+Math.round(80*s)+','+Math.round(80*s)+','+Math.round(85*s)+',1)');
+        grad.addColorStop(0.25,'rgba('+Math.round(160*s)+','+Math.round(165*s)+','+Math.round(170*s)+',1)'); // highlight
+        grad.addColorStop(0.5, 'rgba('+Math.round(40*s)+','+Math.round(40*s)+','+Math.round(45*s)+',1)');
+        grad.addColorStop(1,   'rgba('+Math.round(25*s)+','+Math.round(25*s)+','+Math.round(28*s)+',1)');
+        ctx.fillStyle=grad;
+      } catch(e){
+        ctx.fillStyle='rgb('+Math.round(60*s)+','+Math.round(60*s)+','+Math.round(65*s)+')';
+      }
+    } else {
+      // ด้านข้าง: ดำทึบ เงา
+      var sv=Math.max(0.1,s*0.6);
+      ctx.fillStyle='rgb('+Math.round(22*sv)+','+Math.round(22*sv)+','+Math.round(25*sv)+')';
+    }
+    ctx.fill();
+    // ขอบบางๆ สีเข้ม
+    ctx.strokeStyle='rgba(0,0,0,0.55)';
+    ctx.lineWidth=0.6;
+    ctx.stroke();
+
+    // เส้น highlight บนขอบบนสุดของ top face
+    if(f.top){
+      ctx.beginPath();
+      ctx.moveTo(p2d[0][0],p2d[0][1]);
+      ctx.lineTo(p2d[3][0],p2d[3][1]);
+      ctx.strokeStyle='rgba(200,210,220,0.35)';
+      ctx.lineWidth=0.8;
+      ctx.stroke();
+    }
+  });
+}
+
 function render3d(){
   ctx.clearRect(0,0,W,H);
   var N=S.sheets;
@@ -1982,7 +2050,7 @@ function render3d(){
     ctx.restore();
   }
 
-  // ── STRAPS ──
+  // ── STRAPS — เหล็กรัดดำมันวาว 32mm ──
   var strapCount=S.straps||0;
   if(strapCount>0){
     var strapPositions=[];
@@ -1991,15 +2059,16 @@ function render3d(){
     else strapPositions=[-bl*0.34,0,bl*0.34];
 
     strapPositions.forEach(function(sz){
-      var sH=totalH+0.06;
-      // top bar
-      drawBox3d(0,yOff+totalH+0.028,sz,bw+0.07,0.055,0.038,'#989890','#888880',fl);
-      // bottom bar
-      drawBox3d(0,yOff-0.028,sz,bw+0.07,0.055,0.038,'#989890','#888880',fl);
-      // left vertical
-      drawBox3d(-bw/2-0.035,yOff+totalH/2,sz,0.038,sH+0.12,0.038,'#888880','#787870',fl);
-      // right vertical
-      drawBox3d(bw/2+0.035,yOff+totalH/2,sz,0.038,sH+0.12,0.038,'#888880','#787870',fl);
+      var sH=totalH+0.13;          // สูงกว่ามัดนิดหน่อย
+      var sw=0.048;                 // กว้าง ~32mm ในสัดส่วน scene
+      var st=0.010;                 // บาง ~1.2mm
+
+      // วาด 4 segment: บน / ล่าง / ซ้าย / ขวา
+      // ใช้ drawStrap3d ที่ให้ highlight เส้นบางบนขอบ
+      drawStrap3d(0,         yOff+totalH+st/2+0.005, sz, bw+sw, st, sw); // top
+      drawStrap3d(0,         yOff-st/2-0.005,         sz, bw+sw, st, sw); // bottom
+      drawStrap3d(-bw/2-st/2,yOff+totalH/2,           sz, st, sH, sw);    // left
+      drawStrap3d( bw/2+st/2,yOff+totalH/2,           sz, st, sH, sw);    // right
     });
   }
 
