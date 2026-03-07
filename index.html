@@ -3727,24 +3727,22 @@ function toggleHero(forceState){
 
 // ══════════════════════════════════════════════════════════════
 // HERO CANVAS — looping 3D steel bundle animation
-// Phase 0 ASSEMBLE  : sheets fall in → stack into bundle
-// Phase 1 ROTATE    : bundle rotates, top face revealed
-// Phase 2 EXPLODE   : sheets drift apart → grid of flat blocks
-// Phase 3 COLLAPSE  : grid collapses back → restart
+// ALL coordinates in CSS pixels throughout (no DPR confusion)
 // ══════════════════════════════════════════════════════════════
 (function(){
   var cvs = document.getElementById('hero-canvas');
   if(!cvs) return;
 
-  // canvas sizing — 2.4:1 aspect ratio, full container width
   var DPR = Math.min(window.devicePixelRatio||1, 2);
+  // W/H are always CSS pixels
+  var W, H;
   function resize(){
-    var pw = cvs.parentElement.clientWidth || window.innerWidth;
-    var ph = Math.round(pw / 2.4);
-    cvs.width  = pw * DPR;
-    cvs.height = ph * DPR;
-    cvs.style.width  = pw+'px';
-    cvs.style.height = ph+'px';
+    W = cvs.parentElement.clientWidth || window.innerWidth;
+    H = Math.round(W / 2.4);
+    cvs.width  = W * DPR;
+    cvs.height = H * DPR;
+    cvs.style.width  = W+'px';
+    cvs.style.height = H+'px';
   }
   resize();
   window.addEventListener('resize', resize);
@@ -3758,217 +3756,115 @@ function toggleHero(forceState){
   function lerp(a,b,t){ return a+(b-a)*t; }
   function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
 
-  // ── 3D projection ─────────────────────────────────────────
-  // iso-ish: rotX=26deg, rotY=45deg, slight perspective
-  var RX = 0.45, RY = 0.62;
+  // ── 3D — all scene units = CSS pixels ──────────────────────
+  var BASE_RX = 0.42, BASE_RY = 0.58;
   function rotY(p,a){ var c=Math.cos(a),s=Math.sin(a); return [c*p[0]+s*p[2],p[1],-s*p[0]+c*p[2]]; }
   function rotX(p,a){ var c=Math.cos(a),s=Math.sin(a); return [p[0],c*p[1]-s*p[2],s*p[1]+c*p[2]]; }
-  function project(p3, W,H, fov, dynRX, dynRY){
-    var q = rotY(p3, dynRY);
-    q = rotX(q, dynRX);
-    var z = q[2] + fov;
-    if(z<0.01) z=0.01;
-    return [W/2 + q[0]*fov/z, H*0.48 - q[1]*fov/z];
+
+  var ctx = cvs.getContext('2d');
+
+  function proj(p, rX, rY){
+    var q = rotX(rotY(p, rY), rX);
+    var fov = W * 0.9;
+    var z = q[2] + fov; if(z<1) z=1;
+    return [W/2 + q[0]*fov/z,  H*0.50 - q[1]*fov/z];
   }
 
-  // ── Draw a flat box face ───────────────────────────────────
-  function face(pts2d, fill, stroke, lw){
-    ctx.beginPath();
-    ctx.moveTo(pts2d[0][0], pts2d[0][1]);
-    for(var i=1;i<pts2d.length;i++) ctx.lineTo(pts2d[i][0],pts2d[i][1]);
+  function face3d(pts, rX, rY, fill, stroke, lw){
+    var p2 = pts.map(function(p){ return proj(p,rX,rY); });
+    ctx.beginPath(); ctx.moveTo(p2[0][0],p2[0][1]);
+    for(var i=1;i<p2.length;i++) ctx.lineTo(p2[i][0],p2[i][1]);
     ctx.closePath();
-    if(fill){ ctx.fillStyle=fill; ctx.fill(); }
-    if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=lw||.5; ctx.stroke(); }
+    if(fill)  { ctx.fillStyle=fill;     ctx.fill(); }
+    if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=lw||0.6; ctx.stroke(); }
   }
 
-  // ── Draw one sheet block ───────────────────────────────────
-  function drawSheet(cx,cy,cz, bw,bh,bl, topCol,sideCol,frontCol, W,H,fov, rX,rY, alpha){
+  function drawSheet(cx,cy,cz, bw,bh,bd, rX,rY, cTop,cSide, alpha){
     if(alpha<=0) return;
-    ctx.globalAlpha = alpha;
-    var hw=bw/2,hh=bh/2,hl=bl/2;
-    // 8 corners
-    var C=[
-      [cx-hw,cy+hh,cz-hl],[cx+hw,cy+hh,cz-hl],[cx+hw,cy-hh,cz-hl],[cx-hw,cy-hh,cz-hl],
-      [cx-hw,cy+hh,cz+hl],[cx+hw,cy+hh,cz+hl],[cx+hw,cy-hh,cz+hl],[cx-hw,cy-hh,cz+hl]
-    ];
-    var P = C.map(function(c){ return project(c,W,H,fov,rX,rY); });
-    // top face
-    face([P[0],P[1],P[5],P[4]], topCol, '#1a1a1a', .4);
-    // front face
-    face([P[3],P[2],P[1],P[0]], frontCol||sideCol, '#1a1a1a', .3);
-    // right face
-    face([P[2],P[6],P[5],P[1]], sideCol, '#1a1a1a', .3);
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha=alpha;
+    var hw=bw/2,hh=bh/2,hd=bd/2;
+    function v(x,y,z){ return [x+cx,y+cy,z+cz]; }
+    var tl=v(-hw,hh,-hd),tr=v(hw,hh,-hd),br=v(hw,-hh,-hd),bl=v(-hw,-hh,-hd);
+    var TL=v(-hw,hh,hd), TR=v(hw,hh,hd), BR=v(hw,-hh,hd),BL=v(-hw,-hh,hd);
+    face3d([bl,br,BR,BL],rX,rY,cSide,'#181816',0.45);   // front
+    face3d([br,tr,TR,BR],rX,rY,cSide,'#181816',0.45);   // right
+    face3d([tl,tr,TR,TL],rX,rY,cTop, '#181816',0.5);    // top
+    ctx.globalAlpha=1;
   }
 
-  // ── Timeline ──────────────────────────────────────────────
-  var LOOP_DUR = 6200; // ms per full cycle
-  // phases as fraction of LOOP_DUR
-  var PH = {
-    assemble:  [0,    0.30], // sheets drop → bundle
-    hold1:     [0.30, 0.38], // hold bundle
-    rotate:    [0.38, 0.58], // bundle rotates to top view
-    explode:   [0.58, 0.78], // explode to grid
-    hold2:     [0.78, 0.86], // hold grid
-    collapse:  [0.86, 1.00]  // collapse back
-  };
-
-  var N_SHEETS = 8; // number of sheets in bundle
-  var N_COLS = 4, N_ROWS = 2; // grid layout
-
-  var startTime = null;
-
-  function phaseFrac(t, ph){
-    var s=ph[0], e=ph[1];
-    return clamp((t-s)/(e-s),0,1);
-  }
-
-  // sheet colors — hot rolled palette
-  var COLORS = [
-    {top:'#8a8a88', side:'#606060', front:'#747472'},
-    {top:'#929290', side:'#686866', front:'#7c7c7a'},
-    {top:'#828280', side:'#585856', front:'#6c6c6a'},
-    {top:'#9a9a98', side:'#707070', front:'#848482'},
-    {top:'#888886', side:'#5e5e5c', front:'#727270'},
-    {top:'#909090', side:'#646462', front:'#787876'},
-    {top:'#868684', side:'#5c5c5a', front:'#707070'},
-    {top:'#969694', side:'#6a6a68', front:'#808080'},
+  var COLS=[
+    {top:'#8c8c8a',side:'#5a5a58'},{top:'#949492',side:'#626260'},
+    {top:'#848482',side:'#525250'},{top:'#9c9c9a',side:'#6a6a68'},
+    {top:'#8a8a88',side:'#585856'},{top:'#929090',side:'#5e5e5c'},
+    {top:'#888686',side:'#565654'},{top:'#969694',side:'#646462'},
   ];
 
+  var LOOP=6400;
+  var PH={assemble:[0,0.30],hold1:[0.30,0.40],rotate:[0.40,0.58],
+          explode:[0.58,0.76],hold2:[0.76,0.86],collapse:[0.86,1.00]};
+  function pf(t,ph){ return clamp((t-ph[0])/(ph[1]-ph[0]),0,1); }
+
+  var t0=null;
   function draw(ts){
-    if(!startTime) startTime = ts;
-    var elapsed = (ts - startTime) % LOOP_DUR;
-    var t = elapsed / LOOP_DUR; // 0..1 loop progress
+    if(!t0) t0=ts;
+    var t=((ts-t0)%LOOP)/LOOP;
 
-    var W = cvs.width, H = cvs.height;
-    var fov = W * 0.52;
-    var bg = '#f5f4f0';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.fillStyle='#f5f4f0'; ctx.fillRect(0,0,W,H);
 
-    ctx.clearRect(0,0,W,H);
-    ctx.fillStyle = bg;
-    ctx.fillRect(0,0,W,H);
+    var bw=W*0.38, bd=W*0.22, bh=W*0.011;
+    var gap=bh*0.25, N=8;
+    var stackH=N*(bh+gap)-gap;
+    var gSX=bw*1.18, gSZ=bd*1.15;
+    var gOX=-(3)/2*gSX, gOZ=-0.5*gSZ;
 
-    // ── phase fractions ──────────────────────────────────────
-    var fAssemble = phaseFrac(t, PH.assemble);
-    var fRotate   = phaseFrac(t, PH.rotate);
-    var fExplode  = phaseFrac(t, PH.explode);
-    var fCollapse = phaseFrac(t, PH.collapse);
+    var fA=easeOut(pf(t,PH.assemble));
+    var fR=easeInOut(pf(t,PH.rotate));
+    var fE=easeInOut(pf(t,PH.explode));
+    var fC=easeInOut(pf(t,PH.collapse));
 
-    var tAssemble = easeOut(fAssemble);
-    var tRotate   = easeInOut(fRotate);
-    var tExplode  = easeInOut(fExplode);
-    var tCollapse = easeInOut(fCollapse);
+    var rX=lerp(BASE_RX,1.05,fR);
+    if(fE>0) rX=lerp(1.05,BASE_RX,fE);
+    if(fC>0) rX=BASE_RX;
+    var rY=BASE_RY+Math.sin(t*Math.PI*2)*0.05;
 
-    // ── camera rotation ───────────────────────────────────────
-    // base iso angle; rotate to near-top view during rotate phase, back out during explode
-    var baseRX = 0.45, topRX = 1.1;
-    var curRX = baseRX;
-    if(fRotate > 0) curRX = lerp(baseRX, topRX, easeInOut(fRotate));
-    if(fExplode > 0) curRX = lerp(topRX, baseRX, easeInOut(fExplode));
-    if(fCollapse > 0) curRX = baseRX;
-
-    var curRY = RY + Math.sin(t * Math.PI * 2) * 0.06; // subtle sway
-
-    // ── sheet geometry ────────────────────────────────────────
-    var bw = W*0.0026, bh = W*0.00028, bl = W*0.0017;
-    // scale up to screen units
-    var UW = W/DPR * 0.0028;
-    bw = UW * 3.8; bh = UW * 0.22; bl = UW * 2.5;
-
-    var gap = bh * 0.18;
-    var totalH = N_SHEETS * (bh + gap) - gap;
-
-    // bundle center
-    var bCX=0, bCY=0, bCZ=0;
-
-    // grid layout
-    var gSpacX = bw * 1.22, gSpacZ = bl * 1.18;
-    var gOffX = -(N_COLS-1)/2 * gSpacX;
-    var gOffZ = -(N_ROWS-1)/2 * gSpacZ;
-
-    // ── draw sheets ───────────────────────────────────────────
-    // Z-sort: collect draw calls then sort by depth
-    var drawCalls = [];
-
-    for(var i=0; i<N_SHEETS; i++){
-      var frac = i/(N_SHEETS-1);
-      var col = COLORS[i % COLORS.length];
-
-      // ASSEMBLE: sheets drop from above
-      var dropY = lerp(-UW*4, 0, clamp(easeOut(fAssemble * N_SHEETS - i*0.5),0,1));
-
-      // bundle Y position (stacked)
-      var bundleY = (i * (bh+gap)) - totalH/2 + bh/2;
-
-      // GRID position
-      var gi = i % N_COLS;
-      var gj = Math.floor(i / N_COLS);
-      var gridX = gOffX + gi * gSpacX;
-      var gridZ = gOffZ + gj * gSpacZ;
-      var gridY = 0;
-
-      // EXPLODE: spread to grid
-      var cx = lerp(bCX, gridX, tExplode);
-      var cy = lerp(bundleY + dropY, gridY, tExplode);
-      var cz = lerp(bCZ, gridZ, tExplode);
-
-      // COLLAPSE: grid → bundle again
-      if(fCollapse > 0){
-        var nextDropY = lerp(-UW*2, 0, clamp(easeOut(1 - fCollapse * N_SHEETS + i*0.5),0,1));
-        cx = lerp(gridX, bCX, tCollapse);
-        cy = lerp(gridY, bundleY + nextDropY, tCollapse);
-        cz = lerp(gridZ, bCZ, tCollapse);
+    var calls=[];
+    for(var i=0;i<N;i++){
+      var col=COLS[i%COLS.length];
+      var byY=(i*(bh+gap))-stackH/2+bh/2;
+      var dY=lerp(-H*0.55,0,clamp(easeOut(fA*N-i*0.55),0,1));
+      var gi=i%4, gj=Math.floor(i/4);
+      var gx=gOX+gi*gSX, gz=gOZ+gj*gSZ;
+      var cx=0,cy=byY+dY,cz=0;
+      if(fE>0){cx=lerp(0,gx,fE);cy=lerp(byY+dY,0,fE);cz=lerp(0,gz,fE);}
+      if(fC>0){
+        var dY2=lerp(-H*0.3,0,clamp(easeOut(1-pf(t,PH.collapse)*N+i*0.5),0,1));
+        cx=lerp(gx,0,fC);cy=lerp(0,byY+dY2,fC);cz=lerp(gz,0,fC);
       }
-
-      // alpha: fade in during assemble per sheet
-      var alpha = clamp(easeOut(fAssemble * N_SHEETS - i*0.6), 0, 1);
-      if(fCollapse > 0.9) alpha = lerp(1, 0, (fCollapse-0.9)/0.1); // fade out at end
-
-      // compute projected center depth for sorting
-      var q = rotY([cx,cy,cz], curRY);
-      q = rotX(q, curRX);
-      var depth = q[2];
-
-      drawCalls.push({
-        cx:cx, cy:cy, cz:cz,
-        bw:bw, bh:bh, bl:bl,
-        top:col.top, side:col.side, front:col.front,
-        alpha:alpha, depth:depth
-      });
+      var alpha=clamp(easeOut(fA*N-i*0.55),0,1);
+      if(fC>0.88) alpha=lerp(1,0,(fC-0.88)/0.12);
+      var q=rotX(rotY([cx,cy,cz],rY),rX);
+      calls.push({cx,cy,cz,bw,bh,bd,col,alpha,depth:q[2]});
     }
-
-    // sort back to front
-    drawCalls.sort(function(a,b){ return a.depth-b.depth; });
-
-    drawCalls.forEach(function(d){
-      drawSheet(d.cx,d.cy,d.cz, d.bw,d.bh,d.bl, d.top,d.side,d.front,
-                W,H,fov, curRX,curRY, d.alpha);
+    calls.sort(function(a,b){return a.depth-b.depth;});
+    calls.forEach(function(d){
+      drawSheet(d.cx,d.cy,d.cz,d.bw,d.bh,d.bd,rX,rY,d.col.top,d.col.side,d.alpha);
     });
 
-    // ── label overlay ─────────────────────────────────────────
-    var labelAlpha = 0;
-    if(t >= PH.hold1[0] && t < PH.rotate[1]) labelAlpha = clamp(easeOut((t-PH.hold1[0])/0.06),0,1);
-    if(t >= PH.hold2[0]) labelAlpha = clamp(1-(t-PH.hold2[0])/0.08,0,1);
-
-    if(labelAlpha > 0){
-      ctx.globalAlpha = labelAlpha * 0.55;
-      ctx.font = 'bold '+(Math.round(W*0.011/DPR))+'px "Courier New",monospace';
-      ctx.letterSpacing = '2px';
-      ctx.fillStyle = '#4a4a48';
-      ctx.textAlign = 'left';
-      var lx=W*0.04, ly=H*0.14;
-      var fs = Math.round(W*0.010/DPR);
-      ctx.font = fs+'px "Courier New",monospace';
-      ctx.fillText('TMT STEEL · STEEL SHEET BUNDLE', lx, ly);
-      ctx.font = (fs-1)+'px "Courier New",monospace';
-      ctx.fillStyle = '#8a8a88';
-      ctx.fillText('SPHC / SS400 / SPCC / SGHC', lx, ly+fs*1.5);
-      ctx.globalAlpha = 1;
+    var lA=0;
+    if(t>=PH.hold1[0]&&t<PH.rotate[1]) lA=clamp((t-PH.hold1[0])/0.05,0,1);
+    if(t>=PH.hold2[0]) lA=clamp(1-(t-PH.hold2[0])/0.06,0,1);
+    if(lA>0){
+      var fs=Math.round(W*0.013);
+      ctx.globalAlpha=lA*0.5; ctx.fillStyle='#3a3a38';
+      ctx.font=fs+'px "Courier New",monospace'; ctx.textAlign='left';
+      ctx.fillText('TMT STEEL  \u00B7  STEEL SHEET BUNDLE',W*0.04,H*0.11);
+      ctx.font=(fs-2)+'px "Courier New",monospace'; ctx.fillStyle='#8a8a88';
+      ctx.fillText('SPHC / SS400 / SPCC / SGHC',W*0.04,H*0.11+fs*1.6);
+      ctx.globalAlpha=1;
     }
-
     requestAnimationFrame(draw);
   }
-
   requestAnimationFrame(draw);
 })();
 
