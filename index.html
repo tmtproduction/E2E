@@ -80,7 +80,7 @@ body{
   text-align:center;
   background:var(--white);
   overflow:hidden;
-  max-height:400px;
+  max-height:900px;
   opacity:1;
   transition:max-height .35s cubic-bezier(.4,0,.2,1),
              padding .35s cubic-bezier(.4,0,.2,1),
@@ -1197,17 +1197,11 @@ MARKER
     <div class="hdr-stat" id="hdr-stat"></div>
   </div>
 
-  <!-- Apple-style hero: big centered title + subtitle -->
-  <div class="cat-hero" id="cat-hero">
-    <!-- 3D loop canvas animation -->
-    <div class="hero-svg-wrap" style="max-width:520px;margin:0 auto 28px;">
-      <canvas id="hero-canvas" style="width:100%;height:auto;display:block;border-radius:2px;"></canvas>
-    </div>
-
-    <div class="cat-hero-eyebrow">เหล็กแผ่นดำ · ชุบสังกะสี · Cold Rolled</div>
-    <div class="cat-hero-title">เลือก Spec ที่ใช่สำหรับงานของคุณ</div>
-    <div class="cat-hero-sub">คลังสินค้าพร้อมส่ง · ข้อมูลครบ · ดู 3D ได้จริง</div>
+  <!-- 3D loop canvas animation — full hero -->
+  <div class="cat-hero" id="cat-hero" style="padding:0;text-align:left;">
+    <canvas id="hero-canvas" style="width:100%;display:block;"></canvas>
     <!-- Desktop filters (inline row) -->
+    <div style="padding:20px 48px 24px;">
     <div class="search-bar">
       <div class="sf"><label>ประเภทผิว</label>
         <select id="f-surface" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>ดำ (Hot Rolled)</option><option>ชุบสังกะสี (Galvanized)</option><option>Cold Rolled</option><option>สเตนเลส</option></select>
@@ -1225,6 +1219,7 @@ MARKER
         <select id="f-length" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>2000</option><option>2400</option><option>3000</option></select>
       </div>
       <button class="btn-clear" onclick="clearFilter()">ล้างตัวกรอง</button>
+    </div>
     </div>
   </div>
 
@@ -3741,14 +3736,15 @@ function toggleHero(forceState){
   var cvs = document.getElementById('hero-canvas');
   if(!cvs) return;
 
-  // canvas sizing — 3:1 aspect ratio
+  // canvas sizing — 2.4:1 aspect ratio, full container width
   var DPR = Math.min(window.devicePixelRatio||1, 2);
   function resize(){
-    var pw = cvs.parentElement.clientWidth||520;
+    var pw = cvs.parentElement.clientWidth || window.innerWidth;
+    var ph = Math.round(pw / 2.4);
     cvs.width  = pw * DPR;
-    cvs.height = Math.round(pw/3) * DPR;
+    cvs.height = ph * DPR;
     cvs.style.width  = pw+'px';
-    cvs.style.height = Math.round(pw/3)+'px';
+    cvs.style.height = ph+'px';
   }
   resize();
   window.addEventListener('resize', resize);
