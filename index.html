@@ -3757,7 +3757,7 @@ function toggleHero(forceState){
   function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
 
   // ── 3D — all scene units = CSS pixels ──────────────────────
-  var BASE_RX = 0.42, BASE_RY = 0.58;
+  var BASE_RX = 0.42, BASE_RY = Math.PI/4; // perfect 45° = symmetric iso
   function rotY(p,a){ var c=Math.cos(a),s=Math.sin(a); return [c*p[0]+s*p[2],p[1],-s*p[0]+c*p[2]]; }
   function rotX(p,a){ var c=Math.cos(a),s=Math.sin(a); return [p[0],c*p[1]-s*p[2],s*p[1]+c*p[2]]; }
 
@@ -3765,39 +3765,39 @@ function toggleHero(forceState){
 
   function proj(p, rX, rY){
     var q = rotX(rotY(p, rY), rX);
-    var fov = W * 0.9;
+    var fov = W * 1.2;
     var z = q[2] + fov; if(z<1) z=1;
     return [W/2 + q[0]*fov/z,  H*0.50 - q[1]*fov/z];
   }
 
-  function face3d(pts, rX, rY, fill, stroke, lw){
-    var p2 = pts.map(function(p){ return proj(p,rX,rY); });
-    ctx.beginPath(); ctx.moveTo(p2[0][0],p2[0][1]);
-    for(var i=1;i<p2.length;i++) ctx.lineTo(p2[i][0],p2[i][1]);
-    ctx.closePath();
-    if(fill)  { ctx.fillStyle=fill;     ctx.fill(); }
-    if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=lw||0.6; ctx.stroke(); }
-  }
-
-  function drawSheet(cx,cy,cz, bw,bh,bd, rX,rY, cTop,cSide, alpha){
+  // draw wireframe box — all 12 edges
+  function drawSheet(cx,cy,cz, bw,bh,bd, rX,rY, strokeCol, lw, alpha){
     if(alpha<=0) return;
-    ctx.globalAlpha=alpha;
-    var hw=bw/2,hh=bh/2,hd=bd/2;
-    function v(x,y,z){ return [x+cx,y+cy,z+cz]; }
-    var tl=v(-hw,hh,-hd),tr=v(hw,hh,-hd),br=v(hw,-hh,-hd),bl=v(-hw,-hh,-hd);
-    var TL=v(-hw,hh,hd), TR=v(hw,hh,hd), BR=v(hw,-hh,hd),BL=v(-hw,-hh,hd);
-    face3d([bl,br,BR,BL],rX,rY,cSide,'#181816',0.45);   // front
-    face3d([br,tr,TR,BR],rX,rY,cSide,'#181816',0.45);   // right
-    face3d([tl,tr,TR,TL],rX,rY,cTop, '#181816',0.5);    // top
-    ctx.globalAlpha=1;
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = strokeCol;
+    ctx.lineWidth   = lw;
+    ctx.lineJoin    = 'round';
+    var hw=bw/2, hh=bh/2, hd=bd/2;
+    function v(x,y,z){ return proj([x+cx, y+cy, z+cz], rX, rY); }
+    // 8 corners projected
+    var p = [
+      v(-hw,-hh,-hd), v( hw,-hh,-hd), v( hw, hh,-hd), v(-hw, hh,-hd), // back face
+      v(-hw,-hh, hd), v( hw,-hh, hd), v( hw, hh, hd), v(-hw, hh, hd)  // front face
+    ];
+    // 12 edges
+    var edges = [
+      [0,1],[1,2],[2,3],[3,0], // back
+      [4,5],[5,6],[6,7],[7,4], // front
+      [0,4],[1,5],[2,6],[3,7]  // connecting
+    ];
+    edges.forEach(function(e){
+      ctx.beginPath();
+      ctx.moveTo(p[e[0]][0], p[e[0]][1]);
+      ctx.lineTo(p[e[1]][0], p[e[1]][1]);
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
   }
-
-  var COLS=[
-    {top:'#8c8c8a',side:'#5a5a58'},{top:'#949492',side:'#626260'},
-    {top:'#848482',side:'#525250'},{top:'#9c9c9a',side:'#6a6a68'},
-    {top:'#8a8a88',side:'#585856'},{top:'#929090',side:'#5e5e5c'},
-    {top:'#888686',side:'#565654'},{top:'#969694',side:'#646462'},
-  ];
 
   var LOOP=6400;
   var PH={assemble:[0,0.30],hold1:[0.30,0.40],rotate:[0.40,0.58],
@@ -3844,11 +3844,16 @@ function toggleHero(forceState){
       var alpha=clamp(easeOut(fA*N-i*0.55),0,1);
       if(fC>0.88) alpha=lerp(1,0,(fC-0.88)/0.12);
       var q=rotX(rotY([cx,cy,cz],rY),rX);
-      calls.push({cx,cy,cz,bw,bh,bd,col,alpha,depth:q[2]});
+      calls.push({cx,cy,cz,bw,bh,bd,alpha,depth:q[2]});
     }
     calls.sort(function(a,b){return a.depth-b.depth;});
-    calls.forEach(function(d){
-      drawSheet(d.cx,d.cy,d.cz,d.bw,d.bh,d.bd,rX,rY,d.col.top,d.col.side,d.alpha);
+    calls.forEach(function(d, idx){
+      // sheets further back = lighter, thinner line
+      var depthFrac = (idx+1)/calls.length;
+      var lw    = 0.5 + depthFrac * 0.9;          // 0.5 → 1.4px
+      var light = Math.round(160 + depthFrac*60);  // #a0 → #dc
+      var col   = 'rgb('+light+','+light+','+(light-6)+')';
+      drawSheet(d.cx,d.cy,d.cz,d.bw,d.bh,d.bd,rX,rY, col, lw, d.alpha);
     });
 
     var lA=0;
