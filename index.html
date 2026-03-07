@@ -33,7 +33,143 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
 .btn-clear{background:none;border:none;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);cursor:pointer;font-family:inherit;padding:10px 0;text-decoration:underline;text-underline-offset:3px;}
 .btn-clear:hover{color:var(--black);}
 
-/* ── CATALOG GRID — Apple product card style ── */
+/* ── QUICK FILTER CHIPS ── */
+.chip-bar{
+  padding:12px 48px;border-bottom:1px solid var(--g200);
+  display:flex;gap:6px;align-items:center;background:var(--white);
+  overflow-x:auto;scrollbar-width:none;flex-shrink:0;
+}
+.chip-bar::-webkit-scrollbar{display:none;}
+.chip-bar-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);font-weight:600;white-space:nowrap;margin-right:4px;flex-shrink:0;}
+.chip{
+  padding:5px 14px;border:1px solid var(--g200);background:var(--white);
+  font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;
+  transition:all .15s;color:var(--g600);
+}
+.chip:hover{border-color:var(--black);color:var(--black);}
+.chip.active{background:var(--black);color:var(--white);border-color:var(--black);}
+.chip-divider{width:1px;height:16px;background:var(--g200);flex-shrink:0;margin:0 4px;}
+
+/* ── SURFACE BADGE on card (replaces status-badge for type) ── */
+.surface-badge{
+  position:absolute;top:12px;right:12px;
+  font-size:7px;letter-spacing:1.5px;text-transform:uppercase;
+  font-weight:700;padding:3px 8px;
+}
+.surface-badge.hr{background:var(--black);color:var(--white);}
+.surface-badge.galv{background:#1a4a7a;color:var(--white);}
+.surface-badge.cr{background:#3a3a3a;color:var(--white);}
+.surface-badge.ss{background:#5a2d82;color:var(--white);}
+
+/* ── SKELETON LOADING ── */
+@keyframes skelPulse{0%,100%{opacity:.35;}50%{opacity:.7;}}
+.skel-wrap{padding:20px 48px;display:flex;flex-direction:column;gap:14px;}
+.skel-card{
+  display:grid;grid-template-columns:320px 1fr;
+  border:1px solid var(--g200);height:200px;overflow:hidden;
+}
+.skel-img-area{background:var(--g100);}
+.skel-body-area{padding:20px 22px;display:flex;flex-direction:column;gap:10px;}
+.skel{background:var(--g200);animation:skelPulse 1.4s ease infinite;}
+.skel-title{height:22px;width:60%;}
+.skel-sub{height:14px;width:40%;}
+.skel-sub2{height:12px;width:30%;}
+.skel-price{height:20px;width:25%;}
+.skel-btn{height:32px;width:120px;margin-top:auto;}
+
+/* ── SPEC HERO — Level 1 ── */
+.spec-hero{
+  padding:20px 26px;border-bottom:2px solid var(--black);
+  background:var(--white);flex-shrink:0;
+}
+.spec-hero-dims{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:0;border:1px solid var(--g200);margin-bottom:14px;
+}
+.spec-dim-item{
+  padding:12px 14px;border-right:1px solid var(--g200);
+}
+.spec-dim-item:last-child{border-right:none;}
+.spec-dim-item label{
+  font-size:8px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--g400);display:block;margin-bottom:4px;
+}
+.spec-dim-val{font-size:24px;font-weight:700;letter-spacing:-.5px;line-height:1;}
+.spec-dim-unit{font-size:9px;color:var(--g400);font-family:'Courier New',monospace;}
+.spec-price-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;background:var(--g100);border:1px solid var(--g200);
+}
+.spec-price-big{font-size:28px;font-weight:700;letter-spacing:-.5px;}
+.spec-price-unit{font-size:10px;color:var(--g400);margin-left:4px;}
+.spec-stock-pill{
+  display:inline-flex;align-items:center;gap:6px;
+}
+.spec-stock-dot{width:7px;height:7px;border-radius:50%;}
+.spec-stock-txt{font-size:10px;font-weight:600;}
+
+/* ── TECH DETAIL COLLAPSE ── */
+.tech-collapse-hdr{
+  padding:10px 26px;border-bottom:1px solid var(--g200);
+  display:flex;justify-content:space-between;align-items:center;
+  cursor:pointer;transition:background .15s;user-select:none;
+}
+.tech-collapse-hdr:hover{background:var(--g100);}
+.tech-collapse-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-weight:600;}
+.tech-collapse-arr{font-size:10px;color:var(--g400);transition:transform .2s;}
+.tech-collapse-hdr.open .tech-collapse-arr{transform:rotate(180deg);}
+.tech-collapse-body{overflow:hidden;max-height:0;transition:max-height .3s ease;}
+.tech-collapse-body.open{max-height:400px;}
+.tech-grid{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:none;}
+.tech-item{
+  padding:10px 18px;border-bottom:1px solid var(--g100);
+  border-right:1px solid var(--g100);
+}
+.tech-item:nth-child(3n){border-right:none;}
+.tech-item label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:3px;}
+.tech-item .tv{font-size:12px;font-weight:700;font-family:'Courier New',monospace;}
+
+/* ── ORDER — 2-step redesign ── */
+.order-qty-hero{
+  padding:20px 24px;border-bottom:1px solid var(--g200);
+}
+.order-qty-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;}
+.qty-stepper{display:flex;align-items:center;gap:0;margin-bottom:14px;}
+.qty-minus,.qty-plus{
+  width:44px;height:44px;border:1.5px solid var(--black);background:var(--white);
+  font-size:20px;font-weight:300;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;transition:background .15s;
+}
+.qty-minus:hover,.qty-plus:hover{background:var(--g100);}
+.qty-display{
+  min-width:72px;height:44px;border-top:1.5px solid var(--black);border-bottom:1.5px solid var(--black);
+  text-align:center;font-size:22px;font-weight:700;font-family:inherit;
+  border-left:none;border-right:none;background:var(--white);
+  display:flex;align-items:center;justify-content:center;
+}
+.qty-unit-lbl{font-size:10px;color:var(--g400);margin-left:10px;font-family:'Courier New',monospace;}
+.order-live-sum{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;
+  border:1px solid var(--g200);
+}
+.ols-item{padding:10px 12px;border-right:1px solid var(--g200);}
+.ols-item:last-child{border-right:none;}
+.ols-item label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:3px;}
+.ols-item .ov{font-size:14px;font-weight:700;font-family:'Courier New',monospace;}
+
+/* ── ORDER STEP INDICATOR ── */
+.order-steps-new{display:flex;gap:0;margin-bottom:16px;border:1px solid var(--g200);}
+.osn-step{
+  flex:1;padding:8px 12px;text-align:center;
+  font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  font-family:inherit;color:var(--g400);border-right:1px solid var(--g200);
+  transition:all .2s;
+}
+.osn-step:last-child{border-right:none;}
+.osn-step.active{background:var(--black);color:var(--white);}
+.osn-step.done{color:var(--green);border-bottom:2px solid var(--green);}
+
 #catalog-view{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--white);}
 .state-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;padding:60px 20px;}
 .state-msg .icon{font-size:32px;opacity:.3;}
@@ -643,6 +779,13 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
   .sf select{font-size:14px;text-align:right;min-width:auto;flex:1;}
   .btn-clear,.btn-search{width:100%;margin-top:14px;padding:12px;font-size:10px;text-align:center;}
   .btn-search{border-radius:8px;}
+  /* chip bar mobile */
+  .chip-bar{padding:10px 14px;}
+  .chip-bar-label{display:none;}
+  .chip{font-size:7.5px;padding:5px 11px;}
+  /* skeleton mobile */
+  .skel-wrap{padding:16px;}
+  .skel-card{grid-template-columns:110px 1fr;height:110px;}
 
   /* Grid */
   .grid-wrap{padding:20px 16px;}
@@ -1043,6 +1186,18 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
     </div>
   </div>
 
+  <!-- ── QUICK FILTER CHIPS ── -->
+  <div class="chip-bar" id="chip-bar">
+    <span class="chip-bar-label">ประเภท</span>
+    <button class="chip active" onclick="setChip(this,'')">ทั้งหมด</button>
+    <button class="chip" onclick="setChip(this,'ดำ (Hot Rolled)')">เหล็กดำ</button>
+    <button class="chip" onclick="setChip(this,'ชุบสังกะสี (Galvanized)')">ชุบสังกะสี</button>
+    <button class="chip" onclick="setChip(this,'Cold Rolled')">Cold Rolled</button>
+    <button class="chip" onclick="setChip(this,'สเตนเลส')">สเตนเลส</button>
+    <div class="chip-divider"></div>
+    <button class="chip" id="chip-adv-btn" onclick="toggleAdvFilter(this)">ตัวกรองเพิ่มเติม ▾</button>
+  </div>
+
   <!-- Mobile filter toggle bar (shown only on mobile) -->
   <div class="filter-toggle-bar" id="filter-toggle-bar" onclick="toggleMobileFilter()">
     <div class="ftb-left">
@@ -1106,13 +1261,17 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
     </button>
     <!-- title -->
     <div class="vp-title" id="vp-title">Steel Product Viewer</div>
-    <!-- tabs desktop -->
-    <div class="vp-tabs">
+    <!-- surface badge -->
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span id="vp-surface-badge" class="v-badge hr" style="display:none;"></span>
+        <!-- tabs desktop -->
+      <div class="vp-tabs">
       <button class="tab-btn active" onclick="switchTab('spec',this)">ข้อมูลสินค้า</button>
       <button class="tab-btn" onclick="switchTab('geo',this)">ตรวจสอบ</button>
       <button class="tab-btn" onclick="switchTab('admin',this)">แก้ไข</button>
       <button class="tab-btn" onclick="switchTab('label',this)">พิมพ์ Tag</button>
     </div>
+    </div><!-- /badge+tabs wrapper -->
   </div>
   <!-- mobile tab bar — sits below header, full width -->
   <div class="vp-tabs-mobile">
@@ -1146,16 +1305,52 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
       <!-- SPEC SHEET -->
       <div class="panel active" id="panel-spec">
         <div class="panel-scroll">
-          <div class="sec">
-            <div class="sec-lbl">Product</div>
-            <div class="prod-eyebrow" id="v-eyebrow">เหล็กแผ่น</div>
-            <div class="prod-name" id="v-sku">—</div>
-            <div class="prod-tagline" id="v-tagline">—</div>
-            <div class="stock-pill">
-              <div class="dot" id="v-dot" style="background:var(--green)"></div>
-              <span id="v-stock">—</span>
+          <!-- ── LEVEL 1: KEY INFO — always visible, big ── -->
+          <div class="spec-hero" id="spec-hero">
+            <div class="spec-hero-dims">
+              <div class="spec-dim-item">
+                <label>ความหนา</label>
+                <div class="spec-dim-val" id="sh-t">—</div>
+                <div class="spec-dim-unit">mm</div>
+              </div>
+              <div class="spec-dim-item">
+                <label>ความกว้าง</label>
+                <div class="spec-dim-val" id="sh-w">—</div>
+                <div class="spec-dim-unit">mm</div>
+              </div>
+              <div class="spec-dim-item">
+                <label>ความยาว</label>
+                <div class="spec-dim-val" id="sh-l">—</div>
+                <div class="spec-dim-unit">mm</div>
+              </div>
+            </div>
+            <div class="spec-price-row">
+              <div>
+                <span class="spec-price-big" id="sh-price">฿ —</span>
+                <span class="spec-price-unit">/ แผ่น</span>
+              </div>
+              <div class="spec-stock-pill">
+                <div class="spec-stock-dot" id="sh-dot" style="background:var(--green)"></div>
+                <span class="spec-stock-txt" id="sh-stock">—</span>
+              </div>
             </div>
           </div>
+          <!-- ── LEVEL 2: TECH DETAIL — collapsible ── -->
+          <div class="tech-collapse-hdr" onclick="toggleTechCollapse(this)">
+            <span class="tech-collapse-title">ข้อมูลทางเทคนิค &amp; มาตรฐาน</span>
+            <span class="tech-collapse-arr">▼</span>
+          </div>
+          <div class="tech-collapse-body" id="tech-collapse-body">
+            <div class="tech-grid">
+              <div class="tech-item"><label>Grade</label><div class="tv" id="tc-grade">—</div></div>
+              <div class="tech-item"><label>Standard</label><div class="tv" id="tc-std">—</div></div>
+              <div class="tech-item"><label>น้ำหนัก/แผ่น</label><div class="tv" id="tc-kg">—</div></div>
+              <div class="tech-item"><label>Tensile</label><div class="tv" id="tc-ts">—</div></div>
+              <div class="tech-item"><label>Yield</label><div class="tv" id="tc-ys">—</div></div>
+              <div class="tech-item"><label>Elongation</label><div class="tv" id="tc-el">—</div></div>
+            </div>
+          </div>
+          <!-- ── existing sections below ── -->
           <div class="sec">
             <div class="sec-lbl">ขนาดและน้ำหนัก</div>
             <div class="dim-grid">
@@ -1912,6 +2107,7 @@ document.addEventListener('click', function(e){
 
 // ── LOAD ─────────────────────────────────────────
 function loadCatalog(){
+  showSkeletons();
   var url='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&nocache='+Date.now();
   fetch(url).then(function(r){if(!r.ok)throw 0;return r.text();}).then(parseGvizText).catch(loadViaJsonp);
 }
@@ -1935,6 +2131,28 @@ function loadViaJsonp(){
   sc.onerror=function(){delete window[cb];sc.parentNode&&sc.parentNode.removeChild(sc);showError('SHEET_ID ผิด หรือ Sheet ยังไม่ Public');};
   sc.src='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=SKU_CATALOG&callback='+cb;
   document.body.appendChild(sc);
+}
+
+// ── CHIP FILTER ──────────────────────────────────
+var activeChipSurface='';
+function setChip(btn,surface){
+  document.querySelectorAll('.chip-bar .chip').forEach(function(c){c.classList.remove('active');});
+  // keep adv btn unstyled
+  btn.classList.add('active');
+  activeChipSurface=surface;
+  // sync desktop select
+  var sel=document.getElementById('f-surface');
+  if(sel) sel.value=surface;
+  var selm=document.getElementById('f-surface-m');
+  if(selm) selm.value=surface;
+  applyFilter();
+}
+function toggleAdvFilter(btn){
+  var panel=document.getElementById('filter-panel-wrap');
+  if(!panel)return;
+  var bar=document.getElementById('filter-toggle-bar');
+  if(bar) bar.click();
+  btn.textContent = (panel.classList.contains('open')||bar.classList.contains('open')) ? 'ตัวกรองเพิ่มเติม ▾' : 'ตัวกรองน้อยลง ▴';
 }
 
 // ── FILTER ────────────────────────────────────────
@@ -1973,13 +2191,45 @@ function makeTagline(s){
   return parts.join(' · ');
 }
 
+function surfaceBadgeClass(s){
+  if(!s)return'hr';
+  if(s.indexOf('Hot')>-1||s.indexOf('ดำ')>-1)return'hr';
+  if(s.indexOf('Galvanized')>-1||s.indexOf('สังกะสี')>-1)return'galv';
+  if(s.indexOf('Cold')>-1)return'cr';
+  if(s.indexOf('สเตน')>-1)return'ss';
+  return'hr';
+}
+function surfaceBadgeLabel(s){
+  if(!s)return'HR';
+  if(s.indexOf('Hot')>-1||s.indexOf('ดำ')>-1)return'HOT ROLLED';
+  if(s.indexOf('Galvanized')>-1||s.indexOf('สังกะสี')>-1)return'GALVANIZED';
+  if(s.indexOf('Cold')>-1)return'COLD ROLLED';
+  if(s.indexOf('สเตน')>-1)return'STAINLESS';
+  return s;
+}
+
+function showSkeletons(){
+  var el=document.getElementById('catalog-view');
+  var h='<div class="skel-wrap">';
+  for(var i=0;i<6;i++){
+    h+='<div class="skel-card" style="animation-delay:'+(i*0.07)+'s">'+
+      '<div class="skel-img-area"></div>'+
+      '<div class="skel-body-area">'+
+        '<div class="skel skel-title" style="animation-delay:'+(i*0.07+0.1)+'s"></div>'+
+        '<div class="skel skel-sub" style="animation-delay:'+(i*0.07+0.15)+'s"></div>'+
+        '<div class="skel skel-sub2" style="animation-delay:'+(i*0.07+0.2)+'s"></div>'+
+        '<div class="skel skel-price" style="animation-delay:'+(i*0.07+0.25)+'s"></div>'+
+        '<div class="skel skel-btn" style="animation-delay:'+(i*0.07+0.3)+'s"></div>'+
+      '</div>'+
+    '</div>';
+  }
+  h+='</div>';
+  el.innerHTML=h;
+}
+
 function renderGrid(){
   var el=document.getElementById('catalog-view');
   var stat=document.getElementById('hdr-stat');
-  stat.textContent=filteredSkus.length+' รายการ';
-  if(!filteredSkus.length){el.innerHTML='<div class="state-msg"><div class="icon">🔍</div><p>ไม่พบ Spec ที่ตรงกัน</p></div>';return;}
-  var h='<div class="grid-wrap">'+
-    '<div class="grid-section-title">สินค้าทั้งหมด</div>'+
     '<div class="grid-section-sub">'+filteredSkus.length+' รายการ · เหล็กแผ่นทุกประเภท · พร้อมส่ง</div>'+
     '<div class="grid">';
   filteredSkus.forEach(function(s,i){
@@ -1991,10 +2241,13 @@ function renderGrid(){
     var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
     var prickg=(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1);
     var t=parseFloat(s.THICKNESS_MM)||0,w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
+    var sbClass=surfaceBadgeClass(s.SURFACE);
+    var sbLabel=surfaceBadgeLabel(s.SURFACE);
     h+='<div class="card">'+
       '<div class="card-img" onclick="openViewer('+i+')">'+
         '<canvas id="cv-'+i+'" width="280" height="150"></canvas>'+
         '<div class="status-badge '+sbadge+'">'+slabel+'</div>'+
+        '<div class="surface-badge '+sbClass+'">'+sbLabel+'</div>'+
       '</div>'+
       '<div class="card-body">'+
         '<div class="c-eyebrow">'+surfaceLabel(s.SURFACE)+'</div>'+
@@ -2031,6 +2284,31 @@ function openViewer(idx){
   currentSku=filteredSkus[idx];
   var s=currentSku;
   var stock=parseInt(s.STOCK_QTY)||0;
+  var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
+  var t=parseFloat(s.THICKNESS_MM)||0,w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
+
+  // ── spec hero Level 1 ──
+  setText('sh-t', t||'—');
+  setText('sh-w', w||'—');
+  setText('sh-l', l||'—');
+  setText('sh-price', price?'฿ '+price.toLocaleString():'฿ —');
+  setText('sh-stock', stock+' แผ่น '+(stock===0?'หมดสต็อก':stock<10?'(เหลือน้อย)':'พร้อมส่ง'));
+  var shDot=document.getElementById('sh-dot');
+  if(shDot) shDot.style.background=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
+  var shStockTxt=document.getElementById('sh-stock');
+  if(shStockTxt) shStockTxt.style.color=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
+
+  // ── tech detail Level 2 ──
+  setText('tc-grade', s.GRADE||'—');
+  setText('tc-std', s.STANDARD||'—');
+  setText('tc-kg', (parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+' kg');
+  setText('tc-ts', s.TENSILE_STRENGTH||'—');
+  setText('tc-ys', s.YIELD_STRENGTH||'—');
+  setText('tc-el', s.ELONGATION||'—');
+
+  // ── vp badge ──
+  var vpBadge=document.getElementById('vp-surface-badge');
+  if(vpBadge){vpBadge.textContent=surfaceBadgeLabel(s.SURFACE);vpBadge.className='v-badge '+surfaceBadgeClass(s.SURFACE);}
 
   // Product identity
   setText('vp-title', s.SKU||'—');
@@ -2159,6 +2437,15 @@ function openViewer(idx){
   });
 
   syncLabel();
+
+  // show surface badge
+  var vpBadgeEl=document.getElementById('vp-surface-badge');
+  if(vpBadgeEl) vpBadgeEl.style.display='inline-block';
+  // reset tech collapse
+  var tcBody=document.getElementById('tech-collapse-body');
+  if(tcBody) tcBody.classList.remove('open');
+  var tcHdr=document.querySelector('.tech-collapse-hdr');
+  if(tcHdr) tcHdr.classList.remove('open');
 
   // Switch to viewer
   document.getElementById('catalog-view').style.display='none';
@@ -2559,83 +2846,121 @@ function printLabel(){
 // ── ORDER ─────────────────────────────────────────
 function openOrderModal(){currentSku&&buildOrderForm();}
 
+// ── TECH COLLAPSE ────────────────────────────────
+function toggleTechCollapse(hdr){
+  hdr.classList.toggle('open');
+  var body=document.getElementById('tech-collapse-body');
+  if(body) body.classList.toggle('open');
+}
+
 function buildOrderForm(){
   var s=currentSku, price=parseInt(s.PRICE_PER_SHEET_THB)||0;
   var stock=parseInt(s.STOCK_QTY)||0;
-  var stockWarn = stock < 20
-    ? '<div class="warn-box"><strong>⚠ สต็อกเหลือน้อย</strong>มีสินค้า '+stock+' แผ่น</div>'
-    : '';
+  var w=parseFloat(s.WEIGHT_PER_SHEET_KG)||0;
+  var b=parseInt(s.BUNDLE_SIZE)||5;
+  var initQty=parseInt(document.getElementById('qty')?document.getElementById('qty').value:10)||10;
 
   document.getElementById('modal-body').innerHTML=
-    // ── steps ──
-    '<div class="order-steps"><div class="step active" id="st1">1 · กรอกข้อมูล</div><div class="step" id="st2">2 · ยืนยัน</div></div>'+
-    // ── SKU pill ──
-    '<div class="spec-pill">'+
-      '<div class="sp-item"><label>สินค้า</label><span>'+makeName(s)+'</span></div>'+
-      '<div class="sp-item"><label>เกรด</label><span>'+(s.GRADE||'—')+'</span></div>'+
-      '<div class="sp-item"><label>สต็อก</label><span style="color:'+(stock<10?'var(--red)':stock<20?'var(--yellow)':'var(--green)')+'">'+stock+'</span></div>'+
-      '<div class="sp-item"><label>฿/แผ่น</label><span>'+price.toLocaleString()+'</span></div>'+
+    // steps
+    '<div class="order-steps-new">'+
+      '<div class="osn-step active" id="osn1">01 · เลือกจำนวน</div>'+
+      '<div class="osn-step" id="osn2">02 · ข้อมูลส่ง</div>'+
     '</div>'+
-    stockWarn+
-    // ── customer — 2 fields side by side ──
-    '<div style="border-top:1.5px solid var(--black);margin-top:4px;">'+
-      '<div style="padding:7px 0 5px;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g600);font-weight:700;border-bottom:1px solid var(--g200);">ข้อมูลลูกค้า</div>'+
-      '<div class="seg-order-pair">'+
-        '<div class="seg-form-row"><span class="seg-form-label">ชื่อลูกค้า *</span><input class="seg-form-input" type="text" id="o-name" placeholder="บริษัท / ชื่อลูกค้า" autocomplete="off"></div>'+
-        '<div class="seg-form-row"><span class="seg-form-label">เบอร์โทร</span><input class="seg-form-input" type="tel" id="o-phone" placeholder="0xx-xxx-xxxx"></div>'+
+    // product mini badge
+    '<div style="padding:10px 0 12px;border-bottom:1px solid var(--g200);display:flex;align-items:center;gap:10px;">'+
+      '<span style="font-size:7px;padding:3px 8px;background:var(--black);color:var(--white);letter-spacing:1.5px;text-transform:uppercase;">'+surfaceBadgeLabel(s.SURFACE)+'</span>'+
+      '<span style="font-size:11px;font-weight:700;">'+makeName(s)+'</span>'+
+    '</div>'+
+    // qty stepper
+    '<div class="order-qty-hero">'+
+      '<div class="order-qty-label">เลือกจำนวนแผ่น</div>'+
+      '<div class="qty-stepper">'+
+        '<button class="qty-minus" onclick="stepQty(-1)">−</button>'+
+        '<div class="qty-display" id="qty-display">'+initQty+'</div>'+
+        '<button class="qty-plus" onclick="stepQty(1)">+</button>'+
+        '<span class="qty-unit-lbl">แผ่น</span>'+
+      '</div>'+
+      '<div class="order-live-sum">'+
+        '<div class="ols-item"><label>น้ำหนัก</label><div class="ov" id="ols-w">—</div></div>'+
+        '<div class="ols-item"><label>ราคารวม</label><div class="ov" id="ols-p" style="color:var(--black)">—</div></div>'+
+        '<div class="ols-item"><label>มัด</label><div class="ov" id="ols-b">—</div></div>'+
       '</div>'+
     '</div>'+
-    // ── qty + price — segmented row ──
-    '<div style="border-top:1px solid var(--g200);margin-top:2px;">'+
-      '<div style="padding:7px 0 5px;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g600);font-weight:700;border-bottom:1px solid var(--g200);">จำนวน &amp; ราคา</div>'+
-      '<div class="seg-order-pair">'+
-        '<div class="seg-form-row">'+
-          '<span class="seg-form-label">จำนวน *</span>'+
-          '<div class="seg-input-unit" style="margin-top:2px;">'+
-            '<input type="number" id="o-qty" value="10" min="1" oninput="updOrd()" class="seg-num seg-num--lg">'+
-            '<span class="seg-unit">แผ่น</span>'+
-          '</div>'+
-        '</div>'+
-        '<div class="seg-form-row">'+
-          '<span class="seg-form-label">ราคา / แผ่น</span>'+
-          '<div class="seg-input-unit" style="margin-top:2px;">'+
-            '<span style="font-size:11px;color:var(--g400);align-self:flex-end;padding-bottom:4px;margin-right:1px;">฿</span>'+
-            '<input type="number" id="o-price" value="'+price+'" oninput="updOrd()" class="seg-num seg-num--lg">'+
-          '</div>'+
-        '</div>'+
-      '</div>'+
+    '<button class="btn-submit" onclick="goToOrderStep2()" style="margin:14px 0 4px;">ยืนยันจำนวน →</button>';
+
+  _orderQty=initQty; _orderPrice=price;
+  updateQtyDisplay();
+  document.getElementById('orderOverlay').classList.add('open');
+}
+
+var _orderQty=10, _orderPrice=0;
+function stepQty(delta){
+  _orderQty=Math.max(1,(_orderQty||1)+delta);
+  var d=document.getElementById('qty-display');
+  if(d) d.textContent=_orderQty;
+  updateQtyDisplay();
+}
+function updateQtyDisplay(){
+  if(!currentSku)return;
+  var w=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0;
+  var b=parseInt(currentSku.BUNDLE_SIZE)||5;
+  var q=_orderQty, p=_orderPrice;
+  var olsW=document.getElementById('ols-w'); if(olsW) olsW.textContent=(q*w).toLocaleString()+' kg';
+  var olsP=document.getElementById('ols-p'); if(olsP) olsP.textContent='฿ '+(q*p).toLocaleString();
+  var olsB=document.getElementById('ols-b'); if(olsB) olsB.textContent=Math.ceil(q/b)+' มัด';
+}
+function goToOrderStep2(){
+  if(!_orderQty){alert('กรุณาเลือกจำนวนแผ่นครับ');return;}
+  var s=currentSku, p=_orderPrice;
+  var w=parseFloat(s.WEIGHT_PER_SHEET_KG)||0;
+  var b=parseInt(s.BUNDLE_SIZE)||5;
+  var totalW=(_orderQty*w).toLocaleString();
+  var totalP=(_orderQty*p).toLocaleString();
+  var bundles=Math.ceil(_orderQty/b);
+
+  document.getElementById('modal-body').innerHTML=
+    '<div class="order-steps-new">'+
+      '<div class="osn-step done" id="osn1">✓ จำนวน</div>'+
+      '<div class="osn-step active" id="osn2">02 · ข้อมูลส่ง</div>'+
     '</div>'+
-    // ── live summary bar ──
-    '<div class="order-sum" style="margin-top:6px;"><div class="os-item"><label>น้ำหนักรวม</label><span id="os-w">—</span></div><div class="os-item"><label>ราคารวม</label><span id="os-p">—</span></div><div class="os-item"><label>มัด</label><span id="os-b">—</span></div></div>'+
-    // ── note ──
-    '<div class="seg-form-row" style="margin-top:10px;">'+
+    // locked summary
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--g200);margin-bottom:14px;">'+
+      '<div style="padding:8px 12px;border-right:1px solid var(--g200);"><div style="font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);">จำนวน</div><div style="font-size:14px;font-weight:700;">'+_orderQty+' แผ่น</div></div>'+
+      '<div style="padding:8px 12px;border-right:1px solid var(--g200);"><div style="font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);">ราคารวม</div><div style="font-size:14px;font-weight:700;">฿ '+totalP+'</div></div>'+
+      '<div style="padding:8px 12px;"><div style="font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);">มัด</div><div style="font-size:14px;font-weight:700;">'+bundles+' มัด</div></div>'+
+    '</div>'+
+    // customer form
+    '<div class="seg-order-pair">'+
+      '<div class="seg-form-row"><span class="seg-form-label">ชื่อลูกค้า *</span><input class="seg-form-input" type="text" id="o-name" placeholder="บริษัท / ชื่อลูกค้า" autocomplete="off"></div>'+
+      '<div class="seg-form-row"><span class="seg-form-label">เบอร์โทร</span><input class="seg-form-input" type="tel" id="o-phone" placeholder="0xx-xxx-xxxx"></div>'+
+    '</div>'+
+    '<div class="seg-form-row" style="margin-top:8px;">'+
       '<span class="seg-form-label">หมายเหตุ</span>'+
       '<textarea id="o-note" rows="2" class="seg-form-textarea" placeholder="วันที่รับ, เงื่อนไขพิเศษ..."></textarea>'+
     '</div>'+
-    '<button class="btn-submit" onclick="goToPreview()" style="margin-top:14px;">ดูสรุป Order →</button>';
-
-  updOrd();
-  document.getElementById('orderOverlay').classList.add('open');
+    '<div style="display:flex;gap:8px;margin-top:14px;">'+
+      '<button onclick="buildOrderForm()" style="flex:1;border:1px solid var(--g200);background:var(--white);padding:11px;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;">← แก้จำนวน</button>'+
+      '<button class="btn-submit" onclick="goToPreview()" style="flex:2;">ดูสรุป Order →</button>'+
+    '</div>';
 }
 
 function goToPreview(){
   var name=(document.getElementById('o-name').value||'').trim();
-  var qty=parseInt(document.getElementById('o-qty').value)||0;
-  var price=parseInt(document.getElementById('o-price').value)||0;
+  var phone=(document.getElementById('o-phone').value||'').trim();
+  var note=(document.getElementById('o-note').value||'').trim();
   if(!name){alert('กรุณากรอกชื่อลูกค้าครับ');return;}
-  if(!qty){alert('กรุณากรอกจำนวนแผ่นครับ');return;}
-
-  var s=currentSku;
+  var s=currentSku; var p=_orderPrice; var qty=_orderQty;
   var w=parseFloat(s.WEIGHT_PER_SHEET_KG)||0;
   var b=parseInt(s.BUNDLE_SIZE)||5;
   var totalW=(qty*w).toLocaleString();
-  var totalP=(qty*price).toLocaleString();
+  var totalP=(qty*p).toLocaleString();
   var bundles=Math.ceil(qty/b);
-  var phone=(document.getElementById('o-phone').value||'').trim();
-  var note=(document.getElementById('o-note').value||'').trim();
 
   document.getElementById('modal-body').innerHTML=
-    '<div class="order-steps"><div class="step done" id="st1">✓ กรอกข้อมูล</div><div class="step active" id="st2">2 · ยืนยัน order</div></div>'+
+    '<div class="order-steps-new">'+
+      '<div class="osn-step done">✓ จำนวน</div>'+
+      '<div class="osn-step done">✓ ข้อมูลส่ง</div>'+
+    '</div>'+
     '<div class="order-preview">'+
       '<div class="op-title">สรุปรายการสั่งซื้อ</div>'+
       '<div class="op-row"><span class="op-label">สินค้า</span><span class="op-val">'+makeName(s)+'</span></div>'+
@@ -2644,24 +2969,20 @@ function goToPreview(){
       (phone?'<div class="op-row"><span class="op-label">โทร</span><span class="op-val">'+phone+'</span></div>':'')+
       '<div class="op-row"><span class="op-label">จำนวน</span><span class="op-val">'+qty.toLocaleString()+' แผ่น · '+bundles+' มัด</span></div>'+
       '<div class="op-row"><span class="op-label">น้ำหนักรวม</span><span class="op-val">'+totalW+' kg</span></div>'+
-      '<div class="op-row"><span class="op-label">ราคา/แผ่น</span><span class="op-val">฿ '+price.toLocaleString()+'</span></div>'+
+      '<div class="op-row"><span class="op-label">ราคา/แผ่น</span><span class="op-val">฿ '+p.toLocaleString()+'</span></div>'+
       (note?'<div class="op-row"><span class="op-label">หมายเหตุ</span><span class="op-val" style="font-family:inherit;font-size:11px;">'+note+'</span></div>':'')+
     '</div>'+
     '<div class="op-total"><span class="op-total-label">ราคารวมทั้งหมด</span><span class="op-total-val">฿ '+totalP+'</span></div>'+
     '<div style="display:flex;gap:8px;">'+
-      '<button onclick="buildOrderForm()" style="flex:1;border:1px solid var(--g200);background:var(--white);padding:12px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;">← แก้ไข</button>'+
-      '<button class="btn-submit" onclick="submitOrder(\''+name.replace(/'/g,"\\'")+"','"+phone.replace(/'/g,"\\'")+'\','+qty+','+price+",'"+note.replace(/'/g,"\\'")+'\')'+'" style="flex:2;">✓ ยืนยัน Order</button>'+
+      '<button onclick="goToOrderStep2()" style="flex:1;border:1px solid var(--g200);background:var(--white);padding:12px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;">← แก้ไข</button>'+
+      '<button class="btn-submit" onclick="submitOrder(\''+name.replace(/'/g,"\\'")+"','"+phone.replace(/'/g,"\\'")+'\','+qty+','+p+",'"+note.replace(/'/g,"\\'")+'\')'+'" style="flex:2;">✓ ยืนยัน Order</button>'+
     '</div>';
 }
 
 function updOrd(){
-  if(!currentSku)return;
-  var q=parseInt(document.getElementById('o-qty').value)||0,p=parseInt(document.getElementById('o-price').value)||0;
-  var w=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0,b=parseInt(currentSku.BUNDLE_SIZE)||5;
-  var osW=document.getElementById('os-w'); if(osW) osW.textContent=(q*w).toLocaleString()+' kg';
-  var osP=document.getElementById('os-p'); if(osP) osP.textContent='฿ '+(q*p).toLocaleString();
-  var osB=document.getElementById('os-b'); if(osB) osB.textContent=Math.ceil(q/b)+' มัด';
+  // legacy compat - no-op now
 }
+
 
 function closeOrderModal(e){
   if(e&&e.target!==document.getElementById('orderOverlay'))return;
