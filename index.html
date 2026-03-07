@@ -378,6 +378,7 @@ body{
   transition:background .2s;
   cursor:pointer;
   display:flex;flex-direction:column;
+  overflow:hidden;
 }
 .card:hover{background:var(--g50);}
 
@@ -3737,15 +3738,23 @@ function toggleHero(forceState){
   // W/H are always CSS pixels
   var W, H;
   function resize(){
-    W = cvs.parentElement.clientWidth || window.innerWidth;
+    var pw = cvs.parentElement ? cvs.parentElement.clientWidth : 0;
+    if(!pw) pw = window.innerWidth;
+    W = pw;
     H = Math.round(W / 2.4);
     cvs.width  = W * DPR;
     cvs.height = H * DPR;
     cvs.style.width  = W+'px';
     cvs.style.height = H+'px';
   }
-  resize();
+  // defer resize until after layout paint
+  function initResize(){
+    resize();
+    if(!W || W < 10){ requestAnimationFrame(initResize); return; }
+    requestAnimationFrame(draw);
+  }
   window.addEventListener('resize', resize);
+  requestAnimationFrame(initResize);
 
   var ctx = cvs.getContext('2d');
 
@@ -3873,7 +3882,6 @@ function toggleHero(forceState){
     }
     requestAnimationFrame(draw);
   }
-  requestAnimationFrame(draw);
 })();
 
 window.addEventListener('load',function(){
