@@ -3807,11 +3807,11 @@ function toggleHero(forceState){
   // ═══════════════════════════════════════════════
   // LOOP 20s  — 6 phases
   // 1. ASSEMBLE  0.00–0.15  sheets drop → iso bundle
-  // 2. ROTATE    0.15–0.28  camera tilts down (rX→ low/bottom angle)
-  // 3. SPREAD    0.28–0.45  sheets spread full canvas (still bottom angle)
-  // 4. FLATTEN   0.45–0.60  rotate to top/bottom parallel view, grid stays full
-  // 5. GATHER    0.60–0.78  sheets slide to centre (parallel view)
-  // 6. TILTBACK  0.78–1.00  rotate back to iso + fade
+  // 2. ROTATE    0.15–0.28  rotate rY → 0 (face-on straight, "มุมเฉย")
+  // 3. SPREAD    0.28–0.45  sheets spread full canvas (still face-on rX)
+  // 4. FLATTEN   0.45–0.60  tilt rX to parallel + rY stays 0 → long side horizontal
+  // 5. GATHER    0.60–0.78  sheets slide to centre (parallel, long-side horizontal)
+  // 6. TILTBACK  0.78–1.00  rX+rY return to iso angles + fade
   // ═══════════════════════════════════════════════
   var LOOP = 20000;
   var PH = {
@@ -3824,9 +3824,10 @@ function toggleHero(forceState){
   };
   function pf(t,ph){ return clamp((t-ph[0])/(ph[1]-ph[0]),0,1); }
 
-  var ISO_RX  = BASE_RX;             // ~0.42 iso angle
-  var LOW_RX  = -0.28;               // tilted down — bottom face visible
-  var FLAT_RX = -(Math.PI*0.47);     // near-bottom parallel
+  var ISO_RX = BASE_RX;           // ~0.42 iso
+  var ISO_RY = BASE_RY;           // Math.PI/4 = 45°
+  var FACE_RY = 0;                // straight-on (rY=0): long axis of sheet aligns with X = horizontal
+  var FLAT_RX = -(Math.PI*0.46);  // near-bottom parallel (bottom face facing camera)
 
   var t0=null;
   function draw(ts){
@@ -3841,12 +3842,9 @@ function toggleHero(forceState){
     var gap=bh*0.28;
     var stackH=N*(bh+gap)-gap;
 
-    // grid spread — scale to fill canvas in the flat view
-    // in flat/parallel view bw maps to screen-width, so space tightly
     var gSX=bw*1.08, gSZ=bd*1.06;
     var gOX=-(NCOLS-1)/2*gSX, gOZ=-(NROWS-1)/2*gSZ;
 
-    // phase eased values
     var fA  = easeOut(   pf(t, PH.assemble));
     var fRO = easeInOut( pf(t, PH.rotate));
     var fSP = easeInOut( pf(t, PH.spread));
@@ -3854,16 +3852,20 @@ function toggleHero(forceState){
     var fGA = easeInOut( pf(t, PH.gather));
     var fTB = easeInOut( pf(t, PH.tiltback));
 
-    // ── camera rX ─────────────────────────────────
+    // ── rX: iso → holds → FLAT_RX during flatten/gather → iso ──
     var rX = ISO_RX;
-    if(fRO>0) rX = lerp(ISO_RX, LOW_RX,  easeInOut(fRO));   // tilt down
-    if(fSP>0) rX = LOW_RX;                                    // hold low during spread
-    if(fFL>0) rX = lerp(LOW_RX, FLAT_RX, easeInOut(fFL));    // rotate to parallel
-    if(fGA>0) rX = FLAT_RX;                                   // hold flat during gather
-    if(fTB>0) rX = lerp(FLAT_RX, ISO_RX, easeInOut(fTB));    // tilt back to iso
+    if(fSP>0) rX = ISO_RX;                                     // keep iso during spread
+    if(fFL>0) rX = lerp(ISO_RX, FLAT_RX, easeInOut(fFL));      // tilt to parallel
+    if(fGA>0) rX = FLAT_RX;                                     // hold flat during gather
+    if(fTB>0) rX = lerp(FLAT_RX, ISO_RX, easeInOut(fTB));      // tilt back
 
-    // ── camera rY — subtle drift only ─────────────
-    var rY = BASE_RY + Math.sin(t*Math.PI*2)*0.03;
+    // ── rY: iso 45° → FACE_RY 0° (step2/3) → back to 0° held (step4/5) → iso (step6) ──
+    var rY = ISO_RY;
+    if(fRO>0) rY = lerp(ISO_RY, FACE_RY, easeInOut(fRO));      // rotate to face-on
+    if(fSP>0) rY = FACE_RY;                                     // hold face-on during spread
+    if(fFL>0) rY = FACE_RY;                                     // hold face-on during flatten
+    if(fGA>0) rY = FACE_RY;                                     // hold during gather
+    if(fTB>0) rY = lerp(FACE_RY, ISO_RY, easeInOut(fTB));      // twist back to iso
 
     var calls=[];
     for(var i=0;i<N;i++){
