@@ -3510,15 +3510,15 @@ function drawBundleCard(cvId,s,mode){
   // ── 3D SETUP ────────────────────────────────────────────────
   var N=Math.min(parseInt(s.BUNDLE_SIZE)||5,8);
   var thick=Math.max(0.07,parseFloat(s.THICKNESS_MM)*0.024);
-  var bw=2.95,bl=3.55,gap=0.016,totalH=N*(thick+gap)-gap;
+  var bw=3.55,bl=4.25,gap=0.016,totalH=N*(thick+gap)-gap;
   // Camera angles — match reference image (elevated front-right view)
   var rY=0.50,rX=0.27;
   var cY=Math.cos(rY),sYY=Math.sin(rY),cX=Math.cos(rX),sXX=Math.sin(rX);
   function rot(x,y,z){var x2=x*cY+z*sYY,z2=-x*sYY+z*cY;return[x2,y*cX-z2*sXX,y*sXX+z2*cX];}
   // FOV proportional to shorter canvas dimension → no distortion on any aspect ratio
-  var fov=Math.min(W,H)*0.72;
-  var cDist=9.0;
-  function prj(p){var z=p[2]+cDist;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H*0.52-p[1]*fov/z];}
+  var fov=Math.min(W,H)*0.96;
+  var cDist=7.8;
+  function prj(p){var z=p[2]+cDist;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H*0.54-p[1]*fov/z];}
   function backFace(p0,p1,p2){return((p1[0]-p0[0])*(p2[1]-p0[1])-(p1[1]-p0[1])*(p2[0]-p0[0]))>0;}
 
   function drawFace(pts,r,g,b,alpha){
