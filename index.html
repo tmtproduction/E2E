@@ -3799,9 +3799,10 @@ function toggleHero(forceState){
     ctx.globalAlpha = 1;
   }
 
-  var LOOP=6400;
-  var PH={assemble:[0,0.30],hold1:[0.30,0.40],rotate:[0.40,0.58],
-          explode:[0.58,0.76],hold2:[0.76,0.86],collapse:[0.86,1.00]};
+  var LOOP=22000; // 22s total cycle
+  // assemble 4s | hold 1s | rotate 3s | explode 3s | hold 10s | collapse 1s
+  var PH={assemble:[0,0.18],hold1:[0.18,0.23],rotate:[0.23,0.36],
+          explode:[0.36,0.50],hold2:[0.50,0.95],collapse:[0.95,1.00]};
   function pf(t,ph){ return clamp((t-ph[0])/(ph[1]-ph[0]),0,1); }
 
   var t0=null;
@@ -3812,11 +3813,12 @@ function toggleHero(forceState){
     ctx.setTransform(DPR,0,0,DPR,0,0);
     ctx.fillStyle='#f5f4f0'; ctx.fillRect(0,0,W,H);
 
-    var bw=W*0.38, bd=W*0.22, bh=W*0.011;
-    var gap=bh*0.25, N=8;
+    // 4×3 grid = 12 sheets, smaller to spread across canvas
+    var bw=W*0.28, bd=W*0.18, bh=W*0.010;
+    var gap=bh*0.3, N=12, NCOLS=4, NROWS=3;
     var stackH=N*(bh+gap)-gap;
-    var gSX=bw*1.18, gSZ=bd*1.15;
-    var gOX=-(3)/2*gSX, gOZ=-0.5*gSZ;
+    var gSX=bw*1.14, gSZ=bd*1.12;
+    var gOX=-(NCOLS-1)/2*gSX, gOZ=-(NROWS-1)/2*gSZ;
 
     var fA=easeOut(pf(t,PH.assemble));
     var fR=easeInOut(pf(t,PH.rotate));
@@ -3826,13 +3828,13 @@ function toggleHero(forceState){
     var rX=lerp(BASE_RX,1.05,fR);
     if(fE>0) rX=lerp(1.05,BASE_RX,fE);
     if(fC>0) rX=BASE_RX;
-    var rY=BASE_RY+Math.sin(t*Math.PI*2)*0.05;
+    var rY=BASE_RY+Math.sin(t*Math.PI*2)*0.03;
 
     var calls=[];
     for(var i=0;i<N;i++){
       var byY=(i*(bh+gap))-stackH/2+bh/2;
       var dY=lerp(-H*0.55,0,clamp(easeOut(fA*N-i*0.55),0,1));
-      var gi=i%4, gj=Math.floor(i/4);
+      var gi=i%NCOLS, gj=Math.floor(i/NCOLS);
       var gx=gOX+gi*gSX, gz=gOZ+gj*gSZ;
       var cx=0,cy=byY+dY,cz=0;
       if(fE>0){cx=lerp(0,gx,fE);cy=lerp(byY+dY,0,fE);cz=lerp(0,gz,fE);}
@@ -3841,23 +3843,25 @@ function toggleHero(forceState){
         cx=lerp(gx,0,fC);cy=lerp(0,byY+dY2,fC);cz=lerp(gz,0,fC);
       }
       var alpha=clamp(easeOut(fA*N-i*0.55),0,1);
-      if(fC>0.88) alpha=lerp(1,0,(fC-0.88)/0.12);
+      if(fC>0.85) alpha=lerp(1,0,(fC-0.85)/0.15);
       var q=rotX(rotY([cx,cy,cz],rY),rX);
       calls.push({cx,cy,cz,bw,bh,bd,alpha,depth:q[2]});
     }
     calls.sort(function(a,b){return a.depth-b.depth;});
     calls.forEach(function(d, idx){
-      // sheets further back = lighter, thinner line
       var depthFrac = (idx+1)/calls.length;
-      var lw    = 0.5 + depthFrac * 0.9;          // 0.5 → 1.4px
-      var light = Math.round(160 + depthFrac*60);  // #a0 → #dc
+      var lw    = 0.4 + depthFrac * 1.0;
+      var light = Math.round(155 + depthFrac*65);
       var col   = 'rgb('+light+','+light+','+(light-6)+')';
       drawSheet(d.cx,d.cy,d.cz,d.bw,d.bh,d.bd,rX,rY, col, lw, d.alpha);
     });
 
+    // label: fade in at start of hold2, hold all 10s, fade out fast at collapse
     var lA=0;
-    if(t>=PH.hold1[0]&&t<PH.rotate[1]) lA=clamp((t-PH.hold1[0])/0.05,0,1);
-    if(t>=PH.hold2[0]) lA=clamp(1-(t-PH.hold2[0])/0.06,0,1);
+    if(t>=PH.hold2[0] && t<PH.collapse[0])
+      lA = clamp((t-PH.hold2[0])/(PH.hold2[1]-PH.hold2[0])*12, 0, 1);
+    if(t>=PH.collapse[0])
+      lA = clamp(1-(t-PH.collapse[0])/0.015, 0, 1);
     if(lA>0){
       var fs=Math.round(W*0.013);
       ctx.globalAlpha=lA*0.5; ctx.fillStyle='#3a3a38';
