@@ -3727,16 +3727,23 @@ function toggleHero(forceState){
 // auto-hide on scroll down, show on scroll up
 (function(){
   var lastY=0,ticking=false,threshold=40;
+  var lastToggleTime=0,toggleCooldown=600; // ms ห้าม toggle ถี่เกิน
   function onCatalogScroll(){
     var cv=document.getElementById('catalog-view');
     if(!cv)return;
     var y=cv.scrollTop;
     if(!ticking){
       requestAnimationFrame(function(){
-        if(y>lastY+8 && y>threshold && !_heroCollapsed){
-          toggleHero(true);
-        }else if(y<lastY-8 && _heroCollapsed){
-          toggleHero(false);
+        var now=Date.now();
+        // dead zone — ถ้าใกล้ปลาย scroll ไม่ทำอะไร
+        var maxScroll=cv.scrollHeight-cv.clientHeight;
+        var nearBottom=(maxScroll-y)<60;
+        if(!nearBottom && now-lastToggleTime>toggleCooldown){
+          if(y>lastY+8 && y>threshold && !_heroCollapsed){
+            toggleHero(true);lastToggleTime=now;
+          }else if(y<lastY-8 && _heroCollapsed){
+            toggleHero(false);lastToggleTime=now;
+          }
         }
         lastY=y;
         ticking=false;
@@ -3744,7 +3751,6 @@ function toggleHero(forceState){
       ticking=true;
     }
   }
-  // attach once catalog-view is available
   function attachScroll(){
     var cv=document.getElementById('catalog-view');
     if(cv){cv.addEventListener('scroll',onCatalogScroll,{passive:true});}
