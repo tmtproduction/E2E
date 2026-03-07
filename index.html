@@ -1200,7 +1200,7 @@ body{
 
   <!-- 3D loop canvas animation — full hero -->
   <div class="cat-hero" id="cat-hero" style="padding:0;text-align:left;">
-    <canvas id="hero-canvas" style="width:100%;display:block;aspect-ratio:2.4/1;"></canvas>
+    <canvas id="hero-canvas" style="width:100%;display:block;aspect-ratio:2.4/1;max-height:42vh;object-fit:cover;"></canvas>
     <!-- Desktop filters (inline row) -->
     <div style="padding:20px 48px 24px;">
     <div class="search-bar">
@@ -3737,9 +3737,10 @@ function toggleHero(forceState){
   var DPR = Math.min(window.devicePixelRatio||1, 2);
   var W, H;
   function resize(){
-    var pw = cvs.offsetWidth || cvs.parentElement.clientWidth || window.innerWidth;
+    var pw = cvs.offsetWidth  || cvs.parentElement.clientWidth || window.innerWidth;
+    var ph = cvs.offsetHeight || Math.round(pw / 2.4);
     W = pw;
-    H = Math.round(W / 2.4);
+    H = ph;
     cvs.width  = W * DPR;
     cvs.height = H * DPR;
   }
@@ -3870,9 +3871,9 @@ function toggleHero(forceState){
       var fs=Math.round(W*0.013);
       ctx.globalAlpha=lA*0.5; ctx.fillStyle='#3a3a38';
       ctx.font=fs+'px "Courier New",monospace'; ctx.textAlign='left';
-      ctx.fillText('TMT STEEL  \u00B7  STEEL SHEET BUNDLE',W*0.04,H*0.11);
+      ctx.fillText('TMT STEEL',W*0.04,H*0.11);
       ctx.font=(fs-2)+'px "Courier New",monospace'; ctx.fillStyle='#8a8a88';
-      ctx.fillText('SPHC / SS400 / SPCC / SGHC',W*0.04,H*0.11+fs*1.6);
+      ctx.fillText('Providing structure of your imagination',W*0.04,H*0.11+fs*1.6);
       ctx.globalAlpha=1;
     }
     requestAnimationFrame(draw);
