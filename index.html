@@ -1126,22 +1126,44 @@ body{
 .overlay{display:none;position:fixed;inset:0;background:rgba(10,10,10,.7);z-index:200;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);}
 
 /* LIMIT SPEC SUMMARY */
-.lss-wrap{background:var(--black);padding:14px 20px 16px;}
-.lss-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
+/* ── LSS — accordion pill redesign ── */
+.lss-wrap{background:var(--black);padding:14px 18px 16px;}
+.lss-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;}
 .lss-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--white);font-weight:500;font-family:var(--mono);}
 .lss-sku{font-family:var(--mono);font-size:9px;color:var(--g600);}
-.lss-table{width:100%;border-collapse:collapse;}
-.lss-group-row .lss-group-hd{
-  font-size:8px;letter-spacing:2.5px;text-transform:uppercase;
-  color:var(--g600);font-weight:500;font-family:var(--mono);
-  padding:10px 0 5px;border-top:1px solid rgba(255,255,255,.07);
+
+/* pill grid — top 3 key values */
+.lss-pills{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.07);margin-bottom:12px;}
+.lss-pill{background:rgba(255,255,255,.04);padding:8px 10px;display:flex;flex-direction:column;gap:3px;}
+.lss-pill-lbl{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35);font-family:var(--mono);}
+.lss-pill-val{font-size:12px;font-weight:500;color:var(--white);font-family:var(--mono);line-height:1.2;}
+
+/* accordion groups */
+.lss-acc{}
+.lss-acc-hdr{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:7px 0;border-top:1px solid rgba(255,255,255,.07);
+  cursor:pointer;user-select:none;
 }
-.lss-group-row:first-child .lss-group-hd{border-top:none;padding-top:0;}
-.lss-row td{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);}
-.lss-row:last-child td{border-bottom:none;}
-.lss-label{font-size:11px;color:rgba(255,255,255,.45);width:42%;vertical-align:middle;font-family:var(--mono);}
-.lss-value{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--white);width:40%;vertical-align:middle;}
-.lss-note{font-size:9px;color:var(--g600);text-align:right;vertical-align:middle;white-space:nowrap;font-family:var(--mono);}
+.lss-acc-hdr:first-child{border-top:none;}
+.lss-acc-name{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);font-family:var(--mono);}
+.lss-acc-arr{font-size:9px;color:rgba(255,255,255,.30);transition:transform .22s;}
+.lss-acc-hdr.open .lss-acc-arr{transform:rotate(180deg);}
+.lss-acc-body{overflow:hidden;max-height:0;transition:max-height .28s ease;}
+.lss-acc-body.open{max-height:300px;}
+
+/* rows inside accordion */
+.lss-row2{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.lss-row2:last-child{border-bottom:none;padding-bottom:8px;}
+.lss-r2-lbl{font-size:10px;color:rgba(255,255,255,.40);font-family:var(--mono);}
+.lss-r2-val{font-size:11px;font-weight:500;color:var(--white);font-family:var(--mono);text-align:right;}
+.lss-r2-note{font-size:8px;color:rgba(255,255,255,.20);font-family:var(--mono);margin-left:6px;white-space:nowrap;}
+
+/* footer note */
+.lss-foot{font-size:8px;color:rgba(255,255,255,.22);padding-top:8px;border-top:1px solid rgba(255,255,255,.07);font-family:var(--mono);}
+/* keep old classes for compat */
+.lss-table{display:none;}
+.lss-group-row,.lss-label,.lss-value,.lss-note,.lss-group-hd{}
 .overlay.open{display:flex;}
 .order-modal{background:var(--white);width:100%;max-width:540px;animation:slideUp .2s ease;}
 @keyframes slideUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -1477,7 +1499,7 @@ body{
           </div>
           <!-- ── existing sections below ── -->
           <div class="sec" style="padding:0">
-            <div style="padding:16px 20px 10px;display:flex;align-items:center;gap:6px;">
+            <div style="padding:14px 18px 10px;display:flex;align-items:center;gap:6px;">
               <span class="sec-lbl" style="margin-bottom:0;flex:1">Limit Spec <button class="tip-btn" onclick="showTip(this,'Limit Spec Summary','ตารางนี้แสดงค่ามาตรฐาน JIS ที่แผ่นเหล็กต้องผ่าน ไม่ใช่ค่าที่วัดจริง — ใช้เพื่อ confirm กับลูกค้าว่าสินค้าตรงมาตรฐานอะไร')">?</button></span>
             </div>
             <div class="lss-wrap" style="margin:0">
@@ -1485,7 +1507,14 @@ body{
                 <span class="lss-title">Limit Spec Summary</span>
                 <span class="lss-sku" id="lss-sku">—</span>
               </div>
-              <table class="lss-table" id="lss-table"><!-- filled by buildLSS() --></table>
+              <!-- pill summary row — top 3 key values -->
+              <div class="lss-pills" id="lss-pills"></div>
+              <!-- accordion groups -->
+              <div class="lss-acc" id="lss-acc"></div>
+              <!-- footer -->
+              <div class="lss-foot" id="lss-foot"></div>
+              <!-- hidden compat table -->
+              <table class="lss-table" id="lss-table" style="display:none"></table>
             </div>
           </div>
           <div class="sec">
@@ -2141,52 +2170,89 @@ function buildLSS(s) {
   var w = parseInt(s.WIDTH_MM)       || 1200;
   var l = parseInt(s.LENGTH_MM)      || 2400;
 
-  // ── อ่านจาก Sheet ก่อน (ชื่อคอลัมน์ตาม Sheet จริง) fallback → formula ──
-  var tolT = s.TOLERANCE_THICKNESS || (t<=1.6?'±0.08 mm':t<=2.5?'±0.10 mm':t<=4.0?'±0.13 mm':'±0.16 mm');
-  var tolW = s.TOL_WIDTH           || (w<=1000?'+6 / 0 mm':w<=1500?'+8 / 0 mm':'+10 / 0 mm');
-  var tolL = s.TOL_LENGTH          || (l<=2000?'+6 / 0 mm':'+8 / 0 mm');
-  var flat = s.FLATNESS            || '≤ '+(t<=1.6?'16':t<=3.2?'12':'8')+' mm/m';
-  var camb = s.CAMBER              || '≤ '+(t<=2.0?'3':'2')+' mm/m';
-  var sq   = s.SQUARENESS          || '≤ 2 mm/m';
-  var bendT= s.BEND_RADIUS_TRANS   || (t<=2.0?'1.0 × t':t<=4.0?'1.5 × t':'2.0 × t');
-  var bendL= s.BEND_RADIUS_LONG    || (t<=2.0?'1.5 × t':t<=4.0?'2.0 × t':'2.5 × t');
-  var ts   = s.TENSILE_STRENGTH    || (s.GRADE==='SPHC'?'≥ 270 N/mm²':s.GRADE==='SS400'?'400–510 N/mm²':'≥ 340 N/mm²');
-  var ys   = s.YIELD_STRENGTH      || (s.GRADE==='SPHC'?'—':s.GRADE==='SS400'?'≥ 245 N/mm²':'≥ 205 N/mm²');
-  var el   = s.ELONGATION          || (s.GRADE==='SPHC'?'≥ 27 %':s.GRADE==='SS400'?'≥ 21 %':'≥ 27 %');
+  // values — Sheet first, formula fallback
+  var tolT = s.TOLERANCE_THICKNESS || (t<=1.6?'±0.08':t<=2.5?'±0.10':t<=4.0?'±0.13':'±0.16')+' mm';
+  var tolW = s.TOL_WIDTH           || (w<=1000?'+6/0':w<=1500?'+8/0':'+10/0')+' mm';
+  var tolL = s.TOL_LENGTH          || (l<=2000?'+6/0':'+8/0')+' mm';
+  var flat = s.FLATNESS            || '≤'+(t<=1.6?'16':t<=3.2?'12':'8')+' mm/m';
+  var camb = s.CAMBER              || '≤'+(t<=2.0?'3':'2')+' mm/m';
+  var sq   = s.SQUARENESS          || '≤2 mm/m';
+  var bendT= s.BEND_RADIUS_TRANS   || (t<=2.0?'1.0t':t<=4.0?'1.5t':'2.0t');
+  var bendL= s.BEND_RADIUS_LONG    || (t<=2.0?'1.5t':t<=4.0?'2.0t':'2.5t');
+  var ts   = s.TENSILE_STRENGTH    || (s.GRADE==='SPHC'?'≥270':s.GRADE==='SS400'?'400–510':'≥340')+' N/mm²';
+  var ys   = s.YIELD_STRENGTH      || (s.GRADE==='SPHC'?'—':s.GRADE==='SS400'?'≥245':'≥205')+' N/mm²';
+  var el   = s.ELONGATION          || (s.GRADE==='SPHC'?'≥27':s.GRADE==='SS400'?'≥21':'≥27')+' %';
 
-  // S tag = ค่ามาจาก Sheet (ไม่ใช่ formula)
-  function tag(v){ return v?'<sup style="color:var(--green);font-size:7px;margin-left:2px;">S</sup>':''; }
+  var stag = '<sup style="color:#4ade80;font-size:6px;margin-left:1px;vertical-align:super;">S</sup>';
+  function tag(v){return v?stag:'';}
 
-  var groups = [
-    { heading:'Dimension Tolerance', rows:[
-      { label:'ความหนา',   value: tolT+tag(s.TOLERANCE_THICKNESS), note:'per sheet' },
-      { label:'ความกว้าง', value: tolW+tag(s.TOL_WIDTH),           note:'slit/mill' },
-      { label:'ความยาว',   value: tolL+tag(s.TOL_LENGTH),          note:'shear cut' },
+  setText('lss-sku', s.SKU || '—');
+
+  // ── PILL SUMMARY — 3 most-asked values ────────────────────
+  var pillData=[
+    {lbl:'หนา (Tol)',  val: tolT+tag(s.TOLERANCE_THICKNESS)},
+    {lbl:'Tensile',   val: ts+tag(s.TENSILE_STRENGTH)},
+    {lbl:'Flatness',  val: flat+tag(s.FLATNESS)},
+  ];
+  var pillHtml='';
+  pillData.forEach(function(p){
+    pillHtml+='<div class="lss-pill"><span class="lss-pill-lbl">'+p.lbl+'</span><span class="lss-pill-val">'+p.val+'</span></div>';
+  });
+  var pillEl=document.getElementById('lss-pills');
+  if(pillEl)pillEl.innerHTML=pillHtml;
+
+  // ── ACCORDION GROUPS ──────────────────────────────────────
+  var groups=[
+    {id:'lss-g0', name:'Dimension Tolerance', open:false, rows:[
+      {lbl:'ความหนา',   val:tolT+tag(s.TOLERANCE_THICKNESS),   note:'per sheet'},
+      {lbl:'ความกว้าง', val:tolW+tag(s.TOL_WIDTH),             note:'slit/mill'},
+      {lbl:'ความยาว',   val:tolL+tag(s.TOL_LENGTH),            note:'shear cut'},
     ]},
-    { heading:'Geometric', rows:[
-      { label:'Flatness',      value: flat+tag(s.FLATNESS),          note:'per 1 m' },
-      { label:'Camber',        value: camb+tag(s.CAMBER),            note:'per 1 m' },
-      { label:'Squareness',    value: sq+tag(s.SQUARENESS),          note:'corner' },
-      { label:'Bend R (ตัด⊥)', value: bendT+tag(s.BEND_RADIUS_TRANS),note:'transverse' },
-      { label:'Bend R (ตัด∥)', value: bendL+tag(s.BEND_RADIUS_LONG), note:'longitudinal' },
+    {id:'lss-g1', name:'Geometric', open:false, rows:[
+      {lbl:'Flatness',      val:flat+tag(s.FLATNESS),           note:'per 1m'},
+      {lbl:'Camber',        val:camb+tag(s.CAMBER),             note:'per 1m'},
+      {lbl:'Squareness',    val:sq+tag(s.SQUARENESS),           note:'corner'},
+      {lbl:'Bend R ⊥',      val:bendT+tag(s.BEND_RADIUS_TRANS), note:'transverse'},
+      {lbl:'Bend R ∥',      val:bendL+tag(s.BEND_RADIUS_LONG),  note:'long.'},
     ]},
-    { heading:'Mechanical ('+(s.GRADE||'—')+')', rows:[
-      { label:'Tensile',    value: ts+tag(s.TENSILE_STRENGTH), note:'' },
-      { label:'Yield',      value: ys+tag(s.YIELD_STRENGTH),   note:'' },
-      { label:'Elongation', value: el+tag(s.ELONGATION),       note:'' },
+    {id:'lss-g2', name:'Mechanical — '+(s.GRADE||'—'), open:false, rows:[
+      {lbl:'Tensile',    val:ts+tag(s.TENSILE_STRENGTH), note:''},
+      {lbl:'Yield',      val:ys+tag(s.YIELD_STRENGTH),   note:''},
+      {lbl:'Elongation', val:el+tag(s.ELONGATION),       note:''},
     ]},
   ];
 
-  setText('lss-sku', s.SKU || '—');
-  var html = '';
+  var accHtml='';
   groups.forEach(function(g){
-    html += '<tr class="lss-group-row"><td colspan="3" class="lss-group-hd">'+g.heading+'</td></tr>';
+    accHtml+='<div>';
+    accHtml+='<div class="lss-acc-hdr'+(g.open?' open':'')+'" onclick="toggleLssAcc(this)">'
+      +'<span class="lss-acc-name">'+g.name+'</span>'
+      +'<span class="lss-acc-arr">▼</span>'
+      +'</div>';
+    accHtml+='<div class="lss-acc-body'+(g.open?' open':'')+'">';
     g.rows.forEach(function(r){
-      html += '<tr class="lss-row"><td class="lss-label">'+r.label+'</td><td class="lss-value">'+r.value+'</td><td class="lss-note">'+r.note+'</td></tr>';
+      accHtml+='<div class="lss-row2">'
+        +'<span class="lss-r2-lbl">'+r.lbl+'</span>'
+        +'<span style="display:flex;align-items:baseline;gap:4px;">'
+          +'<span class="lss-r2-val">'+r.val+'</span>'
+          +(r.note?'<span class="lss-r2-note">'+r.note+'</span>':'')
+        +'</span>'
+        +'</div>';
     });
+    accHtml+='</div></div>';
   });
-  html += '<tr><td colspan="3" style="padding:6px 10px 8px;font-size:8px;color:var(--g400);"><sup style="color:var(--green);">S</sup> = ค่าจาก Google Sheet &nbsp;·&nbsp; ไม่มีสัญลักษณ์ = formula JIS</td></tr>';
-  document.getElementById('lss-table').innerHTML = html;
+  var accEl=document.getElementById('lss-acc');
+  if(accEl)accEl.innerHTML=accHtml;
+
+  // ── FOOTER ────────────────────────────────────────────────
+  var footEl=document.getElementById('lss-foot');
+  if(footEl)footEl.innerHTML='<span style="color:#4ade80;">S</span> = ค่าจาก Google Sheet &nbsp;·&nbsp; ไม่มี S = formula JIS';
+}
+
+function toggleLssAcc(hdr){
+  hdr.classList.toggle('open');
+  var body=hdr.nextElementSibling;
+  if(body)body.classList.toggle('open');
 }
 
 // ── GRADE SELECTOR ───────────────────────────────
