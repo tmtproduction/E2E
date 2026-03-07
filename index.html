@@ -1328,6 +1328,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
               <div>
                 <span class="spec-price-big" id="sh-price">฿ —</span>
                 <span class="spec-price-unit">/ แผ่น</span>
+                <span id="sh-prickg" style="font-size:10px;color:var(--g400);margin-left:8px;font-family:'Courier New',monospace;">—</span>
               </div>
               <div class="spec-stock-pill">
                 <div class="spec-stock-dot" id="sh-dot" style="background:var(--green)"></div>
@@ -1351,15 +1352,6 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
             </div>
           </div>
           <!-- ── existing sections below ── -->
-          <div class="sec">
-            <div class="sec-lbl">ขนาดและน้ำหนัก</div>
-            <div class="dim-grid">
-              <div class="df"><label>ความหนา <button class="tip-btn" onclick="showTip(this,'ความหนา','ค่าหนาจริงของแผ่นเหล็ก ± tolerance เล็กน้อย เช่น 2.0mm จริงอาจเป็น 1.90–2.10mm')">?</button></label><div class="dv" id="v-t">—<span class="du">mm</span></div></div>
-              <div class="df"><label>ความกว้าง <button class="tip-btn" onclick="showTip(this,'ความกว้าง','ความกว้างแผ่นหลังตัด วัดตั้งฉากกับแนวรีด')">?</button></label><div class="dv" id="v-w">—<span class="du">mm</span></div></div>
-              <div class="df"><label>ความยาว <button class="tip-btn" onclick="showTip(this,'ความยาว','ความยาวแผ่น ค่าจริงมักยาวกว่าตาม spec +0 ถึง +8mm')">?</button></label><div class="dv" id="v-l">—<span class="du">mm</span></div></div>
-              <div class="df"><label>น้ำหนัก/แผ่น</label><div class="dv" id="v-kg">—<span class="du">kg</span></div></div>
-            </div>
-          </div>
           <div class="sec" style="padding:0">
             <div style="padding:16px 20px 10px;display:flex;align-items:center;gap:6px;">
               <span class="sec-lbl" style="margin-bottom:0;flex:1">Limit Spec <button class="tip-btn" onclick="showTip(this,'Limit Spec Summary','ตารางนี้แสดงค่ามาตรฐาน JIS ที่แผ่นเหล็กต้องผ่าน ไม่ใช่ค่าที่วัดจริง — ใช้เพื่อ confirm กับลูกค้าว่าสินค้าตรงมาตรฐานอะไร')">?</button></span>
@@ -1490,8 +1482,6 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color
             </div>
           </div>
           <div class="sec" style="padding-bottom:0">
-            <div class="price-big" id="v-price">฿ —<span>/ แผ่น</span></div>
-            <div class="price-sub2" id="v-prickg">— ฿/kg</div>
             <!-- calc — segmented underline style -->
             <div style="margin-top:16px;border-top:1.5px solid var(--black);padding-top:0;">
               <div style="padding:7px 0 6px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200);">
@@ -2323,7 +2313,7 @@ function openViewer(idx){
   setText('v-stock', stock===0?'หมดสต็อก':'มีสต็อก · '+stock+' แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg');
 
   // Dimensions
-  setHTML('v-t', s.THICKNESS_MM+'<span class="du">mm</span>');
+  setHTML('v-t', s.THICKNESS_MM+'<span class="du">mm</span>');  // legacy compat
   setHTML('v-w', (parseInt(s.WIDTH_MM)||0).toLocaleString()+'<span class="du">mm</span>');
   setHTML('v-l', (parseInt(s.LENGTH_MM)||0).toLocaleString()+'<span class="du">mm</span>');
   setHTML('v-kg', (parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+'<span class="du">kg</span>');
@@ -2406,9 +2396,12 @@ function openViewer(idx){
   var elL=document.getElementById('a-l'); if(elL) elL.value=S.l;
   var thWarn=document.getElementById('thick-warn'); if(thWarn) thWarn.style.display='none';
 
-  // Price + Calc
+  // Price + Calc — spec-hero is now the display, v-price element removed
   var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
-  setHTML('v-price', '฿ '+price.toLocaleString()+'<span>/ แผ่น</span>');
+  setText('sh-price', price?'฿ '+price.toLocaleString():'฿ —');
+  // also update prickg subtext in spec-hero if exists
+  var shPriceSub=document.getElementById('sh-prickg');
+  if(shPriceSub) shPriceSub.textContent=(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1)+' ฿/kg';
   setText('v-prickg', (parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1)+' ฿/kg');
   var btn=document.getElementById('btn-cta');
   if(btn){btn.disabled=stock===0; btn.textContent=stock===0?'หมดสต็อก':'เลือกรายการนี้';}
@@ -2802,7 +2795,7 @@ function liveUpdate(){
     var calcKgRound = calcKg.toFixed(1);
     var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=S.sheets+' แผ่น/มัด';
     var vBwt=document.getElementById('v-bwt'); if(vBwt) vBwt.textContent=(S.sheets*calcKg).toFixed(0)+' kg';
-    var vKg=document.getElementById('v-kg'); if(vKg) vKg.innerHTML=calcKgRound+'<span class="du">kg</span>';
+    var vKg=document.getElementById('tc-kg'); if(vKg) vKg.textContent=calcKgRound+' kg';
   }
   var inf=document.getElementById('cv-info');
   if(inf) inf.textContent='W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(1)+'mm  N:'+S.sheets;
@@ -2815,7 +2808,10 @@ function applyAdmin(){
   if(currentSku){
     currentSku.PRICE_PER_SHEET_THB=document.getElementById('a-price').value;
     currentSku.STOCK_QTY=document.getElementById('a-stock').value;
-    document.getElementById('v-price').innerHTML='฿ '+parseInt(currentSku.PRICE_PER_SHEET_THB).toLocaleString()+'<span>/ แผ่น</span>';
+    var newPrice=parseInt(currentSku.PRICE_PER_SHEET_THB)||0;
+    setText('sh-price','฿ '+newPrice.toLocaleString());
+    var newStock=parseInt(currentSku.STOCK_QTY)||0;
+    setText('sh-stock',newStock+' แผ่น '+(newStock===0?'หมดสต็อก':newStock<10?'(เหลือน้อย)':'พร้อมส่ง'));
     calcUpdate();
   }
   syncMech(); syncGeoAdmin(); syncLabel();
