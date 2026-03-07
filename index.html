@@ -3830,7 +3830,6 @@ function toggleHero(forceState){
 
     var calls=[];
     for(var i=0;i<N;i++){
-      var col=COLS[i%COLS.length];
       var byY=(i*(bh+gap))-stackH/2+bh/2;
       var dY=lerp(-H*0.55,0,clamp(easeOut(fA*N-i*0.55),0,1));
       var gi=i%4, gj=Math.floor(i/4);
