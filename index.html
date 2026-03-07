@@ -396,7 +396,7 @@ body{
 }
 
 /* stock badge */
-MARKER
+.status-badge{
   position:absolute;top:12px;left:12px;
   font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
   font-weight:500;padding:3px 8px;
@@ -1200,7 +1200,7 @@ MARKER
 
   <!-- 3D loop canvas animation — full hero -->
   <div class="cat-hero" id="cat-hero" style="padding:0;text-align:left;">
-    <canvas id="hero-canvas" style="width:100%;display:block;"></canvas>
+    <canvas id="hero-canvas" style="width:100%;display:block;aspect-ratio:2.4/1;"></canvas>
     <!-- Desktop filters (inline row) -->
     <div style="padding:20px 48px 24px;">
     <div class="search-bar">
@@ -3735,25 +3735,20 @@ function toggleHero(forceState){
   if(!cvs) return;
 
   var DPR = Math.min(window.devicePixelRatio||1, 2);
-  // W/H are always CSS pixels
   var W, H;
   function resize(){
-    var pw = cvs.parentElement ? cvs.parentElement.clientWidth : 0;
-    if(!pw) pw = window.innerWidth;
+    var pw = cvs.offsetWidth || cvs.parentElement.clientWidth || window.innerWidth;
     W = pw;
     H = Math.round(W / 2.4);
     cvs.width  = W * DPR;
     cvs.height = H * DPR;
-    cvs.style.width  = W+'px';
-    cvs.style.height = H+'px';
   }
-  // defer resize until after layout paint
   function initResize(){
     resize();
-    if(!W || W < 10){ requestAnimationFrame(initResize); return; }
+    if(W < 10){ requestAnimationFrame(initResize); return; }
     requestAnimationFrame(draw);
   }
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize', function(){ resize(); });
   requestAnimationFrame(initResize);
 
   var ctx = cvs.getContext('2d');
