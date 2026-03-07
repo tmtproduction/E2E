@@ -3805,22 +3805,28 @@ function toggleHero(forceState){
   }
 
   // ═══════════════════════════════════════════════
-  // LOOP  16s
-  // 0.00–0.20  ASSEMBLE   sheets drop → iso bundle
-  // 0.20–0.38  SPREAD     tilt to top-view + explode flat grid
-  // 0.38–0.56  GATHER     sheets slide to centre (still top view)
-  // 0.56–0.80  TILT BACK  camera tilts from top → iso, bundle reforms
-  // 0.80–1.00  HOLD+FADE  hold iso, gentle fade → restart
+  // LOOP 20s  — 6 phases
+  // 1. ASSEMBLE  0.00–0.15  sheets drop → iso bundle
+  // 2. ROTATE    0.15–0.28  camera tilts down (rX→ low/bottom angle)
+  // 3. SPREAD    0.28–0.45  sheets spread full canvas (still bottom angle)
+  // 4. FLATTEN   0.45–0.60  rotate to top/bottom parallel view, grid stays full
+  // 5. GATHER    0.60–0.78  sheets slide to centre (parallel view)
+  // 6. TILTBACK  0.78–1.00  rotate back to iso + fade
   // ═══════════════════════════════════════════════
-  var LOOP = 16000;
+  var LOOP = 20000;
   var PH = {
-    assemble: [0,    0.20],
-    spread:   [0.20, 0.38],
-    gather:   [0.38, 0.56],
-    tiltback: [0.56, 0.80],
-    hold:     [0.80, 1.00]
+    assemble: [0,    0.15],
+    rotate:   [0.15, 0.28],
+    spread:   [0.28, 0.45],
+    flatten:  [0.45, 0.60],
+    gather:   [0.60, 0.78],
+    tiltback: [0.78, 1.00]
   };
   function pf(t,ph){ return clamp((t-ph[0])/(ph[1]-ph[0]),0,1); }
+
+  var ISO_RX  = BASE_RX;             // ~0.42 iso angle
+  var LOW_RX  = -0.28;               // tilted down — bottom face visible
+  var FLAT_RX = -(Math.PI*0.47);     // near-bottom parallel
 
   var t0=null;
   function draw(ts){
@@ -3835,70 +3841,76 @@ function toggleHero(forceState){
     var gap=bh*0.28;
     var stackH=N*(bh+gap)-gap;
 
-    // grid spread positions (flat top-view)
-    // use X/Z plane since top-view = rX≈π/2
-    var gSX=bw*1.12, gSZ=bd*1.10;
+    // grid spread — scale to fill canvas in the flat view
+    // in flat/parallel view bw maps to screen-width, so space tightly
+    var gSX=bw*1.08, gSZ=bd*1.06;
     var gOX=-(NCOLS-1)/2*gSX, gOZ=-(NROWS-1)/2*gSZ;
 
-    // eased phase fractions
-    var fA  = easeOut(pf(t,PH.assemble));
-    var fSP = easeInOut(pf(t,PH.spread));
-    var fGA = easeInOut(pf(t,PH.gather));
-    var fTB = easeInOut(pf(t,PH.tiltback));
-    var fHO = pf(t,PH.hold);
+    // phase eased values
+    var fA  = easeOut(   pf(t, PH.assemble));
+    var fRO = easeInOut( pf(t, PH.rotate));
+    var fSP = easeInOut( pf(t, PH.spread));
+    var fFL = easeInOut( pf(t, PH.flatten));
+    var fGA = easeInOut( pf(t, PH.gather));
+    var fTB = easeInOut( pf(t, PH.tiltback));
 
-    // camera rX:
-    //  iso = BASE_RX (~0.42)  →  top = Math.PI*0.46 (~1.44)
-    var TOP_RX = Math.PI * 0.46;
-    var rX = BASE_RX;
-    if(fSP>0) rX = lerp(BASE_RX, TOP_RX, easeInOut(fSP));
-    if(fGA>0) rX = TOP_RX;                                    // hold top during gather
-    if(fTB>0) rX = lerp(TOP_RX, BASE_RX, easeInOut(fTB));    // tilt back to iso
-    if(fHO>0) rX = BASE_RX;
+    // ── camera rX ─────────────────────────────────
+    var rX = ISO_RX;
+    if(fRO>0) rX = lerp(ISO_RX, LOW_RX,  easeInOut(fRO));   // tilt down
+    if(fSP>0) rX = LOW_RX;                                    // hold low during spread
+    if(fFL>0) rX = lerp(LOW_RX, FLAT_RX, easeInOut(fFL));    // rotate to parallel
+    if(fGA>0) rX = FLAT_RX;                                   // hold flat during gather
+    if(fTB>0) rX = lerp(FLAT_RX, ISO_RX, easeInOut(fTB));    // tilt back to iso
 
-    // rY: stays at BASE_RY, slight drift during hold
-    var rY = BASE_RY + Math.sin(t*Math.PI*2)*0.04;
+    // ── camera rY — subtle drift only ─────────────
+    var rY = BASE_RY + Math.sin(t*Math.PI*2)*0.03;
 
     var calls=[];
     for(var i=0;i<N;i++){
-      var byY = (i*(bh+gap)) - stackH/2 + bh/2;  // stacked Y
+      var byY = (i*(bh+gap)) - stackH/2 + bh/2;
       var gi=i%NCOLS, gj=Math.floor(i/NCOLS);
       var gx=gOX+gi*gSX, gz=gOZ+gj*gSZ;
 
-      // stagger drop-in per sheet
-      var dropProgress = clamp(easeOut(fA*N - i*0.5), 0, 1);
-      var dropY = lerp(-H*0.55, 0, dropProgress);
+      // per-sheet stagger for assemble drop
+      var dropP = clamp(easeOut(fA*N - i*0.5), 0, 1);
+      var dropY = lerp(-H*0.55, 0, dropP);
 
-      // sheet position
+      // position state machine
       var cx=0, cy=byY+dropY, cz=0;
 
-      // SPREAD: expand from bundle to flat grid (Y→0 since viewing from top)
+      // ROTATE + SPREAD: keep stacked in Y, start spreading X/Z
+      if(fRO>0){ cx=0; cy=byY; cz=0; }
+
       if(fSP>0){
-        cx = lerp(0,   gx, fSP);
-        cy = lerp(byY+dropY, 0, fSP);   // flatten to Y=0 plane
-        cz = lerp(0,   gz, fSP);
+        cx = lerp(0,  gx, fSP);
+        cy = lerp(byY, byY*0.3, fSP);  // slight Y compress as they spread
+        cz = lerp(0,  gz, fSP);
       }
 
-      // GATHER: all slide back to cx=0,cz=0 (still flat, Y=0)
+      // FLATTEN: keep X/Z grid, flatten Y toward 0
+      if(fFL>0){
+        cx = gx;
+        cy = lerp(byY*0.3, 0, fFL);
+        cz = gz;
+      }
+
+      // GATHER: slide X/Z to 0, Y stays 0
       if(fGA>0){
         cx = lerp(gx, 0, fGA);
         cy = 0;
         cz = lerp(gz, 0, fGA);
       }
 
-      // TILT BACK: restore stacked Y as camera comes back to iso
+      // TILT BACK: restore stacked Y as iso angle returns
       if(fTB>0){
-        var stackedY = byY;                      // target stacked position
-        cx = lerp(0,   0,        fTB);           // stay centred X
-        cy = lerp(0,   stackedY, easeOut(fTB));  // restore Y stack offset
-        cz = lerp(0,   0,        fTB);
+        cx = 0;
+        cy = lerp(0, byY, easeOut(fTB));
+        cz = 0;
       }
 
-      if(fHO>0){ cx=0; cy=byY; cz=0; }
-
       // alpha
-      var alpha = dropProgress;
-      if(fHO > 0.7) alpha = lerp(1, 0, (fHO-0.7)/0.3);
+      var alpha = dropP;
+      if(fTB > 0.85) alpha = lerp(1, 0, (fTB-0.85)/0.15);
 
       var q = rotX(rotY([cx,cy,cz], rY), rX);
       calls.push({cx,cy,cz,bw,bh,bd,alpha,depth:q[2]});
@@ -3906,10 +3918,10 @@ function toggleHero(forceState){
 
     calls.sort(function(a,b){ return a.depth-b.depth; });
     calls.forEach(function(d,idx){
-      var depthFrac = (idx+1)/calls.length;
-      var lw    = 0.35 + depthFrac*1.1;
-      var light = Math.round(148 + depthFrac*72);
-      var col   = 'rgb('+light+','+light+','+(light-5)+')';
+      var f   = (idx+1)/calls.length;
+      var lw  = 0.3 + f*1.2;
+      var lgt = Math.round(145 + f*75);
+      var col = 'rgb('+lgt+','+lgt+','+(lgt-5)+')';
       drawSheet(d.cx,d.cy,d.cz,d.bw,d.bh,d.bd,rX,rY,col,lw,d.alpha);
     });
 
