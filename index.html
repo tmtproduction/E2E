@@ -3805,29 +3805,31 @@ function toggleHero(forceState){
   }
 
   // ═══════════════════════════════════════════════
-  // LOOP 20s  — 6 phases
-  // 1. ASSEMBLE  0.00–0.15  sheets drop → iso bundle
-  // 2. ROTATE    0.15–0.28  rotate rY → 0 (face-on straight, "มุมเฉย")
-  // 3. SPREAD    0.28–0.45  sheets spread full canvas (still face-on rX)
-  // 4. FLATTEN   0.45–0.60  tilt rX to parallel + rY stays 0 → long side horizontal
-  // 5. GATHER    0.60–0.78  sheets slide to centre (parallel, long-side horizontal)
-  // 6. TILTBACK  0.78–1.00  rX+rY return to iso angles + fade
+  // LOOP 30s  — 7 phases
+  // 1. ASSEMBLE  0.00–0.12
+  // 2. ROTATE    0.12–0.24
+  // 3. SPREAD    0.24–0.38
+  // 4. FLATTEN   0.38–0.52
+  // 5. GATHER    0.52–0.67
+  // 6. TILTBACK  0.67–0.80  → fade out canvas
+  // 7. TEXTHOLD  0.80–1.00  → TMT STEEL text centred, 10s hold → loop
   // ═══════════════════════════════════════════════
-  var LOOP = 20000;
+  var LOOP = 30000;
   var PH = {
-    assemble: [0,    0.15],
-    rotate:   [0.15, 0.28],
-    spread:   [0.28, 0.45],
-    flatten:  [0.45, 0.60],
-    gather:   [0.60, 0.78],
-    tiltback: [0.78, 1.00]
+    assemble: [0,    0.12],
+    rotate:   [0.12, 0.24],
+    spread:   [0.24, 0.38],
+    flatten:  [0.38, 0.52],
+    gather:   [0.52, 0.67],
+    tiltback: [0.67, 0.80],
+    texthold: [0.80, 1.00]
   };
   function pf(t,ph){ return clamp((t-ph[0])/(ph[1]-ph[0]),0,1); }
 
-  var ISO_RX = BASE_RX;           // ~0.42 iso
-  var ISO_RY = BASE_RY;           // Math.PI/4 = 45°
-  var FACE_RY = 0;                // straight-on (rY=0): long axis of sheet aligns with X = horizontal
-  var FLAT_RX = -(Math.PI*0.46);  // near-bottom parallel (bottom face facing camera)
+  var ISO_RX = BASE_RX;
+  var ISO_RY = BASE_RY;
+  var FACE_RY = 0;
+  var FLAT_RX = -(Math.PI*0.46);
 
   var t0=null;
   function draw(ts){
@@ -3851,81 +3853,93 @@ function toggleHero(forceState){
     var fFL = easeInOut( pf(t, PH.flatten));
     var fGA = easeInOut( pf(t, PH.gather));
     var fTB = easeInOut( pf(t, PH.tiltback));
+    var fTX = pf(t, PH.texthold);
 
-    // ── rX: iso → holds → FLAT_RX during flatten/gather → iso ──
+    // rX
     var rX = ISO_RX;
-    if(fSP>0) rX = ISO_RX;                                     // keep iso during spread
-    if(fFL>0) rX = lerp(ISO_RX, FLAT_RX, easeInOut(fFL));      // tilt to parallel
-    if(fGA>0) rX = FLAT_RX;                                     // hold flat during gather
-    if(fTB>0) rX = lerp(FLAT_RX, ISO_RX, easeInOut(fTB));      // tilt back
+    if(fSP>0) rX = ISO_RX;
+    if(fFL>0) rX = lerp(ISO_RX, FLAT_RX, easeInOut(fFL));
+    if(fGA>0) rX = FLAT_RX;
+    if(fTB>0) rX = lerp(FLAT_RX, ISO_RX, easeInOut(fTB));
 
-    // ── rY: iso 45° → FACE_RY 0° (step2/3) → back to 0° held (step4/5) → iso (step6) ──
+    // rY
     var rY = ISO_RY;
-    if(fRO>0) rY = lerp(ISO_RY, FACE_RY, easeInOut(fRO));      // rotate to face-on
-    if(fSP>0) rY = FACE_RY;                                     // hold face-on during spread
-    if(fFL>0) rY = FACE_RY;                                     // hold face-on during flatten
-    if(fGA>0) rY = FACE_RY;                                     // hold during gather
-    if(fTB>0) rY = lerp(FACE_RY, ISO_RY, easeInOut(fTB));      // twist back to iso
+    if(fRO>0) rY = lerp(ISO_RY, FACE_RY, easeInOut(fRO));
+    if(fSP>0) rY = FACE_RY;
+    if(fFL>0) rY = FACE_RY;
+    if(fGA>0) rY = FACE_RY;
+    if(fTB>0) rY = lerp(FACE_RY, ISO_RY, easeInOut(fTB));
 
-    var calls=[];
-    for(var i=0;i<N;i++){
-      var byY = (i*(bh+gap)) - stackH/2 + bh/2;
-      var gi=i%NCOLS, gj=Math.floor(i/NCOLS);
-      var gx=gOX+gi*gSX, gz=gOZ+gj*gSZ;
+    // canvas alpha — fade out during last 30% of tiltback
+    var canvasAlpha = 1;
+    if(fTB > 0.70) canvasAlpha = lerp(1, 0, (fTB-0.70)/0.30);
+    if(fTX > 0)    canvasAlpha = 0;
 
-      // per-sheet stagger for assemble drop
-      var dropP = clamp(easeOut(fA*N - i*0.5), 0, 1);
-      var dropY = lerp(-H*0.55, 0, dropP);
+    if(canvasAlpha > 0){
+      var calls=[];
+      for(var i=0;i<N;i++){
+        var byY = (i*(bh+gap)) - stackH/2 + bh/2;
+        var gi=i%NCOLS, gj=Math.floor(i/NCOLS);
+        var gx=gOX+gi*gSX, gz=gOZ+gj*gSZ;
 
-      // position state machine
-      var cx=0, cy=byY+dropY, cz=0;
+        var dropP = clamp(easeOut(fA*N - i*0.5), 0, 1);
+        var dropY = lerp(-H*0.55, 0, dropP);
 
-      // ROTATE + SPREAD: keep stacked in Y, start spreading X/Z
-      if(fRO>0){ cx=0; cy=byY; cz=0; }
+        var cx=0, cy=byY+dropY, cz=0;
+        if(fRO>0){ cx=0; cy=byY; cz=0; }
+        if(fSP>0){ cx=lerp(0,gx,fSP); cy=lerp(byY,byY*0.3,fSP); cz=lerp(0,gz,fSP); }
+        if(fFL>0){ cx=gx; cy=lerp(byY*0.3,0,fFL); cz=gz; }
+        if(fGA>0){ cx=lerp(gx,0,fGA); cy=0; cz=lerp(gz,0,fGA); }
+        if(fTB>0){ cx=0; cy=lerp(0,byY,easeOut(fTB)); cz=0; }
 
-      if(fSP>0){
-        cx = lerp(0,  gx, fSP);
-        cy = lerp(byY, byY*0.3, fSP);  // slight Y compress as they spread
-        cz = lerp(0,  gz, fSP);
+        var alpha = dropP * canvasAlpha;
+        var q = rotX(rotY([cx,cy,cz], rY), rX);
+        calls.push({cx,cy,cz,bw,bh,bd,alpha,depth:q[2]});
       }
-
-      // FLATTEN: keep X/Z grid, flatten Y toward 0
-      if(fFL>0){
-        cx = gx;
-        cy = lerp(byY*0.3, 0, fFL);
-        cz = gz;
-      }
-
-      // GATHER: slide X/Z to 0, Y stays 0
-      if(fGA>0){
-        cx = lerp(gx, 0, fGA);
-        cy = 0;
-        cz = lerp(gz, 0, fGA);
-      }
-
-      // TILT BACK: restore stacked Y as iso angle returns
-      if(fTB>0){
-        cx = 0;
-        cy = lerp(0, byY, easeOut(fTB));
-        cz = 0;
-      }
-
-      // alpha
-      var alpha = dropP;
-      if(fTB > 0.85) alpha = lerp(1, 0, (fTB-0.85)/0.15);
-
-      var q = rotX(rotY([cx,cy,cz], rY), rX);
-      calls.push({cx,cy,cz,bw,bh,bd,alpha,depth:q[2]});
+      calls.sort(function(a,b){ return a.depth-b.depth; });
+      calls.forEach(function(d,idx){
+        var f   = (idx+1)/calls.length;
+        var lw  = 0.3 + f*1.2;
+        var lgt = Math.round(145 + f*75);
+        var col = 'rgb('+lgt+','+lgt+','+(lgt-5)+')';
+        drawSheet(d.cx,d.cy,d.cz,d.bw,d.bh,d.bd,rX,rY,col,lw,d.alpha);
+      });
     }
 
-    calls.sort(function(a,b){ return a.depth-b.depth; });
-    calls.forEach(function(d,idx){
-      var f   = (idx+1)/calls.length;
-      var lw  = 0.3 + f*1.2;
-      var lgt = Math.round(145 + f*75);
-      var col = 'rgb('+lgt+','+lgt+','+(lgt-5)+')';
-      drawSheet(d.cx,d.cy,d.cz,d.bw,d.bh,d.bd,rX,rY,col,lw,d.alpha);
-    });
+    // ── TEXT HOLD: centred overlay ──────────────────
+    if(fTX > 0){
+      // fade in over first 8% of texthold (~0.5s), hold, fade out last 5%
+      var tA = clamp(fTX/0.08, 0, 1);
+      if(fTX > 0.95) tA = lerp(1, 0, (fTX-0.95)/0.05);
+
+      var fs1 = Math.round(W*0.055);   // big title
+      var fs2 = Math.round(W*0.018);   // subtitle
+      var cy0 = H*0.50;
+
+      ctx.textAlign = 'center';
+
+      // shadow for depth
+      ctx.globalAlpha = tA * 0.18;
+      ctx.fillStyle = '#000';
+      ctx.font = 'bold '+fs1+'px "DM Sans","Inter",sans-serif';
+      ctx.fillText('TMT STEEL', W/2+3, cy0+3);
+
+      // main title
+      ctx.globalAlpha = tA;
+      ctx.fillStyle = '#1a1a18';
+      ctx.font = 'bold '+fs1+'px "DM Sans","Inter",sans-serif';
+      ctx.fillText('TMT STEEL', W/2, cy0);
+
+      // subtitle
+      ctx.globalAlpha = tA * 0.78;
+      ctx.fillStyle = '#3a3a36';
+      ctx.font = '500 '+fs2+'px "DM Sans","Inter",sans-serif';
+      ctx.letterSpacing = '0.18em';
+      ctx.fillText('PROVIDING STRUCTURE OF YOUR IMAGINATION', W/2, cy0 + fs1*0.90);
+      ctx.letterSpacing = '0';
+
+      ctx.globalAlpha = 1;
+    }
 
     requestAnimationFrame(draw);
   }
