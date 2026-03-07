@@ -2230,6 +2230,10 @@ function showSkeletons(){
 function renderGrid(){
   var el=document.getElementById('catalog-view');
   var stat=document.getElementById('hdr-stat');
+  stat.textContent=filteredSkus.length+' รายการ';
+  if(!filteredSkus.length){el.innerHTML='<div class="state-msg"><div class="icon">🔍</div><p>ไม่พบ Spec ที่ตรงกัน</p></div>';return;}
+  var h='<div class="grid-wrap">'+
+    '<div class="grid-section-title">สินค้าทั้งหมด</div>'+
     '<div class="grid-section-sub">'+filteredSkus.length+' รายการ · เหล็กแผ่นทุกประเภท · พร้อมส่ง</div>'+
     '<div class="grid">';
   filteredSkus.forEach(function(s,i){
