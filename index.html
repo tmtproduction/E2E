@@ -1432,6 +1432,62 @@ body{
 }
 /* ── end Phase 5 mobile ── */
 
+/* ════════════════════════════════════════
+   MOBILE ANIMATION OVERRIDES
+   — ปรับให้ proportional กับหน้าจอเล็ก
+════════════════════════════════════════ */
+@media(max-width:767px){
+
+  /* card scroll-reveal — เริ่มต่ำกว่า, เด่นกว่า */
+  .card{
+    transform:translateY(40px);
+    transition:opacity .45s ease, transform .45s cubic-bezier(.2,0,.2,1);
+  }
+  .card.revealed{opacity:1;transform:translateY(0);}
+
+  /* panel switch — slide ขึ้นจากล่าง แทน slide จากขวา */
+  @keyframes panelInMobile{
+    from{opacity:0;transform:translateY(18px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .panel.active{
+    animation:panelInMobile .3s cubic-bezier(.2,0,.2,1) both;
+  }
+
+  /* spec hero — drop ใหญ่ขึ้น */
+  @keyframes specHeroInMobile{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .spec-hero{
+    animation:specHeroInMobile .38s cubic-bezier(.2,0,.2,1) both;
+  }
+
+  /* modal slide-up — สูงขึ้น */
+  @keyframes slideUpMobile{
+    from{transform:translateY(60px);opacity:0;}
+    to{transform:translateY(0);opacity:1;}
+  }
+  .order-modal{
+    animation:slideUpMobile .32s cubic-bezier(.2,0,.2,1) both;
+  }
+
+  /* SVG hero — condense timing บนมือถือ (จอเล็กกว่า ดูไวกว่า) */
+  .svg-ln-1 {animation-duration:.4s;}
+  .svg-ln-2 {animation-duration:.3s;}
+  .svg-ln-3 {animation-duration:.3s;}
+  .svg-ln-4 {animation-duration:.3s;}
+  .svg-ln-5 {animation-duration:.3s;}
+  .svg-ln-6 {animation-duration:.35s;}
+  .svg-ln-7 {animation-duration:.28s;}
+  .svg-ln-9 {animation-duration:.22s;}
+  .svg-ln-11{animation-duration:.22s;}
+  .svg-ln-13{animation-duration:.22s;}
+  .svg-ln-15{animation-duration:.22s;}
+  .svg-ln-17{animation-duration:.22s;}
+  .svg-ln-21{animation-duration:.25s;}
+}
+
 @media(min-width:768px) and (max-width:1023px){
   .cat-nav{padding:0 24px;}
   .cat-hero{padding:28px 24px 20px;}
@@ -2734,7 +2790,10 @@ function renderGrid(){
     var sbClass=surfaceBadgeClass(s.SURFACE);
     var sbLabel=surfaceBadgeLabel(s.SURFACE);
     var kg=(parseFloat(s.WEIGHT_PER_SHEET_KG)||0);
-    h+='<div class="card" style="transition-delay:'+(i%4*0.07)+'s">'+
+    var isMobile=window.innerWidth<=767;
+    var cols=isMobile?1:4;
+    var delay=isMobile?(i*0.06):(i%4*0.07);
+    h+='<div class="card" style="transition-delay:'+delay+'s">'+
       '<div class="card-img" onclick="openViewer('+i+')" onmouseenter="hoverBundle('+i+',true)" onmouseleave="hoverBundle('+i+',false)">'+
         '<canvas id="cv-'+i+'" style="display:block;width:100%;height:100%;position:relative;z-index:2;"></canvas>'+
         '<div class="status-badge '+sbadge+'">'+slabel+'</div>'+
