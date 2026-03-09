@@ -3933,93 +3933,132 @@ function toggleHero(forceState){
 
     // ── TEXT HOLD: centred overlay ──────────────────
     if(fTX > 0){
-      var fs1 = Math.round(W*0.055);
-      var fs2 = Math.round(W*0.018);
-      var cy0 = H*0.50;
+      var fs1  = Math.round(W*0.055);
+      var fs2  = Math.round(W*0.018);
+      var cy0  = H*0.50;
       var fadeOut = fTX > 0.95 ? lerp(1, 0, (fTX-0.95)/0.05) : 1;
-      var tA = clamp(fTX / 0.12, 0, 1) * fadeOut;
+
+      // elapsed ms ใน texthold phase (texthold = 30% ของ LOOP)
+      var txMs = fTX * 0.30 * LOOP;
 
       ctx.textAlign = 'center';
 
-      // ── helper ───────────────────────────────────────────────
-
-      // ── 1. WATER DROP SPLASHES (วาดก่อน อยู่หลัง text) ────────
-      // แต่ละหยดมี 2 ส่วน: filled dot (กระทบ) → expanding ring (ripple)
-      function splash(start, x, y, color, maxR){
-        var p   = clamp((fTX - start) / 0.18, 0, 1);
-        var ea  = easeOut(p);
+      // ══════════════════════════════════════════════
+      // GLOSSY LIQUID DROP
+      // ══════════════════════════════════════════════
+      function glossyDrop(start, x, y, r, hexColor, hexDark){
+        var p  = clamp((fTX - start) / 0.22, 0, 1);
         if(p <= 0) return;
+        var ea = 1 - Math.pow(1-p, 4); // easeOut quartic — เหมือน spring settle
 
-        // -- dot: โผล่เร็ว แล้วหายไปครึ่งแรก
-        var dotP  = clamp(p / 0.25, 0, 1);
-        var dotA  = dotP < 0.5 ? dotP*2 : lerp(1, 0, (dotP-0.5)*2);
-        var dotR  = maxR * 0.22 * easeOut(clamp(p/0.12,0,1));
+        // ── top-view: หยดตกลงไป ใหญ่→เล็ก (คนดูอยู่บน มองลงไป)
+        var sc = ea < 0.85
+          ? lerp(2.5, 1.08, ea/0.85)
+          : lerp(1.08, 1.0, (ea-0.85)/0.15);
 
-        // -- ripple: วงแหวนขยายออก fade ออกท้าย
-        var ripR  = lerp(maxR * 0.18, maxR, ea);
-        var ripA  = clamp(p / 0.08, 0, 1) * lerp(1, 0, easeIn(clamp((p-0.3)/0.7,0,1)));
-
-        // -- ripple ที่ 2 (ตามหลัง ~0.12 phase)
-        var p2    = clamp((fTX - start - 0.10) / 0.18, 0, 1);
-        var ea2   = easeOut(p2);
-        var rip2R = lerp(maxR * 0.18, maxR * 0.72, ea2);
-        var rip2A = p2 > 0
-          ? clamp(p2/0.08,0,1) * lerp(1,0, easeIn(clamp((p2-0.3)/0.7,0,1))) * 0.55
-          : 0;
-
-        // global fadeout ช่วงท้าย loop
-        var gFade = fTX > 0.95 ? lerp(1,0,(fTX-0.95)/0.05) : 1;
+        var dA = clamp(p/0.12, 0, 1) * fadeOut;
 
         ctx.save();
-        ctx.strokeStyle = color;
-        ctx.fillStyle   = color;
+        ctx.globalAlpha = dA;
+        ctx.translate(x, y);
+        ctx.scale(sc, sc);
 
-        // dot
-        if(dotA > 0){
-          ctx.globalAlpha = dotA * 0.80 * gFade;
-          ctx.beginPath(); ctx.arc(x, y, dotR, 0, Math.PI*2); ctx.fill();
-        }
-        // ripple 1
-        if(ripA > 0){
-          ctx.globalAlpha = ripA * 0.70 * gFade;
-          ctx.lineWidth   = maxR * 0.06;
-          ctx.beginPath(); ctx.arc(x, y, ripR, 0, Math.PI*2); ctx.stroke();
-        }
-        // ripple 2
-        if(rip2A > 0){
-          ctx.globalAlpha = rip2A * 0.70 * gFade;
-          ctx.lineWidth   = maxR * 0.04;
-          ctx.beginPath(); ctx.arc(x, y, rip2R, 0, Math.PI*2); ctx.stroke();
-        }
+        // -- body: radial gradient แสงจาก top-left
+        var grd = ctx.createRadialGradient(-r*0.28, -r*0.32, r*0.05, 0, 0, r);
+        grd.addColorStop(0.00, hexColor+'ee');   // สี bright กลาง
+        grd.addColorStop(0.55, hexColor+'cc');
+        grd.addColorStop(1.00, hexDark+'aa');    // ขอบมืดลง
+        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2);
+        ctx.fillStyle = grd; ctx.fill();
+
+        // -- primary specular: จุดแสงใหญ่
+        var sp1 = ctx.createRadialGradient(-r*0.28, -r*0.30, 0, -r*0.18, -r*0.22, r*0.42);
+        sp1.addColorStop(0, 'rgba(255,255,255,0.72)');
+        sp1.addColorStop(1, 'rgba(255,255,255,0.00)');
+        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2);
+        ctx.fillStyle = sp1; ctx.fill();
+
+        // -- secondary specular: จุดเล็กแหลม ขวาล่าง (แสงสะท้อน)
+        ctx.beginPath();
+        ctx.arc(r*0.30, r*0.30, r*0.10, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(255,255,255,0.28)'; ctx.fill();
 
         ctx.restore();
+
+        // ── elliptical ripple — บีบแนวนอน เหมือนน้ำกระทบจริง
+        var p2  = clamp((fTX - start - 0.06) / 0.30, 0, 1);
+        var ea2 = easeOut(p2);
+        if(p2 > 0){
+          var rW = r * lerp(0.3, 2.8, ea2);
+          var rH = r * lerp(0.15, 0.55, ea2);
+          var rA = clamp(p2/0.10,0,1) * lerp(1,0, easeIn(clamp((p2-0.2)/0.8,0,1))) * 0.55 * fadeOut;
+          ctx.save();
+          ctx.globalAlpha = rA;
+          ctx.strokeStyle = hexColor;
+          ctx.lineWidth   = lerp(r*0.10, r*0.02, ea2);
+          ctx.beginPath();
+          ctx.arc(x, y, rW, 0, Math.PI*2);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // ── ripple 2
+        var p3  = clamp((fTX - start - 0.14) / 0.30, 0, 1);
+        var ea3 = easeOut(p3);
+        if(p3 > 0){
+          var rW3 = r * lerp(0.3, 2.2, ea3);
+          var rH3 = r * lerp(0.12, 0.38, ea3);
+          var rA3 = clamp(p3/0.10,0,1) * lerp(1,0,easeIn(clamp((p3-0.2)/0.8,0,1))) * 0.35 * fadeOut;
+          ctx.save();
+          ctx.globalAlpha = rA3;
+          ctx.strokeStyle = hexColor;
+          ctx.lineWidth   = lerp(r*0.06, r*0.01, ea3);
+          ctx.beginPath();
+          ctx.arc(x, y, rW3, 0, Math.PI*2);
+          ctx.stroke();
+          ctx.restore();
+        }
       }
 
-      var bx = W/2, by = cy0; // ใช้เป็น anchor คำนวณ offset
+      // ── วาด drops ก่อน (หลัง text) ──────────────────────────
+      var bx = W/2;
+      glossyDrop(0.04, bx - fs1*3.4, cy0 + fs1*0.55, fs1*0.52, '#F5B800', '#b8860b');
+      glossyDrop(0.18, bx + fs1*3.6, cy0 - fs1*0.55, fs1*0.38, '#1B4F6B', '#0e2f40');
+      glossyDrop(0.32, bx + fs1*0.6, cy0 + fs1*1.70, fs1*0.44, '#E8641A', '#b03a0a');
+      glossyDrop(0.46, bx - fs1*1.2, cy0 - fs1*0.85, fs1*0.34, '#A8C8D8', '#6898a8');
 
-      // หยดที่ 1 — Gold · ซ้ายล่าง นอกตัวอักษร
-      splash(0.16, bx - fs1*3.2,  by + fs1*0.9,  '#F5B800', fs1*0.9);
-      // หยดที่ 2 — Navy · ขวาบน นอกตัวอักษร
-      splash(0.30, bx + fs1*3.5,  by - fs1*0.7,  '#1B4F6B', fs1*0.65);
-      // หยดที่ 3 — Orange · กลาง-ล่าง ใต้ subtitle
-      splash(0.44, bx - fs1*0.4,  by + fs1*1.55, '#E8641A', fs1*0.75);
-      // หยดที่ 4 — Sky · ขวาล่าง
-      splash(0.56, bx + fs1*2.8,  by + fs1*1.1,  '#A8C8D8', fs1*0.80);
-      // ── end splashes ─────────────────────────────────────────
+      // ══════════════════════════════════════════════
+      // TYPEWRITER TEXT (วาดทับ drops)
+      // ══════════════════════════════════════════════
+      var FULL    = 'TMT STEEL';
+      var CHAR_MS = 90;   // ms ต่อตัวอักษร
+      var nChars  = Math.min(FULL.length, Math.floor(Math.max(txMs - 200, 0) / CHAR_MS));
+      var typed   = FULL.slice(0, nChars);
+      var done    = nChars >= FULL.length;
 
-      // ── 2. TEXT ทับบน shape ──────────────────────────────────
-      ctx.globalAlpha = tA;
-      ctx.fillStyle = '#1a1a18';
+      // cursor กระพริบ 530ms cycle
+      var cursorOn = !done || (Math.floor(txMs / 530) % 2 === 0);
+      var showCursor = !done || (fTX < 0.85); // หยุดกระพริบก่อน fade out
+
       ctx.font = 'bold '+fs1+'px "DM Sans","Inter",sans-serif';
-      ctx.fillText('TMT STEEL', W/2, cy0);
+      ctx.fillStyle = '#1a1a18';
+      ctx.globalAlpha = fadeOut;
 
-      // subtitle
-      ctx.globalAlpha = clamp((fTX-0.08)/0.10, 0, 1) * fadeOut * 0.72;
-      ctx.fillStyle = '#3a3a36';
-      ctx.font = '500 '+fs2+'px "DM Sans","Inter",sans-serif';
-      ctx.letterSpacing = '0.18em';
-      ctx.fillText('PROVIDING STRUCTURE OF YOUR IMAGINATION', W/2, cy0 + fs1*0.90);
-      ctx.letterSpacing = '0';
+      // วาด typed text + cursor
+      var displayText = typed + (showCursor && cursorOn ? '|' : (showCursor ? ' ' : ''));
+      ctx.fillText(displayText, W/2, cy0);
+
+      // subtitle — fade in หลังพิมพ์จบ
+      if(done){
+        var subDelay = (FULL.length * CHAR_MS + 300); // รอ 300ms หลังพิมพ์จบ
+        var subP = clamp((txMs - 200 - subDelay) / 600, 0, 1);
+        ctx.globalAlpha = easeOut(subP) * fadeOut * 0.72;
+        ctx.fillStyle = '#3a3a36';
+        ctx.font = '500 '+fs2+'px "DM Sans","Inter",sans-serif';
+        ctx.letterSpacing = '0.18em';
+        ctx.fillText('PROVIDING STRUCTURE OF YOUR IMAGINATION', W/2, cy0 + fs1*0.90);
+        ctx.letterSpacing = '0';
+      }
 
       ctx.globalAlpha = 1;
     }
