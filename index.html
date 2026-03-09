@@ -3602,22 +3602,6 @@ function drawBundleCard(cvId,s,mode){
     }
   }
 
-  // ── STRAPS ───────────────────────────────────────────────────
-  var strapColor=isWire?'rgba(255,255,255,0.70)':'rgba(20,20,18,0.80)';
-  function drawStrap(sz){
-    var pts=function(y){return[-bw/2-0.02,bw/2+0.02].map(function(x){return prj(rot(x,y,sz));});};
-    var top=pts(totalH/2+0.02),bot=pts(-totalH/2-0.02);
-    ctx.save();ctx.strokeStyle=strapColor;ctx.lineCap='square';
-    ctx.lineWidth=1.8*pr;
-    ctx.beginPath();ctx.moveTo(top[0][0],top[0][1]);ctx.lineTo(top[1][0],top[1][1]);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(bot[0][0],bot[0][1]);ctx.lineTo(bot[1][0],bot[1][1]);ctx.stroke();
-    ctx.lineWidth=1.5*pr;
-    ctx.beginPath();ctx.moveTo(top[0][0],top[0][1]);ctx.lineTo(bot[0][0],bot[0][1]);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(top[1][0],top[1][1]);ctx.lineTo(bot[1][0],bot[1][1]);ctx.stroke();
-    ctx.restore();
-  }
-  drawStrap(-bl*0.30);drawStrap(bl*0.30);
-
   // ── LABELS ───────────────────────────────────────────────────
   var lbl=isGalv?'GALVANIZED':isCold?'COLD ROLLED':isSS?'STAINLESS':'HOT ROLLED';
   var tLabel=parseFloat(s.THICKNESS_MM)||0;
@@ -3735,6 +3719,44 @@ function toggleHero(forceState){
 (function(){
   var cvs = document.getElementById('hero-canvas');
   if(!cvs) return;
+
+  // ── ถ้าเคยดูแล้วใน session นี้ → ข้ามเลย ──────────────────
+  var SEEN_KEY = 'tmt_hero_seen';
+  var skipAnim = sessionStorage.getItem(SEEN_KEY) === '1';
+
+  if(skipAnim){
+    // ซ่อน canvas ทันที ไม่รัน loop
+    var wrap = cvs.parentElement;
+    if(wrap){ wrap.style.display='none'; }
+    return;
+  }
+
+  // ── ปุ่ม Skip ────────────────────────────────────────────────
+  var skipBtn = document.createElement('button');
+  skipBtn.textContent = 'SKIP';
+  skipBtn.style.cssText = [
+    'position:absolute','top:12px','right:14px',
+    'background:none','border:1px solid rgba(0,0,0,0.18)',
+    'font-size:9px','letter-spacing:2px','text-transform:uppercase',
+    'font-family:"DM Mono",monospace','color:rgba(0,0,0,0.35)',
+    'padding:5px 10px','cursor:pointer','z-index:10',
+    'transition:opacity .2s','border-radius:0'
+  ].join(';');
+  skipBtn.onmouseenter = function(){ skipBtn.style.opacity='1'; skipBtn.style.color='#0e0e0e'; };
+  skipBtn.onmouseleave = function(){ skipBtn.style.opacity='0.6'; skipBtn.style.color='rgba(0,0,0,0.35)'; };
+
+  var heroWrap = cvs.parentElement;
+  if(heroWrap){
+    heroWrap.style.position = 'relative';
+    heroWrap.appendChild(skipBtn);
+  }
+
+  function dismissHero(){
+    sessionStorage.setItem(SEEN_KEY,'1');
+    var wrap = cvs.parentElement;
+    if(wrap){ wrap.style.transition='opacity .4s'; wrap.style.opacity='0'; setTimeout(function(){ wrap.style.display='none'; },420); }
+  }
+  skipBtn.addEventListener('click', dismissHero);
 
   var DPR = Math.min(window.devicePixelRatio||1, 2);
   var W, H;
@@ -3990,6 +4012,14 @@ function toggleHero(forceState){
       ctx.letterSpacing = '0';
 
       ctx.globalAlpha = 1;
+    }
+
+    // ── จบ 1 loop → บันทึก session แล้วซ่อน ──────────────────
+    var loopCount = Math.floor((ts - t0) / LOOP);
+    if(loopCount >= 1 && !sessionStorage.getItem(SEEN_KEY)){
+      sessionStorage.setItem(SEEN_KEY,'1');
+      dismissHero();
+      return; // หยุด loop
     }
 
     requestAnimationFrame(draw);
