@@ -3328,7 +3328,11 @@ function render3d(){
 
   // ── MARKING — floating AR label above model ──
   if(S.marking!=='none' && N>0){
+    try {
+    ctx.globalAlpha = 1;
+    ctx.setLineDash([]);
     var s2 = currentSku||{};
+    var grade   = s2.GRADE || 'SPHC';
     var grade   = s2.GRADE || 'SPHC';
     var thick2  = parseFloat(s2.THICKNESS_MM||2).toFixed(2);
     var ww      = s2.WIDTH_MM  || '1200';
@@ -3374,6 +3378,7 @@ function render3d(){
     // คำนวณความสูง label
     var lineH = 15;
     var lh = pad*2 + rows.length*lineH + 4;
+    console.log('[Marking]', S.marking, '| W='+W+' H='+H+' | anchor=('+Math.round(anchorAx)+','+Math.round(anchorAy)+') | label=('+Math.round(lx)+','+Math.round(ly)+') '+Math.round(lw)+'×'+Math.round(lh));
 
     ctx.save();
 
@@ -3452,6 +3457,7 @@ function render3d(){
     });
 
     ctx.restore();
+    } catch(e){ console.error('[Marking error]', e.message, e); }
   }
 
   // ── INFO ──
