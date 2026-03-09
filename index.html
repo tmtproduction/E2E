@@ -2227,10 +2227,12 @@ function setChip(btn,surface){
 }
 function toggleAdvFilter(btn){
   var panel=document.getElementById('filter-panel-wrap');
-  if(!panel)return;
   var bar=document.getElementById('filter-toggle-bar');
-  if(bar) bar.click();
-  btn.textContent = (panel.classList.contains('open')||bar.classList.contains('open')) ? 'ตัวกรองเพิ่มเติม ▾' : 'ตัวกรองน้อยลง ▴';
+  if(!panel||!bar)return;
+  bar.click();
+  // อ่านสถานะหลัง click แล้ว
+  var isNowOpen=panel.classList.contains('open');
+  btn.textContent = isNowOpen ? 'ตัวกรองน้อยลง ▴' : 'ตัวกรองเพิ่มเติม ▾';
 }
 
 // ── FILTER ────────────────────────────────────────
@@ -3090,25 +3092,37 @@ function submitOrder(name,phone,qty,price,note){
   var btn=document.querySelector('.btn-submit');
   if(btn){btn.disabled=true;btn.textContent='กำลังส่ง...';}
   var s=currentSku;
-  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'createOrder',customerName:name,customerPhone:phone,sku:s.SKU,grade:s.GRADE,surface:s.SURFACE,thickness:s.THICKNESS_MM,width:s.WIDTH_MM,length:s.LENGTH_MM,qty:qty,weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),pricePerSheet:price,priceTotal:qty*price,note:note})})
-  .then(function(r){return r.json();})
-  .then(function(res){
-    if(res.success){
-      document.getElementById('modal-body').innerHTML=
-        '<div class="success-box">'+
-          '<div class="check">✓</div>'+
-          '<h3>Order สำเร็จ!</h3>'+
-          '<div class="order-no">'+res.orderNo+'</div>'+
-          '<p style="font-size:11px;color:var(--g600);margin-top:8px;">ทีมงานจะติดต่อกลับภายใน 1 วันทำการ</p>'+
-          '<button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button>'+
-        '</div>';
-    } else {
-      alert('เกิดข้อผิดพลาด: '+(res.error||'unknown'));
-      if(btn){btn.disabled=false;btn.textContent='✓ ยืนยัน Order';}
-    }
+  var payload=JSON.stringify({
+    action:'createOrder',
+    customerName:name, customerPhone:phone,
+    sku:s.SKU, grade:s.GRADE, surface:s.SURFACE,
+    thickness:s.THICKNESS_MM, width:s.WIDTH_MM, length:s.LENGTH_MM,
+    qty:qty,
+    weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),
+    pricePerSheet:price, priceTotal:qty*price,
+    note:note
+  });
+
+  // GAS ต้องการ no-cors จาก GitHub Pages — ใช้ text() แทน json()
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',      // แก้ CORS block
+    body:payload
   })
-  .catch(function(){
-    alert('ส่งข้อมูลไม่ได้ — ตรวจสอบ SCRIPT_URL');
+  .then(function(){
+    // no-cors → response.type='opaque' อ่าน body ไม่ได้ แต่ถ้าถึงบรรทัดนี้แสดงว่าส่งสำเร็จ
+    document.getElementById('modal-body').innerHTML=
+      '<div class="success-box">'+
+        '<div class="check">✓</div>'+
+        '<h3>Order สำเร็จ!</h3>'+
+        '<div class="order-no">รอทีมงานยืนยัน Order</div>'+
+        '<p style="font-size:11px;color:var(--g600);margin-top:8px;">ทีมงานจะติดต่อกลับภายใน 1 วันทำการ</p>'+
+        '<button class="btn-done" onclick="document.getElementById(\'orderOverlay\').classList.remove(\'open\')">ปิด</button>'+
+      '</div>';
+  })
+  .catch(function(err){
+    console.error('submitOrder error:', err);
+    alert('ส่งข้อมูลไม่ได้ — ตรวจสอบการเชื่อมต่อ หรือ SCRIPT_URL');
     if(btn){btn.disabled=false;btn.textContent='✓ ยืนยัน Order';}
   });
 }
@@ -3725,9 +3739,13 @@ function toggleHero(forceState){
   var skipAnim = sessionStorage.getItem(SEEN_KEY) === '1';
 
   if(skipAnim){
-    // เคยดูแล้ว → collapse ทันทีโดยไม่รัน animation
-    setTimeout(function(){ toggleHero(true); }, 0);
-    return;
+    // เคยดูแล้ว → start loop เบื้องหลังก่อน แล้วค่อย collapse
+    // (canvas จะพร้อมทันทีเมื่อกดปุ่ม "แสดง")
+    setTimeout(function(){
+      toggleHero(true);
+      requestAnimationFrame(initResize); // เริ่ม loop แม้ collapsed
+    }, 0);
+    // *** อย่า return — ให้โค้ดที่เหลือทำงานต่อ ***
   }
 
   // ── ปุ่ม Skip ────────────────────────────────────────────────
@@ -3760,7 +3778,7 @@ function toggleHero(forceState){
   var W, H;
   function resize(){
     var pw = cvs.offsetWidth  || cvs.parentElement.clientWidth || window.innerWidth;
-    var ph = cvs.offsetHeight || Math.round(pw / 2.4);
+    var ph = cvs.offsetHeight || Math.round(pw / 2); // ตรงกับ CSS aspect-ratio:2/1
     W = pw;
     H = ph;
     cvs.width  = W * DPR;
@@ -3784,11 +3802,10 @@ function toggleHero(forceState){
   function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
 
   // ── 3D — all scene units = CSS pixels ──────────────────────
-  var BASE_RX = 0.42, BASE_RY = Math.PI/4; // perfect 45° = symmetric iso
+  var BASE_RX = 0.42, BASE_RY = Math.PI/4;
   function rotY(p,a){ var c=Math.cos(a),s=Math.sin(a); return [c*p[0]+s*p[2],p[1],-s*p[0]+c*p[2]]; }
   function rotX(p,a){ var c=Math.cos(a),s=Math.sin(a); return [p[0],c*p[1]-s*p[2],s*p[1]+c*p[2]]; }
-
-  var ctx = cvs.getContext('2d');
+  // ctx ประกาศครั้งเดียวด้านบนแล้ว
 
   var _fov = 1.2;
   function proj(p, rX, rY){
