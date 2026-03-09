@@ -3725,9 +3725,8 @@ function toggleHero(forceState){
   var skipAnim = sessionStorage.getItem(SEEN_KEY) === '1';
 
   if(skipAnim){
-    // ซ่อน canvas ทันที ไม่รัน loop
-    var wrap = cvs.parentElement;
-    if(wrap){ wrap.style.display='none'; }
+    // เคยดูแล้ว → collapse ทันทีโดยไม่รัน animation
+    setTimeout(function(){ toggleHero(true); }, 0);
     return;
   }
 
@@ -3753,8 +3752,7 @@ function toggleHero(forceState){
 
   function dismissHero(){
     sessionStorage.setItem(SEEN_KEY,'1');
-    var wrap = cvs.parentElement;
-    if(wrap){ wrap.style.transition='opacity .4s'; wrap.style.opacity='0'; setTimeout(function(){ wrap.style.display='none'; },420); }
+    toggleHero(true); // collapse แทน hide
   }
   skipBtn.addEventListener('click', dismissHero);
 
@@ -3963,39 +3961,43 @@ function toggleHero(forceState){
 
       // ── 1. SHAPES ก่อน (อยู่หลังตัวอักษร) ──────────────────
 
-      // Gold circle → "T" ซ้าย
+      // Gold circle → บริเวณ "T" ซ้าย — ใหญ่กว่าเพื่อน ออฟเซ็ตนิดนึง
       var d1 = drip(0.18);
-      var gx1 = W/2 - fs1*2.55, gy1 = cy0 + fs1*0.08;
+      var gx1 = W/2 - fs1*2.42, gy1 = cy0 + fs1*0.18;
       drawScaled(function(){
         ctx.fillStyle = '#F5B800';
-        ctx.beginPath(); ctx.arc(gx1, gy1, fs1*0.46, 0, Math.PI*2); ctx.fill();
-      }, gx1, gy1, d1.sc, d1.a * 0.72);
+        ctx.beginPath(); ctx.arc(gx1, gy1, fs1*0.54, 0, Math.PI*2); ctx.fill();
+      }, gx1, gy1, d1.sc, d1.a * 0.68);
 
-      // Navy circle → "S"
+      // Navy circle → บริเวณ "E" — เล็กกว่า offset ขึ้นนิดนึง
       var d2 = drip(0.30);
-      var gx2 = W/2 + fs1*1.42, gy2 = cy0 + fs1*0.08;
+      var gx2 = W/2 + fs1*1.68, gy2 = cy0 - fs1*0.12;
       drawScaled(function(){
         ctx.fillStyle = '#1B4F6B';
-        ctx.beginPath(); ctx.arc(gx2, gy2, fs1*0.46, 0, Math.PI*2); ctx.fill();
-      }, gx2, gy2, d2.sc, d2.a * 0.70);
+        ctx.beginPath(); ctx.arc(gx2, gy2, fs1*0.34, 0, Math.PI*2); ctx.fill();
+      }, gx2, gy2, d2.sc, d2.a * 0.65);
 
-      // Orange rect → "M" กลาง (เลื่อนลง)
+      // Orange rect → บริเวณ "M" — เอียงเล็กน้อย ยาวแนวตั้ง
       var d3 = drip(0.42);
-      var gx3 = W/2 - fs1*0.63, gy3 = cy0 + fs1*0.72;
-      var rW3 = fs1*0.50, rH3 = fs1*0.92;
+      var gx3 = W/2 - fs1*0.55, gy3 = cy0 + fs1*0.60;
+      var rW3 = fs1*0.38, rH3 = fs1*1.10;
       drawScaled(function(){
+        ctx.save();
         ctx.fillStyle = '#E8641A';
-        ctx.fillRect(gx3 - rW3/2, gy3 - rH3/2, rW3, rH3);
-      }, gx3, gy3, d3.sc, d3.a * 0.68);
+        ctx.translate(gx3, gy3);
+        ctx.rotate(0.08); // เอียงเล็กน้อย ~4.5°
+        ctx.fillRect(-rW3/2, -rH3/2, rW3, rH3);
+        ctx.restore();
+      }, gx3, gy3, d3.sc, d3.a * 0.62);
 
-      // Sky rect → "L" ขวา (เลื่อนลง)
+      // Sky rect → บริเวณ "L" ขวา — แนวนอนกว้าง offset ต่ำลง
       var d4 = drip(0.54);
-      var gx4 = W/2 + fs1*2.96, gy4 = cy0 + fs1*0.82;
-      var rW4 = fs1*0.82, rH4 = fs1*0.68;
+      var gx4 = W/2 + fs1*3.08, gy4 = cy0 + fs1*0.78;
+      var rW4 = fs1*1.0, rH4 = fs1*0.48;
       drawScaled(function(){
         ctx.fillStyle = '#A8C8D8';
         ctx.fillRect(gx4 - rW4/2, gy4 - rH4/2, rW4, rH4);
-      }, gx4, gy4, d4.sc, d4.a * 0.65);
+      }, gx4, gy4, d4.sc, d4.a * 0.60);
 
       // ── 2. TEXT ทับบน shape ──────────────────────────────────
       ctx.globalAlpha = tA;
