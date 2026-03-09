@@ -1200,7 +1200,7 @@ body{
 
   <!-- 3D loop canvas animation — full hero -->
   <div class="cat-hero" id="cat-hero" style="padding:0;text-align:left;">
-    <canvas id="hero-canvas" style="width:100%;display:block;aspect-ratio:2.4/1;max-height:42vh;object-fit:cover;"></canvas>
+    <canvas id="hero-canvas" style="width:100%;display:block;aspect-ratio:2.4/1;max-height:42vh;object-fit:cover;will-change:transform;"></canvas>
     <!-- Desktop filters (inline row) -->
     <div style="padding:20px 48px 24px;">
     <div class="search-bar">
@@ -3654,9 +3654,11 @@ new ResizeObserver(function(){if(document.getElementById('viewer-page').classLis
 
 function startLoop(){
   loopRunning=true;
-  (function tick(){
+  var lastNow=performance.now();
+  (function tick(now){
     requestAnimationFrame(tick);
-    animT+=0.016;
+    var dt=Math.min((now-lastNow)/1000,0.05);lastNow=now;
+    animT+=dt;
     if(autoRot&&!drag)camTargetY+=0.004;
     camRotY+=(camTargetY-camRotY)*0.08;
     camRotX+=(camTargetX-camRotX)*0.08;
@@ -3768,9 +3770,10 @@ function toggleHero(forceState){
 
   var ctx = cvs.getContext('2d');
 
+  var _fov = 1.2;
   function proj(p, rX, rY){
     var q = rotX(rotY(p, rY), rX);
-    var fov = W * 1.2;
+    var fov = W * _fov;
     var z = q[2] + fov; if(z<1) z=1;
     return [W/2 + q[0]*fov/z,  H*0.50 - q[1]*fov/z];
   }
@@ -3814,15 +3817,15 @@ function toggleHero(forceState){
   // 6. TILTBACK  0.67–0.80  → fade out canvas
   // 7. TEXTHOLD  0.80–1.00  → TMT STEEL text centred, 10s hold → loop
   // ═══════════════════════════════════════════════
-  var LOOP = 30000;
+  var LOOP = 26000;
   var PH = {
     assemble: [0,    0.12],
     rotate:   [0.12, 0.24],
     spread:   [0.24, 0.38],
     flatten:  [0.38, 0.52],
     gather:   [0.52, 0.67],
-    tiltback: [0.67, 0.80],
-    texthold: [0.80, 1.00]
+    tiltback: [0.67, 0.70],
+    texthold: [0.70, 1.00]
   };
   function pf(t,ph){ return clamp((t-ph[0])/(ph[1]-ph[0]),0,1); }
 
@@ -3855,24 +3858,27 @@ function toggleHero(forceState){
     var fTB = easeInOut( pf(t, PH.tiltback));
     var fTX = pf(t, PH.texthold);
 
-    // rX
+    // rX — คงค่า flat ตลอดหลัง flatten
     var rX = ISO_RX;
-    if(fSP>0) rX = ISO_RX;
     if(fFL>0) rX = lerp(ISO_RX, FLAT_RX, easeInOut(fFL));
     if(fGA>0) rX = FLAT_RX;
-    if(fTB>0) rX = lerp(FLAT_RX, ISO_RX, easeInOut(fTB));
 
-    // rY
+    // rY — คงค่า face ตลอดหลัง rotate
     var rY = ISO_RY;
     if(fRO>0) rY = lerp(ISO_RY, FACE_RY, easeInOut(fRO));
     if(fSP>0) rY = FACE_RY;
     if(fFL>0) rY = FACE_RY;
     if(fGA>0) rY = FACE_RY;
-    if(fTB>0) rY = lerp(FACE_RY, ISO_RY, easeInOut(fTB));
 
-    // canvas alpha — fade out during last 30% of tiltback
+    // FOV — zoom เข้าตอน spread/flatten ให้ล้นจอ, zoom ออกตอน gather
+    _fov = 1.2;
+    if(fSP>0) _fov = lerp(1.2, 0.72, easeInOut(fSP));
+    if(fFL>0) _fov = 0.72;
+    if(fGA>0) _fov = lerp(0.72, 1.2, easeInOut(fGA));
+
+    // fade out ท้าย gather → ยุบแล้วจางหายเลย
     var canvasAlpha = 1;
-    if(fTB > 0.70) canvasAlpha = lerp(1, 0, (fTB-0.70)/0.30);
+    if(fGA > 0.70) canvasAlpha = lerp(1, 0, (fGA-0.70)/0.30);
     if(fTX > 0)    canvasAlpha = 0;
 
     if(canvasAlpha > 0){
@@ -3882,15 +3888,14 @@ function toggleHero(forceState){
         var gi=i%NCOLS, gj=Math.floor(i/NCOLS);
         var gx=gOX+gi*gSX, gz=gOZ+gj*gSZ;
 
-        var dropP = clamp(easeOut(fA*N - i*0.5), 0, 1);
+        var dropP = clamp(easeOut(fA*N - i*0.25), 0, 1);
         var dropY = lerp(-H*0.55, 0, dropP);
 
         var cx=0, cy=byY+dropY, cz=0;
         if(fRO>0){ cx=0; cy=byY; cz=0; }
-        if(fSP>0){ cx=lerp(0,gx,fSP); cy=lerp(byY,byY*0.3,fSP); cz=lerp(0,gz,fSP); }
-        if(fFL>0){ cx=gx; cy=lerp(byY*0.3,0,fFL); cz=gz; }
+        if(fSP>0){ cx=lerp(0,gx,fSP); cy=lerp(byY,0,fSP); cz=lerp(0,gz,fSP); }
+        if(fFL>0){ cx=gx; cy=0; cz=gz; }
         if(fGA>0){ cx=lerp(gx,0,fGA); cy=0; cz=lerp(gz,0,fGA); }
-        if(fTB>0){ cx=0; cy=lerp(0,byY,easeOut(fTB)); cz=0; }
 
         var alpha = dropP * canvasAlpha;
         var q = rotX(rotY([cx,cy,cz], rY), rX);
@@ -3908,30 +3913,76 @@ function toggleHero(forceState){
 
     // ── TEXT HOLD: centred overlay ──────────────────
     if(fTX > 0){
-      // fade in over first 8% of texthold (~0.5s), hold, fade out last 5%
-      var tA = clamp(fTX/0.08, 0, 1);
-      if(fTX > 0.95) tA = lerp(1, 0, (fTX-0.95)/0.05);
-
-      var fs1 = Math.round(W*0.055);   // big title
-      var fs2 = Math.round(W*0.018);   // subtitle
+      var fs1 = Math.round(W*0.055);
+      var fs2 = Math.round(W*0.018);
       var cy0 = H*0.50;
+      var fadeOut = fTX > 0.95 ? lerp(1, 0, (fTX-0.95)/0.05) : 1;
+      var tA = clamp(fTX / 0.12, 0, 1) * fadeOut;
 
       ctx.textAlign = 'center';
 
-      // shadow for depth
-      ctx.globalAlpha = tA * 0.18;
-      ctx.fillStyle = '#000';
-      ctx.font = 'bold '+fs1+'px "DM Sans","Inter",sans-serif';
-      ctx.fillText('TMT STEEL', W/2+3, cy0+3);
+      // ── helper ───────────────────────────────────────────────
+      function drip(start){
+        var p  = clamp((fTX - start) / 0.16, 0, 1);
+        var ea = easeOut(p);
+        return {
+          a:  clamp(p / 0.20, 0, 1) * fadeOut,
+          sc: lerp(5.5, 1.0, ea)
+        };
+      }
+      function drawScaled(drawFn, cx, cy, sc, alpha){
+        if(alpha <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(cx, cy); ctx.scale(sc, sc); ctx.translate(-cx, -cy);
+        drawFn();
+        ctx.restore();
+      }
 
-      // main title
+      // ── 1. SHAPES ก่อน (อยู่หลังตัวอักษร) ──────────────────
+
+      // Gold circle → "T" ซ้าย
+      var d1 = drip(0.18);
+      var gx1 = W/2 - fs1*2.55, gy1 = cy0 + fs1*0.08;
+      drawScaled(function(){
+        ctx.fillStyle = '#F5B800';
+        ctx.beginPath(); ctx.arc(gx1, gy1, fs1*0.46, 0, Math.PI*2); ctx.fill();
+      }, gx1, gy1, d1.sc, d1.a * 0.72);
+
+      // Navy circle → "S"
+      var d2 = drip(0.30);
+      var gx2 = W/2 + fs1*1.42, gy2 = cy0 + fs1*0.08;
+      drawScaled(function(){
+        ctx.fillStyle = '#1B4F6B';
+        ctx.beginPath(); ctx.arc(gx2, gy2, fs1*0.46, 0, Math.PI*2); ctx.fill();
+      }, gx2, gy2, d2.sc, d2.a * 0.70);
+
+      // Orange rect → "M" กลาง (เลื่อนลง)
+      var d3 = drip(0.42);
+      var gx3 = W/2 - fs1*0.63, gy3 = cy0 + fs1*0.72;
+      var rW3 = fs1*0.50, rH3 = fs1*0.92;
+      drawScaled(function(){
+        ctx.fillStyle = '#E8641A';
+        ctx.fillRect(gx3 - rW3/2, gy3 - rH3/2, rW3, rH3);
+      }, gx3, gy3, d3.sc, d3.a * 0.68);
+
+      // Sky rect → "L" ขวา (เลื่อนลง)
+      var d4 = drip(0.54);
+      var gx4 = W/2 + fs1*2.96, gy4 = cy0 + fs1*0.82;
+      var rW4 = fs1*0.82, rH4 = fs1*0.68;
+      drawScaled(function(){
+        ctx.fillStyle = '#A8C8D8';
+        ctx.fillRect(gx4 - rW4/2, gy4 - rH4/2, rW4, rH4);
+      }, gx4, gy4, d4.sc, d4.a * 0.65);
+
+      // ── 2. TEXT ทับบน shape ──────────────────────────────────
       ctx.globalAlpha = tA;
       ctx.fillStyle = '#1a1a18';
       ctx.font = 'bold '+fs1+'px "DM Sans","Inter",sans-serif';
       ctx.fillText('TMT STEEL', W/2, cy0);
 
       // subtitle
-      ctx.globalAlpha = tA * 0.78;
+      ctx.globalAlpha = clamp((fTX-0.08)/0.10, 0, 1) * fadeOut * 0.72;
       ctx.fillStyle = '#3a3a36';
       ctx.font = '500 '+fs2+'px "DM Sans","Inter",sans-serif';
       ctx.letterSpacing = '0.18em';
