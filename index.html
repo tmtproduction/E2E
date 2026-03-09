@@ -68,26 +68,11 @@ body{
   color:var(--g400);text-transform:uppercase;
 }
 
-/* nav right — stat + optional pill */
+/* nav right — stat */
 .nav-right{display:flex;align-items:center;gap:16px;}
 .hdr-stat{
   font-size:11px;letter-spacing:1px;text-transform:uppercase;
   color:var(--g400);font-family:var(--mono);
-}
-.nav-live-pill{
-  display:flex;align-items:center;gap:5px;
-  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--g400);font-family:var(--mono);
-  border:1px solid var(--g200);padding:3px 8px;
-}
-.nav-live-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--green);
-  animation:livePulse 2s ease infinite;
-}
-@keyframes livePulse{
-  0%,100%{opacity:1;}
-  50%{opacity:.3;}
 }
 
 /* ════════════════════════════════════════
@@ -280,59 +265,184 @@ body{
 .skel-btn{height:28px;width:100px;margin-top:auto;}
 
 /* ════════════════════════════════════════
-   SPEC HERO — Level 1
+   SPEC HERO — Level 1  (Phase 4 premium)
 ════════════════════════════════════════ */
 .spec-hero{
-  padding:20px 22px;border-bottom:1px solid var(--g200);
-  background:var(--white);flex-shrink:0;
+  background:var(--white);
+  flex-shrink:0;
+  /* slide-in on open */
+  animation:specHeroIn .35s cubic-bezier(.4,0,.2,1) both;
 }
+@keyframes specHeroIn{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ── product identity strip — sits above dims ── */
+.spec-identity{
+  padding:18px 22px 16px;
+  border-bottom:1px solid var(--g200);
+  display:flex;flex-direction:column;gap:4px;
+}
+.spec-identity-eyebrow{
+  font-size:9px;letter-spacing:3.5px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);font-weight:500;
+}
+.spec-identity-name{
+  font-size:20px;font-weight:300;letter-spacing:-.4px;
+  color:var(--black);line-height:1.15;
+}
+.spec-identity-meta{
+  display:flex;align-items:center;gap:8px;
+  font-size:10px;color:var(--g400);font-family:var(--mono);
+  flex-wrap:wrap;
+}
+.spec-identity-meta-sep{color:var(--g200);}
+
+/* ── 3 dims grid ── */
 .spec-hero-dims{
   display:grid;grid-template-columns:1fr 1fr 1fr;
-  gap:0;border:1px solid var(--g200);margin-bottom:12px;
+  gap:0;border-bottom:1px solid var(--g200);
 }
 .spec-dim-item{
-  padding:14px 14px;border-right:1px solid var(--g200);
+  padding:16px 18px;
+  border-right:1px solid var(--g200);
+  position:relative;
+  transition:background .15s;
 }
 .spec-dim-item:last-child{border-right:none;}
+.spec-dim-item:hover{background:var(--g50);}
+
 .spec-dim-item label{
-  font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--g400);display:block;margin-bottom:6px;
-  font-family:var(--mono);
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--g400);display:block;margin-bottom:8px;
+  font-family:var(--mono);font-weight:500;
 }
-.spec-dim-val{font-size:30px;font-weight:300;letter-spacing:-.5px;line-height:1;}
-.spec-dim-unit{font-size:11px;color:var(--g400);font-family:var(--mono);margin-top:2px;}
+.spec-dim-val{
+  font-size:32px;font-weight:300;letter-spacing:-.8px;line-height:1;
+  color:var(--black);
+}
+.spec-dim-unit{
+  font-size:10px;color:var(--g300);font-family:var(--mono);
+  margin-top:4px;letter-spacing:.5px;text-transform:uppercase;
+}
+
+/* ── price + stock row ── */
 .spec-price-row{
   display:flex;justify-content:space-between;align-items:center;
-  padding:12px 14px;background:var(--black);border:1px solid var(--black);
+  padding:14px 18px;
+  background:var(--black);
 }
-.spec-price-big{font-size:30px;font-weight:300;letter-spacing:-.5px;color:var(--white);}
-.spec-price-unit{font-size:12px;color:var(--g400);margin-left:4px;font-family:var(--mono);}
-.spec-stock-pill{display:inline-flex;align-items:center;gap:6px;}
+.spec-price-left{display:flex;align-items:baseline;gap:6px;}
+.spec-price-big{
+  font-size:32px;font-weight:300;letter-spacing:-.8px;
+  color:var(--white);
+}
+.spec-price-unit{font-size:11px;color:rgba(255,255,255,.4);font-family:var(--mono);letter-spacing:.5px;}
+#sh-prickg{font-size:10px;color:rgba(255,255,255,.35);font-family:var(--mono);}
+.spec-stock-pill{display:inline-flex;align-items:center;gap:7px;}
 .spec-stock-dot{width:6px;height:6px;border-radius:50%;}
-.spec-stock-txt{font-size:12px;font-weight:500;color:var(--g300);font-family:var(--mono);}
+.spec-stock-txt{font-size:11px;font-weight:500;color:var(--g300);font-family:var(--mono);}
 
 /* ════════════════════════════════════════
-   TECH DETAIL COLLAPSE
+   TECH DETAIL COLLAPSE  (Phase 4)
 ════════════════════════════════════════ */
 .tech-collapse-hdr{
-  padding:10px 22px;border-bottom:1px solid var(--g200);
+  padding:11px 22px;border-bottom:1px solid var(--g200);
   display:flex;justify-content:space-between;align-items:center;
   cursor:pointer;transition:background .15s;user-select:none;
+  background:var(--white);
 }
 .tech-collapse-hdr:hover{background:var(--g50);}
-.tech-collapse-title{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g400);font-weight:500;font-family:var(--mono);}
-.tech-collapse-arr{font-size:11px;color:var(--g400);transition:transform .2s;}
+.tech-collapse-title{
+  font-size:9px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--g400);font-weight:500;font-family:var(--mono);
+  display:flex;align-items:center;gap:8px;
+}
+.tech-collapse-title::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--g300);display:inline-block;
+}
+.tech-collapse-hdr.open .tech-collapse-title::before{background:var(--green);}
+.tech-collapse-arr{font-size:9px;color:var(--g400);transition:transform .22s;}
 .tech-collapse-hdr.open .tech-collapse-arr{transform:rotate(180deg);}
 .tech-collapse-body{overflow:hidden;max-height:0;transition:max-height .3s ease;}
 .tech-collapse-body.open{max-height:400px;}
-.tech-grid{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:none;}
-.tech-item{
-  padding:10px 16px;border-bottom:1px solid var(--g100);
-  border-right:1px solid var(--g100);
+
+/* tech grid — premium data table style */
+.tech-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
 }
+.tech-item{
+  padding:12px 16px;
+  border-bottom:1px solid var(--g100);
+  border-right:1px solid var(--g100);
+  transition:background .12s;
+}
+.tech-item:hover{background:var(--g50);}
 .tech-item:nth-child(3n){border-right:none;}
-.tech-item label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:3px;font-family:var(--mono);}
-.tech-item .tv{font-size:14px;font-weight:500;font-family:var(--mono);}
+.tech-item label{
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g300);display:block;margin-bottom:5px;font-family:var(--mono);
+}
+.tech-item .tv{
+  font-size:14px;font-weight:600;font-family:var(--mono);
+  color:var(--black);
+}
+
+/* ── SEC label — upgraded ── */
+.sec-lbl{
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--g400);margin-bottom:14px;display:flex;align-items:center;gap:10px;
+  font-weight:500;font-family:var(--mono);
+}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--g200);}
+
+/* ── SECTION DIVIDER — premium ruled line ── */
+.spec-sec-divider{
+  padding:0 22px;
+  height:32px;
+  display:flex;align-items:center;
+  background:var(--g50);
+  border-top:1px solid var(--g200);
+  border-bottom:1px solid var(--g200);
+}
+.spec-sec-divider-txt{
+  font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);font-weight:600;
+}
+
+/* ── LSS wrap subtle border top ── */
+.lss-wrap{
+  background:var(--black);padding:14px 18px 16px;
+  border-top:2px solid var(--black);
+}
+
+/* ── CTA row — premium ── */
+.cta-row{display:flex;gap:0;flex-shrink:0;border-top:2px solid var(--black);}
+.btn-cta{
+  flex:1;background:var(--black);color:var(--white);border:none;
+  font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  padding:18px;cursor:pointer;font-family:var(--mono);font-weight:500;
+  transition:background .15s, letter-spacing .2s;
+  position:relative;overflow:hidden;
+}
+.btn-cta::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,0);
+  transition:background .2s;
+}
+.btn-cta:hover::after{background:rgba(255,255,255,.08);}
+.btn-cta:hover{letter-spacing:5px;}
+.btn-cta:disabled{background:var(--g200);color:var(--g300);cursor:not-allowed;opacity:1;}
+.btn-cta:disabled:hover{letter-spacing:4px;}
+.btn-custom{
+  flex-shrink:0;background:var(--white);color:var(--black);border:none;
+  border-left:1px solid var(--g200);font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;padding:18px 16px;cursor:pointer;font-family:var(--mono);
+  font-weight:500;transition:background .15s;white-space:nowrap;
+  display:flex;align-items:center;gap:6px;
+}
 
 /* ════════════════════════════════════════
    ORDER — 2-step
@@ -648,7 +758,8 @@ body{
 /* Sidebar */
 .sidebar{border-left:1px solid var(--g200);display:flex;flex-direction:column;overflow:hidden;}
 .panel{display:none;flex-direction:column;flex:1;overflow:hidden;}
-.panel.active{display:flex;}
+.panel.active{display:flex;animation:panelIn .28s cubic-bezier(.4,0,.2,1) both;}
+@keyframes panelIn{from{opacity:0;transform:translateX(6px);}to{opacity:1;transform:translateX(0);}}
 .panel-scroll{flex:1;overflow-y:auto;}
 
 .sec{padding:20px 22px;border-bottom:1px solid var(--g200);flex-shrink:0;}
@@ -1070,7 +1181,6 @@ body{
   /* Nav */
   .cat-nav{padding:0 16px;}
   .brand-name{font-size:11px;letter-spacing:2.5px;}
-  .nav-live-pill{display:none;}
   .hdr-stat{font-size:8px;}
   /* Hero */
   #hero-canvas{aspect-ratio:2/1;max-height:44vw;}
@@ -1307,10 +1417,6 @@ body{
       <div class="brand-sub">Product Catalog</div>
     </div>
     <div class="nav-right">
-      <div class="nav-live-pill">
-        <div class="nav-live-dot"></div>
-        <span>Live Data</span>
-      </div>
       <div class="hdr-stat" id="hdr-stat"></div>
     </div>
   </div>
@@ -1469,6 +1575,18 @@ body{
         <div class="panel-scroll">
           <!-- ── LEVEL 1: KEY INFO — always visible, big ── -->
           <div class="spec-hero" id="spec-hero">
+            <!-- product identity strip -->
+            <div class="spec-identity">
+              <div class="spec-identity-eyebrow" id="v-eyebrow2">—</div>
+              <div class="spec-identity-name" id="v-sku2">—</div>
+              <div class="spec-identity-meta" id="v-meta">
+                <span id="v-grade-meta">—</span>
+                <span class="spec-identity-meta-sep">·</span>
+                <span id="v-std-meta">—</span>
+                <span class="spec-identity-meta-sep">·</span>
+                <span id="v-kg-meta">— kg/แผ่น</span>
+              </div>
+            </div>
             <div class="spec-hero-dims">
               <div class="spec-dim-item">
                 <label>ความหนา</label>
@@ -1487,10 +1605,10 @@ body{
               </div>
             </div>
             <div class="spec-price-row">
-              <div>
+              <div class="spec-price-left">
                 <span class="spec-price-big" id="sh-price">฿ —</span>
                 <span class="spec-price-unit">/ แผ่น</span>
-                <span id="sh-prickg" style="font-size:10px;color:var(--g400);margin-left:8px;font-family:'Courier New',monospace;">—</span>
+                <span id="sh-prickg" style="font-size:10px;color:rgba(255,255,255,.35);margin-left:8px;font-family:'Courier New',monospace;">—</span>
               </div>
               <div class="spec-stock-pill">
                 <div class="spec-stock-dot" id="sh-dot" style="background:var(--green)"></div>
@@ -1514,6 +1632,7 @@ body{
             </div>
           </div>
           <!-- ── existing sections below ── -->
+          <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Limit Spec</span></div>
           <div class="sec" style="padding:0">
             <div style="padding:14px 18px 10px;display:flex;align-items:center;gap:6px;">
               <span class="sec-lbl" style="margin-bottom:0;flex:1">Limit Spec <button class="tip-btn" onclick="showTip(this,'Limit Spec Summary','ตารางนี้แสดงค่ามาตรฐาน JIS ที่แผ่นเหล็กต้องผ่าน ไม่ใช่ค่าที่วัดจริง — ใช้เพื่อ confirm กับลูกค้าว่าสินค้าตรงมาตรฐานอะไร')">?</button></span>
@@ -1533,8 +1652,8 @@ body{
               <table class="lss-table" id="lss-table" style="display:none"></table>
             </div>
           </div>
+          <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Packing &amp; 3D Live</span></div>
           <div class="sec">
-            <div class="sec-lbl">Packing <span style="font-size:8px;letter-spacing:1px;background:var(--black);color:var(--white);padding:1px 5px;margin-left:4px;vertical-align:middle;">3D LIVE</span></div>
             <div class="pack-grid" style="margin-bottom:14px">
               <div class="pack-item">
                 <div class="pack-icon">
@@ -2555,6 +2674,12 @@ function openViewer(idx){
   setText('v-eyebrow', surfaceLabel(s.SURFACE));
   setText('v-sku', makeName(s));
   setText('v-tagline', makeTagline(s));
+  // ── new spec-identity strip ──
+  setText('v-eyebrow2', surfaceBadgeLabel(s.SURFACE));
+  setText('v-sku2', makeName(s));
+  setText('v-grade-meta', s.GRADE||'—');
+  setText('v-std-meta', s.STANDARD||'—');
+  setText('v-kg-meta', (parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+' kg/แผ่น');
   setStyle('v-dot','background', stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)');
   setText('v-stock', stock===0?'หมดสต็อก':'มีสต็อก · '+stock+' แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg');
 
