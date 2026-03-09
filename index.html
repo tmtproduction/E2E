@@ -51,10 +51,11 @@ body{
   position:relative;
 }
 
-/* thin accent line at very top */
+/* animated thin accent line at very top */
 .cat-nav::before{
   content:'';position:absolute;top:0;left:0;right:0;
-  height:2px;background:var(--black);
+  height:2px;
+  background:linear-gradient(90deg, var(--black) 0%, var(--black) 60%, transparent 100%);
 }
 
 .brand{display:flex;align-items:baseline;gap:10px;}
@@ -66,26 +67,43 @@ body{
   font-size:11px;font-weight:400;letter-spacing:1.5px;
   color:var(--g400);text-transform:uppercase;
 }
+
+/* nav right — stat + optional pill */
+.nav-right{display:flex;align-items:center;gap:16px;}
 .hdr-stat{
   font-size:11px;letter-spacing:1px;text-transform:uppercase;
   color:var(--g400);font-family:var(--mono);
 }
+.nav-live-pill{
+  display:flex;align-items:center;gap:5px;
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);
+  border:1px solid var(--g200);padding:3px 8px;
+}
+.nav-live-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--green);
+  animation:livePulse 2s ease infinite;
+}
+@keyframes livePulse{
+  0%,100%{opacity:1;}
+  50%{opacity:.3;}
+}
 
 /* ════════════════════════════════════════
-   HERO — tighter, more breathable
+   HERO — premium cinematic steel hero
 ════════════════════════════════════════ */
 .cat-hero{
-  padding:36px 48px 28px;
   border-bottom:1px solid var(--g200);
-  text-align:center;
   background:var(--white);
   overflow:hidden;
   max-height:900px;
   opacity:1;
-  transition:max-height .35s cubic-bezier(.4,0,.2,1),
-             padding .35s cubic-bezier(.4,0,.2,1),
-             opacity .25s ease,
+  transition:max-height .45s cubic-bezier(.4,0,.2,1),
+             padding .45s cubic-bezier(.4,0,.2,1),
+             opacity .3s ease,
              border-color .3s;
+  padding:0;
 }
 .cat-hero.hdr-hidden{
   max-height:0;
@@ -96,24 +114,37 @@ body{
   pointer-events:none;
 }
 
-.cat-hero-eyebrow{
-  font-size:11px;font-weight:500;letter-spacing:4px;text-transform:uppercase;
-  color:var(--g400);margin-bottom:10px;
-  font-family:var(--mono);
+/* ── hero canvas stays but gets a visual frame ── */
+#hero-canvas{
+  display:block;width:100%;
+  aspect-ratio:2.8/1;
+  max-height:56vh;
+  object-fit:cover;
+  will-change:transform;
 }
 
-.cat-hero-title{
-  font-size:36px;font-weight:300;letter-spacing:-1px;
-  color:var(--black);line-height:1.1;margin-bottom:6px;
+/* ── filter row below canvas ── */
+.hero-filter-zone{
+  padding:0 48px 24px;
+  background:var(--white);
+  border-top:1px solid var(--g200);
 }
-.cat-hero-title strong{font-weight:700;}
 
-.cat-hero-sub{font-size:15px;color:var(--g400);margin-bottom:26px;font-weight:400;letter-spacing:.2px;}
+/* ── filter row label ── */
+.hero-filter-label{
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--g300);font-family:var(--mono);font-weight:500;
+  padding:12px 0 10px;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-filter-label::after{
+  content:'';flex:1;height:1px;background:var(--g200);
+}
 
 /* ── FILTER ROW ── */
 .search-bar{
-  display:flex;gap:0;flex-wrap:wrap;justify-content:center;align-items:stretch;
-  border:1px solid var(--g200);max-width:860px;margin:0 auto;
+  display:flex;gap:0;flex-wrap:wrap;justify-content:flex-start;align-items:stretch;
+  border:1px solid var(--g200);max-width:100%;
 }
 
 .sf{
@@ -364,104 +395,182 @@ body{
 /* Grid — seamless gallery */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
   gap:1px;
   background:var(--g200);
   border:1px solid var(--g200);
 }
 
 /* ════════════════════════════════════════
-   CARD — Polène-inspired clean product card
+   CARD — premium product card with hover reveal
 ════════════════════════════════════════ */
 .card{
   background:var(--white);
-  transition:background .2s;
   cursor:pointer;
   display:flex;flex-direction:column;
   overflow:hidden;
+  position:relative;
+  /* scroll-reveal: start invisible */
+  opacity:0;
+  transform:translateY(22px);
+  transition:opacity .5s ease, transform .5s ease, background .2s;
 }
+.card.revealed{opacity:1;transform:translateY(0);}
 .card:hover{background:var(--g50);}
 
+/* card image area — taller, steel-texture bg */
 .card-img{
-  height:220px;
+  height:260px;
   background:var(--g100);
   position:relative;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
 }
-/* subtle vignette */
-.card-img::after{
+
+/* steel texture gradient when no image */
+.card-img::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at center,transparent 60%,rgba(14,14,14,.06));
+  background:
+    repeating-linear-gradient(
+      -55deg,
+      transparent,
+      transparent 3px,
+      rgba(255,255,255,.03) 3px,
+      rgba(255,255,255,.03) 6px
+    ),
+    linear-gradient(
+      160deg,
+      #e8e6e0 0%,
+      #d4d2cc 35%,
+      #c8c6c0 60%,
+      #dddbd6 100%
+    );
+  z-index:0;
+}
+
+/* vignette on top */
+.card-img::after{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse at 60% 40%,transparent 50%,rgba(14,14,14,.12));
   pointer-events:none;
 }
 
+/* canvas sits above texture */
+.card-img canvas{position:relative;z-index:2;}
+
+/* ── hover overlay — slide up from bottom ── */
+.card-hover-info{
+  position:absolute;bottom:0;left:0;right:0;z-index:3;
+  background:rgba(14,14,14,.92);
+  backdrop-filter:blur(4px);
+  padding:14px 16px;
+  transform:translateY(100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.card:hover .card-hover-info{transform:translateY(0);}
+.chi-left{display:flex;flex-direction:column;gap:3px;}
+.chi-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);font-family:var(--mono);}
+.chi-val{font-size:13px;font-weight:500;color:var(--white);font-family:var(--mono);}
+.chi-btn{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.3);background:none;
+  color:var(--white);padding:7px 14px;cursor:pointer;
+  font-family:var(--mono);white-space:nowrap;
+  transition:background .15s,border-color .15s;
+}
+.chi-btn:hover{background:var(--white);color:var(--black);border-color:var(--white);}
+
 /* stock badge */
 .status-badge{
-  position:absolute;top:12px;left:12px;
+  position:absolute;top:12px;left:12px;z-index:4;
   font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
   font-weight:500;padding:3px 8px;
   font-family:var(--mono);border-radius:0;
 }
-.status-badge.in-stock{background:rgba(26,122,74,.1);color:var(--green);}
-.status-badge.low-stock{background:rgba(184,134,11,.1);color:var(--yellow);}
-.status-badge.out-stock{background:rgba(176,58,46,.08);color:var(--red);}
+.status-badge.in-stock{background:rgba(26,122,74,.12);color:var(--green);}
+.status-badge.low-stock{background:rgba(184,134,11,.12);color:var(--yellow);}
+.status-badge.out-stock{background:rgba(176,58,46,.1);color:var(--red);}
 
-.card-body{padding:18px 20px 12px;flex:1;}
+.card-body{padding:20px 22px 12px;flex:1;}
 
 .c-eyebrow{
-  font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--g400);margin-bottom:4px;font-weight:400;
+  font-size:10px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--g400);margin-bottom:5px;font-weight:500;
   font-family:var(--mono);
 }
 .c-name{
-  font-size:18px;font-weight:400;letter-spacing:-.2px;
+  font-size:19px;font-weight:400;letter-spacing:-.3px;
   line-height:1.2;margin-bottom:3px;color:var(--black);
 }
-.c-tagline{font-size:13px;color:var(--g400);margin-bottom:16px;line-height:1.5;font-weight:400;}
+.c-tagline{font-size:12px;color:var(--g400);margin-bottom:16px;line-height:1.5;font-weight:400;font-family:var(--mono);}
 
 .c-specs{
-  display:flex;gap:16px;margin-bottom:14px;
+  display:flex;gap:0;margin-bottom:14px;
   padding-bottom:12px;border-bottom:1px solid var(--g100);
-  flex-wrap:wrap;
 }
-.cs{display:flex;flex-direction:column;gap:2px;}
-.cs label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--g300);font-family:var(--mono);}
-.cs span{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--black);}
+.cs{
+  display:flex;flex-direction:column;gap:3px;
+  flex:1;padding-right:12px;
+  border-right:1px solid var(--g100);
+  margin-right:12px;
+}
+.cs:last-child{border-right:none;margin-right:0;padding-right:0;}
+.cs label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g300);font-family:var(--mono);}
+.cs span{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--black);}
 
 .c-bottom{display:flex;justify-content:space-between;align-items:flex-end;}
 .c-stock-info{display:flex;flex-direction:column;gap:2px;}
-.c-stock-num{font-size:14px;font-weight:500;font-family:var(--mono);}
+.c-stock-num{font-size:13px;font-weight:600;font-family:var(--mono);}
 .c-stock-num.green{color:var(--green);}.c-stock-num.yellow{color:var(--yellow);}.c-stock-num.red{color:var(--red);}
-.c-stock-label{font-size:11px;color:var(--g400);letter-spacing:.3px;font-family:var(--mono);}
+.c-stock-label{font-size:10px;color:var(--g400);letter-spacing:.3px;font-family:var(--mono);}
 .c-price-info{text-align:right;}
-.c-price-main{font-size:17px;font-weight:400;letter-spacing:-.1px;}
-.c-price-sub{font-size:11px;color:var(--g400);margin-top:2px;font-family:var(--mono);}
+.c-price-main{font-size:18px;font-weight:300;letter-spacing:-.3px;}
+.c-price-sub{font-size:10px;color:var(--g400);margin-top:2px;font-family:var(--mono);}
 
-/* Card footer */
+/* Card footer — two-action row */
 .card-foot{
-  padding:12px 20px;border-top:1px solid var(--g100);
+  padding:12px 22px;border-top:1px solid var(--g100);
   display:flex;justify-content:space-between;align-items:center;gap:10px;
 }
 .btn-spec{
-  font-size:11px;letter-spacing:.3px;color:var(--g400);
-  background:none;border:none;cursor:pointer;font-family:var(--sans);
-  padding:0;text-decoration:underline;text-underline-offset:3px;
+  font-size:10px;letter-spacing:.3px;color:var(--g400);
+  background:none;border:none;cursor:pointer;font-family:var(--mono);
+  padding:0;
   white-space:nowrap;transition:color .15s;
+  display:flex;align-items:center;gap:4px;
 }
+.btn-spec::after{content:'→';transition:transform .15s;}
 .btn-spec:hover{color:var(--black);}
+.btn-spec:hover::after{transform:translateX(3px);}
 .btn-order-card{
   background:var(--black);color:var(--white);border:none;
-  font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  padding:8px 16px;cursor:pointer;font-family:var(--mono);
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  padding:8px 18px;cursor:pointer;font-family:var(--mono);
   font-weight:500;transition:opacity .15s;border-radius:0;
   white-space:nowrap;
 }
 .btn-order-card:hover{opacity:.7;}
 .btn-order-card:disabled{background:var(--g200);color:var(--g300);cursor:not-allowed;opacity:1;}
 
-/* ════════════════════════════════════════
-   VIEWER PAGE
-════════════════════════════════════════ */
+/* ── SCROLL REVEAL animation ── */
+@keyframes cardReveal{
+  from{opacity:0;transform:translateY(28px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* grid wrap premium header */
+.grid-wrap{padding:36px 48px;flex:1;}
+.grid-section-title{
+  font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);font-weight:500;
+  margin-bottom:4px;
+}
+.grid-section-sub{
+  font-size:26px;font-weight:300;letter-spacing:-.5px;
+  color:var(--black);margin-bottom:36px;
+  display:flex;align-items:baseline;gap:12px;
+}
+.grid-section-sub span{font-size:13px;color:var(--g400);font-weight:400;letter-spacing:.3px;}
 #viewer-page{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;}
 #viewer-page.open{display:flex;}
 
@@ -930,6 +1039,7 @@ body{
 @media(max-width:767px){
   .filter-toggle-bar{display:flex;}
   .cat-hero .search-bar{display:none;}
+  .hero-filter-zone{display:none;}
   .cat-hero{padding-bottom:0;}
   .overlay{padding:0;align-items:flex-end;}
   .order-modal{
@@ -960,12 +1070,11 @@ body{
   /* Nav */
   .cat-nav{padding:0 16px;}
   .brand-name{font-size:11px;letter-spacing:2.5px;}
+  .nav-live-pill{display:none;}
   .hdr-stat{font-size:8px;}
   /* Hero */
-  .cat-hero{padding:20px 16px 0;}
-  .cat-hero-eyebrow{font-size:8px;letter-spacing:2px;}
-  .cat-hero-title{font-size:22px;letter-spacing:-.3px;}
-  .cat-hero-sub{font-size:12px;margin-bottom:16px;}
+  #hero-canvas{aspect-ratio:2/1;max-height:44vw;}
+  .hero-filter-zone{display:none;}
   /* chip bar */
   .chip-bar{padding:0 14px;height:36px;}
   .chip-bar-label{display:none;}
@@ -975,11 +1084,13 @@ body{
   .skel-card{height:240px;}
   /* Grid */
   .grid-wrap{padding:20px 16px;}
-  .grid-section-title{font-size:18px;}
-  .grid-section-sub{font-size:10px;margin-bottom:16px;}
+  .grid-section-title{font-size:9px;letter-spacing:3px;margin-bottom:3px;}
+  .grid-section-sub{font-size:20px;margin-bottom:20px;flex-wrap:wrap;gap:6px;}
+  .grid-section-sub span{font-size:10px;}
   .grid{grid-template-columns:1fr;gap:0;}
   /* Card */
   .card{display:grid;grid-template-columns:140px 1fr;grid-template-rows:auto auto;}
+  .card-hover-info{display:none;}  /* no hover on mobile */
   .card-img{height:100%;min-height:140px;grid-row:1/3;}
   .card-body{padding:12px 14px 6px;}
   .c-eyebrow{font-size:7.5px;margin-bottom:3px;}
@@ -1192,17 +1303,24 @@ body{
 <div class="cat-hdr" id="cat-hdr">
   <div class="cat-nav">
     <div class="brand">
-      <div class="brand-name">Steel Catalog</div>
-      <div class="brand-sub">Product Specifications</div>
+      <div class="brand-name">TMT Steel</div>
+      <div class="brand-sub">Product Catalog</div>
     </div>
-    <div class="hdr-stat" id="hdr-stat"></div>
+    <div class="nav-right">
+      <div class="nav-live-pill">
+        <div class="nav-live-dot"></div>
+        <span>Live Data</span>
+      </div>
+      <div class="hdr-stat" id="hdr-stat"></div>
+    </div>
   </div>
 
   <!-- 3D loop canvas animation — full hero -->
-  <div class="cat-hero" id="cat-hero" style="padding:0;text-align:left;">
-    <canvas id="hero-canvas" style="width:100%;display:block;aspect-ratio:2/1;max-height:62vh;object-fit:cover;will-change:transform;"></canvas>
+  <div class="cat-hero" id="cat-hero" style="text-align:left;">
+    <canvas id="hero-canvas" style="width:100%;display:block;aspect-ratio:2.8/1;max-height:56vh;object-fit:cover;will-change:transform;"></canvas>
     <!-- Desktop filters (inline row) -->
-    <div style="padding:20px 48px 24px;">
+    <div class="hero-filter-zone">
+      <div class="hero-filter-label">ค้นหาสินค้า</div>
     <div class="search-bar">
       <div class="sf"><label>ประเภทผิว</label>
         <select id="f-surface" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>ดำ (Hot Rolled)</option><option>ชุบสังกะสี (Galvanized)</option><option>Cold Rolled</option><option>สเตนเลส</option></select>
@@ -1221,7 +1339,7 @@ body{
       </div>
       <button class="btn-clear" onclick="clearFilter()">ล้างตัวกรอง</button>
     </div>
-    </div>
+    </div><!-- /hero-filter-zone -->
   </div>
 
   <!-- ── QUICK FILTER CHIPS ── -->
@@ -2314,24 +2432,35 @@ function renderGrid(){
   if(!filteredSkus.length){el.innerHTML='<div class="state-msg"><div class="icon">🔍</div><p>ไม่พบ Spec ที่ตรงกัน</p></div>';return;}
   var h='<div class="grid-wrap">'+
     '<div class="grid-section-title">สินค้าทั้งหมด</div>'+
-    '<div class="grid-section-sub">'+filteredSkus.length+' รายการ · เหล็กแผ่นทุกประเภท · พร้อมส่ง</div>'+
+    '<div class="grid-section-sub">เหล็กแผ่นทุกประเภท <span>'+filteredSkus.length+' รายการ · พร้อมส่ง</span></div>'+
     '<div class="grid">';
   filteredSkus.forEach(function(s,i){
     var stock=parseInt(s.STOCK_QTY)||0;
     var sc=stock===0?'red':stock<10?'yellow':'green';
     var sbadge=stock===0?'out-stock':stock<10?'low-stock':'in-stock';
     var slabel=stock===0?'หมดสต็อก':stock<10?'เหลือน้อย':'มีสต็อก';
-    var dc=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
     var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
     var prickg=(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1);
     var t=parseFloat(s.THICKNESS_MM)||0,w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
     var sbClass=surfaceBadgeClass(s.SURFACE);
     var sbLabel=surfaceBadgeLabel(s.SURFACE);
-    h+='<div class="card">'+
+    var kg=(parseFloat(s.WEIGHT_PER_SHEET_KG)||0);
+    h+='<div class="card" style="transition-delay:'+(i%4*0.07)+'s">'+
       '<div class="card-img" onclick="openViewer('+i+')" onmouseenter="hoverBundle('+i+',true)" onmouseleave="hoverBundle('+i+',false)">'+
-        '<canvas id="cv-'+i+'" style="display:block;width:100%;height:100%;"></canvas>'+
+        '<canvas id="cv-'+i+'" style="display:block;width:100%;height:100%;position:relative;z-index:2;"></canvas>'+
         '<div class="status-badge '+sbadge+'">'+slabel+'</div>'+
         '<div class="surface-badge '+sbClass+'">'+sbLabel+'</div>'+
+        '<div class="card-hover-info">'+
+          '<div class="chi-left">'+
+            '<span class="chi-label">ราคา/แผ่น</span>'+
+            '<span class="chi-val">฿ '+price.toLocaleString()+'</span>'+
+          '</div>'+
+          '<div class="chi-left">'+
+            '<span class="chi-label">น้ำหนัก</span>'+
+            '<span class="chi-val">'+kg+' kg</span>'+
+          '</div>'+
+          '<button class="chi-btn" onclick="openViewer('+i+')">ดู Spec →</button>'+
+        '</div>'+
       '</div>'+
       '<div class="card-body">'+
         '<div class="c-eyebrow">'+surfaceLabel(s.SURFACE)+'</div>'+
@@ -2341,21 +2470,39 @@ function renderGrid(){
           '<div class="cs"><label>หนา</label><span>'+t+'</span></div>'+
           '<div class="cs"><label>กว้าง</label><span>'+w+'</span></div>'+
           '<div class="cs"><label>ยาว</label><span>'+l+'</span></div>'+
-          '<div class="cs"><label>kg/แผ่น</label><span>'+(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+'</span></div>'+
+          '<div class="cs"><label>kg/แผ่น</label><span>'+kg+'</span></div>'+
         '</div>'+
         '<div class="c-bottom">'+
-          '<div class="c-stock-info"><div class="c-stock-num '+sc+'">'+stock+' แผ่น</div><div class="c-stock-label">'+(parseFloat(s.STOCK_KG)||0).toLocaleString()+' kg พร้อมส่ง</div></div>'+
+          '<div class="c-stock-info"><div class="c-stock-num '+sc+'">'+stock+' แผ่น</div><div class="c-stock-label">'+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg พร้อมส่ง</div></div>'+
           '<div class="c-price-info"><div class="c-price-main">฿ '+price.toLocaleString()+'</div><div class="c-price-sub">'+prickg+' ฿/kg</div></div>'+
         '</div>'+
       '</div>'+
       '<div class="card-foot">'+
-        '<button class="btn-spec" onclick="openViewer('+i+')">ดู Spec Sheet →</button>'+
+        '<button class="btn-spec" onclick="openViewer('+i+')">ดู Spec Sheet</button>'+
         '<button class="btn-order-card" '+(stock===0?'disabled':'')+' onclick="currentSku=filteredSkus['+i+'];buildOrderForm()">เลือกรายการ</button>'+
       '</div>'+
     '</div>';
   });
   h+='</div></div>';
   el.innerHTML=h;
+
+  // ── Scroll Reveal with IntersectionObserver ──
+  var cards=el.querySelectorAll('.card');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('revealed');
+          io.unobserve(e.target);
+        }
+      });
+    },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+    cards.forEach(function(c){io.observe(c);});
+  } else {
+    // fallback — reveal all immediately
+    cards.forEach(function(c){c.classList.add('revealed');});
+  }
+
   setTimeout(function(){
     filteredSkus.forEach(function(s,i){
       var cv=document.getElementById('cv-'+i);
