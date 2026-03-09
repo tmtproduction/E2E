@@ -4041,12 +4041,19 @@ function toggleHero(forceState){
       var showCursor = !done || (fTX < 0.85); // หยุดกระพริบก่อน fade out
 
       ctx.font = 'bold '+fs1+'px "DM Sans","Inter",sans-serif';
-      ctx.fillStyle = '#1a1a18';
       ctx.globalAlpha = fadeOut;
 
-      // วาด typed text + cursor
-      var displayText = typed + (showCursor && cursorOn ? '|' : (showCursor ? ' ' : ''));
-      ctx.fillText(displayText, W/2, cy0);
+      // วาด typed text
+      ctx.fillStyle = '#1a1a18';
+      ctx.fillText(typed, W/2, cy0);
+
+      // วาด cursor แยกสี — offset ไปทางขวาของ text ที่พิมพ์ไปแล้ว
+      if(showCursor){
+        var typedW = ctx.measureText(typed).width;
+        var cursorX = W/2 + typedW/2 + fs1*0.06;
+        ctx.fillStyle = cursorOn ? '#E8641A' : 'transparent';
+        ctx.fillText('|', cursorX, cy0);
+      }
 
       // subtitle — fade in หลังพิมพ์จบ
       if(done){
@@ -4063,8 +4070,17 @@ function toggleHero(forceState){
       ctx.globalAlpha = 1;
     }
 
+    // ── loop แรกจบ → collapse ทันที (canvas ยังรัน loop ต่อ เบื้องหลัง)
+    if(!_firstLoopDone && (ts - t0) >= LOOP){
+      _firstLoopDone = true;
+      sessionStorage.setItem(SEEN_KEY, '1');
+      toggleHero(true);
+    }
+
     requestAnimationFrame(draw);
   }
+
+  var _firstLoopDone = false;
 })();
 
 window.addEventListener('load',function(){
