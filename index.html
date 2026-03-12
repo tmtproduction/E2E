@@ -1813,12 +1813,16 @@ body{
               </div>
             </div>
             <!-- hidden TMT value — used by 3D/JS only, not displayed -->
-            <span id="sh-tmt" style="display:none;">—</span>
             <div class="spec-hero-dims">
               <div class="spec-dim-item">
                 <label>Target หนา</label>
                 <div class="spec-dim-val" id="sh-t">—</div>
                 <div class="spec-dim-unit">mm (nominal)</div>
+              </div>
+              <div class="spec-dim-item">
+                <label>TMT หนา (Actual)</label>
+                <div class="spec-dim-val" id="sh-tmt">—</div>
+                <div class="spec-dim-unit">mm (ผลิตจริง)</div>
               </div>
               <div class="spec-dim-item">
                 <label>เกรด</label>
@@ -1835,11 +1839,9 @@ body{
                 <div class="spec-dim-val" id="sh-l">—</div>
                 <div class="spec-dim-unit">mm</div>
               </div>
-              <div class="spec-dim-item" style="grid-column:2/4;display:flex;align-items:center;padding:14px 18px;border-top:1px solid var(--g200);">
-                <div style="flex:1;">
-                  <label style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:6px;font-family:var(--mono);font-weight:500;">Mill Cert.</label>
-                  <div id="sh-millcert" style="font-size:20px;font-weight:600;font-family:var(--mono);letter-spacing:1px;">—</div>
-                </div>
+              <div class="spec-dim-item" style="display:flex;flex-direction:column;justify-content:center;">
+                <label style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:6px;font-family:var(--mono);font-weight:500;">Mill Cert.</label>
+                <div id="sh-millcert" style="font-size:22px;font-weight:600;font-family:var(--mono);letter-spacing:1px;">—</div>
               </div>
             </div>
             <div class="spec-price-row">
@@ -2539,7 +2541,7 @@ var S_thickMin=1.0, S_thickMax=6.0;
 
 // ── LIMIT SPEC SUMMARY ───────────────────────────
 function buildLSS(s) {
-  var t = parseFloat(s.THICKNESS_MM) || 2.0;
+  var t = parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||2.0;
   var w = parseInt(s.WIDTH_MM)       || 1200;
   var l = parseInt(s.LENGTH_MM)      || 2400;
 
@@ -2943,10 +2945,10 @@ function openViewer(idx){
   // Target: fallback to TMT if TARGET is empty
   var tDisplay = t || tmt || '—';
   setText('sh-t', tDisplay);
-  setText('sh-w', w||'—');
-  setText('sh-l', l||'—');
   setText('sh-tmt', tmt||'—');
   setText('sh-grade', s.GRADE||'—');
+  setText('sh-w', w||'—');
+  setText('sh-l', l||'—');
   // Mill Cert → YES / NO
   var mcRaw = String(s.MILL_CERT||'').trim().toLowerCase();
   var mcYes = mcRaw==='yes'||mcRaw==='y'||mcRaw==='true'||mcRaw==='1'||mcRaw==='มี'||mcRaw==='✓';
@@ -3746,7 +3748,7 @@ function submitOrder(name,phone,qty,price,note){
     action:'createOrder',
     customerName:name, customerPhone:phone,
     sku:s.SKU, grade:s.GRADE, surface:s.SURFACE,
-    thickness:s.THICKNESS_MM, width:s.WIDTH_MM, length:s.LENGTH_MM,
+    thickness:s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM, width:s.WIDTH_MM, length:s.LENGTH_MM,
     qty:qty,
     weightTotal:qty*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0),
     pricePerSheet:price, priceTotal:qty*price,
@@ -3984,7 +3986,7 @@ function render3d(){
     var s2 = currentSku||{};
     var grade   = s2.GRADE || 'SPHC';
     var grade   = s2.GRADE || 'SPHC';
-    var thick2  = parseFloat(s2.THICKNESS_MM||2).toFixed(2);
+    var thick2  = parseFloat(s2.THICKNESS_TARGET_MM||s2.THICKNESS_TMT_MM||2).toFixed(2);
     var ww      = s2.WIDTH_MM  || '1200';
     var ll      = s2.LENGTH_MM || '2400';
     var std2    = s2.STANDARD  || 'JIS G3131';
@@ -4180,7 +4182,8 @@ function drawBundleCard(cvId,s,mode){
 
   // ── 3D SETUP ────────────────────────────────────────────────
   var N=Math.min(parseInt(s.BUNDLE_SIZE)||5,8);
-  var thick=Math.max(0.07,parseFloat(s.THICKNESS_MM)*0.024);
+  var _thk=parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||parseFloat(s.THICKNESS_MM)||2.0;
+  var thick=Math.max(0.07,_thk*0.024);
   var bw=3.55,bl=4.25,gap=0.016,totalH=N*(thick+gap)-gap;
   // Camera angles — match reference image (elevated front-right view)
   var rY=0.50,rX=0.27;
@@ -4274,7 +4277,7 @@ function drawBundleCard(cvId,s,mode){
 
   // ── LABELS ───────────────────────────────────────────────────
   var lbl=isGalv?'GALVANIZED':isCold?'COLD ROLLED':isSS?'STAINLESS':'HOT ROLLED';
-  var tLabel=parseFloat(s.THICKNESS_MM)||0;
+  var tLabel=parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||0;
   var lblColor=isWire?'rgba(255,255,255,0.45)':'#8a8a86';
   var subColor=isWire?'rgba(255,255,255,0.28)':'#adadaa';
   ctx.save();ctx.scale(pr,pr);
