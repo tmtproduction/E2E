@@ -3963,7 +3963,7 @@ function mat3Y(a){return[Math.cos(a),0,Math.sin(a),0,1,0,-Math.sin(a),0,Math.cos
 function mat3X(a){return[1,0,0,0,Math.cos(a),-Math.sin(a),0,Math.sin(a),Math.cos(a)];}
 function mulM(m,v){return[m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];}
 function tp(p){return mulM(mat3X(camRotX),mulM(mat3Y(camRotY),p));}
-function pr(p){var fov=Math.min(W,H)*0.78,z=p[2]+14;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H*0.50-p[1]*fov/z];}
+function pr(p){var fov=Math.min(W,H)*1.45,z=p[2]+14;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H*0.52-p[1]*fov/z];}
 function shade(nx,ny,nz){var lx=0.5,ly=0.8,lz=0.4,ln=Math.sqrt(lx*lx+ly*ly+lz*lz);lx/=ln;ly/=ln;lz/=ln;return Math.max(0.25,nx*lx+ny*ly+nz*lz);}
 
 function drawBox3d(cx,cy,cz,bW,bH,bL,topCol,sideCol,floatY){
@@ -4353,7 +4353,7 @@ function drawBundleCard(cvId,s,mode){
   function mX(a){return[1,0,0,0,Math.cos(a),-Math.sin(a),0,Math.sin(a),Math.cos(a)];}
   function mul(m,v){return[m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];}
   function tp2(p){return mul(mX(rX0),mul(mY(rY0),p));}
-  function pr2(p){var fov=Math.min(CW,CH)*0.82,z=p[2]+14;if(z<0.1)z=0.1;return[CW/2+p[0]*fov/z,CH*0.50-p[1]*fov/z];}
+  function pr2(p){var fov=Math.min(CW,CH)*1.55,z=p[2]+14;if(z<0.1)z=0.1;return[CW/2+p[0]*fov/z,CH*0.52-p[1]*fov/z];}
   function shd(nx,ny,nz){var lx=0.5,ly=0.8,lz=0.4,ln=Math.sqrt(lx*lx+ly*ly+lz*lz);return Math.max(0.20,nx*(lx/ln)+ny*(ly/ln)+nz*(lz/ln));}
 
   function drawBox2(cx,cy,cz,bW,bH,bL,tR,tG,tB,sR,sG,sB){
