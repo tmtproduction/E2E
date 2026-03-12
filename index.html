@@ -306,6 +306,7 @@ body{
 .spec-hero-dims{
   display:grid;grid-template-columns:1fr 1fr 1fr;
   gap:0;border-bottom:1px solid var(--g200);
+  flex-wrap:wrap;
 }
 .spec-dim-item{
   padding:16px 18px;
@@ -1815,19 +1816,30 @@ body{
             </div>
             <div class="spec-hero-dims">
               <div class="spec-dim-item">
-                <label>ความหนา</label>
+                <label>Target หนา</label>
                 <div class="spec-dim-val" id="sh-t">—</div>
-                <div class="spec-dim-unit">mm</div>
+                <div class="spec-dim-unit">mm (nominal)</div>
+              </div>
+              <div class="spec-dim-item">
+                <label>TMT หนา (Actual)</label>
+                <div class="spec-dim-val" id="sh-tmt">—</div>
+                <div class="spec-dim-unit">mm (ผลิตจริง)</div>
               </div>
               <div class="spec-dim-item">
                 <label>ความกว้าง</label>
                 <div class="spec-dim-val" id="sh-w">—</div>
                 <div class="spec-dim-unit">mm</div>
               </div>
-              <div class="spec-dim-item">
+              <div class="spec-dim-item" style="grid-column:1/2;">
                 <label>ความยาว</label>
                 <div class="spec-dim-val" id="sh-l">—</div>
                 <div class="spec-dim-unit">mm</div>
+              </div>
+              <div class="spec-dim-item" style="grid-column:2/4;display:flex;align-items:center;gap:12px;padding:16px 18px;">
+                <div style="flex:1;">
+                  <label style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:4px;font-family:var(--mono);font-weight:500;">Mill Cert.</label>
+                  <div id="sh-millcert" style="font-size:14px;font-weight:600;font-family:var(--mono);">—</div>
+                </div>
               </div>
             </div>
             <div class="spec-price-row">
@@ -2664,7 +2676,49 @@ function parseGvizObj(json){
     var o={};cols.forEach(function(c,i){var cell=row.c[i];o[c]=(cell&&cell.v!=null)?cell.v:'';});return o;
   });
   if(!allSkus.length){showError('ไม่พบข้อมูลใน SKU_CATALOG sheet');return;}
-  filteredSkus=allSkus.slice(); renderGrid();
+  filteredSkus=allSkus.slice();
+  populateDynamicFilters();
+  renderGrid();
+}
+
+// ── DYNAMIC FILTER POPULATION ────────────────────
+function populateDynamicFilters(){
+  function getUnique(field, parseFn){
+    var vals={};
+    allSkus.forEach(function(s){
+      var v=s[field]!==undefined&&s[field]!==''?s[field]:null;
+      if(v===null)return;
+      var key=parseFn?parseFn(v):String(v).trim();
+      if(key&&key!=='0')vals[key]=true;
+    });
+    return Object.keys(vals).sort(function(a,b){return parseFloat(a)-parseFloat(b)||a.localeCompare(b);});
+  }
+
+  function fillSelect(ids, values, fmt){
+    ids.forEach(function(id){
+      var el=document.getElementById(id); if(!el)return;
+      var cur=el.value;
+      el.innerHTML='<option value="">ทั้งหมด</option>';
+      values.forEach(function(v){
+        var opt=document.createElement('option');
+        opt.value=v; opt.textContent=fmt?fmt(v):v;
+        el.appendChild(opt);
+      });
+      el.value=cur; // restore selection
+    });
+  }
+
+  fillSelect(['f-surface','f-surface-m'], getUnique('SURFACE'));
+  fillSelect(['f-grade','f-grade-m'], getUnique('GRADE'));
+  fillSelect(['f-thick','f-thick-m'], getUnique('THICKNESS_TARGET_MM', function(v){
+    var n=parseFloat(v); return isNaN(n)?null:String(n);
+  }));
+  fillSelect(['f-width','f-width-m'], getUnique('WIDTH_MM', function(v){
+    var n=parseInt(v); return isNaN(n)?null:String(n);
+  }));
+  fillSelect(['f-length','f-length-m'], getUnique('LENGTH_MM', function(v){
+    var n=parseInt(v); return isNaN(n)?null:String(n);
+  }));
 }
 function loadViaJsonp(){
   var cb='gcb'+Date.now(),sc=document.createElement('script');
@@ -2704,7 +2758,7 @@ function applyFilter(){
   filteredSkus=allSkus.filter(function(s){
     if(fv('f-surface')&&s.SURFACE!==fv('f-surface'))return false;
     if(fv('f-grade')&&s.GRADE!==fv('f-grade'))return false;
-    if(fv('f-thick')&&String(parseFloat(s.THICKNESS_MM))!==fv('f-thick'))return false;
+    if(fv('f-thick')&&String(parseFloat(s.THICKNESS_TARGET_MM))!==fv('f-thick'))return false;
     if(fv('f-width')&&String(parseInt(s.WIDTH_MM))!==fv('f-width'))return false;
     if(fv('f-length')&&String(parseInt(s.LENGTH_MM))!==fv('f-length'))return false;
     if(s.STATUS&&s.STATUS!=='ACTIVE')return false;
@@ -2723,7 +2777,7 @@ function surfaceLabel(s){
   return s;
 }
 function makeName(s){
-  var t=parseFloat(s.THICKNESS_MM)||0,w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
+  var t=parseFloat(s.THICKNESS_TARGET_MM)||0,w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
   return 'หนา '+t+' mm · '+w+'×'+l+' mm';
 }
 function makeTagline(s){
@@ -2786,18 +2840,25 @@ function renderGrid(){
     var slabel=stock===0?'หมดสต็อก':stock<10?'เหลือน้อย':'มีสต็อก';
     var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
     var prickg=(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1);
-    var t=parseFloat(s.THICKNESS_MM)||0,w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
+    var t=parseFloat(s.THICKNESS_TARGET_MM)||0;
+    var tmt=parseFloat(s.THICKNESS_TMT_MM)||0;
+    var w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
     var sbClass=surfaceBadgeClass(s.SURFACE);
     var sbLabel=surfaceBadgeLabel(s.SURFACE);
     var kg=(parseFloat(s.WEIGHT_PER_SHEET_KG)||0);
+    var millCert=s.MILL_CERT&&String(s.MILL_CERT).trim()&&String(s.MILL_CERT).trim()!=='0'&&String(s.MILL_CERT).toLowerCase()!=='false';
     var isMobile=window.innerWidth<=767;
     var cols=isMobile?1:4;
     var delay=isMobile?(i*0.06):(i%4*0.07);
+    // thickness display: show TMT actual if different from target
+    var thickDisplay = t+'';
+    if(tmt && tmt!==t) thickDisplay = t+' <span style="font-size:10px;color:var(--g400);font-family:var(--mono);">(TMT '+tmt+')</span>';
     h+='<div class="card" style="transition-delay:'+delay+'s">'+
       '<div class="card-img" onclick="openViewer('+i+')" onmouseenter="hoverBundle('+i+',true)" onmouseleave="hoverBundle('+i+',false)">'+
         '<canvas id="cv-'+i+'" style="display:block;width:100%;height:100%;position:relative;z-index:2;"></canvas>'+
         '<div class="status-badge '+sbadge+'">'+slabel+'</div>'+
         '<div class="surface-badge '+sbClass+'">'+sbLabel+'</div>'+
+        (millCert?'<div style="position:absolute;top:12px;left:12px;background:rgba(26,122,74,.9);color:#fff;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;font-family:var(--mono);backdrop-filter:blur(4px);">Mill Cert.</div>':'')+
         '<div class="card-hover-info">'+
           '<div class="chi-left">'+
             '<span class="chi-label">ราคา/แผ่น</span>'+
@@ -2815,9 +2876,9 @@ function renderGrid(){
         '<div class="c-name">'+makeName(s)+'</div>'+
         '<div class="c-tagline">'+makeTagline(s)+'</div>'+
         '<div class="c-specs">'+
-          '<div class="cs"><label>หนา</label><span>'+t+'</span></div>'+
-          '<div class="cs"><label>กว้าง</label><span>'+w+'</span></div>'+
-          '<div class="cs"><label>ยาว</label><span>'+l+'</span></div>'+
+          '<div class="cs"><label>Target (mm)</label><span>'+t+'</span></div>'+
+          '<div class="cs"><label>TMT (mm)</label><span>'+(tmt||'—')+'</span></div>'+
+          '<div class="cs"><label>'+w+'×'+l+'</label><span style="font-size:10px;color:var(--g400);">mm</span></div>'+
           '<div class="cs"><label>kg/แผ่น</label><span>'+kg+'</span></div>'+
         '</div>'+
         '<div class="c-bottom">'+
@@ -2873,13 +2934,25 @@ function openViewer(idx){
   var s=currentSku;
   var stock=parseInt(s.STOCK_QTY)||0;
   var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
-  var t=parseFloat(s.THICKNESS_MM)||0,w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
+  var t=parseFloat(s.THICKNESS_TARGET_MM)||0;
+  var tmt=parseFloat(s.THICKNESS_TMT_MM)||0;
+  var w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
 
   // ── spec hero Level 1 ──
   setText('sh-t', t||'—');
   setText('sh-w', w||'—');
   setText('sh-l', l||'—');
+  setText('sh-tmt', tmt||'—');
+  // Mill Cert badge
+  var mcVal = s.MILL_CERT && String(s.MILL_CERT).trim() && String(s.MILL_CERT).trim()!=='0' && String(s.MILL_CERT).toLowerCase()!=='false';
+  var mcEl = document.getElementById('sh-millcert');
+  if(mcEl){
+    mcEl.textContent = mcVal ? '✓ มี Mill Cert.' : '— ไม่มี';
+    mcEl.style.color = mcVal ? 'var(--green)' : 'var(--g400)';
+  }
   setText('sh-price', price?'฿ '+price.toLocaleString():'฿ —');
+  var pricekgViewer = parseFloat(s.PRICE_PER_KG_THB)||0;
+  setText('sh-prickg', pricekgViewer ? pricekgViewer.toFixed(1)+' ฿/kg' : '—');
   setText('sh-stock', stock+' แผ่น '+(stock===0?'หมดสต็อก':stock<10?'(เหลือน้อย)':'พร้อมส่ง'));
   var shDot=document.getElementById('sh-dot');
   if(shDot) shDot.style.background=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
@@ -2913,7 +2986,7 @@ function openViewer(idx){
   setText('v-stock', stock===0?'หมดสต็อก':'มีสต็อก · '+stock+' แผ่น · '+((parseFloat(s.STOCK_KG)||0).toLocaleString())+' kg');
 
   // Dimensions
-  setHTML('v-t', s.THICKNESS_MM+'<span class="du">mm</span>');  // legacy compat
+  setHTML('v-t', (t||'—')+'<span class="du">mm</span> <span style="font-size:10px;color:var(--g400);font-family:var(--mono);">'+(tmt&&tmt!==t?'(TMT '+tmt+')':'')+'</span>');
   setHTML('v-w', (parseInt(s.WIDTH_MM)||0).toLocaleString()+'<span class="du">mm</span>');
   setHTML('v-l', (parseInt(s.LENGTH_MM)||0).toLocaleString()+'<span class="du">mm</span>');
   setHTML('v-kg', (parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+'<span class="du">kg</span>');
@@ -2928,7 +3001,7 @@ function openViewer(idx){
   setText('v-lift',  s.LIFTING||'Forklift / ไม้รอง');
 
   // 3D controls in Packing
-  var th=parseFloat(s.THICKNESS_MM)||2.0;
+  var th=parseFloat(s.THICKNESS_TARGET_MM)||2.0;
   // แปลงค่า MARKING จาก Sheet → mode ที่ใช้ใน 3D (col AE)
   var markingMap={'none':'none','ไม่มี':'none','mill':'mill','Mill':'mill','MILL':'mill',
     'grade':'grade','Grade':'grade','GRADE':'grade','both':'both','Both':'both','BOTH':'both','ทั้งคู่':'both'};
