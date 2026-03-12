@@ -1807,13 +1807,13 @@ body{
               <div class="spec-identity-eyebrow" id="v-eyebrow2">—</div>
               <div class="spec-identity-name" id="v-sku2">—</div>
               <div class="spec-identity-meta" id="v-meta">
-                <span id="v-grade-meta">—</span>
-                <span class="spec-identity-meta-sep">·</span>
                 <span id="v-std-meta">—</span>
                 <span class="spec-identity-meta-sep">·</span>
                 <span id="v-kg-meta">— kg/แผ่น</span>
               </div>
             </div>
+            <!-- hidden TMT value — used by 3D/JS only, not displayed -->
+            <span id="sh-tmt" style="display:none;">—</span>
             <div class="spec-hero-dims">
               <div class="spec-dim-item">
                 <label>Target หนา</label>
@@ -1821,24 +1821,24 @@ body{
                 <div class="spec-dim-unit">mm (nominal)</div>
               </div>
               <div class="spec-dim-item">
-                <label>TMT หนา (Actual)</label>
-                <div class="spec-dim-val" id="sh-tmt">—</div>
-                <div class="spec-dim-unit">mm (ผลิตจริง)</div>
+                <label>เกรด</label>
+                <div class="spec-dim-val" id="sh-grade" style="font-size:22px;letter-spacing:-.3px;">—</div>
+                <div class="spec-dim-unit">grade</div>
               </div>
               <div class="spec-dim-item">
                 <label>ความกว้าง</label>
                 <div class="spec-dim-val" id="sh-w">—</div>
                 <div class="spec-dim-unit">mm</div>
               </div>
-              <div class="spec-dim-item" style="grid-column:1/2;">
+              <div class="spec-dim-item">
                 <label>ความยาว</label>
                 <div class="spec-dim-val" id="sh-l">—</div>
                 <div class="spec-dim-unit">mm</div>
               </div>
-              <div class="spec-dim-item" style="grid-column:2/4;display:flex;align-items:center;gap:12px;padding:16px 18px;">
+              <div class="spec-dim-item" style="grid-column:2/4;display:flex;align-items:center;padding:14px 18px;border-top:1px solid var(--g200);">
                 <div style="flex:1;">
-                  <label style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:4px;font-family:var(--mono);font-weight:500;">Mill Cert.</label>
-                  <div id="sh-millcert" style="font-size:14px;font-weight:600;font-family:var(--mono);">—</div>
+                  <label style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:6px;font-family:var(--mono);font-weight:500;">Mill Cert.</label>
+                  <div id="sh-millcert" style="font-size:20px;font-weight:600;font-family:var(--mono);letter-spacing:1px;">—</div>
                 </div>
               </div>
             </div>
@@ -2846,7 +2846,8 @@ function renderGrid(){
     var sbClass=surfaceBadgeClass(s.SURFACE);
     var sbLabel=surfaceBadgeLabel(s.SURFACE);
     var kg=(parseFloat(s.WEIGHT_PER_SHEET_KG)||0);
-    var millCert=s.MILL_CERT&&String(s.MILL_CERT).trim()&&String(s.MILL_CERT).trim()!=='0'&&String(s.MILL_CERT).toLowerCase()!=='false';
+    var millCertRaw=String(s.MILL_CERT||'').trim().toLowerCase();
+    var millCert=millCertRaw==='yes'||millCertRaw==='y'||millCertRaw==='true'||millCertRaw==='1'||millCertRaw==='มี'||millCertRaw==='✓';
     var isMobile=window.innerWidth<=767;
     var cols=isMobile?1:4;
     var delay=isMobile?(i*0.06):(i%4*0.07);
@@ -2939,16 +2940,21 @@ function openViewer(idx){
   var w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
 
   // ── spec hero Level 1 ──
-  setText('sh-t', t||'—');
+  // Target: fallback to TMT if TARGET is empty
+  var tDisplay = t || tmt || '—';
+  setText('sh-t', tDisplay);
   setText('sh-w', w||'—');
   setText('sh-l', l||'—');
   setText('sh-tmt', tmt||'—');
-  // Mill Cert badge
-  var mcVal = s.MILL_CERT && String(s.MILL_CERT).trim() && String(s.MILL_CERT).trim()!=='0' && String(s.MILL_CERT).toLowerCase()!=='false';
+  setText('sh-grade', s.GRADE||'—');
+  // Mill Cert → YES / NO
+  var mcRaw = String(s.MILL_CERT||'').trim().toLowerCase();
+  var mcYes = mcRaw==='yes'||mcRaw==='y'||mcRaw==='true'||mcRaw==='1'||mcRaw==='มี'||mcRaw==='✓';
+  var mcNo  = mcRaw==='no'||mcRaw==='n'||mcRaw==='false'||mcRaw==='0'||mcRaw==='ไม่มี'||mcRaw===''||mcRaw==='-';
   var mcEl = document.getElementById('sh-millcert');
   if(mcEl){
-    mcEl.textContent = mcVal ? '✓ มี Mill Cert.' : '— ไม่มี';
-    mcEl.style.color = mcVal ? 'var(--green)' : 'var(--g400)';
+    if(mcYes){mcEl.textContent='YES';mcEl.style.color='var(--green)';}
+    else{mcEl.textContent='NO';mcEl.style.color='var(--g400)';}
   }
   setText('sh-price', price?'฿ '+price.toLocaleString():'฿ —');
   var pricekgViewer = parseFloat(s.PRICE_PER_KG_THB)||0;
@@ -2979,7 +2985,6 @@ function openViewer(idx){
   // ── new spec-identity strip ──
   setText('v-eyebrow2', surfaceBadgeLabel(s.SURFACE));
   setText('v-sku2', makeName(s));
-  setText('v-grade-meta', s.GRADE||'—');
   setText('v-std-meta', s.STANDARD||'—');
   setText('v-kg-meta', (parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+' kg/แผ่น');
   setStyle('v-dot','background', stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)');
