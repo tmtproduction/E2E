@@ -2730,7 +2730,20 @@ function loadViaJsonp(){
   document.body.appendChild(sc);
 }
 
-// ── CHIP FILTER ──────────────────────────────────
+// ── FIELD HELPER — case-insensitive column name lookup ──────────
+// รองรับ Sheet ที่มีชื่อ column ไม่ตรง case เช่น Mill_CERT vs MILL_CERT
+function getField(s, fieldName){
+  if(s[fieldName]!==undefined) return s[fieldName];
+  var lower=fieldName.toLowerCase();
+  var keys=Object.keys(s);
+  for(var i=0;i<keys.length;i++){
+    if(keys[i].toLowerCase()===lower) return s[keys[i]];
+  }
+  return '';
+}
+function getMC(s){ return getField(s,'MILL_CERT')||getField(s,'Mill_CERT')||getField(s,'mill_cert')||''; }
+
+
 var activeChipSurface='';
 function setChip(btn,surface){
   document.querySelectorAll('.chip-bar .chip').forEach(function(c){c.classList.remove('active');});
@@ -2848,7 +2861,7 @@ function renderGrid(){
     var sbClass=surfaceBadgeClass(s.SURFACE);
     var sbLabel=surfaceBadgeLabel(s.SURFACE);
     var kg=(parseFloat(s.WEIGHT_PER_SHEET_KG)||0);
-    var millCertRaw=String(s.MILL_CERT||'').trim().toLowerCase();
+    var millCertRaw=String(getMC(s)).trim().toLowerCase();
     var millCert=millCertRaw==='yes'||millCertRaw==='y'||millCertRaw==='true'||millCertRaw==='1'||millCertRaw==='มี'||millCertRaw==='✓';
     var isMobile=window.innerWidth<=767;
     var cols=isMobile?1:4;
@@ -2950,7 +2963,7 @@ function openViewer(idx){
   setText('sh-w', w||'—');
   setText('sh-l', l||'—');
   // Mill Cert → YES / NO
-  var mcRaw = String(s.MILL_CERT||'').trim().toLowerCase();
+  var mcRaw = String(getMC(s)).trim().toLowerCase();
   var mcYes = mcRaw==='yes'||mcRaw==='y'||mcRaw==='true'||mcRaw==='1'||mcRaw==='มี'||mcRaw==='✓';
   var mcNo  = mcRaw==='no'||mcRaw==='n'||mcRaw==='false'||mcRaw==='0'||mcRaw==='ไม่มี'||mcRaw===''||mcRaw==='-';
   var mcEl = document.getElementById('sh-millcert');
@@ -4183,16 +4196,17 @@ function drawBundleCard(cvId,s,mode){
   // ── 3D SETUP ────────────────────────────────────────────────
   var N=Math.min(parseInt(s.BUNDLE_SIZE)||5,8);
   var _thk=parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||parseFloat(s.THICKNESS_MM)||2.0;
-  var thick=Math.max(0.07,_thk*0.024);
-  var bw=3.55,bl=4.25,gap=0.016,totalH=N*(thick+gap)-gap;
-  // Camera angles — match reference image (elevated front-right view)
-  var rY=0.50,rX=0.27;
+  // ความหนาเด่นชัดขึ้น 3x — ทำให้เห็นความต่างระหว่าง 1.2mm กับ 6mm ชัดเจน
+  var thick=Math.max(0.10, _thk*0.072);
+  var bw=3.8, bl=5.2, gap=0.018, totalH=N*(thick+gap)-gap;
+  // มุมกล้อง — เอียงมากขึ้น เห็น top face กว้าง เห็น side/front ชัด
+  var rY=0.58, rX=0.34;
   var cY=Math.cos(rY),sYY=Math.sin(rY),cX=Math.cos(rX),sXX=Math.sin(rX);
   function rot(x,y,z){var x2=x*cY+z*sYY,z2=-x*sYY+z*cY;return[x2,y*cX-z2*sXX,y*sXX+z2*cX];}
-  // FOV proportional to shorter canvas dimension → no distortion on any aspect ratio
-  var fov=Math.min(W,H)*0.96;
-  var cDist=7.8;
-  function prj(p){var z=p[2]+cDist;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H*0.54-p[1]*fov/z];}
+  // FOV กว้างขึ้น — เห็นทั้งแผ่นในกรอบ
+  var fov=Math.min(W,H)*1.10;
+  var cDist=7.2;
+  function prj(p){var z=p[2]+cDist;if(z<0.1)z=0.1;return[W/2+p[0]*fov/z,H*0.52-p[1]*fov/z];}
   function backFace(p0,p1,p2){return((p1[0]-p0[0])*(p2[1]-p0[1])-(p1[1]-p0[1])*(p2[0]-p0[0]))>0;}
 
   function drawFace(pts,r,g,b,alpha){
