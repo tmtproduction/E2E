@@ -3118,7 +3118,11 @@ function openViewer(idx){
   var markingMap={'none':'none','ไม่มี':'none','mill':'mill','Mill':'mill','MILL':'mill',
     'grade':'grade','Grade':'grade','GRADE':'grade','both':'both','Both':'both','BOTH':'both','ทั้งคู่':'both'};
   var sheetMarking=markingMap[String(s.MARKING||'').trim()]||'none';
-  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:2,marking:sheetMarking};
+  // Parse STRAP_TYPE: NO/N0/0 = ไม่มีสาย, ตัวเลข = จำนวนสาย
+  var strapRaw=String(s.STRAP_TYPE||'2').trim().toUpperCase();
+  var strapCount=(strapRaw==='NO'||strapRaw==='N0'||strapRaw==='0'||strapRaw==='')?0:(parseInt(strapRaw)||2);
+  strapCount=Math.min(3,Math.max(0,strapCount));
+  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:strapCount,marking:sheetMarking};
 
   // set thickness slider limits — Sheet THICK_MIN/THICK_MAX ก่อน fallback ล็อค nominal
   var hasMin = s.THICK_MIN !== '' && s.THICK_MIN != null && !isNaN(parseFloat(s.THICK_MIN));
@@ -3166,12 +3170,13 @@ function openViewer(idx){
     }
   }
 
-  // reset strap buttons — marking highlight ตาม Sheet MARKING column
-  document.querySelectorAll('.strap-btn').forEach(function(b){
-    var oc=b.getAttribute('onclick')||'';
-    var isStrap=oc==='setStraps(2,this)';
-    var isMarking=oc==="setMarking('"+sheetMarking+"',this)";
-    b.classList.toggle('active', isStrap||isMarking);
+  // reset seg-toggle strap + marking buttons
+  document.querySelectorAll('.seg-toggle-group').forEach(function(grp){
+    grp.querySelectorAll('button').forEach(function(b){
+      var oc=b.getAttribute('onclick')||'';
+      var ok=oc==='setStraps('+strapCount+',this)'||oc==="setMarking('"+sheetMarking+"',this)";
+      b.classList.toggle('active',ok);
+    });
   });
 
   var elSheets=document.getElementById('a-sheets'); if(elSheets) elSheets.value=S.sheets;
@@ -4161,8 +4166,8 @@ function render3d(){
     // anchor = จุดบนผิวแผ่นบนสุด ฝั่งซ้ายใกล้กล้อง
     var topSurface = yOff + totalH + fl;
     var anchor3d   = pr(tp([-bw*0.22, topSurface,  bl*0.12]));
-    var anchorAx   = anchor3d[0];
-    var anchorAy   = anchor3d[1];
+    var anchorAx   = Math.max(8, Math.min(W-8, anchor3d[0]));
+    var anchorAy   = Math.max(8, Math.min(H-8, anchor3d[1]));
 
     // label ลอยขึ้น — อยู่เหนือ model เสมอ
     var lw  = Math.min(230, W*0.45);
@@ -4175,10 +4180,9 @@ function render3d(){
     rowsTemp.push(1);
     var lhEst = pad*2 + rowsTemp.length*lineH + 4;
 
-    // lx: ชิดซ้ายของ anchor แต่ไม่เกินขอบ canvas
-    var lx = Math.min(Math.max(8, anchorAx - lw*0.18), W - lw - 8);
-    // ly: ลอยขึ้นเหนือ anchor เสมอ, ไม่เกินขอบบน
-    var ly = Math.max(8, anchorAy - lhEst - 52);
+    // lx/ly: label ลอยอยู่ top-left เสมอ ไม่ขึ้นกับ anchor
+    var lx = Math.max(12, Math.min(anchorAx - lw*0.15, W - lw - 12));
+    var ly = Math.max(12, anchorAy - lhEst - 40);
 
     // สร้างบรรทัด
     var rows = [];
@@ -4196,7 +4200,6 @@ function render3d(){
     // คำนวณความสูง label
     var lineH = 15;
     var lh = pad*2 + rows.length*lineH + 4;
-    console.log('[Marking]', S.marking, '| W='+W+' H='+H+' | anchor=('+Math.round(anchorAx)+','+Math.round(anchorAy)+') | label=('+Math.round(lx)+','+Math.round(ly)+') '+Math.round(lw)+'×'+Math.round(lh));
 
     ctx.save();
 
@@ -4462,9 +4465,15 @@ function drawBundleCard(cvId,s,mode){
   }
 
   if(!isWire){
-    var stZ=[-bl*0.28,bl*0.28];
+    // อ่านจากคอลัมน์ STRAP_TYPE: NO/N0/0 = ไม่มี, ตัวเลข = จำนวนสาย
+    var sRaw=String(s.STRAP_TYPE||'2').trim().toUpperCase();
+    var sN=(sRaw==='NO'||sRaw==='N0'||sRaw==='0'||sRaw==='')?0:Math.min(3,parseInt(sRaw)||2);
+    var strapPositions2=[];
+    if(sN===1) strapPositions2=[0];
+    else if(sN===2) strapPositions2=[-bl*0.28, bl*0.28];
+    else if(sN>=3) strapPositions2=[-bl*0.34, 0, bl*0.34];
     var sw=0.08,st=0.008,sHH=totalH+0.04;
-    stZ.forEach(function(sz){
+    strapPositions2.forEach(function(sz){
       drawStrap2(0,          yOff+totalH+st*0.5, sz, bw+st*2, st,  sw);
       drawStrap2(0,          yOff-st*0.5,         sz, bw+st*2, st,  sw);
       drawStrap2(-bw/2-st*0.5,yOff+totalH/2, sz, st, sHH, sw);
