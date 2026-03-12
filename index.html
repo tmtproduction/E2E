@@ -890,6 +890,29 @@ body{
 .label-preview{padding:16px 18px;background:var(--g50);border-bottom:1px solid var(--g200);flex-shrink:0;}
 .label-preview-title{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g400);margin-bottom:10px;font-weight:500;font-family:var(--mono);}
 .sticker{background:var(--white);border:2px solid var(--black);width:100%;max-width:260px;margin:0 auto;box-shadow:2px 2px 0 var(--black);}
+/* ── TMT LABEL ── */
+.tmt-label{background:#fff;border:1.5px solid #555;width:100%;max-width:340px;margin:0 auto;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;box-shadow:2px 2px 0 #aaa;}
+.tl-header{background:#fff;border-bottom:1.5px solid #333;padding:6px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.tl-logo-zone{display:flex;align-items:center;gap:8px;flex:1;}
+.tl-logo-circle{width:36px;height:36px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tl-company{line-height:1.35;}
+.tl-company-th{font-size:9.5px;font-weight:700;color:#111;}
+.tl-company-en{font-size:7px;color:#555;letter-spacing:.3px;}
+.tl-qr-box{width:52px;height:52px;border:1.5px solid #333;display:flex;align-items:center;justify-content:center;background:#fff;flex-shrink:0;}
+.tl-qr-inner{font-size:7px;color:#888;text-align:center;line-height:1.4;}
+.tl-prodtype{font-size:10px;font-weight:600;padding:4px 10px;border-bottom:1px solid #ddd;color:#222;}
+.tl-row-single{display:flex;align-items:baseline;gap:6px;padding:3px 10px;border-bottom:1px solid #eee;}
+.tl-row2{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #eee;}
+.tl-row2>div{padding:3px 10px;display:flex;align-items:baseline;gap:5px;}
+.tl-row2>div:first-child{border-right:1px solid #eee;}
+.tl-key{font-size:8.5px;color:#555;white-space:nowrap;flex-shrink:0;}
+.tl-val{font-size:10px;color:#111;}
+.tl-val-bold{font-weight:700;}
+.tl-val-lg{font-size:13px;}
+.tl-weight-row{padding:4px 10px;}
+.tl-footer{display:flex;justify-content:space-between;align-items:center;padding:5px 10px;border-top:1.5px solid #333;background:#f8f8f8;}
+.tl-tis{font-size:8px;color:#555;font-style:italic;}
+.tl-remark{font-size:9px;font-weight:700;color:#111;}
 .stk-top{background:var(--black);padding:6px 10px;display:flex;justify-content:space-between;align-items:center;}
 .stk-co{font-size:14px;font-weight:700;letter-spacing:3px;color:var(--white);}
 .stk-cert{font-size:7px;letter-spacing:1px;color:var(--g400);font-family:var(--mono);}
@@ -1763,7 +1786,7 @@ body{
       <div class="vp-tabs">
       <button class="tab-btn active" onclick="switchTab('spec',this)">ข้อมูลสินค้า</button>
       <button class="tab-btn" onclick="switchTab('geo',this)">ตรวจสอบ</button>
-      <button class="tab-btn" onclick="switchTab('admin',this)">แก้ไข</button>
+      <button class="tab-btn" disabled title="สงวนสิทธิ์ Admin" style="opacity:.35;cursor:not-allowed;">แก้ไข</button>
       <button class="tab-btn" onclick="switchTab('label',this)">พิมพ์ Tag</button>
     </div>
     </div><!-- /badge+tabs wrapper -->
@@ -1772,7 +1795,7 @@ body{
   <div class="vp-tabs-mobile">
     <button class="vtm-btn active" onclick="switchTabAll('spec',this)">สินค้า</button>
     <button class="vtm-btn" onclick="switchTabAll('geo',this)">ตรวจสอบ</button>
-    <button class="vtm-btn" onclick="switchTabAll('admin',this)">แก้ไข</button>
+    <button class="vtm-btn" disabled style="opacity:.35;cursor:not-allowed;">แก้ไข</button>
     <button class="vtm-btn" onclick="switchTabAll('label',this)">Tag</button>
   </div>
 
@@ -2477,39 +2500,108 @@ body{
       <div class="panel" id="panel-label">
         <div class="panel-scroll">
           <div class="label-preview">
-            <div class="label-preview-title">Label Preview</div>
-            <div class="sticker" id="sticker">
-              <div class="stk-top">
-                <span class="stk-co" id="s-co">STEEL CO.</span>
-                <span class="stk-cert" id="s-cert">JIS G3131 CERTIFIED</span>
-              </div>
-              <div class="stk-body">
-                <div class="stk-sku" id="s-sku">—</div>
-                <div class="stk-grid">
-                  <div class="stk-field"><label>Grade</label><span id="s-grade">—</span></div>
-                  <div class="stk-field"><label>Surface</label><span id="s-surf">—</span></div>
-                  <div class="stk-field"><label>Thickness</label><span id="s-thick">—</span></div>
-                  <div class="stk-field"><label>Size W×L</label><span id="s-size">—</span></div>
-                  <div class="stk-field"><label>Bundle</label><span id="s-bundle">—</span></div>
-                  <div class="stk-field"><label>Weight/Bundle</label><span id="s-wt">—</span></div>
+            <div class="label-preview-title">Label Preview — TMT Style</div>
+
+            <!-- ══ TMT LABEL ══ -->
+            <div class="tmt-label" id="sticker">
+
+              <!-- HEADER: logo + QR zone -->
+              <div class="tl-header">
+                <div class="tl-logo-zone">
+                  <div class="tl-logo-circle">
+                    <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="13" fill="none" stroke="#fff" stroke-width="1.5"/><text x="14" y="19" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="Arial,sans-serif">TMT</text></svg>
+                  </div>
+                  <div class="tl-company">
+                    <div class="tl-company-th" id="s-co-th">บริษัท ทีเอ็มที สตีล จำกัด (มหาชน)</div>
+                    <div class="tl-company-en">TMT STEEL PUBLIC COMPANY LIMITED</div>
+                  </div>
+                </div>
+                <div class="tl-qr-box">
+                  <div class="tl-qr-inner" id="s-qr-label">QR</div>
                 </div>
               </div>
-              <div class="stk-btm">
-                <div>
-                  <div class="heat">Heat No: <strong id="s-heat">HT-2024-0001</strong></div>
-                  <div class="heat" style="margin-top:3px">Prod: <strong id="s-date">2024-01-01</strong></div>
-                </div>
-                <div class="qr">QR<br>CODE</div>
+
+              <!-- PRODUCT TYPE -->
+              <div class="tl-prodtype" id="s-prodtype">เหล็กกล้าแผ่นบางรีดร้อนขอบรีด</div>
+
+              <!-- CUSTOMER row -->
+              <div class="tl-row-single">
+                <span class="tl-key">Customer</span>
+                <span class="tl-val" id="s-customer">—</span>
               </div>
+
+              <!-- SIZE row -->
+              <div class="tl-row-single">
+                <span class="tl-key">Size</span>
+                <span class="tl-val tl-val-bold" id="s-size-full">—</span>
+              </div>
+
+              <!-- PCS / GRADE row -->
+              <div class="tl-row2">
+                <div><span class="tl-key">Pcs</span><span class="tl-val tl-val-bold" id="s-pcs">—</span></div>
+                <div><span class="tl-key">Grade</span><span class="tl-val tl-val-bold" id="s-grade">—</span></div>
+              </div>
+
+              <!-- Machine No / Heat No -->
+              <div class="tl-row2">
+                <div><span class="tl-key">Machine No.</span><span class="tl-val" id="s-machine">—</span></div>
+                <div><span class="tl-key">Heat No.</span><span class="tl-val" id="s-heat">—</span></div>
+              </div>
+
+              <!-- Bundle No / Batch No -->
+              <div class="tl-row2">
+                <div><span class="tl-key">Bundle No.</span><span class="tl-val tl-val-bold" id="s-bundle">—</span></div>
+                <div><span class="tl-key">Batch No.</span><span class="tl-val" id="s-batchno">—</span></div>
+              </div>
+
+              <!-- Prod.Date / TMT No. -->
+              <div class="tl-row2">
+                <div><span class="tl-key">Prod.Date</span><span class="tl-val" id="s-date">—</span></div>
+                <div><span class="tl-key">TMT No.</span><span class="tl-val" id="s-tmtno">—</span></div>
+              </div>
+
+              <!-- SkinPass / Q-code -->
+              <div class="tl-row2">
+                <div><span class="tl-key">SkinPass</span><span class="tl-val" id="s-skinpass">Non-skinpass</span></div>
+                <div><span class="tl-key">Q-code</span><span class="tl-val" id="s-qcode">—</span></div>
+              </div>
+
+              <!-- Weight full row -->
+              <div class="tl-row-single tl-weight-row">
+                <span class="tl-key">Weight</span>
+                <span class="tl-val tl-val-bold tl-val-lg" id="s-wt">— kg</span>
+              </div>
+
+              <!-- P/O No. -->
+              <div class="tl-row-single">
+                <span class="tl-key">P/O No.</span>
+                <span class="tl-val" id="s-pono">—</span>
+              </div>
+
+              <!-- FOOTER: TIS + Remark -->
+              <div class="tl-footer">
+                <div class="tl-tis" id="s-tis">TIS 528-2566</div>
+                <div class="tl-remark" id="s-remark">Made in Thailand</div>
+              </div>
+
             </div>
+            <!-- ── end tmt-label ── -->
           </div>
+
+          <!-- EDITABLE FIELDS -->
           <div class="label-fields">
-            <div class="lf-title">Edit Label</div>
-            <div class="frow"><label>Company Name</label><input type="text" id="l-co" value="STEEL CO." oninput="syncLabel()"></div>
-            <div class="frow"><label>Heat Number</label><input type="text" id="l-heat" value="HT-2024-0001" oninput="syncLabel()"></div>
-            <div class="frow"><label>Production Date</label><input type="date" id="l-date" value="2024-01-01" oninput="syncLabel()"></div>
-            <div class="frow"><label>Standard / Cert</label><input type="text" id="l-cert" value="JIS G3131 CERTIFIED" oninput="syncLabel()"></div>
-            <button class="btn-print" onclick="printLabel()">Print Label</button>
+            <div class="lf-title">กรอกข้อมูล Tag</div>
+            <div class="frow"><label>Customer</label><input type="text" id="l-customer" placeholder="ชื่อลูกค้า" oninput="syncLabel()"></div>
+            <div class="frow"><label>Pcs (จำนวนแผ่น)</label><input type="number" id="l-pcs" placeholder="เช่น 170" oninput="syncLabel()"></div>
+            <div class="frow"><label>Machine No.</label><input type="text" id="l-machine" placeholder="เช่น CL05" oninput="syncLabel()"></div>
+            <div class="frow"><label>Heat No.</label><input type="text" id="l-heat" placeholder="เช่น —" oninput="syncLabel()"></div>
+            <div class="frow"><label>Bundle No.</label><input type="text" id="l-bundle" placeholder="เช่น 1007847476" oninput="syncLabel()"></div>
+            <div class="frow"><label>Batch No.</label><input type="text" id="l-batchno" placeholder="เช่น S53416-01" oninput="syncLabel()"></div>
+            <div class="frow"><label>Prod. Date</label><input type="date" id="l-date" oninput="syncLabel()"></div>
+            <div class="frow"><label>TMT No.</label><input type="text" id="l-tmtno" placeholder="เช่น 031D093672" oninput="syncLabel()"></div>
+            <div class="frow"><label>P/O No.</label><input type="text" id="l-pono" placeholder="เช่น 1020141120" oninput="syncLabel()"></div>
+            <div class="frow"><label>Remark</label><input type="text" id="l-remark" value="Made in Thailand" oninput="syncLabel()"></div>
+            <button class="btn-print" onclick="printLabel()">🖨 พิมพ์ Tag</button>
           </div>
         </div>
       </div>
@@ -3584,27 +3676,84 @@ function applyAdmin(){
 
 // ── LABEL ─────────────────────────────────────────
 function syncLabel(){
-  if(!currentSku)return;
-  document.getElementById('s-sku').textContent=currentSku.SKU||'—';
-  document.getElementById('s-grade').textContent=currentSku.GRADE||'—';
-  document.getElementById('s-surf').textContent=(currentSku.SURFACE||'').split('(')[0].trim();
-  document.getElementById('s-thick').textContent=S.thick.toFixed(1)+' mm';
-  document.getElementById('s-size').textContent=S.w+'×'+S.l;
-  document.getElementById('s-bundle').textContent=S.sheets+' แผ่น/มัด';
-  document.getElementById('s-wt').textContent=(S.sheets*(parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0)).toFixed(0)+' kg';
-  document.getElementById('s-co').textContent=document.getElementById('l-co').value;
-  document.getElementById('s-cert').textContent=document.getElementById('l-cert').value;
-  document.getElementById('s-heat').textContent=document.getElementById('l-heat').value;
-  document.getElementById('s-date').textContent=document.getElementById('l-date').value;
+  if(!currentSku) return;
+  var s = currentSku;
+  var t  = parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||S.thick||0;
+  var w  = parseInt(s.WIDTH_MM)||S.w||0;
+  var l  = parseInt(s.LENGTH_MM)||S.l||0;
+  var wt = (S.sheets*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)).toFixed(2);
+
+  // auto-fill from SKU data
+  var pcs  = document.getElementById('l-pcs').value   || S.sheets;
+  var pono = document.getElementById('l-pono').value  || '';
+  var cust = document.getElementById('l-customer').value || '';
+  var mach = document.getElementById('l-machine').value  || '';
+  var heat = document.getElementById('l-heat').value     || '';
+  var bund = document.getElementById('l-bundle').value   || '';
+  var batn = document.getElementById('l-batchno').value  || '';
+  var tno  = document.getElementById('l-tmtno').value    || '';
+  var rem  = document.getElementById('l-remark').value   || 'Made in Thailand';
+  var dt   = document.getElementById('l-date').value;
+  // format date dd.mm.yyyy
+  var dtFmt = dt ? (function(d){var p=d.split('-');return p[2]+'.'+p[1]+'.'+p[0];})(dt) : '—';
+
+  var sizeStr = 'เหล็กแผ่นดำ '+t.toFixed(2)+' X '+w+' X '+l+'mm';
+  var std = s.STANDARD||'TIS 528-2566';
+
+  setText('s-prodtype', 'เหล็กกล้าแผ่นบางรีดร้อนขอบรีด');
+  setText('s-customer', cust||'—');
+  setText('s-size-full', sizeStr);
+  setText('s-pcs',    pcs);
+  setText('s-grade',  s.GRADE||'—');
+  setText('s-machine',mach||'—');
+  setText('s-heat',   heat||'—');
+  setText('s-bundle', bund||'—');
+  setText('s-batchno',batn||'—');
+  setText('s-date',   dtFmt);
+  setText('s-tmtno',  tno||'—');
+  setText('s-skinpass','Non-skinpass');
+  setText('s-qcode',  '—');
+  setText('s-wt',     wt+' kg');
+  setText('s-pono',   pono||'—');
+  setText('s-tis',    std);
+  setText('s-remark', rem);
 }
+
 function printLabel(){
-  var el=document.getElementById('sticker');
-  var win=window.open('','_blank','width=500,height=420');
-  win.document.write('<html><head><title>Label</title><style>body{margin:20px;font-family:Helvetica,Arial,sans-serif}*{box-sizing:border-box}.sticker{border:2px solid #0a0a0a;width:300px;box-shadow:3px 3px 0 #0a0a0a}.stk-top{background:#0a0a0a;padding:7px 10px;display:flex;justify-content:space-between;align-items:center}.stk-co{font-size:15px;font-weight:700;letter-spacing:3px;color:#f8f8f6}.stk-cert{font-size:7px;letter-spacing:1px;color:#a0a09c}.stk-body{padding:8px 10px}.stk-sku{font-size:15px;font-weight:700;letter-spacing:.5px;border-bottom:1px solid #e0e0dc;padding-bottom:6px;margin-bottom:6px}.stk-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}.stk-field label{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:#a0a09c;display:block}.stk-field span{font-size:11px;font-weight:600;font-family:Courier New,monospace}.stk-btm{border-top:1px solid #e0e0dc;padding:6px 10px;display:flex;justify-content:space-between;align-items:center}.heat{font-size:8px;letter-spacing:.5px;color:#606060;font-family:Courier New,monospace}.qr{width:38px;height:38px;background:#f0f0ee;border:1px solid #e0e0dc;display:flex;align-items:center;justify-content:center;font-size:6px;text-align:center;color:#a0a09c;line-height:1.4}@media print{body{margin:0}}</style></head><body>');
+  var el = document.getElementById('sticker');
+  if(!el) return;
+  var win = window.open('','_blank','width=600,height=700');
+  var css = `
+    body{margin:24px;font-family:'Helvetica Neue',Arial,sans-serif;background:#f0f0f0;}
+    *{box-sizing:border-box;}
+    .tmt-label{background:#fff;border:1.5px solid #555;width:360px;font-size:11px;box-shadow:3px 3px 0 #aaa;}
+    .tl-header{background:#fff;border-bottom:1.5px solid #333;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+    .tl-logo-zone{display:flex;align-items:center;gap:8px;flex:1;}
+    .tl-logo-circle{width:38px;height:38px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .tl-company-th{font-size:10px;font-weight:700;color:#111;}
+    .tl-company-en{font-size:7px;color:#555;}
+    .tl-qr-box{width:56px;height:56px;border:1.5px solid #333;display:flex;align-items:center;justify-content:center;background:#fff;flex-shrink:0;}
+    .tl-qr-inner{font-size:7px;color:#888;text-align:center;line-height:1.4;}
+    .tl-prodtype{font-size:10.5px;font-weight:600;padding:4px 12px;border-bottom:1px solid #ddd;}
+    .tl-row-single{display:flex;align-items:baseline;gap:6px;padding:3.5px 12px;border-bottom:1px solid #eee;}
+    .tl-row2{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #eee;}
+    .tl-row2>div{padding:3.5px 12px;display:flex;align-items:baseline;gap:5px;}
+    .tl-row2>div:first-child{border-right:1px solid #eee;}
+    .tl-key{font-size:8.5px;color:#555;white-space:nowrap;flex-shrink:0;}
+    .tl-val{font-size:10.5px;color:#111;}
+    .tl-val-bold{font-weight:700;}
+    .tl-val-lg{font-size:14px;}
+    .tl-weight-row{padding:4px 12px;}
+    .tl-footer{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;border-top:1.5px solid #333;background:#f8f8f8;}
+    .tl-tis{font-size:8px;color:#555;font-style:italic;}
+    .tl-remark{font-size:10px;font-weight:700;color:#111;}
+    @media print{body{margin:0;background:#fff;}}
+  `;
+  win.document.write('<html><head><title>TMT Tag</title><style>'+css+'</style></head><body>');
   win.document.write(el.outerHTML);
   win.document.write('</body></html>');
   win.document.close();
-  setTimeout(function(){win.print();},500);
+  setTimeout(function(){ win.print(); }, 600);
 }
 
 // ── ORDER ─────────────────────────────────────────
