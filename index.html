@@ -3254,6 +3254,7 @@ function openViewer(idx){
   var tMin  = parseFloat(s.THICK_MIN||'');
   var tMax  = parseFloat(s.THICK_MAX||'');
   var hasActual = !isNaN(tMin) && !isNaN(tMax) && tMin>0 && tMax>0;
+  console.log('[THICK] MIN='+s.THICK_MIN+' MAX='+s.THICK_MAX+' parsed='+tMin+'/'+tMax+' hasActual='+hasActual);
   // pill strip: MIN/MAX = TARGET ± TOLERANCE_THICKNESS เสมอ
   if(tTgt>0 && tTol>0){
     setText('tc-t-min', (tTgt-tTol).toFixed(2));
@@ -3276,16 +3277,17 @@ function openViewer(idx){
   }
   // Actual range row (THICK_MIN/MAX)
   var dsActualRow = document.getElementById('tc-t-actual-row');
-  if(dsActualRow){
-    dsActualRow.style.display = hasActual ? 'flex' : 'none';
-    if(hasActual){
-      setText('tc-t-actual-min', tMin.toFixed(2));
-      setText('tc-t-actual-max', tMax.toFixed(2));
-      setText('sh-tc-amin', tMin.toFixed(2));
-      setText('sh-tc-amax', tMax.toFixed(2));
-      var shAct=document.getElementById('sh-tc-actual');
-      if(shAct) shAct.style.display='';
-    }
+  if(dsActualRow) dsActualRow.style.display = hasActual ? 'flex' : 'none';
+  // sh-tc-actual — แยกจาก tc-t-actual-row เพื่อให้แสดงใน tab ข้อมูลสินค้าด้วย
+  var shAct = document.getElementById('sh-tc-actual');
+  if(hasActual){
+    setText('tc-t-actual-min', tMin.toFixed(2));
+    setText('tc-t-actual-max', tMax.toFixed(2));
+    setText('sh-tc-amin', tMin.toFixed(2));
+    setText('sh-tc-amax', tMax.toFixed(2));
+    if(shAct) shAct.style.display='';
+  } else {
+    if(shAct) shAct.style.display='none';
   }
 
   // Actual dot — THICKNESS_TMT_MM position on MIN→MAX track
