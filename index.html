@@ -1775,6 +1775,18 @@ body{
 .ds-tol-arrow{flex:1;height:2px;background:var(--g200);position:relative;margin:0 4px;align-self:center;margin-bottom:18px;}
 .ds-tol-arrow::after{content:'';position:absolute;right:-4px;top:-3px;border:4px solid transparent;border-left:6px solid var(--g300);}
 .ds-tol-unit{font-size:9px;color:var(--g400);font-family:var(--mono);margin-left:8px;align-self:flex-start;margin-top:6px;}
+/* Actual dot track — replaces the two separate arrows for Thickness */
+.ds-tol-track-wrap{position:relative;display:flex;align-items:center;flex:1;align-self:center;margin-bottom:18px;}
+.ds-tol-track-line{height:2px;background:var(--g200);width:100%;position:relative;}
+.ds-tol-track-line::after{content:'';position:absolute;right:-4px;top:-3px;border:4px solid transparent;border-left:6px solid var(--g300);}
+.ds-tol-actual-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px currentColor;transition:left .3s ease;}
+.ds-tol-actual-dot--ok{background:#22c55e;color:#22c55e;}
+.ds-tol-actual-dot--warn{background:#f36f22;color:#f36f22;}
+.ds-tol-actual-dot--ng{background:#ef4444;color:#ef4444;}
+.ds-tol-actual-lbl{position:absolute;top:-18px;transform:translateX(-50%);font-size:8px;font-family:var(--mono);font-weight:700;white-space:nowrap;letter-spacing:.3px;}
+.ds-tol-actual-lbl--ok{color:#22c55e;}
+.ds-tol-actual-lbl--warn{color:#f36f22;}
+.ds-tol-actual-lbl--ng{color:#ef4444;}
 /* Form tolerances */
 .ds-form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .ds-form-card{border:1px solid var(--g200);border-radius:8px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:var(--white);}
@@ -2053,7 +2065,12 @@ body{
                     <div class="ds-tol-pill-val" id="tc-t-min">—</div>
                     <div class="ds-tol-pill-lbl">Min</div>
                   </div>
-                  <div class="ds-tol-arrow"></div>
+                  <!-- unified track with actual dot -->
+                  <div class="ds-tol-track-wrap" id="tc-t-track">
+                    <div class="ds-tol-track-line"></div>
+                    <div class="ds-tol-actual-dot" id="tc-t-dot" style="display:none;left:50%"></div>
+                    <div class="ds-tol-actual-lbl" id="tc-t-dot-lbl" style="display:none;left:50%">—</div>
+                  </div>
                   <div class="ds-tol-pill ds-tol-pill--nom">
                     <div class="ds-tol-pill-val" id="tc-t-nom">—</div>
                     <div class="ds-tol-pill-lbl">Target</div>
@@ -3244,6 +3261,37 @@ function openViewer(idx){
       setText('tc-t-actual-min', tMin.toFixed(2));
       setText('tc-t-actual-max', tMax.toFixed(2));
     }
+  }
+
+  // Actual dot — THICKNESS_TMT_MM position on MIN→MAX track
+  var tActual = parseFloat(s.THICKNESS_TMT_MM||'');
+  var dot    = document.getElementById('tc-t-dot');
+  var dotLbl = document.getElementById('tc-t-dot-lbl');
+  if(dot && dotLbl && !isNaN(tActual) && tActual>0){
+    // resolve display MIN/MAX (same logic used above for pill strip)
+    var dotMin, dotMax;
+    if(hasActual){ dotMin=tMin; dotMax=tMax; }
+    else if(tTgt>0 && tTol>0){ dotMin=tTgt-tTol; dotMax=tTgt+tTol; }
+    else { dotMin=tActual; dotMax=tActual; }
+    var pct = (dotMax>dotMin) ? Math.min(Math.max((tActual-dotMin)/(dotMax-dotMin),0),1)*100 : 50;
+    // color: green if within ±5% of range edges, orange if TMT≠TARGET, red if outside
+    var insideRange = tActual>=dotMin && tActual<=dotMax;
+    var colorClass  = insideRange
+      ? (tTgt>0 && Math.abs(tActual-tTgt)<0.001 ? 'ok' : 'ok')
+      : 'ng';
+    if(!insideRange) colorClass = 'ng';
+    else if(tTgt>0 && tActual !== tTgt) colorClass = 'warn';
+    else colorClass = 'ok';
+    dot.style.display    = 'block';
+    dot.style.left       = pct+'%';
+    dot.className        = 'ds-tol-actual-dot ds-tol-actual-dot--'+colorClass;
+    dotLbl.style.display = 'block';
+    dotLbl.style.left    = pct+'%';
+    dotLbl.className     = 'ds-tol-actual-lbl ds-tol-actual-lbl--'+colorClass;
+    dotLbl.textContent   = tActual.toFixed(2);
+  } else if(dot){
+    dot.style.display    = 'none';
+    if(dotLbl) dotLbl.style.display = 'none';
   }
 
   // 2. Width tolerance: min=WIDTH, max=WIDTH+TOLERANCE_W
