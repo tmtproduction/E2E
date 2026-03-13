@@ -3400,18 +3400,23 @@ function openViewer(idx){
     S_thickMin = parseFloat(s.THICK_MIN);
     S_thickMax = parseFloat(s.THICK_MAX);
   } else {
-    // ไม่มี THICK_MIN/MAX — fallback TARGET ± TOLERANCE ไม่ lock
+    // fallback 1: TARGET ± TOLERANCE_THICKNESS
     var tTolSlider = parseFloat(s.TOLERANCE_THICKNESS||0);
     if(tTolSlider > 0){
       S_thickMin = Math.round((th - tTolSlider) * 100) / 100;
       S_thickMax = Math.round((th + tTolSlider) * 100) / 100;
+    } else if(th > 0){
+      // fallback 2: ไม่มีอะไรเลย — ให้ปรับ ±1 mm รอบ target ไม่ lock
+      S_thickMin = Math.round((th - 1.0) * 100) / 100;
+      S_thickMax = Math.round((th + 1.0) * 100) / 100;
     } else {
       S_thickMin = th;
       S_thickMax = th;
     }
   }
   var thickSlider=document.getElementById('a-thick');
-  var thickLocked = (S_thickMin === S_thickMax) && (S_thickMin === th);
+  // lock เฉพาะตอนที่ไม่มีข้อมูลเลย (th=0)
+  var thickLocked = (th <= 0);
   // ใช้ TMT เป็น default ถ้ามี ไม่งั้น fallback TARGET
   var thDefault = (tmt && tmt > 0) ? tmt : th;
   if(thickSlider){
