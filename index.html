@@ -4162,27 +4162,38 @@ function render3d(){
       var std2    = s2.STANDARD||'JIS G3131';
       var surf2   = (s2.SURFACE||'Hot Rolled').replace('ดำ (','').replace(')','').toUpperCase();
 
+      // ── Responsive scale — W เป็น base ──────────────────────────
+      // mobile ~360px → sc≈0.55 | tablet ~768px → sc≈0.82 | desktop ~1100px → sc≈1.0
+      var sc = Math.max(0.50, Math.min(1.0, W / 1100));
+
+      var fSz1 = Math.round(13 * sc);   // หัวข้อหลัก
+      var fSz2 = Math.round(10 * sc);   // รอง
+      var fSz3 = Math.round(9  * sc);   // รายละเอียด
+      var fSz4 = Math.round(8  * sc);   // footer
+
       // ── build rows ──
       var rows=[];
       if(S.marking==='mill'||S.marking==='both'){
-        rows.push({text:thick2M+' × '+ww2+' × '+ll2+' mm', size:22, bold:true,  col:'#0a0a0a'});
-        rows.push({text:'NON SKINPASSED · '+grade2,          size:18, bold:false, col:'#404040'});
+        rows.push({text:thick2M+' × '+ww2+' × '+ll2+' mm', size:fSz1, bold:true,  col:'#0a0a0a'});
+        rows.push({text:'NON SKINPASSED · '+grade2,          size:fSz2, bold:false, col:'#404040'});
       }
       if(S.marking==='grade'||S.marking==='both'){
-        rows.push({text:std2,                  size:18, bold:true,  col:'#0a0a0a'});
-        rows.push({text:surf2+' STEEL SHEET',  size:16, bold:false, col:'#505050'});
-        rows.push({text:'MILL EDGE · THAILAND',size:16, bold:false, col:'#606060'});
+        rows.push({text:std2,                   size:fSz2, bold:true,  col:'#0a0a0a'});
+        rows.push({text:surf2+' STEEL SHEET',   size:fSz3, bold:false, col:'#505050'});
+        rows.push({text:'MILL EDGE · THAILAND', size:fSz3, bold:false, col:'#606060'});
       }
-      rows.push({text:'TIS 528 · '+new Date().getFullYear(), size:14, bold:false, col:'#888888'});
+      rows.push({text:'TIS 528 · '+new Date().getFullYear(), size:fSz4, bold:false, col:'#999999'});
 
-      // ── label geometry — fixed top-left corner ──
-      var pad=20, lineH=32;
-      var logoR=26;
-      var lw=Math.min(440, W*0.84);
-      var lh=pad*2+rows.length*lineH+8;
-      var lx=16, ly=16;  // top-left corner, always visible
+      // ── label geometry ────────────────────────────────────────────
+      var pad    = Math.round(10 * sc);
+      var lineH  = Math.round(fSz1 * 1.55);
+      var logoR  = Math.round(14 * sc);
+      var margin = Math.round(12 * sc);
+      var lw     = Math.min(Math.round(260 * sc), W - margin * 2);
+      var lh     = pad * 2 + rows.length * lineH + Math.round(4 * sc);
+      var lx     = margin, ly = margin;
 
-      // ── anchor point: top-center of model ──
+      // ── anchor: top-center of model ──────────────────────────────
       var topSurface=yOff+totalH+fl;
       var anc=pr(tp([0, topSurface, 0]));
       var ax=Math.max(4,Math.min(W-4,anc[0]));
@@ -4190,28 +4201,30 @@ function render3d(){
 
       ctx.save();
 
-      // leader line: label bottom-right → anchor
-      var ldrX=lx+lw*0.7, ldrY=ly+lh;
+      // leader line: label bottom-right corner → model top
+      var ldrX=lx+lw*0.65, ldrY=ly+lh;
       ctx.beginPath();
-      ctx.moveTo(ldrX, ldrY);
-      ctx.lineTo(ax, ay);
-      ctx.strokeStyle='rgba(10,10,10,0.28)';
-      ctx.lineWidth=1;
-      ctx.setLineDash([3,4]);
+      ctx.moveTo(ldrX,ldrY);
+      ctx.lineTo(ax,ay);
+      ctx.strokeStyle='rgba(10,10,10,0.22)';
+      ctx.lineWidth=Math.max(0.8, sc);
+      ctx.setLineDash([Math.round(3*sc), Math.round(4*sc)]);
       ctx.stroke();
       ctx.setLineDash([]);
 
       // dot ที่ anchor
       ctx.beginPath();
-      ctx.arc(ax,ay,2.5,0,Math.PI*2);
-      ctx.fillStyle='rgba(10,10,10,0.40)';
+      ctx.arc(ax,ay,Math.max(2,2.5*sc),0,Math.PI*2);
+      ctx.fillStyle='rgba(10,10,10,0.38)';
       ctx.fill();
 
-      // label bg
+      // label bg + shadow
       ctx.save();
-      ctx.shadowColor='rgba(0,0,0,0.14)';ctx.shadowBlur=10;ctx.shadowOffsetY=3;
-      ctx.fillStyle='rgba(248,248,246,0.94)';
-      var rx=5;
+      ctx.shadowColor='rgba(0,0,0,0.12)';
+      ctx.shadowBlur=Math.round(8*sc);
+      ctx.shadowOffsetY=Math.round(3*sc);
+      ctx.fillStyle='rgba(248,248,246,0.95)';
+      var rx=Math.round(5*sc);
       ctx.beginPath();
       ctx.moveTo(lx+rx,ly);ctx.lineTo(lx+lw-rx,ly);
       ctx.quadraticCurveTo(lx+lw,ly,lx+lw,ly+rx);
@@ -4224,27 +4237,27 @@ function render3d(){
       ctx.closePath();ctx.fill();
       ctx.restore();
 
-      // accent bar top
+      // accent bar
       ctx.fillStyle='#0a0a0a';
-      ctx.fillRect(lx,ly,lw,2.5);
+      ctx.fillRect(lx,ly,lw,Math.max(1.5,2.5*sc));
 
       // TMT logo circle
-      var logoCx=lx+pad+logoR, logoCy=ly+pad+logoR+2;
+      var logoCx=lx+pad+logoR, logoCy=ly+pad+logoR+Math.round(2*sc);
       ctx.beginPath();ctx.arc(logoCx,logoCy,logoR,0,Math.PI*2);
-      ctx.strokeStyle='#0a0a0a';ctx.lineWidth=1.5;ctx.stroke();
-      ctx.font='bold 14px "Courier New",monospace';
+      ctx.strokeStyle='#0a0a0a';ctx.lineWidth=Math.max(1,1.5*sc);ctx.stroke();
       ctx.fillStyle='#0a0a0a';ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText('TMT',logoCx,logoCy-4);
-      ctx.font='500 11px "Courier New",monospace';
-      ctx.fillText('FLAT',logoCx,logoCy+10);
+      ctx.font='bold '+Math.round(7*sc)+'px "Courier New",monospace';
+      ctx.fillText('TMT',logoCx,logoCy-Math.round(2*sc));
+      ctx.font='500 '+Math.round(5.5*sc)+'px "Courier New",monospace';
+      ctx.fillText('FLAT',logoCx,logoCy+Math.round(5*sc));
 
       // text rows
-      var tx=lx+pad*2+logoR*2+2, ty=ly+pad+4;
+      var tx=lx+pad*2+logoR*2+Math.round(2*sc), ty=ly+pad+Math.round(3*sc);
       ctx.textAlign='left';ctx.textBaseline='top';
       rows.forEach(function(r){
         ctx.font=(r.bold?'bold ':'')+r.size+'px "Courier New",monospace';
         ctx.fillStyle=r.col;
-        ctx.fillText(r.text,tx,ty,lw-pad*2-logoR*2-4);
+        ctx.fillText(r.text,tx,ty,lw-pad*2-logoR*2-Math.round(4*sc));
         ty+=lineH;
       });
 
