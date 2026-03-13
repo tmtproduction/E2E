@@ -2496,8 +2496,8 @@ body{
                   <div class="qc-meas-label">Squareness</div>
                   <div class="qc-meas-sub">วัดทแยงมุม 2 เส้น</div>
                   <div class="qc-form-big" id="qc-sq1">—</div>
-                  <div class="qc-form-big2" id="qc-sq2">Δdiag ≤ 3 mm</div>
-                  <div class="qc-meas-target">0.7% W · Δdiag</div>
+                  <div class="qc-form-big2" id="qc-sq2">u = |X−Y|/2 ≤ 0.7%W</div>
+                  <div class="qc-meas-target">วิธีเส้นทแยงมุม</div>
                 </div>
               </div>
             </div>
@@ -3302,41 +3302,102 @@ function openViewer(idx){
 
   buildLSS(s);
 
-  // ── QC Checklist Panel populate ──────────────────
+  // ── QC Checklist Panel populate (W-SD-QA-01 Rev.21) ───────────────
   setText('qc-sku', s.SKU||'—');
   setText('qc-std-badge', s.STANDARD||'—');
   setText('qc-meta', (s.GRADE||'—')+' · '+
     (parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||'—')+'mm × '+
     (s.WIDTH_MM||'—')+' × '+(s.LENGTH_MM||'—')+' mm');
-  // Thickness
+
+  // ── Thickness tolerance ───
   var qcTgt=parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
   var qcTol=parseFloat(s.TOLERANCE_THICKNESS||0);
+  // Auto-calc tolerance from W-SD-QA-01 table (มอก.528 Cut to Length, most common)
+  if(qcTol<=0 && qcTgt>0){
+    var qcW0=parseFloat(s.WIDTH_MM||1250);
+    var tTbl=[
+      [1.60,qcW0<1500?0.17:0.18],[2.00,qcW0<1500?0.19:0.21],
+      [2.50,qcW0<1500?0.21:0.24],[3.15,qcW0<1500?0.23:0.26],
+      [4.00,qcW0<1500?0.26:0.28],[5.00,qcW0<1500?0.28:0.29],
+      [6.00,qcW0<1500?0.30:0.31],[8.00,qcW0<1500?0.33:0.34],
+      [10.00,qcW0<1500?0.36:0.37],[12.50,qcW0<1500?0.39:0.40],
+      [14.00,0.39],[Infinity,0.55]
+    ];
+    for(var ti=0;ti<tTbl.length;ti++){
+      if(qcTgt<=tTbl[ti][0]){qcTol=tTbl[ti][1];break;}
+    }
+  }
   setText('qc-t-nom', qcTgt>0?qcTgt.toFixed(2):'—');
   setText('qc-t-tol', qcTol>0?qcTol.toFixed(2):'—');
-  setText('qc-t-min', qcTgt>0&&qcTol>0?(qcTgt-qcTol).toFixed(2):(qcTgt>0?qcTgt.toFixed(2):'—'));
+  setText('qc-t-min', qcTgt>0&&qcTol>0?(qcTgt-qcTol).toFixed(2):'—');
   setText('qc-t-max', qcTgt>0&&qcTol>0?(qcTgt+qcTol).toFixed(2):'—');
-  // Width
+
+  // ── Width tolerance (W-SD-QA-01 §2 Cut to Length) ───
   var qcW=parseFloat(s.WIDTH_MM||0);
+  var qcStd=String(s.STANDARD||'').toUpperCase();
   var qcWTol=parseFloat(s.TOLERANCE_MAX||0);
+  if(qcWTol<=0 && qcW>0){
+    // มอก.50 (SGCC): ≤1250→+7, >1250→+10
+    if(qcStd.indexOf('50')!==-1 && qcStd.indexOf('528')===-1){
+      qcWTol=qcW<=1250?7:10;
+    // มอก.2981 (SGMCC) หรือ มอก.3243 (SGHC): +25
+    } else if(qcStd.indexOf('2981')!==-1||qcStd.indexOf('3243')!==-1||qcStd.indexOf('SGMCC')!==-1||qcStd.indexOf('SGHC')!==-1){
+      qcWTol=25;
+    // มอก.1479/1499/1501/1884/2060/528 — standard Cut to Length
+    } else {
+      if(qcW<1000) qcWTol=25;
+      else if(qcW<1250) qcWTol=30;
+      else if(qcW<1600) qcWTol=35;
+      else qcWTol=40;
+    }
+  }
   setText('qc-w-nom', qcW>0?qcW.toFixed(0):'—');
   setText('qc-w-max', qcW>0&&qcWTol>0?(qcW+qcWTol).toFixed(0):'—');
-  // Flatness
-  var qcStd=String(s.STANDARD||'').toUpperCase();
-  var qcFlat=(qcStd.indexOf('STAY')!==-1&&qcStd.indexOf('FLAT')!==-1)?5:12;
-  setText('qc-flat','≤ '+qcFlat+' mm');
+
+  // ── Flatness (W-SD-QA-01 §4 Cut to Length) ───
+  // Returns mm limit / 2m reference length
+  var qcFlat=16, qcFlatRef='2m';
+  if(qcTgt>0){
+    if(qcTgt<1.60)      {qcFlat=qcW<1250?16:20; qcFlatRef='2m';}
+    else if(qcTgt<3.15) {qcFlat=qcW<1250?16:18; qcFlatRef='2m';}
+    else if(qcTgt<4.00) {qcFlat=16; qcFlatRef='2m';}
+    else if(qcTgt<6.00) {qcFlat=14; qcFlatRef='2m';}
+    else if(qcTgt<10.00){qcFlat=13; qcFlatRef='2m';}
+    else if(qcTgt<25.00){qcFlat=12; qcFlatRef='2m';}
+    else if(qcTgt<40.00){qcFlat=9;  qcFlatRef='2m';}
+    else                {qcFlat=8;  qcFlatRef='2m';}
+  }
+  var qcFlatStr='≤ '+qcFlat+' mm/'+qcFlatRef;
+  setText('qc-flat', qcFlatStr);
   var flatSvg=document.getElementById('qc-flat-svg');
   if(flatSvg) flatSvg.textContent='≤'+qcFlat+'mm';
-  // Camber
-  var qcLen=parseFloat(s.LENGTH_MM||2400)/1000;
-  var camberVal='≤ '+(3/qcLen).toFixed(2)+' mm';
+
+  // ── Camber (W-SD-QA-01 §5 Cut to Length) ───
+  var qcLenMM=parseFloat(s.LENGTH_MM||2400);
+  var qcW_=qcW||1219;
+  var camberLim, camberRef;
+  // Width band: <630→band1, 630-1000→band2, ≥1000→band3
+  var wb=(qcW_>=1000?3:(qcW_>=630?2:1));
+  var cBands={1:[5,8,12,20],2:[4,6,10,16],3:[3,5,8,12]};
+  var cb=cBands[wb];
+  if(qcLenMM<2500)       {camberLim=cb[0];camberRef='ความยาวเต็มแผ่น';}
+  else if(qcLenMM<4000)  {camberLim=cb[0];camberRef='ความยาวเต็มแผ่น';}
+  else if(qcLenMM<6300)  {camberLim=cb[1];camberRef='ความยาวเต็มแผ่น';}
+  else if(qcLenMM<10000) {camberLim=cb[2];camberRef='ความยาวเต็มแผ่น';}
+  else                   {camberLim=cb[3];camberRef='10 m';}
+  var camberVal='≤ '+camberLim+' mm / '+camberRef;
   setText('qc-camber', camberVal);
   var camberSvg=document.getElementById('qc-camber-svg');
-  if(camberSvg) camberSvg.textContent='≤'+(3/qcLen).toFixed(2)+'mm';
-  setText('qc-sq1','≤ '+(qcW*0.007).toFixed(1)+' mm');
+  if(camberSvg) camberSvg.textContent='≤'+camberLim+'mm';
+
+  // ── Squareness (W-SD-QA-01 §6) ≤0.7%W diagonal method ───
+  var sq1Val=qcW>0?'≤ '+(qcW*0.007).toFixed(1)+' mm':'—';
+  setText('qc-sq1', sq1Val);
   var sq1Svg=document.getElementById('qc-sq1-svg');
-  if(sq1Svg) sq1Svg.textContent='≤'+(qcW*0.007).toFixed(1)+'mm';
-  setText('qc-sq2','Δdiag ≤ 3 mm');
-  // Packing
+  if(sq1Svg) sq1Svg.textContent=qcW>0?'≤'+(qcW*0.007).toFixed(1)+'':'—';
+  setText('qc-sq2','u = |X−Y|/2  ≤ 0.7%W');
+
+  // ── Packing ───
   setText('qc-bnd',(parseInt(s.BUNDLE_SIZE)||5)+' แผ่น/มัด');
   var qcStrap=String(s.STRAP_TYPE||'2').trim().toUpperCase();
   var qcSN=(qcStrap==='NO'||qcStrap==='N0'||qcStrap==='0'||qcStrap==='')?0:Math.min(3,parseInt(qcStrap)||2);
