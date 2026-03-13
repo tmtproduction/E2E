@@ -1685,6 +1685,16 @@ body{
 .qc-pack-name{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
 .qc-pack-val{font-size:9px;font-weight:700;font-family:var(--mono);color:var(--black);line-height:1.3;text-align:center;}
 
+/* Actual thickness range row (THICK_MIN / THICK_MAX) */
+.ds-tol-actual{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:8px;padding:6px 10px;background:rgba(243,111,34,0.07);border:1px solid rgba(243,111,34,0.25);border-radius:5px;}
+.ds-tol-actual-label{font-size:9px;color:var(--g500);font-family:var(--mono);}
+.ds-tol-actual-range{font-size:11px;font-weight:700;font-family:var(--mono);color:#f36f22;}
+.ds-tol-actual-note{font-size:8px;color:var(--g400);font-family:var(--mono);}
+.qc-actual-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:6px;padding:5px 8px;background:rgba(243,111,34,0.07);border:1px solid rgba(243,111,34,0.25);border-radius:4px;}
+.qc-actual-dot{font-size:8px;color:#f36f22;}
+.qc-actual-label{font-size:9px;color:var(--g500);font-family:var(--mono);}
+.qc-actual-val{font-size:10px;font-weight:700;font-family:var(--mono);color:#f36f22;}
+
 /* Measurement diagram cards */
 .qc-meas-card{background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:12px;margin-bottom:8px;}
 .qc-meas-card:last-child{margin-bottom:0;}
@@ -2055,6 +2065,12 @@ body{
                   </div>
                   <span class="ds-tol-unit">mm</span>
                 </div>
+                <!-- THICK_MIN/MAX actual range row -->
+                <div class="ds-tol-actual" id="tc-t-actual-row" style="display:none">
+                  <span class="ds-tol-actual-label">ความหนาจริงที่เป็นไปได้</span>
+                  <span class="ds-tol-actual-range"><strong id="tc-t-actual-min">—</strong> – <strong id="tc-t-actual-max">—</strong> mm</span>
+                  <span class="ds-tol-actual-note">(THICK_MIN / THICK_MAX จากชีท)</span>
+                </div>
               </div>
 
               <!-- Width -->
@@ -2071,6 +2087,26 @@ body{
                   <div class="ds-tol-arrow"></div>
                   <div class="ds-tol-pill ds-tol-pill--max">
                     <div class="ds-tol-pill-val" id="tc-w-max">—</div>
+                    <div class="ds-tol-pill-lbl">Max</div>
+                  </div>
+                  <span class="ds-tol-unit">mm</span>
+                </div>
+              </div>
+
+              <!-- Length -->
+              <div class="ds-tol-card">
+                <div class="ds-tol-head">
+                  <span class="ds-tol-name">Length</span>
+                  <span class="ds-tol-desc">NOMINAL → MAX ALLOWED</span>
+                </div>
+                <div class="ds-tol-strip">
+                  <div class="ds-tol-pill ds-tol-pill--nom">
+                    <div class="ds-tol-pill-val" id="tc-l-min">—</div>
+                    <div class="ds-tol-pill-lbl">Nominal</div>
+                  </div>
+                  <div class="ds-tol-arrow"></div>
+                  <div class="ds-tol-pill ds-tol-pill--max">
+                    <div class="ds-tol-pill-val" id="tc-l-max">—</div>
                     <div class="ds-tol-pill-lbl">Max</div>
                   </div>
                   <span class="ds-tol-unit">mm</span>
@@ -2352,6 +2388,12 @@ body{
                     <span class="qc-unit">mm</span>
                   </div>
                   <div class="qc-meas-target">Target <strong id="qc-t-nom">—</strong> ±<strong id="qc-t-tol">—</strong> mm</div>
+                  <!-- THICK_MIN/MAX actual range -->
+                  <div class="qc-actual-row" id="qc-t-actual-row" style="display:none">
+                    <span class="qc-actual-dot">◆</span>
+                    <span class="qc-actual-label">ความหนาจริงที่เป็นไปได้:</span>
+                    <span class="qc-actual-val"><strong id="qc-t-actual-min">—</strong> – <strong id="qc-t-actual-max">—</strong> mm</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2388,6 +2430,43 @@ body{
                     <div class="qc-range-pill qc-pill-nom" id="qc-w-nom">—</div>
                     <div class="qc-pill-sep">→</div>
                     <div class="qc-range-pill qc-pill-hi" id="qc-w-max">—</div>
+                    <span class="qc-unit">mm</span>
+                  </div>
+                  <div class="qc-meas-target">Nominal → Max allowed</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Length card -->
+            <div class="qc-meas-card">
+              <div class="qc-meas-top">
+                <div class="qc-meas-diag">
+                  <svg width="140" height="88" viewBox="0 0 140 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Sheet side view (long axis) -->
+                    <rect x="10" y="30" width="120" height="30" fill="#e8e8e4" stroke="#0a0a0a" stroke-width="1.8"/>
+                    <!-- Length arrow -->
+                    <line x1="10" y1="72" x2="130" y2="72" stroke="#f36f22" stroke-width="1.4"/>
+                    <polygon points="10,72 16,69 16,75" fill="#f36f22"/>
+                    <polygon points="130,72 124,69 124,75" fill="#f36f22"/>
+                    <text x="70" y="82" font-size="7" fill="#f36f22" font-family="Courier New" text-anchor="middle" font-weight="700">L</text>
+                    <!-- Steel tape band along sheet -->
+                    <rect x="8" y="42" width="124" height="5" fill="#d4a017" opacity="0.65" rx="1"/>
+                    <text x="70" y="46" font-size="5.5" fill="#fff" font-family="Courier New" text-anchor="middle" font-weight="700">STEEL TAPE</text>
+                    <!-- Measure at 100mm from each end + center -->
+                    <line x1="10" y1="30" x2="10" y2="72" stroke="#888" stroke-width="1" stroke-dasharray="2,2"/>
+                    <line x1="70" y1="30" x2="70" y2="72" stroke="#888" stroke-width="1" stroke-dasharray="2,2"/>
+                    <line x1="130" y1="30" x2="130" y2="72" stroke="#888" stroke-width="1" stroke-dasharray="2,2"/>
+                    <text x="10" y="28" font-size="6" fill="#888" font-family="Courier New" text-anchor="middle">100mm</text>
+                    <text x="130" y="28" font-size="6" fill="#888" font-family="Courier New" text-anchor="middle">100mm</text>
+                  </svg>
+                </div>
+                <div class="qc-meas-vals">
+                  <div class="qc-meas-label">Length</div>
+                  <div class="qc-meas-sub">วัดด้วย Steel Tape</div>
+                  <div class="qc-range-strip">
+                    <div class="qc-range-pill qc-pill-nom" id="qc-l-nom">—</div>
+                    <div class="qc-pill-sep">→</div>
+                    <div class="qc-range-pill qc-pill-hi" id="qc-l-max">—</div>
                     <span class="qc-unit">mm</span>
                   </div>
                   <div class="qc-meas-target">Nominal → Max allowed</div>
@@ -3136,10 +3215,19 @@ function openViewer(idx){
   setText('tc-ys', s.YIELD_STRENGTH||'—');
   setText('tc-el', s.ELONGATION||'—');
 
-  // 1. Thickness tolerance: target ± TOLERANCE_THICKNESS
+  // 1. Thickness tolerance
+  // ใช้ THICK_MIN/THICK_MAX (ความหนาจริงที่เกิดขึ้นได้) ถ้ามี ไม่เช่นนั้น fallback TARGET±TOLERANCE
   var tTgt  = parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
   var tTol  = parseFloat(s.TOLERANCE_THICKNESS||0);
-  if(tTgt>0 && tTol>0){
+  var tMin  = parseFloat(s.THICK_MIN||'');
+  var tMax  = parseFloat(s.THICK_MAX||'');
+  var hasActual = !isNaN(tMin) && !isNaN(tMax) && tMin>0 && tMax>0;
+  // pill strip: ใช้ THICK_MIN/MAX เป็นหลัก ถ้าไม่มีใช้ TARGET±TOL
+  if(hasActual){
+    setText('tc-t-min', tMin.toFixed(2));
+    setText('tc-t-nom', tTgt>0?tTgt.toFixed(2):'—');
+    setText('tc-t-max', tMax.toFixed(2));
+  } else if(tTgt>0 && tTol>0){
     setText('tc-t-min', (tTgt-tTol).toFixed(2));
     setText('tc-t-nom', tTgt.toFixed(2));
     setText('tc-t-max', (tTgt+tTol).toFixed(2));
@@ -3148,10 +3236,19 @@ function openViewer(idx){
     setText('tc-t-nom', tTgt>0?tTgt.toFixed(2):'—');
     setText('tc-t-max', '—');
   }
+  // Actual range row (THICK_MIN/MAX)
+  var dsActualRow = document.getElementById('tc-t-actual-row');
+  if(dsActualRow){
+    dsActualRow.style.display = hasActual ? 'flex' : 'none';
+    if(hasActual){
+      setText('tc-t-actual-min', tMin.toFixed(2));
+      setText('tc-t-actual-max', tMax.toFixed(2));
+    }
+  }
 
-  // 2. Width tolerance: min=WIDTH, max=WIDTH+TOLERANCE_MAX
+  // 2. Width tolerance: min=WIDTH, max=WIDTH+TOLERANCE_W
   var wNom  = parseFloat(s.WIDTH_MM||0);
-  var wTol  = parseFloat(s.TOLERANCE_MAX||0);
+  var wTol  = parseFloat(s.TOLERANCE_W||0);
   if(wNom>0){
     setText('tc-w-min', wNom.toFixed(0));
     setText('tc-w-max', wTol>0?(wNom+wTol).toFixed(0):'—');
@@ -3159,15 +3256,45 @@ function openViewer(idx){
     setText('tc-w-min','—'); setText('tc-w-max','—');
   }
 
-  // 3. Flatness: STAY FLAT → ≤5mm, others → ≤12mm
-  var stdVal = String(s.STANDARD||'').toUpperCase().trim();
-  var flatLim = (stdVal.indexOf('STAY')!==-1 && stdVal.indexOf('FLAT')!==-1) ? 5 : 12;
-  setText('tc-flat', '≤ '+flatLim+' mm');
+  // 2b. Length tolerance: min=LENGTH, max=LENGTH+TOLERANCE_L
+  var lNom  = parseFloat(s.LENGTH_MM||0);
+  var lTol  = parseFloat(s.TOLERANCE_L||0);
+  if(lNom>0){
+    setText('tc-l-min', lNom.toFixed(0));
+    setText('tc-l-max', lTol>0?(lNom+lTol).toFixed(0):'—');
+  } else {
+    setText('tc-l-min','—'); setText('tc-l-max','—');
+  }
 
-  // 4. Camber: 3 / full-length (mm → m), express as mm per full sheet
-  var lenM  = parseFloat(s.LENGTH_MM||2400)/1000;
-  var camber = (3/lenM).toFixed(2);
-  setText('tc-camber','≤ '+camber+' mm');
+  // 3. Flatness: W-SD-QA-01 §4 Cut to Length
+  var stdVal = String(s.STANDARD||'').toUpperCase().trim();
+  var tTgt2  = parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
+  var wNom2  = parseFloat(s.WIDTH_MM||1219);
+  var flatLim = 16;
+  if(tTgt2>0){
+    if(tTgt2<1.60)       flatLim=wNom2<1250?16:20;
+    else if(tTgt2<3.15)  flatLim=wNom2<1250?16:18;
+    else if(tTgt2<4.00)  flatLim=16;
+    else if(tTgt2<6.00)  flatLim=14;
+    else if(tTgt2<10.00) flatLim=13;
+    else if(tTgt2<25.00) flatLim=12;
+    else if(tTgt2<40.00) flatLim=9;
+    else                 flatLim=8;
+  }
+  setText('tc-flat', '≤ '+flatLim+' mm / 2m');
+
+  // 4. Camber: W-SD-QA-01 §5 Cut to Length
+  var lenMM2 = parseFloat(s.LENGTH_MM||2400);
+  var wBand  = wNom2>=1000?3:(wNom2>=630?2:1);
+  var cLims  = {1:[5,8,12,20],2:[4,6,10,16],3:[3,5,8,12]};
+  var cArr   = cLims[wBand];
+  var cLim;
+  if(lenMM2<4000)      cLim=cArr[0];
+  else if(lenMM2<6300) cLim=cArr[1];
+  else if(lenMM2<10000)cLim=cArr[2];
+  else                 cLim=cArr[3];
+  var camberRef=lenMM2>=10000?'10m':'full';
+  setText('tc-camber','≤ '+cLim+' mm/'+camberRef);
 
   // 5. Squareness
   var sq1mm = (wNom * 0.007).toFixed(1);
@@ -3312,6 +3439,9 @@ function openViewer(idx){
   // ── Thickness tolerance ───
   var qcTgt=parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
   var qcTol=parseFloat(s.TOLERANCE_THICKNESS||0);
+  var qcTMin=parseFloat(s.THICK_MIN||'');
+  var qcTMax=parseFloat(s.THICK_MAX||'');
+  var qcHasActual=!isNaN(qcTMin)&&!isNaN(qcTMax)&&qcTMin>0&&qcTMax>0;
   // Auto-calc tolerance from W-SD-QA-01 table (มอก.528 Cut to Length, most common)
   if(qcTol<=0 && qcTgt>0){
     var qcW0=parseFloat(s.WIDTH_MM||1250);
@@ -3327,23 +3457,35 @@ function openViewer(idx){
       if(qcTgt<=tTbl[ti][0]){qcTol=tTbl[ti][1];break;}
     }
   }
+  // pill strip: ใช้ THICK_MIN/MAX เป็นหลัก
+  if(qcHasActual){
+    setText('qc-t-min', qcTMin.toFixed(2));
+    setText('qc-t-max', qcTMax.toFixed(2));
+  } else {
+    setText('qc-t-min', qcTgt>0&&qcTol>0?(qcTgt-qcTol).toFixed(2):'—');
+    setText('qc-t-max', qcTgt>0&&qcTol>0?(qcTgt+qcTol).toFixed(2):'—');
+  }
   setText('qc-t-nom', qcTgt>0?qcTgt.toFixed(2):'—');
   setText('qc-t-tol', qcTol>0?qcTol.toFixed(2):'—');
-  setText('qc-t-min', qcTgt>0&&qcTol>0?(qcTgt-qcTol).toFixed(2):'—');
-  setText('qc-t-max', qcTgt>0&&qcTol>0?(qcTgt+qcTol).toFixed(2):'—');
+  // THICK_MIN/MAX actual range row
+  var qcActualRow=document.getElementById('qc-t-actual-row');
+  if(qcActualRow){
+    qcActualRow.style.display=qcHasActual?'flex':'none';
+    if(qcHasActual){
+      setText('qc-t-actual-min',qcTMin.toFixed(2));
+      setText('qc-t-actual-max',qcTMax.toFixed(2));
+    }
+  }
 
   // ── Width tolerance (W-SD-QA-01 §2 Cut to Length) ───
   var qcW=parseFloat(s.WIDTH_MM||0);
   var qcStd=String(s.STANDARD||'').toUpperCase();
-  var qcWTol=parseFloat(s.TOLERANCE_MAX||0);
+  var qcWTol=parseFloat(s.TOLERANCE_W||0);
   if(qcWTol<=0 && qcW>0){
-    // มอก.50 (SGCC): ≤1250→+7, >1250→+10
     if(qcStd.indexOf('50')!==-1 && qcStd.indexOf('528')===-1){
       qcWTol=qcW<=1250?7:10;
-    // มอก.2981 (SGMCC) หรือ มอก.3243 (SGHC): +25
     } else if(qcStd.indexOf('2981')!==-1||qcStd.indexOf('3243')!==-1||qcStd.indexOf('SGMCC')!==-1||qcStd.indexOf('SGHC')!==-1){
       qcWTol=25;
-    // มอก.1479/1499/1501/1884/2060/528 — standard Cut to Length
     } else {
       if(qcW<1000) qcWTol=25;
       else if(qcW<1250) qcWTol=30;
@@ -3353,6 +3495,22 @@ function openViewer(idx){
   }
   setText('qc-w-nom', qcW>0?qcW.toFixed(0):'—');
   setText('qc-w-max', qcW>0&&qcWTol>0?(qcW+qcWTol).toFixed(0):'—');
+
+  // ── Length tolerance (W-SD-QA-01 §3 Cut to Length) ───
+  var qcLenMM2=parseFloat(s.LENGTH_MM||0);
+  var qcLTol=parseFloat(s.TOLERANCE_L||0);
+  if(qcLTol<=0 && qcLenMM2>0){
+    // Auto from W-SD-QA-01 §3
+    if(qcLenMM2<3000)       qcLTol=3;
+    else if(qcLenMM2<4500)  qcLTol=4;
+    else if(qcLenMM2<6000)  qcLTol=6;
+    else if(qcLenMM2<7500)  qcLTol=10;
+    else if(qcLenMM2<9000)  qcLTol=12;
+    else if(qcLenMM2<15000) qcLTol=14;
+    else                    qcLTol=20;
+  }
+  setText('qc-l-nom', qcLenMM2>0?qcLenMM2.toFixed(0):'—');
+  setText('qc-l-max', qcLenMM2>0&&qcLTol>0?(qcLenMM2+qcLTol).toFixed(0):'—');
 
   // ── Flatness (W-SD-QA-01 §4 Cut to Length) ───
   // Returns mm limit / 2m reference length
@@ -3814,7 +3972,7 @@ function buildLSS(s) {
   var ys   = s.YIELD_STRENGTH      || (gr==='SPHC'?'—':gr==='SS400'?'≥245':'≥205')+' N/mm²';
   var el   = s.ELONGATION          || (gr==='SPHC'?'≥27':gr==='SS400'?'≥21':'≥27')+' %';
   var tTol = parseFloat(s.TOLERANCE_THICKNESS||0);
-  var wTol = parseFloat(s.TOLERANCE_MAX||0);
+  var wTol = parseFloat(s.TOLERANCE_W||0);
   var tMin = tTol>0?(th-tTol).toFixed(2):th.toFixed(2);
   var tMax = tTol>0?(th+tTol).toFixed(2):'—';
   var wMax = wTol>0?(ww+wTol).toFixed(0):'—';
