@@ -1811,66 +1811,69 @@ body{
 .lss-group-row,.lss-label,.lss-value,.lss-group-hd{}
 
 /* ── 3D Floating Controls ──────────────────────────────────── */
+.ctrl3d-bar{
+  background:var(--white);border-top:1px solid var(--g100);
+  padding:10px 14px;flex-shrink:0;
+}
 .ctrl3d-float{
-  position:absolute;bottom:14px;left:14px;z-index:10;
   display:flex;flex-direction:column;align-items:flex-start;gap:0;
   font-family:var(--mono);
 }
 .ctrl3d-toggle{
   display:flex;align-items:center;gap:6px;
-  background:rgba(10,10,10,0.82);backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:6px;padding:6px 10px;cursor:pointer;
+  background:var(--black);
+  border:none;border-radius:6px;padding:6px 12px;cursor:pointer;
   font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
-  color:rgba(255,255,255,0.75);user-select:none;
+  color:rgba(255,255,255,0.8);user-select:none;
   transition:background .15s;
 }
-.ctrl3d-toggle:hover{background:rgba(10,10,10,0.95);}
+.ctrl3d-toggle:hover{background:#222;}
 .ctrl3d-toggle-icon{font-size:11px;line-height:1;}
 .ctrl3d-panel{
   margin-top:6px;
-  background:rgba(10,10,10,0.88);backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,0.10);
+  background:var(--white);
+  border:1px solid var(--g200);
   border-radius:8px;overflow:hidden;
-  min-width:220px;max-width:260px;
-  transform-origin:bottom left;
+  min-width:220px;max-width:280px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.10);
+  transform-origin:top left;
   transition:opacity .2s, transform .2s;
 }
 .ctrl3d-panel.collapsed{
-  opacity:0;pointer-events:none;transform:scaleY(0.85) translateY(6px);
+  opacity:0;pointer-events:none;transform:scaleY(0.85) translateY(-6px);
 }
 /* rows inside floating panel */
 .ctrl3d-panel .seg-row{
-  padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.07);
+  padding:8px 12px;border-bottom:1px solid var(--g100);
 }
 .ctrl3d-panel .seg-row:last-child{border-bottom:none;}
-.ctrl3d-panel .seg-label{color:rgba(255,255,255,0.45);font-size:9px;min-width:60px;}
-.ctrl3d-panel .seg-unit{color:rgba(255,255,255,0.35);}
-.ctrl3d-panel .seg-range-hint{color:rgba(255,255,255,0.3);font-size:9px;}
+.ctrl3d-panel .seg-label{color:var(--g500);font-size:9px;min-width:60px;}
+.ctrl3d-panel .seg-unit{color:var(--g400);}
+.ctrl3d-panel .seg-range-hint{color:var(--g400);font-size:9px;}
 .ctrl3d-panel .seg-num{
-  background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);
-  border:1px solid rgba(255,255,255,0.12);
+  background:var(--g50,#fafafa);color:var(--black);
+  border:1px solid var(--g200);
   font-family:var(--mono);font-size:13px;font-weight:700;
   padding:2px 6px;border-radius:4px;width:48px;text-align:right;
 }
 .ctrl3d-panel .seg-num--readonly{
-  background:transparent;border:none;color:rgba(255,255,255,0.85);
+  background:transparent;border:none;color:var(--black);
 }
 .ctrl3d-panel .seg-num--wide{width:56px;}
 .ctrl3d-panel .seg-toggle{
-  background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.45);
-  border:1px solid rgba(255,255,255,0.10);
+  background:var(--g100);color:var(--g500);
+  border:1px solid var(--g200);
   font-size:9px;padding:4px 8px;border-radius:4px;cursor:pointer;
   font-family:var(--mono);letter-spacing:.5px;transition:all .1s;
 }
 .ctrl3d-panel .seg-toggle.active{
-  background:rgba(255,255,255,0.9);color:#0a0a0a;border-color:transparent;
+  background:var(--black);color:var(--white);border-color:transparent;
 }
-.ctrl3d-panel .seg-slider{width:80px;accent-color:#fff;}
+.ctrl3d-panel .seg-slider{width:80px;}
 .ctrl3d-panel-header{
   padding:8px 12px 6px;
   font-size:8px;letter-spacing:2px;text-transform:uppercase;
-  color:rgba(255,255,255,0.3);border-bottom:1px solid rgba(255,255,255,0.07);
+  color:var(--g400);border-bottom:1px solid var(--g100);
 }
 </style>
 </head>
@@ -2020,7 +2023,23 @@ body{
     <!-- 3D Canvas -->
     <div class="canvas-wrap">
       <canvas id="c3d"></canvas>
-      <!-- ── 3D Floating Controls ── -->
+      <div class="view-btns">
+        <button class="vb on" onclick="setView('iso',this)">3D</button>
+        <button class="vb" onclick="setView('front',this)">FRONT</button>
+        <button class="vb" onclick="setView('top',this)">TOP</button>
+        <button class="vb" onclick="setView('side',this)">SIDE</button>
+      </div>
+      <div class="cv-hint" id="cv-hint">⟳ ลาก / drag to rotate</div>
+      <div class="cv-auto" onclick="toggleAuto()">
+        <span>Auto</span>
+        <div class="sw on" id="cv-sw"><div class="sw-k"></div></div>
+      </div>
+      <div class="cv-info" id="cv-info"></div>
+    </div>
+
+    <!-- 3D Controls Bar -->
+    <div class="ctrl3d-bar">
+<!-- ── 3D Floating Controls ── -->
       <div class="ctrl3d-float">
         <button class="ctrl3d-toggle" onclick="toggle3dPanel()" id="ctrl3d-btn">
           <span class="ctrl3d-toggle-icon">⚙</span>
@@ -2095,19 +2114,6 @@ body{
           </div>
         </div>
       </div>
-
-      <div class="view-btns">
-        <button class="vb on" onclick="setView('iso',this)">3D</button>
-        <button class="vb" onclick="setView('front',this)">FRONT</button>
-        <button class="vb" onclick="setView('top',this)">TOP</button>
-        <button class="vb" onclick="setView('side',this)">SIDE</button>
-      </div>
-      <div class="cv-hint" id="cv-hint">⟳ ลาก / drag to rotate</div>
-      <div class="cv-auto" onclick="toggleAuto()">
-        <span>Auto</span>
-        <div class="sw on" id="cv-sw"><div class="sw-k"></div></div>
-      </div>
-      <div class="cv-info" id="cv-info"></div>
     </div>
 
     <!-- Sidebar -->
