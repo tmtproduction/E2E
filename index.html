@@ -373,46 +373,130 @@ body{
 .tech-collapse-body{overflow:hidden;max-height:0;transition:max-height .45s ease;}
 .tech-collapse-body.open{max-height:900px;}
 
-/* ── Dimension & Standard — ds-* ── */
-.ds-divider{
-  font-size:8px;letter-spacing:2.5px;text-transform:uppercase;
-  color:var(--g400);font-family:var(--mono);font-weight:600;
-  padding:8px 16px 5px;background:var(--g50);
-  border-top:1px solid var(--g200);border-bottom:1px solid var(--g100);
+/* ══════════════════════════════════════════
+   Dimension & Standard — redesign
+══════════════════════════════════════════ */
+.ds-section{ padding:16px; border-bottom:1px solid var(--g100); }
+.ds-section-title{
+  font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);font-weight:700;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
 }
-.ds-row{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 16px;border-bottom:1px solid var(--g100);
+.ds-section-title::after{content:'';flex:1;height:1px;background:var(--g200);}
+
+/* ── Identity row (Grade / Standard / Weight) ── */
+.ds-id-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:8px;margin-bottom:0;
 }
-.ds-label{display:flex;flex-direction:column;gap:2px;min-width:62px;}
-.ds-name{font-size:10px;font-weight:600;font-family:var(--mono);color:var(--black);}
-.ds-note{font-size:8px;color:var(--g400);font-family:var(--mono);}
-.ds-range-bar{flex:1;display:flex;align-items:center;gap:7px;}
-.ds-limit{font-size:10px;font-family:var(--mono);font-weight:600;min-width:44px;text-align:center;
-  padding:2px 5px;border-radius:3px;}
-.ds-limit--lo{color:var(--g600);background:var(--g100);}
-.ds-limit--hi{color:#1a5c2e;background:#e6f4eb;}
-.ds-bar{flex:1;height:6px;background:var(--g100);border-radius:3px;position:relative;overflow:visible;}
-.ds-bar-fill{position:absolute;inset:0;background:linear-gradient(90deg,var(--g200),#6bcf8a);border-radius:3px;}
-.ds-bar-marker{position:absolute;top:50%;transform:translate(-50%,-50%);
-  width:10px;height:10px;border-radius:50%;
-  background:var(--black);border:2px solid var(--white);
-  box-shadow:0 0 0 1px var(--black);left:50%;}
-.ds-unit{font-size:9px;color:var(--g400);font-family:var(--mono);min-width:20px;}
-/* form tolerances grid */
-.ds-form-grid{grid-template-columns:1fr 1fr 1fr!important;}
-.ds-form-item{
-  padding:12px 14px;border-right:1px solid var(--g100);border-bottom:1px solid var(--g100);
-  display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;
+.ds-id-card{
+  background:var(--g50);border-radius:8px;padding:10px 12px;
+  display:flex;flex-direction:column;gap:3px;
 }
-.ds-form-item:last-child{border-right:none;}
-.ds-form-icon{color:var(--g500);margin-bottom:2px;}
-.ds-form-item label{
+.ds-id-card label{
   font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
   color:var(--g400);font-family:var(--mono);
 }
-.ds-form-item .tv{font-size:12px;font-weight:700;font-family:var(--mono);color:var(--black);}
-.ds-form-note{font-size:8px;color:var(--g400);font-family:var(--mono);}
+.ds-id-card .ds-id-val{
+  font-size:15px;font-weight:700;font-family:var(--mono);
+  color:var(--black);line-height:1.2;
+}
+
+/* ── Tolerance rows ── */
+.ds-tol-card{
+  background:var(--white);border:1px solid var(--g200);
+  border-radius:8px;padding:12px 14px;margin-bottom:8px;
+}
+.ds-tol-card:last-child{margin-bottom:0;}
+.ds-tol-head{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:10px;
+}
+.ds-tol-name{
+  font-size:11px;font-weight:700;font-family:var(--mono);color:var(--black);
+}
+.ds-tol-desc{
+  font-size:8px;color:var(--g400);font-family:var(--mono);letter-spacing:1px;
+}
+/* the range strip */
+.ds-tol-strip{display:flex;align-items:center;gap:0;}
+.ds-tol-pill{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  min-width:52px;
+}
+.ds-tol-pill-val{
+  font-size:13px;font-weight:700;font-family:var(--mono);
+  padding:4px 10px;border-radius:6px;line-height:1;
+}
+.ds-tol-pill--min .ds-tol-pill-val{
+  background:var(--g100);color:var(--g600);
+}
+.ds-tol-pill--nom .ds-tol-pill-val{
+  background:var(--black);color:var(--white);font-size:14px;
+}
+.ds-tol-pill--max .ds-tol-pill-val{
+  background:#d4edda;color:#155724;
+}
+.ds-tol-pill-lbl{
+  font-size:7px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);
+}
+.ds-tol-arrow{
+  flex:1;height:2px;background:var(--g200);position:relative;margin:0 4px;
+  align-self:center;margin-bottom:18px;
+}
+.ds-tol-arrow::after{
+  content:'';position:absolute;right:-4px;top:-3px;
+  border:4px solid transparent;border-left:6px solid var(--g300);
+}
+.ds-tol-unit{
+  font-size:9px;color:var(--g400);font-family:var(--mono);
+  margin-left:8px;align-self:flex-start;margin-top:6px;
+}
+
+/* ── Form tolerance cards (Flatness / Camber / Squareness) ── */
+.ds-form-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+}
+.ds-form-card{
+  border:1px solid var(--g200);border-radius:8px;padding:12px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;
+  background:var(--white);
+}
+.ds-form-card svg{color:var(--g500);}
+.ds-form-card .ds-form-lbl{
+  font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);
+}
+.ds-form-card .ds-form-val{
+  font-size:16px;font-weight:800;font-family:var(--mono);color:var(--black);
+  line-height:1;
+}
+.ds-form-card .ds-form-sub{
+  font-size:8px;color:var(--g500);font-family:var(--mono);line-height:1.4;
+}
+/* squareness has 2 values */
+.ds-form-card .ds-form-val2{
+  font-size:11px;font-weight:600;font-family:var(--mono);color:var(--g600);
+  line-height:1;margin-top:2px;
+}
+
+/* ── Mechanical ── */
+.ds-mech-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+}
+.ds-mech-card{
+  background:var(--g50);border-radius:8px;padding:10px 12px;
+  display:flex;flex-direction:column;gap:3px;
+}
+.ds-mech-card label{
+  font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);
+}
+.ds-mech-card .ds-mech-val{
+  font-size:13px;font-weight:700;font-family:var(--mono);
+  color:var(--black);line-height:1.2;
+}
 
 /* tech grid — premium data table style */
 .tech-grid{
@@ -1927,99 +2011,119 @@ body{
           </div>
           <div class="tech-collapse-body" id="tech-collapse-body">
 
-            <!-- Row 1: Grade / Standard / Weight -->
-            <div class="tech-grid">
-              <div class="tech-item"><label>Grade</label><div class="tv" id="tc-grade">—</div></div>
-              <div class="tech-item"><label>Standard</label><div class="tv" id="tc-std">—</div></div>
-              <div class="tech-item"><label>น้ำหนัก/แผ่น</label><div class="tv" id="tc-kg">—</div></div>
+            <!-- ① Identity -->
+            <div class="ds-section">
+              <div class="ds-section-title">Identity</div>
+              <div class="ds-id-row">
+                <div class="ds-id-card"><label>Grade</label><div class="ds-id-val" id="tc-grade">—</div></div>
+                <div class="ds-id-card"><label>Standard</label><div class="ds-id-val" id="tc-std">—</div></div>
+                <div class="ds-id-card"><label>น้ำหนัก/แผ่น</label><div class="ds-id-val" id="tc-kg">—</div></div>
+              </div>
             </div>
 
-            <!-- Divider: Dimensional Tolerances -->
-            <div class="ds-divider">Dimensional Tolerances</div>
+            <!-- ② Dimensional Tolerances -->
+            <div class="ds-section">
+              <div class="ds-section-title">Dimensional Tolerances</div>
 
-            <!-- Thickness tolerance -->
-            <div class="ds-row">
-              <div class="ds-label">
-                <span class="ds-name">Thickness</span>
-                <span class="ds-note">Target ± tol.</span>
-              </div>
-              <div class="ds-range-bar">
-                <span class="ds-limit ds-limit--lo" id="tc-t-min">—</span>
-                <div class="ds-bar">
-                  <div class="ds-bar-fill"></div>
-                  <div class="ds-bar-marker" id="tc-t-marker"></div>
+              <!-- Thickness -->
+              <div class="ds-tol-card">
+                <div class="ds-tol-head">
+                  <span class="ds-tol-name">Thickness</span>
+                  <span class="ds-tol-desc">TARGET ± TOLERANCE</span>
                 </div>
-                <span class="ds-limit ds-limit--hi" id="tc-t-max">—</span>
-              </div>
-              <span class="ds-unit">mm</span>
-            </div>
-
-            <!-- Width tolerance -->
-            <div class="ds-row">
-              <div class="ds-label">
-                <span class="ds-name">Width</span>
-                <span class="ds-note">Min → Max</span>
-              </div>
-              <div class="ds-range-bar">
-                <span class="ds-limit ds-limit--lo" id="tc-w-min">—</span>
-                <div class="ds-bar">
-                  <div class="ds-bar-fill"></div>
-                  <div class="ds-bar-marker"></div>
+                <div class="ds-tol-strip">
+                  <div class="ds-tol-pill ds-tol-pill--min">
+                    <div class="ds-tol-pill-val" id="tc-t-min">—</div>
+                    <div class="ds-tol-pill-lbl">Min</div>
+                  </div>
+                  <div class="ds-tol-arrow"></div>
+                  <div class="ds-tol-pill ds-tol-pill--nom">
+                    <div class="ds-tol-pill-val" id="tc-t-nom">—</div>
+                    <div class="ds-tol-pill-lbl">Target</div>
+                  </div>
+                  <div class="ds-tol-arrow"></div>
+                  <div class="ds-tol-pill ds-tol-pill--max">
+                    <div class="ds-tol-pill-val" id="tc-t-max">—</div>
+                    <div class="ds-tol-pill-lbl">Max</div>
+                  </div>
+                  <span class="ds-tol-unit">mm</span>
                 </div>
-                <span class="ds-limit ds-limit--hi" id="tc-w-max">—</span>
               </div>
-              <span class="ds-unit">mm</span>
+
+              <!-- Width -->
+              <div class="ds-tol-card">
+                <div class="ds-tol-head">
+                  <span class="ds-tol-name">Width</span>
+                  <span class="ds-tol-desc">NOMINAL → MAX ALLOWED</span>
+                </div>
+                <div class="ds-tol-strip">
+                  <div class="ds-tol-pill ds-tol-pill--nom">
+                    <div class="ds-tol-pill-val" id="tc-w-min">—</div>
+                    <div class="ds-tol-pill-lbl">Nominal</div>
+                  </div>
+                  <div class="ds-tol-arrow"></div>
+                  <div class="ds-tol-pill ds-tol-pill--max">
+                    <div class="ds-tol-pill-val" id="tc-w-max">—</div>
+                    <div class="ds-tol-pill-lbl">Max</div>
+                  </div>
+                  <span class="ds-tol-unit">mm</span>
+                </div>
+              </div>
             </div>
 
-            <!-- Divider: Form Tolerances -->
-            <div class="ds-divider">Form Tolerances</div>
+            <!-- ③ Form Tolerances -->
+            <div class="ds-section">
+              <div class="ds-section-title">Form Tolerances</div>
+              <div class="ds-form-row">
 
-            <div class="tech-grid ds-form-grid">
-              <!-- Flatness -->
-              <div class="ds-form-item">
-                <div class="ds-form-icon">
-                  <svg width="28" height="12" viewBox="0 0 28 12" fill="none">
-                    <path d="M2 9 Q7 3 14 6 Q21 9 26 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-                    <line x1="2" y1="10.5" x2="26" y2="10.5" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
+                <!-- Flatness -->
+                <div class="ds-form-card">
+                  <svg width="32" height="14" viewBox="0 0 32 14" fill="none">
+                    <path d="M2 10 Q8 3 16 7 Q24 11 30 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                    <line x1="2" y1="12" x2="30" y2="12" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
+                    <line x1="16" y1="7" x2="16" y2="12" stroke="currentColor" stroke-width="1" opacity="0.5"/>
                   </svg>
+                  <div class="ds-form-lbl">Flatness</div>
+                  <div class="ds-form-val" id="tc-flat">—</div>
+                  <div class="ds-form-sub">per 1 m length</div>
                 </div>
-                <label>Flatness</label>
-                <div class="tv" id="tc-flat">—</div>
-                <span class="ds-form-note">per 1 m</span>
-              </div>
-              <!-- Camber -->
-              <div class="ds-form-item">
-                <div class="ds-form-icon">
-                  <svg width="28" height="14" viewBox="0 0 28 14" fill="none">
-                    <path d="M2 12 Q14 2 26 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-                    <line x1="2" y1="12" x2="26" y2="12" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
+
+                <!-- Camber -->
+                <div class="ds-form-card">
+                  <svg width="32" height="14" viewBox="0 0 32 14" fill="none">
+                    <path d="M2 13 Q16 1 30 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                    <line x1="2" y1="13" x2="30" y2="13" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
+                    <line x1="16" y1="5" x2="16" y2="13" stroke="currentColor" stroke-width="1" opacity="0.5"/>
                   </svg>
+                  <div class="ds-form-lbl">Camber</div>
+                  <div class="ds-form-val" id="tc-camber">—</div>
+                  <div class="ds-form-sub">per full sheet</div>
                 </div>
-                <label>Camber</label>
-                <div class="tv" id="tc-camber">—</div>
-                <span class="ds-form-note">per full length</span>
-              </div>
-              <!-- Squareness -->
-              <div class="ds-form-item">
-                <div class="ds-form-icon">
-                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                    <rect x="3" y="3" width="16" height="16" rx="1" stroke="currentColor" stroke-width="1.2"/>
-                    <line x1="3" y1="3" x2="19" y2="19" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.5"/>
-                    <line x1="19" y1="3" x2="3" y2="19" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.5"/>
+
+                <!-- Squareness -->
+                <div class="ds-form-card">
+                  <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                    <rect x="3" y="3" width="20" height="20" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+                    <line x1="3" y1="3" x2="23" y2="23" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+                    <line x1="23" y1="3" x2="3" y2="23" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+                    <path d="M3 8 L8 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
                   </svg>
+                  <div class="ds-form-lbl">Squareness</div>
+                  <div class="ds-form-val" id="tc-sq1">—</div>
+                  <div class="ds-form-val2" id="tc-sq2">—</div>
+                  <div class="ds-form-sub">0.7% W &amp; Δdiag ≤3mm</div>
                 </div>
-                <label>Squareness</label>
-                <div class="tv" id="tc-sq1">—</div>
-                <div class="tv" style="font-size:10px;color:var(--g500)" id="tc-sq2">—</div>
               </div>
             </div>
 
-            <!-- Tensile / Yield / Elongation -->
-            <div class="ds-divider">Mechanical Properties</div>
-            <div class="tech-grid">
-              <div class="tech-item"><label>Tensile</label><div class="tv" id="tc-ts">—</div></div>
-              <div class="tech-item"><label>Yield</label><div class="tv" id="tc-ys">—</div></div>
-              <div class="tech-item"><label>Elongation</label><div class="tv" id="tc-el">—</div></div>
+            <!-- ④ Mechanical Properties -->
+            <div class="ds-section" style="border-bottom:none;">
+              <div class="ds-section-title">Mechanical Properties</div>
+              <div class="ds-mech-row">
+                <div class="ds-mech-card"><label>Tensile</label><div class="ds-mech-val" id="tc-ts">—</div></div>
+                <div class="ds-mech-card"><label>Yield</label><div class="ds-mech-val" id="tc-ys">—</div></div>
+                <div class="ds-mech-card"><label>Elongation</label><div class="ds-mech-val" id="tc-el">—</div></div>
+              </div>
             </div>
 
           </div>
@@ -3214,12 +3318,11 @@ function openViewer(idx){
   var tTol  = parseFloat(s.TOLERANCE_THICKNESS||0);
   if(tTgt>0 && tTol>0){
     setText('tc-t-min', (tTgt-tTol).toFixed(2));
+    setText('tc-t-nom', tTgt.toFixed(2));
     setText('tc-t-max', (tTgt+tTol).toFixed(2));
-    // marker at nominal (center of range)
-    var tMark=document.getElementById('tc-t-marker');
-    if(tMark) tMark.style.left='50%';
   } else {
     setText('tc-t-min', tTgt>0?tTgt.toFixed(2):'—');
+    setText('tc-t-nom', tTgt>0?tTgt.toFixed(2):'—');
     setText('tc-t-max', '—');
   }
 
