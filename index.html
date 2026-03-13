@@ -3400,12 +3400,18 @@ function openViewer(idx){
     S_thickMin = parseFloat(s.THICK_MIN);
     S_thickMax = parseFloat(s.THICK_MAX);
   } else {
-    // ไม่มีใน Sheet — ล็อคที่ nominal อย่างเดียว
-    S_thickMin = th;
-    S_thickMax = th;
+    // ไม่มี THICK_MIN/MAX — fallback TARGET ± TOLERANCE ไม่ lock
+    var tTolSlider = parseFloat(s.TOLERANCE_THICKNESS||0);
+    if(tTolSlider > 0){
+      S_thickMin = Math.round((th - tTolSlider) * 100) / 100;
+      S_thickMax = Math.round((th + tTolSlider) * 100) / 100;
+    } else {
+      S_thickMin = th;
+      S_thickMax = th;
+    }
   }
   var thickSlider=document.getElementById('a-thick');
-  var thickLocked = S_thickMin === S_thickMax;
+  var thickLocked = (S_thickMin === S_thickMax) && (S_thickMin === th);
   // ใช้ TMT เป็น default ถ้ามี ไม่งั้น fallback TARGET
   var thDefault = (tmt && tmt > 0) ? tmt : th;
   if(thickSlider){
@@ -3434,10 +3440,11 @@ function openViewer(idx){
   var thickHint = document.getElementById('thick-hint');
   if(thickHint){
     if(thickLocked){
-      thickHint.textContent = 'ล็อคที่ '+thDefault.toFixed(2)+' mm';
+      thickHint.textContent = 'ล็อคที่ '+thDefault.toFixed(2)+' mm (TARGET ± TOLERANCE ไม่ครบ)';
       thickHint.style.color = 'var(--g400)';
     } else {
-      thickHint.textContent = S_thickMin.toFixed(2)+' – '+S_thickMax.toFixed(2)+' mm (range จาก Sheet)';
+      var hintSrc = (hasMin && hasMax) ? '(THICK_MIN/MAX จาก Sheet)' : '(TARGET ± TOLERANCE)';
+      thickHint.textContent = S_thickMin.toFixed(2)+' – '+S_thickMax.toFixed(2)+' mm ' + hintSrc;
       thickHint.style.color = 'var(--green)';
     }
   }
