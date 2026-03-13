@@ -329,6 +329,10 @@ body{
   display:grid;grid-template-columns:1fr 1fr 1fr;
   gap:0;border-bottom:1px solid var(--g200);
 }
+.spec-dim-thick-wrap{
+  grid-column:span 2;padding:14px 16px;border-right:1px solid var(--g200);
+}
+.spec-dim-thick-wrap .sh-thick-card{border:none;padding:0;}
 
 .spec-dim-item{
   padding:16px 18px;
@@ -2208,16 +2212,45 @@ body{
               </div>
             </div>
             <!-- dims -->
+            <div id="sh-t" style="display:none">—</div>
+            <div id="sh-tmt" style="display:none">—</div>
             <div class="spec-hero-dims">
-              <div class="spec-dim-item">
-                <label>Target หนา</label>
-                <div class="spec-dim-val" id="sh-t">—</div>
-                <div class="spec-dim-unit">mm (nominal)</div>
-              </div>
-              <div class="spec-dim-item">
-                <label>TMT หนา (Actual)</label>
-                <div class="spec-dim-val" id="sh-tmt">—</div>
-                <div class="spec-dim-unit">mm (ผลิตจริง)</div>
+              <!-- Thickness tolerance card — spans 2 cols -->
+              <div class="spec-dim-item spec-dim-thick-wrap">
+                <div class="sh-thick-card">
+                  <div class="sh-thick-top">
+                    <span class="sh-thick-name">Thickness</span>
+                    <span class="sh-thick-sub">TARGET ± TOLERANCE</span>
+                  </div>
+                  <div class="sh-thick-strip">
+                    <div class="sh-thick-pill sh-thick-pill--lo">
+                      <div class="sh-thick-val" id="sh-tc-min">—</div>
+                      <div class="sh-thick-lbl">Min</div>
+                    </div>
+                    <div class="ds-tol-track-wrap">
+                      <div class="ds-tol-track-line"></div>
+                      <div class="ds-tol-actual-dot" id="tc-t-dot" style="display:none;left:50%"></div>
+                      <div class="ds-tol-actual-lbl" id="tc-t-dot-lbl" style="display:none;left:50%"></div>
+                    </div>
+                    <div class="sh-thick-pill sh-thick-pill--nom">
+                      <div class="sh-thick-val" id="sh-tc-nom">—</div>
+                      <div class="sh-thick-lbl">Target</div>
+                    </div>
+                    <div class="ds-tol-track-wrap">
+                      <div class="ds-tol-track-line"></div>
+                    </div>
+                    <div class="sh-thick-pill sh-thick-pill--hi">
+                      <div class="sh-thick-val" id="sh-tc-max">—</div>
+                      <div class="sh-thick-lbl">Max</div>
+                    </div>
+                    <span class="sh-thick-unit">mm</span>
+                  </div>
+                  <div class="sh-thick-target">Target <strong id="sh-tc-tgt">—</strong> ±<strong id="sh-tc-tol">—</strong> mm</div>
+                  <div class="sh-thick-actual" id="sh-tc-actual" style="display:none">
+                    <span style="color:#f36f22">◆</span>
+                    ความหนาจริงที่เป็นไปได้: <strong id="sh-tc-amin">—</strong> – <strong id="sh-tc-amax">—</strong> mm
+                  </div>
+                </div>
               </div>
               <div class="spec-dim-item">
                 <label>เกรด</label>
@@ -2240,44 +2273,6 @@ body{
               </div>
             </div>
 
-          </div>
-          <!-- Thickness tolerance section -->
-          <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Dimensional Tolerance</span></div>
-          <div class="sec" style="padding:14px 18px;">
-            <div class="sh-thick-card">
-              <div class="sh-thick-top">
-                <span class="sh-thick-name">Thickness</span>
-                <span class="sh-thick-sub">วัดด้วย Micrometer</span>
-              </div>
-              <div class="sh-thick-strip">
-                <div class="sh-thick-pill sh-thick-pill--lo">
-                  <div class="sh-thick-val" id="sh-tc-min">—</div>
-                  <div class="sh-thick-lbl">Min</div>
-                </div>
-                <div class="ds-tol-track-wrap" style="min-width:60px;">
-                  <div class="ds-tol-track-line"></div>
-                  <div class="ds-tol-actual-dot" id="tc-t-dot" style="display:none;left:50%"></div>
-                  <div class="ds-tol-actual-lbl" id="tc-t-dot-lbl" style="display:none;left:50%"></div>
-                </div>
-                <div class="sh-thick-pill sh-thick-pill--nom">
-                  <div class="sh-thick-val" id="sh-tc-nom">—</div>
-                  <div class="sh-thick-lbl">Target</div>
-                </div>
-                <div class="ds-tol-track-wrap" style="min-width:60px;">
-                  <div class="ds-tol-track-line"></div>
-                </div>
-                <div class="sh-thick-pill sh-thick-pill--hi">
-                  <div class="sh-thick-val" id="sh-tc-max">—</div>
-                  <div class="sh-thick-lbl">Max</div>
-                </div>
-                <span class="sh-thick-unit">mm</span>
-              </div>
-              <div class="sh-thick-target">Target <strong id="sh-tc-tgt">—</strong> ±<strong id="sh-tc-tol">—</strong> mm</div>
-              <div class="sh-thick-actual" id="sh-tc-actual" style="display:none">
-                <span style="color:#f36f22">◆</span>
-                ความหนาจริงที่เป็นไปได้: <strong id="sh-tc-amin">—</strong> – <strong id="sh-tc-amax">—</strong> mm
-              </div>
-            </div>
           </div>
           <!-- ── existing sections below ── -->
           <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Packing &amp; 3D Live</span></div>
