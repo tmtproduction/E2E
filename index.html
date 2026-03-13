@@ -1598,6 +1598,67 @@ body{
 /* keep old classes for compat */
 .lss-table{display:none;}
 .lss-group-row,.lss-label,.lss-value,.lss-note,.lss-group-hd{}
+
+/* ══════════════════════════════════════════
+   QC Checklist Panel (ตรวจสอบ tab)
+══════════════════════════════════════════ */
+.qc-header{padding:16px 18px 14px;background:var(--black);color:var(--white);}
+.qc-header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.qc-sku{font-size:14px;font-weight:700;font-family:var(--mono);color:var(--white);}
+.qc-badge{font-size:8px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:3px 8px;border-radius:20px;font-family:var(--mono);}
+.qc-meta{font-size:10px;color:rgba(255,255,255,.45);font-family:var(--mono);}
+
+.qc-section{padding:14px 16px;border-bottom:1px solid var(--g100);}
+.qc-section-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.qc-section-title::after{content:'';flex:1;height:1px;background:var(--g200);}
+
+/* Dimension cards */
+.qc-check-card{background:var(--g50);border-radius:8px;padding:12px 14px;margin-bottom:8px;border:1px solid var(--g200);}
+.qc-check-card:last-child{margin-bottom:0;}
+.qc-check-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.qc-check-icon{width:28px;height:28px;border-radius:6px;background:var(--black);color:var(--white);font-size:11px;font-weight:800;font-family:var(--mono);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qc-check-info{flex:1;}
+.qc-check-name{font-size:12px;font-weight:700;font-family:var(--mono);color:var(--black);}
+.qc-check-desc{font-size:9px;color:var(--g500);font-family:var(--mono);margin-top:1px;}
+.qc-range-row{display:flex;align-items:center;gap:8px;}
+.qc-range-pill{font-size:14px;font-weight:800;font-family:var(--mono);padding:6px 12px;border-radius:6px;text-align:center;min-width:60px;}
+.qc-pill-lo{background:var(--g100);color:var(--g600);}
+.qc-pill-nom{background:var(--black);color:var(--white);}
+.qc-pill-hi{background:#d4edda;color:#155724;}
+.qc-range-arrow{flex:1;display:flex;align-items:center;gap:4px;font-size:7px;color:var(--g400);font-family:var(--mono);}
+.qc-arrow-line{flex:1;height:1.5px;background:var(--g300);position:relative;}
+.qc-arrow-line::after{content:'';position:absolute;right:-3px;top:-3px;border:3.5px solid transparent;border-left:5px solid var(--g300);}
+.qc-unit{font-size:9px;color:var(--g400);font-family:var(--mono);}
+.qc-target-row{font-size:9px;color:var(--g500);font-family:var(--mono);margin-top:8px;padding-top:8px;border-top:1px solid var(--g200);}
+.qc-target-row strong{color:var(--black);}
+
+/* Form tolerance cards */
+.qc-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.qc-form-card{background:var(--white);border:1px solid var(--g200);border-radius:8px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;}
+.qc-form-card svg{color:var(--g500);}
+.qc-form-name{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
+.qc-form-limit{font-size:15px;font-weight:800;font-family:var(--mono);color:var(--black);line-height:1;}
+.qc-form-limit2{font-size:10px;font-weight:600;color:var(--g600);}
+.qc-form-how{font-size:8px;color:var(--g500);font-family:var(--mono);line-height:1.4;text-align:center;}
+
+/* Checklist items */
+.qc-checklist{display:flex;flex-direction:column;gap:0;}
+.qc-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--g100);}
+.qc-item:last-child{border-bottom:none;}
+.qc-item-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.qc-ok{background:#22c55e;}
+.qc-warn{background:#f59e0b;}
+.qc-bad{background:#ef4444;}
+.qc-item-title{font-size:11px;font-weight:600;font-family:var(--mono);color:var(--black);margin-bottom:2px;}
+.qc-item-desc{font-size:9px;color:var(--g500);font-family:var(--mono);line-height:1.5;}
+
+/* Packing row */
+.qc-pack-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.qc-pack-card{background:var(--g50);border-radius:8px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;border:1px solid var(--g200);}
+.qc-pack-icon{color:var(--g500);}
+.qc-pack-name{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
+.qc-pack-val{font-size:9px;font-weight:700;font-family:var(--mono);color:var(--black);line-height:1.3;text-align:center;}
+
 .overlay.open{display:flex;}
 .order-modal{background:var(--white);width:100%;max-width:540px;animation:slideUp .2s ease;}
 @keyframes slideUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -2033,22 +2094,6 @@ body{
 
           </div>
           <!-- ── existing sections below ── -->
-          <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Limit Spec</span></div>
-          <div class="sec" style="padding:0">
-            <div style="padding:14px 18px 10px;display:flex;align-items:center;gap:6px;">
-              <span class="sec-lbl" style="margin-bottom:0;flex:1">Limit Spec <button class="tip-btn" onclick="showTip(this,'Limit Spec Summary','ตารางนี้แสดงค่ามาตรฐาน JIS ที่แผ่นเหล็กต้องผ่าน ไม่ใช่ค่าที่วัดจริง — ใช้เพื่อ confirm กับลูกค้าว่าสินค้าตรงมาตรฐานอะไร')">?</button></span>
-            </div>
-            <div class="lss-wrap" style="margin:0">
-              <div class="lss-head">
-                <span class="lss-title">Limit Spec Summary</span>
-                <span class="lss-sku" id="lss-sku">—</span>
-              </div>
-              <div class="lss-pills" id="lss-pills"></div>
-              <div class="lss-acc" id="lss-acc"></div>
-              <div class="lss-foot" id="lss-foot"></div>
-              <table class="lss-table" id="lss-table" style="display:none"></table>
-            </div>
-          </div>
           <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Packing &amp; 3D Live</span></div>
           <div class="sec">
             <div class="pack-grid" style="margin-bottom:14px">
@@ -2210,374 +2255,197 @@ body{
       <!-- GEOMETRY -->
       <div class="panel" id="panel-geo">
         <div class="panel-scroll">
-          <!-- Intro header -->
-          <div style="padding:20px 26px 0;border-bottom:1px solid var(--g200);margin-bottom:0;">
-            <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);margin-bottom:6px;">ข้อมูลอ้างอิง</div>
-            <div style="font-size:15px;font-weight:700;margin-bottom:4px;">มาตรฐานและลักษณะสินค้า</div>
-            <div style="font-size:11px;color:var(--g600);line-height:1.6;padding-bottom:16px;">หน้านี้แสดงข้อมูลอ้างอิงเพื่อทำความเข้าใจสินค้า — ไม่ต้องกรอกหรือตรวจสอบอะไร</div>
+
+          <!-- ── Header ── -->
+          <div class="qc-header">
+            <div class="qc-header-top">
+              <div class="qc-sku" id="qc-sku">—</div>
+              <div class="qc-badge" id="qc-std-badge">—</div>
+            </div>
+            <div class="qc-meta" id="qc-meta">เลือก SKU เพื่อดูค่ามาตรฐานการตรวจสอบ</div>
           </div>
 
-          <div class="geo-card">
-            <div class="geo-title">Flatness</div>
-            <div class="geo-std">JIS G3193 · ความราบของแผ่น</div>
-            <div class="geo-diagram">
-              <svg width="240" height="78" viewBox="0 0 240 78" fill="none">
-                <line x1="10" y1="50" x2="230" y2="50" stroke="#c0c0bc" stroke-width="1" stroke-dasharray="4,3"/>
-                <path d="M10 38 C40 28,70 44,100 36 C130 28,160 44,190 36 C210 30,225 38,230 36" stroke="#0a0a0a" stroke-width="2" fill="none"/>
-                <path d="M10 46 C40 36,70 52,100 44 C130 36,160 52,190 44 C210 38,225 46,230 44" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
-                <path d="M10 38 C40 28,70 44,100 36 C130 28,160 44,190 36 C210 30,225 38,230 36 L230 44 C225 46,210 38,190 44 C160 52,130 36,100 44 C70 52,40 36,10 46Z" fill="#e0e0dc" opacity="0.6"/>
-                <line x1="120" y1="50" x2="120" y2="31" stroke="#0a0a0a" stroke-width="1"/>
-                <polygon points="120,27 117,34 123,34" fill="#0a0a0a"/>
-                <text x="125" y="38" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="600">f</text>
-                <text x="10" y="72" font-size="8" fill="#a0a09c" font-family="Courier New">Reference plane</text>
-                <text x="150" y="72" font-size="8" fill="#a0a09c" font-family="Courier New">max deviation</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val-item"><label>Max Flatness</label><span id="g-flat">≤ 12 mm/m</span></div>
-              <div class="geo-val-item"><label>Overall</label><span id="g-flat2">≤ 20 mm</span></div>
-            </div>
-            <div class="geo-desc">ค่าเบี่ยงเบนสูงสุดของผิวแผ่นจาก reference plane วัดต่อ 1 เมตร และตลอดความยาวแผ่น</div>
-          </div>
+          <!-- ① Dimensional Tolerance -->
+          <div class="qc-section">
+            <div class="qc-section-title">① Dimensional Tolerance</div>
 
-          <div class="geo-card">
-            <div class="geo-title">Camber</div>
-            <div class="geo-std">JIS G3193 · ความโค้งตามแนวยาว</div>
-            <div class="geo-diagram">
-              <svg width="240" height="78" viewBox="0 0 240 78" fill="none">
-                <line x1="15" y1="55" x2="225" y2="55" stroke="#c0c0bc" stroke-width="1" stroke-dasharray="4,3"/>
-                <path d="M15 50 Q120 28 225 50" stroke="#0a0a0a" stroke-width="2" fill="none"/>
-                <path d="M15 56 Q120 34 225 56" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
-                <path d="M15 50 Q120 28 225 50 L225 56 Q120 34 15 56Z" fill="#e0e0dc" opacity="0.6"/>
-                <line x1="120" y1="55" x2="120" y2="31" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="3,2"/>
-                <line x1="116" y1="31" x2="124" y2="31" stroke="#0a0a0a" stroke-width="1"/>
-                <line x1="116" y1="55" x2="124" y2="55" stroke="#0a0a0a" stroke-width="1"/>
-                <text x="126" y="45" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="600">C</text>
-                <line x1="15" y1="68" x2="225" y2="68" stroke="#a0a09c" stroke-width="1"/>
-                <polygon points="15,68 22,65 22,71" fill="#a0a09c"/>
-                <polygon points="225,68 218,65 218,71" fill="#a0a09c"/>
-                <text x="90" y="78" font-size="8" fill="#a0a09c" font-family="Courier New">Length (L)</text>
-              </svg>
+            <div class="qc-check-card">
+              <div class="qc-check-head">
+                <div class="qc-check-icon qc-icon-dim">T</div>
+                <div class="qc-check-info">
+                  <div class="qc-check-name">Thickness</div>
+                  <div class="qc-check-desc">วัดด้วย Micrometer · ตรวจ 4 จุด (มุม + กลาง)</div>
+                </div>
+              </div>
+              <div class="qc-range-row">
+                <div class="qc-range-pill qc-pill-lo" id="qc-t-min">—</div>
+                <div class="qc-range-arrow">
+                  <span>Min</span>
+                  <div class="qc-arrow-line"></div>
+                  <span>Max</span>
+                </div>
+                <div class="qc-range-pill qc-pill-hi" id="qc-t-max">—</div>
+                <span class="qc-unit">mm</span>
+              </div>
+              <div class="qc-target-row">Target: <strong id="qc-t-nom">—</strong> mm &nbsp;|&nbsp; Tol: ±<strong id="qc-t-tol">—</strong> mm</div>
             </div>
-            <div class="geo-vals">
-              <div class="geo-val-item"><label>Max Camber</label><span id="g-camb">≤ 2 mm/m</span></div>
-              <div class="geo-val-item"><label>Per 2m</label><span id="g-camb2">≤ 4 mm</span></div>
-            </div>
-            <div class="geo-desc">ความโค้งด้านข้างของแผ่นตามแนวยาว ค่า C = ระยะห่างสูงสุดจากเส้นตรงอ้างอิง</div>
-          </div>
 
-          <div class="geo-card">
-            <div class="geo-title">Squareness</div>
-            <div class="geo-std">JIS G3193 · ความตั้งฉากของมุม</div>
-            <div class="geo-diagram">
-              <svg width="240" height="88" viewBox="0 0 240 88" fill="none">
-                <rect x="20" y="15" width="180" height="55" stroke="#c0c0bc" stroke-width="1" stroke-dasharray="4,3" fill="none"/>
-                <polygon points="20,15 200,15 212,70 20,70" stroke="#0a0a0a" stroke-width="2" fill="#e0e0dc" fill-opacity="0.5"/>
-                <line x1="200" y1="15" x2="212" y2="15" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="2,2"/>
-                <line x1="200" y1="13" x2="200" y2="17" stroke="#0a0a0a" stroke-width="1"/>
-                <line x1="212" y1="13" x2="212" y2="17" stroke="#0a0a0a" stroke-width="1"/>
-                <text x="201" y="11" font-size="8" fill="#0a0a0a" font-family="Courier New" font-weight="600">d</text>
-                <rect x="20" y="55" width="8" height="8" stroke="#a0a09c" stroke-width="1" fill="none"/>
-                <text x="22" y="84" font-size="8" fill="#a0a09c" font-family="Courier New">Ideal (90°)</text>
-                <text x="140" y="84" font-size="8" fill="#a0a09c" font-family="Courier New">Actual (skew)</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val-item"><label>Max Squareness</label><span id="g-sq">≤ 2 mm/m</span></div>
-              <div class="geo-val-item"><label>Absolute</label><span id="g-sq2">≤ 3 mm</span></div>
-            </div>
-            <div class="geo-desc">ความเบี่ยงเบนของมุมแผ่นจาก 90° วัดเป็นระยะห่าง d ของมุมจริงกับมุมอ้างอิง</div>
-          </div>
-
-          <div class="geo-card">
-            <div class="geo-title">Bending (Min. Bend Radius)</div>
-            <div class="geo-std">JIS Z2248 · รัศมีดัดงอขั้นต่ำ</div>
-            <div class="geo-diagram">
-              <svg width="240" height="88" viewBox="0 0 240 88" fill="none">
-                <rect x="10" y="30" width="60" height="8" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
-                <path d="M70 38 A30 30 0 0 1 100 8" stroke="#0a0a0a" stroke-width="2" fill="none"/>
-                <path d="M70 30 A22 22 0 0 1 92 8" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
-                <path d="M70 38 A30 30 0 0 1 100 8 L92 8 A22 22 0 0 0 70 30Z" fill="#e0e0dc" opacity="0.6"/>
-                <rect x="92" y="8" width="8" height="55" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
-                <line x1="70" y1="8" x2="70" y2="38" stroke="#a0a09c" stroke-width="1" stroke-dasharray="3,2"/>
-                <line x1="70" y1="8" x2="100" y2="8" stroke="#a0a09c" stroke-width="1" stroke-dasharray="3,2"/>
-                <path d="M70 20 A12 12 0 0 1 82 8" stroke="#606060" stroke-width="1" fill="none"/>
-                <text x="76" y="22" font-size="8" fill="#0a0a0a" font-family="Courier New" font-weight="600">R</text>
-                <text x="150" y="38" font-size="8" fill="#606060" font-family="Courier New">R_trans =</text>
-                <text x="150" y="50" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700" id="svgbr1">1.0t</text>
-                <text x="150" y="64" font-size="8" fill="#606060" font-family="Courier New">R_long =</text>
-                <text x="150" y="76" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700" id="svgbr2">1.5t</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val-item"><label>Min R (ตัดขวาง)</label><span id="g-br1">1.0t</span></div>
-              <div class="geo-val-item"><label>Min R (ตามยาว)</label><span id="g-br2">1.5t</span></div>
-              <div class="geo-val-item"><label>Bend Angle</label><span id="g-ba">90°</span></div>
-              <div class="geo-val-item"><label>Spring-back</label><span id="g-sb">~ 2–3°</span></div>
-            </div>
-            <div class="geo-desc">รัศมีดัดงอขั้นต่ำโดยไม่แตกร้าว R คือรัศมี, t คือความหนาแผ่น ทิศตัดขวางดัดได้ง่ายกว่าตามยาว</div>
-          </div>
-
-          <!-- DIVIDER -->
-          <div class="geo-sec-divider">Appearance</div>
-
-          <!-- EDGE CONDITION -->
-          <div class="geo-card">
-            <div class="geo-title">Edge Condition</div>
-            <div class="geo-std">ระดับปลายกระดก และขอบดึง</div>
-            <div class="geo-diagram">
-              <svg width="240" height="90" viewBox="0 0 240 90" fill="none">
-                <!-- Mill edge (good) -->
-                <rect x="10" y="30" width="80" height="14" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
-                <text x="14" y="26" font-size="8" fill="#1a7a4a" font-family="Courier New" font-weight="700">Mill Edge</text>
-                <text x="14" y="56" font-size="8" fill="#a0a09c" font-family="Courier New">ขอบตรง ไม่กระดก</text>
-                <!-- Slit edge lifted (defect) -->
-                <path d="M148 44 L148 30 L218 30 L218 44 L210 36 L200 44 L192 34 L184 44 L176 36 L166 44 L158 36 L148 44Z" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
-                <text x="148" y="26" font-size="8" fill="#c0392b" font-family="Courier New" font-weight="700">Lifted Edge</text>
-                <text x="148" y="56" font-size="8" fill="#a0a09c" font-family="Courier New">ขอบกระดก / เป็นคลื่น</text>
-                <!-- arrows showing lift -->
-                <line x1="166" y1="37" x2="166" y2="28" stroke="#c0392b" stroke-width="1.2"/>
-                <polygon points="166,24 163,30 169,30" fill="#c0392b"/>
-                <line x1="192" y1="35" x2="192" y2="26" stroke="#c0392b" stroke-width="1.2"/>
-                <polygon points="192,22 189,28 195,28" fill="#c0392b"/>
-                <!-- label bottom -->
-                <text x="10" y="82" font-size="8" fill="#a0a09c" font-family="Courier New">Slit edge · Mill edge · Burr-free</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val-item"><label>ขอบ Mill</label><span>ตัดตรง ไม่มีรอย</span></div>
-              <div class="geo-val-item"><label>ขอบ Slit</label><span>ยอมรับ ≤ 0.5 mm</span></div>
-            </div>
-            <div class="geo-insight">
-              <div class="gi-pill ok">Mill Edge — ขอบตรงจากโรงงาน ดีที่สุด</div>
-              <div class="gi-pill warn">Slit Edge — ขอบจากการตัดม้วน ยอมรับได้ถ้ากระดก &lt; 0.5 mm</div>
-              <div class="gi-pill info">💬 Sales tip: ถ้าลูกค้าจะเชื่อม ให้ถามว่าต้องการ Mill edge หรือไม่</div>
+            <div class="qc-check-card">
+              <div class="qc-check-head">
+                <div class="qc-check-icon qc-icon-dim">W</div>
+                <div class="qc-check-info">
+                  <div class="qc-check-name">Width</div>
+                  <div class="qc-check-desc">วัดด้วย Steel Tape · ตรวจหัว-กลาง-ท้าย</div>
+                </div>
+              </div>
+              <div class="qc-range-row">
+                <div class="qc-range-pill qc-pill-nom" id="qc-w-nom">—</div>
+                <div class="qc-range-arrow">
+                  <span>Nominal</span>
+                  <div class="qc-arrow-line"></div>
+                  <span>Max</span>
+                </div>
+                <div class="qc-range-pill qc-pill-hi" id="qc-w-max">—</div>
+                <span class="qc-unit">mm</span>
+              </div>
             </div>
           </div>
 
-          <!-- WAVE / BUCKLE -->
-          <div class="geo-card">
-            <div class="geo-title">Wave &amp; Buckle</div>
-            <div class="geo-std">ระดับรอยหักและเป็นคลื่น</div>
-            <div class="geo-diagram">
-              <svg width="240" height="88" viewBox="0 0 240 88" fill="none">
-                <!-- flat (good) view -->
-                <rect x="10" y="30" width="65" height="10" fill="#e0e0dc" stroke="#0a0a0a" stroke-width="1.5"/>
-                <rect x="10" y="40" width="65" height="4" fill="#c8c8c4" stroke="none"/>
-                <text x="14" y="26" font-size="8" fill="#1a7a4a" font-family="Courier New" font-weight="700">Flat</text>
-                <!-- center buckle -->
-                <path d="M90 40 C100 28,110 34,120 28 C130 22,140 34,150 40" stroke="#0a0a0a" stroke-width="2" fill="none"/>
-                <path d="M90 46 C100 34,110 40,120 34 C130 28,140 40,150 46" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
-                <path d="M90 40 C100 28,110 34,120 28 C130 22,140 34,150 40 L150 46 C140 40,130 28,120 34 C110 40,100 34,90 46Z" fill="#e0e0dc" opacity="0.7"/>
-                <text x="90" y="26" font-size="8" fill="#d4a017" font-family="Courier New" font-weight="700">Center Buckle</text>
-                <line x1="120" y1="40" x2="120" y2="21" stroke="#d4a017" stroke-width="1"/>
-                <polygon points="120,17 117,24 123,24" fill="#d4a017"/>
-                <!-- edge wave -->
-                <path d="M172 40 C178 32,185 36,190 30 C195 24,200 36,206 40" stroke="#c0392b" stroke-width="2" fill="none"/>
-                <path d="M172 46 C178 38,185 42,190 36 C195 30,200 42,206 46" stroke="#c0392b" stroke-width="1.5" fill="none"/>
-                <path d="M172 40 C178 32,185 36,190 30 C195 24,200 36,206 40 L206 46 C200 42,195 30,190 36 C185 42,178 38,172 46Z" fill="#fef0ee" opacity="0.8"/>
-                <text x="168" y="26" font-size="8" fill="#c0392b" font-family="Courier New" font-weight="700">Edge Wave</text>
-                <text x="10" y="80" font-size="8" fill="#a0a09c" font-family="Courier New">ตรวจบน Surface plate / ไม้บรรทัด 1m</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val-item"><label>Center Buckle</label><span>≤ 10 mm/m</span></div>
-              <div class="geo-val-item"><label>Edge Wave</label><span>≤ 15 mm/m</span></div>
-            </div>
-            <div class="geo-insight">
-              <div class="gi-pill ok">Flatness ≤ 12 mm/m — วางบนพื้นไม่โยก ใช้งานได้ทันที</div>
-              <div class="gi-pill warn">Center Buckle — คลื่นตรงกลาง อาจมีปัญหาตอนเชื่อมหรือพับ</div>
-              <div class="gi-pill bad">Edge Wave — คลื่นที่ขอบ ตัดแต่งเพิ่มก่อนใช้งาน</div>
-              <div class="gi-pill info">💬 Sales tip: งานโครงสร้างทั่วไปยอมรับ slight wave ได้ แต่งานชิ้นส่วนต้องการ flat</div>
+          <!-- ② Form Tolerance -->
+          <div class="qc-section">
+            <div class="qc-section-title">② Form Tolerance</div>
+
+            <div class="qc-form-grid">
+
+              <div class="qc-form-card">
+                <svg width="36" height="18" viewBox="0 0 36 18" fill="none">
+                  <path d="M2 12 Q9 4 18 8 Q27 12 34 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                  <line x1="2" y1="15" x2="34" y2="15" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
+                  <line x1="18" y1="8" x2="18" y2="15" stroke="#f36f22" stroke-width="1.2"/>
+                </svg>
+                <div class="qc-form-name">Flatness</div>
+                <div class="qc-form-limit" id="qc-flat">—</div>
+                <div class="qc-form-how">ไม้บรรทัด 1m บนผิวแผ่น</div>
+              </div>
+
+              <div class="qc-form-card">
+                <svg width="36" height="18" viewBox="0 0 36 18" fill="none">
+                  <path d="M2 16 Q18 2 34 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                  <line x1="2" y1="16" x2="34" y2="16" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
+                  <line x1="18" y1="7" x2="18" y2="16" stroke="#f36f22" stroke-width="1.2"/>
+                </svg>
+                <div class="qc-form-name">Camber</div>
+                <div class="qc-form-limit" id="qc-camber">—</div>
+                <div class="qc-form-how">เชือกขึง 2 ปลาย วัดกลาง</div>
+              </div>
+
+              <div class="qc-form-card">
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                  <rect x="4" y="4" width="28" height="28" rx="2" stroke="currentColor" stroke-width="1.6"/>
+                  <line x1="4" y1="4" x2="32" y2="32" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+                  <line x1="32" y1="4" x2="4" y2="32" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+                  <path d="M4 10 L10 4" stroke="#f36f22" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div class="qc-form-name">Squareness</div>
+                <div class="qc-form-limit" id="qc-sq1">—</div>
+                <div class="qc-form-limit qc-form-limit2" id="qc-sq2">Δdiag ≤ 3 mm</div>
+                <div class="qc-form-how">0.7%W &amp; วัดทแยงมุม</div>
+              </div>
+
             </div>
           </div>
 
-          <!-- SURFACE CONDITION -->
-          <div class="geo-card">
-            <div class="geo-title">Surface Condition</div>
-            <div class="geo-std">ระดับครามน้ำ / สนิม / Scale</div>
-            <div class="geo-diagram">
-              <svg width="240" height="88" viewBox="0 0 240 88" fill="none">
-                <!-- Clean surface -->
-                <rect x="10" y="28" width="58" height="22" fill="#d8d8d4" stroke="#0a0a0a" stroke-width="1.5"/>
-                <text x="14" y="24" font-size="8" fill="#1a7a4a" font-family="Courier New" font-weight="700">Clean</text>
-                <text x="10" y="62" font-size="7" fill="#a0a09c" font-family="Courier New">ผิวสม่ำเสมอ</text>
-                <!-- Mill scale -->
-                <rect x="84" y="28" width="58" height="22" fill="#b8b0a4" stroke="#0a0a0a" stroke-width="1.5"/>
-                <ellipse cx="100" cy="37" rx="5" ry="3" fill="#8a8078" opacity="0.8"/>
-                <ellipse cx="116" cy="41" rx="6" ry="2.5" fill="#8a8078" opacity="0.7"/>
-                <ellipse cx="126" cy="35" rx="4" ry="3" fill="#7a7068" opacity="0.8"/>
-                <text x="84" y="24" font-size="8" fill="#d4a017" font-family="Courier New" font-weight="700">Mill Scale</text>
-                <text x="84" y="62" font-size="7" fill="#a0a09c" font-family="Courier New">ยอมรับได้ใน HR</text>
-                <!-- Heavy rust -->
-                <rect x="160" y="28" width="68" height="22" fill="#c0b090" stroke="#c0392b" stroke-width="1.5"/>
-                <ellipse cx="176" cy="36" rx="7" ry="4" fill="#9a6030" opacity="0.85"/>
-                <ellipse cx="194" cy="42" rx="8" ry="3.5" fill="#a06828" opacity="0.8"/>
-                <ellipse cx="212" cy="35" rx="6" ry="4.5" fill="#883c18" opacity="0.9"/>
-                <text x="160" y="24" font-size="8" fill="#c0392b" font-family="Courier New" font-weight="700">Heavy Rust</text>
-                <text x="160" y="62" font-size="7" fill="#c0392b" font-family="Courier New">Reject</text>
-                <!-- bottom label -->
-                <text x="10" y="80" font-size="8" fill="#a0a09c" font-family="Courier New">Scale · Light rust · Pitting · Coating loss</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val-item"><label>Mill Scale (HR)</label><span>ยอมรับได้</span></div>
-              <div class="geo-val-item"><label>Rust / Pitting</label><span>Reject</span></div>
-              <div class="geo-val-item"><label>Coating (GI)</label><span>≥ Z27 g/m²</span></div>
-              <div class="geo-val-item"><label>Oil film (CR)</label><span>ฟิล์มบางสม่ำเสมอ</span></div>
-            </div>
-            <div class="geo-insight">
-              <div class="gi-pill ok">Clean / Light Scale — ผิวปกติสำหรับ Hot Rolled ใช้งานได้เลย</div>
-              <div class="gi-pill warn">Heavy Scale / Flaking — ต้องทำ Shot blast หรือ Pickle ก่อนทาสี</div>
-              <div class="gi-pill bad">Surface Rust — สนิมเกิดจากเก็บในที่ชื้น ต้องขัดก่อนใช้</div>
-              <div class="gi-pill info">💬 Sales tip: ถ้าลูกค้าจะทาสีทันที ควรแนะนำแผ่นที่ผ่าน Pickling มาแล้ว</div>
+          <!-- ③ Appearance -->
+          <div class="qc-section">
+            <div class="qc-section-title">③ Appearance</div>
+
+            <div class="qc-checklist">
+              <div class="qc-item">
+                <div class="qc-item-dot qc-ok"></div>
+                <div class="qc-item-body">
+                  <div class="qc-item-title">Surface</div>
+                  <div class="qc-item-desc">Mill scale ยอมรับได้ · ห้าม Heavy Rust / Pitting / Scratch ลึก</div>
+                </div>
+              </div>
+              <div class="qc-item">
+                <div class="qc-item-dot qc-ok"></div>
+                <div class="qc-item-body">
+                  <div class="qc-item-title">Edge Condition</div>
+                  <div class="qc-item-desc">Mill edge ตรง ไม่กระดก · Slit edge ยอมรับ ≤ 0.5 mm</div>
+                </div>
+              </div>
+              <div class="qc-item">
+                <div class="qc-item-dot qc-ok"></div>
+                <div class="qc-item-body">
+                  <div class="qc-item-title">Marking</div>
+                  <div class="qc-item-desc">พิมพ์ชัด อ่านได้ · มี Grade · Heat No. · Standard</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- DIVIDER: Marking -->
-          <div class="geo-sec-divider">Marking Format</div>
+          <!-- ④ Packing -->
+          <div class="qc-section">
+            <div class="qc-section-title">④ Packing &amp; Tag</div>
 
-          <!-- MARKING -->
-          <div class="geo-card">
-            <div class="geo-title">Marking Format</div>
-            <div class="geo-std">Std. รูปแบบการพิมพ์มิลล์แยกแบบไหนบ้าง</div>
-            <div class="geo-diagram">
-              <svg width="240" height="100" viewBox="0 0 240 100" fill="none">
-                <!-- sheet outline -->
-                <rect x="10" y="12" width="220" height="68" fill="#e8e8e4" stroke="#0a0a0a" stroke-width="1.5"/>
-                <!-- mill stamp area top-left -->
-                <rect x="18" y="20" width="90" height="24" fill="none" stroke="#606060" stroke-width="1" stroke-dasharray="3,2"/>
-                <text x="22" y="29" font-size="7" fill="#606060" font-family="Courier New" font-weight="700">MILL MARK</text>
-                <text x="22" y="38" font-size="7" fill="#0a0a0a" font-family="Courier New">SPHC · JIS G3131</text>
-                <!-- heat number bottom-left -->
-                <text x="18" y="68" font-size="7" fill="#606060" font-family="Courier New">Heat:</text>
-                <text x="38" y="68" font-size="7" fill="#0a0a0a" font-family="Courier New" font-weight="700">HT2024-0892</text>
-                <!-- grade stamp right side -->
-                <rect x="154" y="20" width="68" height="24" fill="none" stroke="#606060" stroke-width="1" stroke-dasharray="3,2"/>
-                <text x="158" y="29" font-size="7" fill="#606060" font-family="Courier New">GRADE</text>
-                <text x="158" y="38" font-size="9" fill="#0a0a0a" font-family="Courier New" font-weight="700">SS400</text>
-                <!-- arrows -->
-                <line x1="63" y1="44" x2="63" y2="55" stroke="#a0a09c" stroke-width="1" stroke-dasharray="2,2"/>
-                <text x="22" y="62" font-size="7" fill="#a0a09c" font-family="Courier New">พิมพ์นูน / สี / เลเซอร์</text>
-                <text x="10" y="90" font-size="8" fill="#a0a09c" font-family="Courier New">JIS: Mill · Grade · Heat · Standard</text>
-              </svg>
+            <div class="qc-pack-row">
+              <div class="qc-pack-card">
+                <div class="qc-pack-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="6" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6 6V5a4 4 0 018 0v1" stroke="currentColor" stroke-width="1.4"/></svg>
+                </div>
+                <div class="qc-pack-name">Bundle</div>
+                <div class="qc-pack-val" id="qc-bnd">—</div>
+              </div>
+              <div class="qc-pack-card">
+                <div class="qc-pack-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="1" y="5" width="18" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="6" y1="5" x2="6" y2="15" stroke="currentColor" stroke-width="1"/><line x1="14" y1="5" x2="14" y2="15" stroke="currentColor" stroke-width="1"/></svg>
+                </div>
+                <div class="qc-pack-name">Strap</div>
+                <div class="qc-pack-val" id="qc-strap">—</div>
+              </div>
+              <div class="qc-pack-card">
+                <div class="qc-pack-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><rect x="6" y="6" width="3" height="3" fill="currentColor"/><rect x="11" y="6" width="3" height="3" fill="currentColor"/><rect x="6" y="11" width="3" height="3" fill="currentColor"/><rect x="11" y="11" width="2" height="2" fill="currentColor" opacity="0.4"/></svg>
+                </div>
+                <div class="qc-pack-name">QR Tag</div>
+                <div class="qc-pack-val">ครบ · Scan ได้</div>
+              </div>
+              <div class="qc-pack-card">
+                <div class="qc-pack-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 17V4a1 1 0 011-1h12a1 1 0 011 1v13" stroke="currentColor" stroke-width="1.4"/><path d="M3 17h14" stroke="currentColor" stroke-width="1.4"/><rect x="7" y="9" width="6" height="8" rx=".5" stroke="currentColor" stroke-width="1"/></svg>
+                </div>
+                <div class="qc-pack-name">Lift</div>
+                <div class="qc-pack-val">Forklift / ไม้รอง</div>
+              </div>
             </div>
-            <div class="geo-vals">
-              <div class="geo-val-item"><label>ตำแหน่ง</label><span>มุมซ้ายบน</span></div>
-              <div class="geo-val-item"><label>วิธีพิมพ์</label><span>นูน / สี / Laser</span></div>
-              <div class="geo-val-item"><label>ข้อมูล</label><span>Mill · Grade · Heat</span></div>
-              <div class="geo-val-item"><label>Standard</label><span>JIS / ASTM / EN</span></div>
-            </div>
-            <div class="geo-desc">ตามมาตรฐาน JIS ต้องมี Mill name, Grade, Heat No., Standard ทุกแผ่น ตรวจว่าตัวอักษรชัดเจน อ่านได้ ไม่ลบเลือน</div>
-          </div>
 
-          <!-- DIVIDER: Packing -->
-          <div class="geo-sec-divider">Packing &amp; Tag</div>
-
-          <!-- PACKING STD -->
-          <div class="geo-card">
-            <div class="geo-title">Packing Standard</div>
-            <div class="geo-std">Std. การ Pack ของทาง WH</div>
-            <div class="geo-diagram">
-              <svg width="240" height="110" viewBox="0 0 240 110" fill="none">
-                <!-- bundle sheets (isometric-ish side view) -->
-                <!-- sheets stack -->
-                <rect x="20" y="50" width="150" height="7" fill="#ccc8c2" stroke="#0a0a0a" stroke-width="1.2"/>
-                <rect x="20" y="43" width="150" height="7" fill="#d0ccc6" stroke="#0a0a0a" stroke-width="1.2"/>
-                <rect x="20" y="36" width="150" height="7" fill="#d4d0ca" stroke="#0a0a0a" stroke-width="1.2"/>
-                <rect x="20" y="29" width="150" height="7" fill="#d8d4ce" stroke="#0a0a0a" stroke-width="1.2"/>
-                <rect x="20" y="22" width="150" height="7" fill="#dcdad6" stroke="#0a0a0a" stroke-width="1.2"/>
-                <!-- straps vertical left -->
-                <rect x="46" y="18" width="5" height="43" fill="none" stroke="#606060" stroke-width="2"/>
-                <!-- straps vertical right -->
-                <rect x="118" y="18" width="5" height="43" fill="none" stroke="#606060" stroke-width="2"/>
-                <!-- wooden pallet -->
-                <rect x="14" y="57" width="162" height="8" fill="#c8a870" stroke="#0a0a0a" stroke-width="1.2"/>
-                <rect x="20" y="65" width="20" height="10" fill="#b89860" stroke="#0a0a0a" stroke-width="1"/>
-                <rect x="74" y="65" width="20" height="10" fill="#b89860" stroke="#0a0a0a" stroke-width="1"/>
-                <rect x="140" y="65" width="20" height="10" fill="#b89860" stroke="#0a0a0a" stroke-width="1"/>
-                <!-- label arrow left strap -->
-                <line x1="48" y1="38" x2="40" y2="25" stroke="#0a0a0a" stroke-width="1"/>
-                <text x="4" y="23" font-size="7" fill="#0a0a0a" font-family="Courier New">strap</text>
-                <!-- label pallet -->
-                <text x="178" y="72" font-size="7" fill="#a0a09c" font-family="Courier New">ไม้รอง</text>
-                <!-- rust paper wrap line -->
-                <rect x="19" y="21" width="152" height="37" fill="none" stroke="#d4a017" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
-                <text x="178" y="30" font-size="7" fill="#d4a017" font-family="Courier New">ฟิล์ม</text>
-                <text x="178" y="39" font-size="7" fill="#d4a017" font-family="Courier New">กันสนิม</text>
-                <!-- bottom note -->
-                <text x="10" y="95" font-size="8" fill="#a0a09c" font-family="Courier New">หนา: ไม้รัด · บาง: สายรัดเหล็ก · ห่อกันสนิม</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val-item"><label>Thk หนา</label><span>ไม้รัด 2 เส้น</span></div>
-              <div class="geo-val-item"><label>Thk บาง</label><span>สายรัดเหล็ก 2 เส้น</span></div>
-              <div class="geo-val-item"><label>ห่อ</label><span>ฟิล์ม + กระดาษกันสนิม</span></div>
-              <div class="geo-val-item"><label>รองพื้น</label><span>ไม้รอง Forklift</span></div>
-            </div>
-            <div class="geo-insight">
-              <div class="gi-pill ok">มัดแน่น · ฟิล์มครบ · ไม้รองครบ · Tag ติด — พร้อมส่ง</div>
-              <div class="gi-pill warn">สายรัดหลวม หรือฟิล์มฉีก — แนะนำให้ repack ก่อนส่งลูกค้า</div>
-              <div class="gi-pill info">💬 Sales tip: ถ้าลูกค้า export ต้องการ export packing ที่แน่นกว่า ถามก่อนยืนยัน order</div>
-            </div>
-          </div>
-
-          <!-- TAG / STICKER -->
-          <div class="geo-card">
-            <div class="geo-title">Tag &amp; Sticker</div>
-            <div class="geo-std">ติด Tag บนเหล็ก อีกอันแลบออกมาเพื่อสแกน</div>
-            <div class="geo-diagram">
-              <svg width="240" height="105" viewBox="0 0 240 105" fill="none">
-                <!-- bundle side view -->
-                <rect x="10" y="28" width="130" height="42" fill="#d8d4ce" stroke="#0a0a0a" stroke-width="1.5"/>
-                <rect x="10" y="28" width="130" height="7" fill="#dedad6" stroke="#0a0a0a" stroke-width="1"/>
-                <rect x="10" y="35" width="130" height="7" fill="#d8d4ce" stroke="#0a0a0a" stroke-width="1"/>
-                <rect x="10" y="42" width="130" height="7" fill="#d4d0ca" stroke="#0a0a0a" stroke-width="1"/>
-                <rect x="10" y="49" width="130" height="7" fill="#d0ccc6" stroke="#0a0a0a" stroke-width="1"/>
-                <rect x="10" y="56" width="130" height="7" fill="#ccc8c2" stroke="#0a0a0a" stroke-width="1"/>
-                <rect x="10" y="63" width="130" height="7" fill="#c8c4be" stroke="#0a0a0a" stroke-width="1"/>
-                <!-- strap -->
-                <rect x="55" y="24" width="4" height="52" fill="none" stroke="#606060" stroke-width="2"/>
-                <!-- TAG on bundle (visible) -->
-                <rect x="118" y="34" width="34" height="22" fill="#fef9c3" stroke="#d4a017" stroke-width="1.5"/>
-                <text x="122" y="43" font-size="6" fill="#0a0a0a" font-family="Courier New" font-weight="700">SPHC-HR</text>
-                <text x="122" y="51" font-size="6" fill="#606060" font-family="Courier New">2.0×1200</text>
-                <!-- TAG dangling out (for scanning) -->
-                <line x1="152" y1="45" x2="175" y2="45" stroke="#d4a017" stroke-width="1" stroke-dasharray="2,2"/>
-                <rect x="175" y="33" width="54" height="32" fill="#fef9c3" stroke="#d4a017" stroke-width="1.5"/>
-                <!-- QR placeholder -->
-                <rect x="179" y="37" width="18" height="18" fill="#0a0a0a" opacity="0.85"/>
-                <rect x="181" y="39" width="5" height="5" fill="#fef9c3"/>
-                <rect x="190" y="39" width="5" height="5" fill="#fef9c3"/>
-                <rect x="181" y="48" width="5" height="5" fill="#fef9c3"/>
-                <rect x="187" y="46" width="3" height="3" fill="#fef9c3"/>
-                <text x="200" y="44" font-size="6" fill="#0a0a0a" font-family="Courier New" font-weight="700">SKU</text>
-                <text x="200" y="52" font-size="6" fill="#606060" font-family="Courier New">Heat No</text>
-                <text x="200" y="59" font-size="6" fill="#606060" font-family="Courier New">Prod Date</text>
-                <!-- scan arrow -->
-                <text x="185" y="72" font-size="8" fill="#d4a017" font-family="Courier New">← scan</text>
-                <!-- labels bottom -->
-                <text x="118" y="90" font-size="7" fill="#a0a09c" font-family="Courier New">Tag บนมัด</text>
-                <text x="175" y="90" font-size="7" fill="#d4a017" font-family="Courier New">Tab แลบสแกน</text>
-                <text x="10" y="100" font-size="8" fill="#a0a09c" font-family="Courier New">ตรวจ: ครบ · อ่านได้ · QR scan ได้ · ไม่หลุด</text>
-              </svg>
-            </div>
-            <div class="geo-vals">
-              <div class="geo-val-item"><label>Tag บนมัด</label><span>ครบทุกมัด</span></div>
-              <div class="geo-val-item"><label>Tab แลบ</label><span>พับออกด้านข้าง</span></div>
-              <div class="geo-val-item"><label>QR / Barcode</label><span>Scan ได้ 100%</span></div>
-              <div class="geo-val-item"><label>ข้อมูล</label><span>SKU · Heat · วันผลิต</span></div>
-            </div>
-            <div class="geo-insight">
-              <div class="gi-pill ok">Tag ครบ · QR scan ได้ · Tab แลบพร้อมสแกน — ผ่าน</div>
-              <div class="gi-pill bad">ไม่มี Tag หรือ scan ไม่ได้ — ต้องปริ้น Tag ใหม่ก่อนจ่ายสินค้า</div>
-              <div class="gi-pill info">💬 Sales tip: Tab ที่แลบออกมาช่วยให้ Warehouse scan ได้โดยไม่ต้องแกะมัด ประหยัดเวลา</div>
+            <div class="qc-checklist" style="margin-top:10px;">
+              <div class="qc-item">
+                <div class="qc-item-dot qc-ok"></div>
+                <div class="qc-item-body">
+                  <div class="qc-item-title">สายรัดแน่น ครบจำนวน</div>
+                  <div class="qc-item-desc">ตรวจสายรัดตามค่า STRAP_TYPE ในชีท · ห้ามหลวม</div>
+                </div>
+              </div>
+              <div class="qc-item">
+                <div class="qc-item-dot qc-ok"></div>
+                <div class="qc-item-body">
+                  <div class="qc-item-title">ฟิล์มกันสนิมครบ ไม่ฉีก</div>
+                  <div class="qc-item-desc">ห่อคลุมทุกด้าน · กระดาษกันสนิมด้านใน</div>
+                </div>
+              </div>
+              <div class="qc-item">
+                <div class="qc-item-dot qc-ok"></div>
+                <div class="qc-item-body">
+                  <div class="qc-item-title">Tag ทุกมัด · QR Scan ได้</div>
+                  <div class="qc-item-desc">SKU · Heat No. · วันผลิต ครบ · Tab แลบออกด้านข้าง</div>
+                </div>
+              </div>
             </div>
           </div>
 
         </div>
       </div>
-
       <!-- ADMIN -->
       <div class="panel" id="panel-admin">
         <div class="admin-hdr">
@@ -3296,6 +3164,40 @@ function openViewer(idx){
   var svgbr2=document.getElementById('svgbr2'); if(svgbr2) svgbr2.textContent=gDef.br2;
 
   buildLSS(s);
+
+  // ── QC Checklist Panel populate ──────────────────
+  setText('qc-sku', s.SKU||'—');
+  setText('qc-std-badge', s.STANDARD||'—');
+  setText('qc-meta', (s.GRADE||'—')+' · '+
+    (parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||'—')+'mm × '+
+    (s.WIDTH_MM||'—')+' × '+(s.LENGTH_MM||'—')+' mm');
+  // Thickness
+  var qcTgt=parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
+  var qcTol=parseFloat(s.TOLERANCE_THICKNESS||0);
+  setText('qc-t-nom', qcTgt>0?qcTgt.toFixed(2):'—');
+  setText('qc-t-tol', qcTol>0?qcTol.toFixed(2):'—');
+  setText('qc-t-min', qcTgt>0&&qcTol>0?(qcTgt-qcTol).toFixed(2):(qcTgt>0?qcTgt.toFixed(2):'—'));
+  setText('qc-t-max', qcTgt>0&&qcTol>0?(qcTgt+qcTol).toFixed(2):'—');
+  // Width
+  var qcW=parseFloat(s.WIDTH_MM||0);
+  var qcWTol=parseFloat(s.TOLERANCE_MAX||0);
+  setText('qc-w-nom', qcW>0?qcW.toFixed(0):'—');
+  setText('qc-w-max', qcW>0&&qcWTol>0?(qcW+qcWTol).toFixed(0):'—');
+  // Flatness
+  var qcStd=String(s.STANDARD||'').toUpperCase();
+  var qcFlat=(qcStd.indexOf('STAY')!==-1&&qcStd.indexOf('FLAT')!==-1)?5:12;
+  setText('qc-flat','≤ '+qcFlat+' mm');
+  // Camber
+  var qcLen=parseFloat(s.LENGTH_MM||2400)/1000;
+  setText('qc-camber','≤ '+(3/qcLen).toFixed(2)+' mm');
+  // Squareness
+  setText('qc-sq1','≤ '+(qcW*0.007).toFixed(1)+' mm');
+  setText('qc-sq2','Δdiag ≤ 3 mm');
+  // Packing
+  setText('qc-bnd',(parseInt(s.BUNDLE_SIZE)||5)+' แผ่น/มัด');
+  var qcStrap=String(s.STRAP_TYPE||'2').trim().toUpperCase();
+  var qcSN=(qcStrap==='NO'||qcStrap==='N0'||qcStrap==='0'||qcStrap==='')?0:Math.min(3,parseInt(qcStrap)||2);
+  setText('qc-strap', qcSN===0?'ไม่มีสายรัด':qcSN+' เส้น');
 
   // Admin fields
   var adminMap={
