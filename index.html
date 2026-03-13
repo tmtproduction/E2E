@@ -823,11 +823,26 @@ body{
 .cr .crv{font-size:20px;font-weight:400;}
 
 /* Packing */
-.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.pack-item{display:flex;gap:10px;align-items:flex-start;}
-.pack-icon{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--g100);color:var(--g400);}
-.pack-text label{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:3px;font-family:var(--mono);}
-.pack-text span{font-size:14px;font-weight:500;line-height:1.4;}
+.pack-chips{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;
+}
+.pack-chip{
+  display:flex;align-items:baseline;gap:5px;
+  background:var(--g50);border:1px solid var(--g200);
+  border-radius:6px;padding:7px 12px;
+  min-width:0;
+}
+.pack-chip-lbl{
+  font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);font-weight:500;white-space:nowrap;
+}
+.pack-chip-val{
+  font-size:13px;font-weight:600;color:var(--black);
+  font-family:var(--mono);white-space:nowrap;
+}
+.pack-chip-unit{
+  font-size:8px;color:var(--g400);font-family:var(--mono);white-space:nowrap;
+}
 
 .cta-row{display:flex;gap:0;flex-shrink:0;}
 .btn-cta{
@@ -1296,7 +1311,6 @@ body{
   .btn-custom{padding:16px 12px;font-size:8px;}
 
   /* ── 5. PACKING / CONTROLS ── */
-  .pack-grid{grid-template-columns:1fr 1fr;}
   .seg-row{padding:10px 16px;}
   .seg-slider{width:72px;}
 
@@ -2374,36 +2388,27 @@ body{
           <!-- ── existing sections below ── -->
           <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Packing &amp; 3D Live</span></div>
           <div class="sec">
-            <div class="pack-grid" style="margin-bottom:14px">
-              <div class="pack-item">
-                <div class="pack-icon">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="5" width="12" height="9" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M5 5V4a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.2"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1"/></svg>
-                </div>
-                <div class="pack-text"><label>Bundle</label><span id="v-bnd">—</span></div>
+            <div class="pack-chips">
+              <div class="pack-chip">
+                <span class="pack-chip-lbl">มัด</span>
+                <span class="pack-chip-val" id="v-bnd">—</span>
+                <span class="pack-chip-unit">แผ่น/มัด</span>
               </div>
-              <div class="pack-item">
-                <div class="pack-icon">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="4" x2="8" y2="8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="8" y1="8.5" x2="10.5" y2="10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-                </div>
-                <div class="pack-text"><label>น้ำหนัก/มัด</label><span id="v-bwt">—</span></div>
+              <div class="pack-chip">
+                <span class="pack-chip-lbl">น้ำหนัก</span>
+                <span class="pack-chip-val" id="v-bwt">—</span>
               </div>
-              <div class="pack-item">
-                <div class="pack-icon">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="4" width="13" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><line x1="5" y1="4" x2="5" y2="12" stroke="currentColor" stroke-width="1"/><line x1="11" y1="4" x2="11" y2="12" stroke="currentColor" stroke-width="1"/></svg>
-                </div>
-                <div class="pack-text"><label>มัดด้วย</label><span id="v-strap">—</span></div>
+              <div class="pack-chip">
+                <span class="pack-chip-lbl">สายรัด</span>
+                <span class="pack-chip-val" id="v-strap">—</span>
               </div>
-              <div class="pack-item">
-                <div class="pack-icon">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M2 6h12M6 6v8" stroke="currentColor" stroke-width="1"/></svg>
-                </div>
-                <div class="pack-text"><label>ห่อ</label><span id="v-wrap">—</span></div>
+              <div class="pack-chip">
+                <span class="pack-chip-lbl">ห่อ</span>
+                <span class="pack-chip-val" id="v-wrap">—</span>
               </div>
-              <div class="pack-item">
-                <div class="pack-icon">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M5 8l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-                </div>
-                <div class="pack-text"><label>ยก / Lifting</label><span id="v-lift">—</span></div>
+              <div class="pack-chip">
+                <span class="pack-chip-lbl">ยก</span>
+                <span class="pack-chip-val" id="v-lift">—</span>
               </div>
             </div>
 
