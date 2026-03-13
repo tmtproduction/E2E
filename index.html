@@ -329,6 +329,14 @@ body{
   display:grid;grid-template-columns:1fr 1fr 1fr;
   gap:0;border-bottom:1px solid var(--g200);
 }
+.spec-dim-weight-wrap{
+  grid-column:span 2;padding:14px 16px;
+}
+.sh-weight-row{display:flex;align-items:baseline;gap:5px;margin-top:4px;}
+.sh-weight-tmt{font-size:26px;font-weight:700;font-family:var(--mono);letter-spacing:-1px;line-height:1;}
+.sh-weight-unit{font-size:11px;color:var(--g500);font-family:var(--mono);}
+.sh-weight-sub{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-left:2px;}
+.sh-weight-range{font-size:10px;font-family:var(--mono);color:var(--g600);background:#fff5f0;border:1px solid rgba(243,111,34,.2);border-radius:4px;padding:4px 8px;margin-top:6px;display:inline-block;}
 .spec-dim-thick-wrap{
   grid-column:span 2;padding:14px 16px;border-right:1px solid var(--g200);
 }
@@ -2271,6 +2279,19 @@ body{
                 <label style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:6px;font-family:var(--mono);font-weight:500;">Mill</label>
                 <div id="sh-millcert" style="font-size:16px;font-weight:600;font-family:var(--mono);letter-spacing:1px;">—</div>
               </div>
+              <!-- Weight — spans 2 cols (TMT weight + range) -->
+              <div class="spec-dim-item spec-dim-weight-wrap">
+                <label>น้ำหนัก/แผ่น</label>
+                <div class="sh-weight-row">
+                  <span class="sh-weight-tmt" id="sh-wt-tmt">—</span>
+                  <span class="sh-weight-unit">kg</span>
+                  <span class="sh-weight-sub" id="sh-wt-label">TMT</span>
+                </div>
+                <div class="sh-weight-range" id="sh-wt-range" style="display:none">
+                  <span style="color:#f36f22">◆</span>
+                  ที่เป็นไปได้: <strong id="sh-wt-min">—</strong>–<strong id="sh-wt-max">—</strong> kg
+                </div>
+              </div>
             </div>
 
           </div>
@@ -3208,6 +3229,27 @@ function openViewer(idx){
   var t=parseFloat(s.THICKNESS_TARGET_MM)||0;
   var tmt=parseFloat(s.THICKNESS_TMT_MM)||0;
   var w=parseInt(s.WIDTH_MM)||0,l=parseInt(s.LENGTH_MM)||0;
+  // ── Weight calculation ───────────────────────────────────────
+  var DENSITY = 7.85; // g/cm³ → kg/m² per mm thickness
+  function calcKg(thickMM){ return w>0&&l>0 ? (thickMM*w*l*DENSITY/1000000) : 0; }
+  var wtTmt   = tmt>0 ? calcKg(tmt) : (t>0 ? calcKg(t) : 0);
+  var wtSheet = parseFloat(s.WEIGHT_PER_SHEET_KG)||0;
+  // ใช้ WEIGHT_PER_SHEET_KG จาก sheet เป็น reference ถ้ามี ไม่งั้น calc
+  var wtDisplay = wtSheet>0 ? wtSheet : (wtTmt>0 ? Math.round(wtTmt*10)/10 : 0);
+  setText('sh-wt-tmt', wtDisplay>0 ? wtDisplay.toFixed(1) : '—');
+  var wtLbl = document.getElementById('sh-wt-label');
+  if(wtLbl) wtLbl.textContent = wtSheet>0 ? 'kg/แผ่น' : 'kg (TMT)';
+  // range จาก THICK_MIN/MAX
+  var wRangeEl = document.getElementById('sh-wt-range');
+  if(wRangeEl){
+    var rMin = parseFloat(s.THICK_MIN||''), rMax = parseFloat(s.THICK_MAX||'');
+    if(!isNaN(rMin)&&!isNaN(rMax)&&rMin>0&&rMax>0&&w>0&&l>0){
+      var kgMin = calcKg(rMin), kgMax = calcKg(rMax);
+      setText('sh-wt-min', kgMin.toFixed(1));
+      setText('sh-wt-max', kgMax.toFixed(1));
+      wRangeEl.style.display='';
+    } else { wRangeEl.style.display='none'; }
+  }
 
   // ── spec hero Level 1 ──
   // Target: fallback to TMT if TARGET is empty
