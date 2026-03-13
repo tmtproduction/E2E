@@ -700,13 +700,16 @@ body{
 }
 .vp-back:hover{color:var(--black);}
 .vp-back-txt{display:inline;}
+.vp-title-col{display:flex;flex-direction:column;align-items:center;min-width:0;overflow:hidden;}
+.vp-surface-mob{display:none;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--g500);font-family:var(--mono);font-weight:600;margin-bottom:1px;}
 .vp-title{
   font-size:11px;letter-spacing:3px;text-transform:uppercase;
   color:var(--g400);text-align:center;font-weight:500;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  font-family:var(--mono);
+  font-family:var(--mono);width:100%;
 }
 .vp-tabs{display:flex;gap:3px;justify-content:flex-end;}
+.vp-hdr-right{display:flex;align-items:center;gap:8px;justify-content:flex-end;}
 .tab-btn{
   font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
   padding:7px 16px;border:1px solid var(--g200);background:none;
@@ -1183,6 +1186,9 @@ body{
   .vp-back-txt{display:none;}
   .vp-title{text-align:center;font-size:9px;letter-spacing:2px;}
   #vp-surface-badge{font-size:8px;padding:3px 7px;letter-spacing:1px;}
+  .vp-badge-desktop{display:none !important;}
+  .vp-hdr-right{display:none !important;}
+  .vp-surface-mob{display:block;}
 
   /* canvas zone — fixed height */
   .vp-main{
@@ -2014,18 +2020,20 @@ body{
       <span class="vp-back-txt">กลับ</span>
     </button>
     <!-- title -->
-    <div class="vp-title" id="vp-title">Steel Product Viewer</div>
-    <!-- surface badge -->
-    <div style="display:flex;align-items:center;gap:8px;">
-      <span id="vp-surface-badge" class="v-badge hr" style="display:none;"></span>
-        <!-- tabs desktop -->
-      <div class="vp-tabs">
-      <button class="tab-btn active" onclick="switchTab('spec',this)">ข้อมูลสินค้า</button>
-      <button class="tab-btn" onclick="switchTab('geo',this)">ตรวจสอบ</button>
-      <button class="tab-btn" disabled title="สงวนสิทธิ์ Admin" style="opacity:.35;cursor:not-allowed;">แก้ไข</button>
-      <button class="tab-btn" onclick="switchTab('label',this)">พิมพ์ Tag</button>
+    <div class="vp-title-col">
+      <div class="vp-surface-mob" id="vp-surface-mob"></div>
+      <div class="vp-title" id="vp-title">Steel Product Viewer</div>
     </div>
-    </div><!-- /badge+tabs wrapper -->
+    <!-- surface badge + tabs desktop -->
+    <div class="vp-hdr-right">
+      <span id="vp-surface-badge" class="v-badge hr vp-badge-desktop" style="display:none;"></span>
+      <div class="vp-tabs">
+        <button class="tab-btn active" onclick="switchTab('spec',this)">ข้อมูลสินค้า</button>
+        <button class="tab-btn" onclick="switchTab('geo',this)">ตรวจสอบ</button>
+        <button class="tab-btn" disabled title="สงวนสิทธิ์ Admin" style="opacity:.35;cursor:not-allowed;">แก้ไข</button>
+        <button class="tab-btn" onclick="switchTab('label',this)">พิมพ์ Tag</button>
+      </div>
+    </div>
   </div>
   <!-- mobile tab bar — sits below header, full width -->
   <div class="vp-tabs-mobile">
@@ -3424,6 +3432,8 @@ function openViewer(idx){
 
   // Product identity
   setText('vp-title', s.SKU||'—');
+  var mobSurf=document.getElementById('vp-surface-mob');
+  if(mobSurf) mobSurf.textContent=surfaceBadgeLabel(s.SURFACE)||'';
   setText('v-eyebrow', surfaceLabel(s.SURFACE));
   setText('v-sku', makeName(s));
   setText('v-tagline', makeTagline(s));
@@ -3707,11 +3717,11 @@ function openViewer(idx){
   // show surface badge
   var vpBadgeEl=document.getElementById('vp-surface-badge');
   if(vpBadgeEl) vpBadgeEl.style.display='inline-block';
-  // reset tech collapse
+  // open tech collapse by default
   var tcBody=document.getElementById('tech-collapse-body');
-  if(tcBody) tcBody.classList.remove('open');
+  if(tcBody) tcBody.classList.add('open');
   var tcHdr=document.querySelector('.tech-collapse-hdr');
-  if(tcHdr) tcHdr.classList.remove('open');
+  if(tcHdr) tcHdr.classList.add('open');
 
   // Switch to viewer
   document.getElementById('catalog-view').style.display='none';
