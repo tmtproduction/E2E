@@ -1188,10 +1188,17 @@ body{
     flex:1;overflow:hidden;
     position:relative;
   }
+  .canvas-col{
+    display:flex;flex-direction:column;
+    flex-shrink:0;overflow:visible;
+  }
   .canvas-wrap{
     height:52vw;max-height:240px;
     flex-shrink:0;
     position:relative;
+  }
+  .ctrl3d-bar{
+    flex-shrink:0;
   }
 
   /* ── bottom sheet panel ── */
@@ -2047,7 +2054,6 @@ body{
 <!-- ── 3D Floating Controls ── -->
       <div class="ctrl3d-float">
         <button class="ctrl3d-toggle" onclick="toggle3dPanel()" id="ctrl3d-btn">
-          <span class="ctrl3d-toggle-icon">⚙</span>
           <span>3D Controls</span>
         </button>
         <div class="ctrl3d-panel collapsed" id="ctrl3d-panel">
