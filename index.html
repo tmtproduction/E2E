@@ -3396,34 +3396,29 @@ function openViewer(idx){
   // set thickness slider limits — Sheet THICK_MIN/THICK_MAX ก่อน fallback ล็อค nominal
   var hasMin = s.THICK_MIN !== '' && s.THICK_MIN != null && !isNaN(parseFloat(s.THICK_MIN));
   var hasMax = s.THICK_MAX !== '' && s.THICK_MAX != null && !isNaN(parseFloat(s.THICK_MAX));
+  // center = TMT, range = THICK_MIN/MAX (ถ้ามี) ไม่งั้น TARGET±TOLERANCE
+  var thDefault = (tmt && tmt > 0) ? tmt : th;
   if(hasMin && hasMax){
     S_thickMin = parseFloat(s.THICK_MIN);
     S_thickMax = parseFloat(s.THICK_MAX);
   } else {
-    // fallback 1: TARGET ± TOLERANCE_THICKNESS
     var tTolSlider = parseFloat(s.TOLERANCE_THICKNESS||0);
     if(tTolSlider > 0){
       S_thickMin = Math.round((th - tTolSlider) * 100) / 100;
       S_thickMax = Math.round((th + tTolSlider) * 100) / 100;
-    } else if(th > 0){
-      // fallback 2: ไม่มีอะไรเลย — ให้ปรับ ±1 mm รอบ target ไม่ lock
-      S_thickMin = Math.round((th - 1.0) * 100) / 100;
-      S_thickMax = Math.round((th + 1.0) * 100) / 100;
     } else {
-      S_thickMin = th;
-      S_thickMax = th;
+      S_thickMin = Math.round((thDefault - 1.0) * 100) / 100;
+      S_thickMax = Math.round((thDefault + 1.0) * 100) / 100;
     }
   }
   var thickSlider=document.getElementById('a-thick');
-  // lock เฉพาะตอนที่ไม่มีข้อมูลเลย (th=0)
-  var thickLocked = (th <= 0);
-  // ใช้ TMT เป็น default ถ้ามี ไม่งั้น fallback TARGET
-  var thDefault = (tmt && tmt > 0) ? tmt : th;
+  var thickLocked = (th <= 0 && tmt <= 0);
+  // scale *100 เพื่อให้ step=1 = 0.01 mm (range THICK_MIN/MAX แคบมาก เช่น 4.27–4.33)
   if(thickSlider){
-    thickSlider.min=Math.round(S_thickMin*10);
-    thickSlider.max=Math.round(S_thickMax*10);
-    thickSlider.step=1;  // step 1 unit = 0.1 mm (เพราะ scale *10)
-    thickSlider.value=Math.round(thDefault*10);
+    thickSlider.min   = Math.round(S_thickMin * 100);
+    thickSlider.max   = Math.round(S_thickMax * 100);
+    thickSlider.step  = 1;
+    thickSlider.value = Math.round(thDefault * 100);
     thickSlider.disabled = thickLocked;
     thickSlider.classList.toggle('locked', thickLocked);
     thickSlider.classList.remove('out-of-range');
@@ -3449,7 +3444,7 @@ function openViewer(idx){
       thickHint.style.color = 'var(--g400)';
     } else {
       var hintSrc = (hasMin && hasMax) ? '(THICK_MIN/MAX จาก Sheet)' : '(TARGET ± TOLERANCE)';
-      thickHint.textContent = S_thickMin.toFixed(2)+' – '+S_thickMax.toFixed(2)+' mm ' + hintSrc;
+      thickHint.textContent = S_thickMin.toFixed(2)+' – '+S_thickMax.toFixed(2)+' mm  |  ค่ากลาง: '+thDefault.toFixed(2)+' mm ' + hintSrc;
       thickHint.style.color = 'var(--green)';
     }
   }
@@ -4119,7 +4114,7 @@ function liveUpdate(){
   // sync number input with slider
   var sheetsNum=document.getElementById('a-sheets-v');
   if(sheetsNum && sheetsNum.tagName==='INPUT' && sheetsNum.type==='number') sheetsNum.value=S.sheets;
-  S.thick =parseInt(thickEl.value)/10;
+  S.thick = parseInt(thickEl.value) / 100;
   S.w     =parseInt(wEl.value)||1200;
   S.l     =parseInt(lEl.value)||2400;
 
