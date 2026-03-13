@@ -3406,10 +3406,13 @@ function openViewer(idx){
   }
   var thickSlider=document.getElementById('a-thick');
   var thickLocked = S_thickMin === S_thickMax;
+  // ใช้ TMT เป็น default ถ้ามี ไม่งั้น fallback TARGET
+  var thDefault = (tmt && tmt > 0) ? tmt : th;
   if(thickSlider){
     thickSlider.min=Math.round(S_thickMin*10);
     thickSlider.max=Math.round(S_thickMax*10);
-    thickSlider.value=Math.round(th*10);
+    thickSlider.step=1;  // step 1 unit = 0.1 mm (เพราะ scale *10)
+    thickSlider.value=Math.round(thDefault*10);
     thickSlider.disabled = thickLocked;
     thickSlider.classList.toggle('locked', thickLocked);
     thickSlider.classList.remove('out-of-range');
@@ -3427,14 +3430,14 @@ function openViewer(idx){
     }
   }
   if(lockedNote) lockedNote.style.display = thickLocked ? 'block' : 'none';
-  // แสดง label hint ใต้ slider
+  // แสดง label hint ใต้ slider (2 decimal)
   var thickHint = document.getElementById('thick-hint');
   if(thickHint){
     if(thickLocked){
-      thickHint.textContent = 'ล็อคที่ '+th.toFixed(1)+' mm';
+      thickHint.textContent = 'ล็อคที่ '+thDefault.toFixed(2)+' mm';
       thickHint.style.color = 'var(--g400)';
     } else {
-      thickHint.textContent = S_thickMin.toFixed(1)+' – '+S_thickMax.toFixed(1)+' mm (range จาก Sheet)';
+      thickHint.textContent = S_thickMin.toFixed(2)+' – '+S_thickMax.toFixed(2)+' mm (range จาก Sheet)';
       thickHint.style.color = 'var(--green)';
     }
   }
@@ -3450,7 +3453,7 @@ function openViewer(idx){
 
   var elSheets=document.getElementById('a-sheets'); if(elSheets) elSheets.value=S.sheets;
   var elSheetsV=document.getElementById('a-sheets-v'); if(elSheetsV) elSheetsV.value=S.sheets;
-  var elThickV=document.getElementById('a-thick-v'); if(elThickV){elThickV.textContent=th.toFixed(1);elThickV.style.color='';}
+  var elThickV=document.getElementById('a-thick-v'); if(elThickV){elThickV.textContent=thDefault.toFixed(2);elThickV.style.color='';}
   var elW=document.getElementById('a-w'); if(elW) elW.value=S.w;
   var elL=document.getElementById('a-l'); if(elL) elL.value=S.l;
   var thWarn=document.getElementById('thick-warn'); if(thWarn) thWarn.style.display='none';
@@ -4114,7 +4117,7 @@ function liveUpdate(){
   var warn=document.getElementById('thick-warn');
   if(warn) warn.style.display=outOfRange?'inline':'none';
   var tv=document.getElementById('a-thick-v');
-  if(tv){tv.textContent=S.thick.toFixed(1);tv.style.color=outOfRange?'var(--red)':'';}
+  if(tv){tv.textContent=S.thick.toFixed(2);tv.style.color=outOfRange?'var(--red)':'';}
 
 
   // update packing live — recalculate weight from dimensions
@@ -4129,7 +4132,7 @@ function liveUpdate(){
     var vKg=document.getElementById('tc-kg'); if(vKg) vKg.textContent=calcKgRound+' kg';
   }
   var inf=document.getElementById('cv-info');
-  if(inf) inf.textContent='W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(1)+'mm  N:'+S.sheets;
+  if(inf) inf.textContent='W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(2)+'mm  N:'+S.sheets;
 
   if(typeof render3d==='function') render3d();
   calcUpdate();
@@ -4737,7 +4740,7 @@ function render3d(){
 
   // ── INFO ──
   ctx.save();ctx.font='600 10px "Courier New",monospace';ctx.fillStyle='#a0a09c';
-  ctx.fillText('W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(1)+'mm  N:'+S.sheets,12,H-12);
+  ctx.fillText('W:'+S.w+'  L:'+S.l+'  T:'+S.thick.toFixed(2)+'mm  N:'+S.sheets,12,H-12);
   ctx.restore();
 }
 
