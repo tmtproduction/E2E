@@ -953,7 +953,7 @@ body{
 .seg-unit{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--g400);white-space:nowrap;font-family:var(--mono);}
 .seg-pair{display:flex;align-items:baseline;gap:6px;}
 .seg-pair-sep{font-size:13px;font-weight:300;color:var(--g400);flex-shrink:0;padding:0 1px;}
-.seg-slider-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.seg-slider-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:0;flex:1;}
 .seg-slider{
   -webkit-appearance:none;appearance:none;
   width:88px;height:1.5px;background:var(--g200);outline:none;cursor:pointer;border-radius:1px;
@@ -967,7 +967,7 @@ body{
 .seg-slider:disabled{opacity:.3;cursor:not-allowed;}
 .seg-slider:disabled::-webkit-slider-thumb{background:var(--g400);}
 .seg-slider.out-of-range::-webkit-slider-thumb{background:var(--red);box-shadow:0 0 0 1.5px var(--red);}
-.seg-range-hint{font-size:11px;color:var(--g400);letter-spacing:.3px;white-space:nowrap;font-family:var(--mono);}
+.seg-range-hint{font-size:10px;color:var(--g400);letter-spacing:.3px;white-space:normal;font-family:var(--mono);line-height:1.5;text-align:right;}
 .seg-toggle-group{display:flex;gap:0;border-bottom:1.5px solid var(--g200);}
 .seg-toggle{
   font-size:12px;letter-spacing:.3px;background:none;border:none;
@@ -981,7 +981,7 @@ body{
 .seg-toggle:hover{color:var(--black);}
 .seg-toggle.active{color:var(--black);font-weight:600;}
 .seg-toggle.active::after{background:var(--black);}
-.seg-field-group{display:flex;align-items:center;gap:12px;}
+.seg-field-group{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;}
 .calc-seg-result{display:flex;flex-direction:column;gap:3px;padding:0 10px;text-align:center;}
 .calc-seg-lbl{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
 .calc-seg-val{font-family:var(--mono);font-size:15px;font-weight:500;}
@@ -3443,8 +3443,8 @@ function openViewer(idx){
       thickHint.textContent = 'ล็อคที่ '+thDefault.toFixed(2)+' mm (TARGET ± TOLERANCE ไม่ครบ)';
       thickHint.style.color = 'var(--g400)';
     } else {
-      var hintSrc = (hasMin && hasMax) ? '(THICK_MIN/MAX จาก Sheet)' : '(TARGET ± TOLERANCE)';
-      thickHint.textContent = S_thickMin.toFixed(2)+' – '+S_thickMax.toFixed(2)+' mm  |  ค่ากลาง: '+thDefault.toFixed(2)+' mm ' + hintSrc;
+      var hintSrc = (hasMin && hasMax) ? 'จาก Sheet' : 'TARGET±TOL';
+      thickHint.innerHTML = S_thickMin.toFixed(2)+' – '+S_thickMax.toFixed(2)+' mm ('+hintSrc+')<br>● '+thDefault.toFixed(2)+' mm (actual)';
       thickHint.style.color = 'var(--green)';
     }
   }
