@@ -2262,7 +2262,7 @@ body{
                 </div>
               </div>
               <div id="thick-locked-note" style="display:none;padding:6px 14px 8px;font-size:9px;color:var(--g400);letter-spacing:.3px;border-bottom:1px solid var(--g200);">
-                🔒 ล็อคที่ค่า Nominal — ตั้งค่า THICK_MIN/MAX ใน Sheet เพื่อปลดล็อค
+                🔒 Locked — set THICK_MIN / THICK_MAX in Sheet to unlock
               </div>
 
               <!-- ── กว้าง × ยาว — segmented pair ── -->
@@ -3318,17 +3318,8 @@ function openViewer(idx){
   var stdVal = String(s.STANDARD||'').toUpperCase().trim();
   var tTgt2  = parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
   var wNom2  = parseFloat(s.WIDTH_MM||1219);
-  var flatLim = 16;
-  if(tTgt2>0){
-    if(tTgt2<1.60)       flatLim=wNom2<1250?16:20;
-    else if(tTgt2<3.15)  flatLim=wNom2<1250?16:18;
-    else if(tTgt2<4.00)  flatLim=16;
-    else if(tTgt2<6.00)  flatLim=14;
-    else if(tTgt2<10.00) flatLim=13;
-    else if(tTgt2<25.00) flatLim=12;
-    else if(tTgt2<40.00) flatLim=9;
-    else                 flatLim=8;
-  }
+  var stdVal2 = String((currentSku&&currentSku.STANDARD)||'').toUpperCase().trim();
+  var flatLim = stdVal2.indexOf('STAY FLAT') >= 0 ? 5 : 12;
   setText('tc-flat', '≤ '+flatLim+' mm / 2m');
 
   // 4. Camber: W-SD-QA-01 §5 Cut to Length
@@ -3440,11 +3431,11 @@ function openViewer(idx){
   var thickHint = document.getElementById('thick-hint');
   if(thickHint){
     if(thickLocked){
-      thickHint.textContent = 'ล็อคที่ '+thDefault.toFixed(2)+' mm (TARGET ± TOLERANCE ไม่ครบ)';
+      thickHint.textContent = thDefault.toFixed(2)+' mm (locked)';
       thickHint.style.color = 'var(--g400)';
     } else {
-      var hintSrc = (hasMin && hasMax) ? 'จาก Sheet' : 'TARGET±TOL';
-      thickHint.innerHTML = S_thickMin.toFixed(2)+' – '+S_thickMax.toFixed(2)+' mm ('+hintSrc+')<br>● '+thDefault.toFixed(2)+' mm (actual)';
+      var hintSrc = (hasMin && hasMax) ? 'Sheet' : 'TOL';
+      thickHint.innerHTML = S_thickMin.toFixed(2)+' – '+S_thickMax.toFixed(2)+' mm ('+hintSrc+')  ●&nbsp;'+thDefault.toFixed(2);
       thickHint.style.color = 'var(--green)';
     }
   }
@@ -4613,7 +4604,7 @@ function render3d(){
 
     strapPositions.forEach(function(sz){
       var sH=totalH+0.04;          // แนบมัดใกล้ขึ้น
-      var sw=0.095;                 // กว้าง ~60mm สมจริง
+      var sw=0.032;                 // กว้าง ~32mm พอดีขอบมัด
       var st=0.009;                 // บางมาก ~1mm
 
       // วาดเฉพาะส่วนที่มองเห็นได้จริง (ไม่วาดส่วนที่เหล็กบัง)
@@ -4644,7 +4635,7 @@ function render3d(){
 
       // ── Responsive scale — W เป็น base ──────────────────────────
       // mobile ~360px → sc≈0.55 | tablet ~768px → sc≈0.82 | desktop ~1100px → sc≈1.0
-      var sc = Math.max(0.50, Math.min(1.0, W / 1100));
+      var sc = Math.max(0.50, Math.min(1.0, W / 1100)) * 1.25;
 
       var fSz1 = Math.round(13 * sc);   // หัวข้อหลัก
       var fSz2 = Math.round(10 * sc);   // รอง
