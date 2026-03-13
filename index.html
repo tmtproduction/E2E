@@ -2017,8 +2017,8 @@ body{
                 <div class="spec-dim-unit">mm</div>
               </div>
               <div class="spec-dim-item" style="display:flex;flex-direction:column;justify-content:center;">
-                <label style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:6px;font-family:var(--mono);font-weight:500;">Mill Cert.</label>
-                <div id="sh-millcert" style="font-size:22px;font-weight:600;font-family:var(--mono);letter-spacing:1px;">—</div>
+                <label style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:6px;font-family:var(--mono);font-weight:500;">Mill</label>
+                <div id="sh-millcert" style="font-size:16px;font-weight:600;font-family:var(--mono);letter-spacing:1px;">—</div>
               </div>
             </div>
             <div class="spec-price-row">
@@ -3042,6 +3042,7 @@ function makeTagline(s){
   if(s.GRADE)parts.push('เกรด '+s.GRADE);
   if(s.STANDARD)parts.push(s.STANDARD);
   if(s.WEIGHT_PER_SHEET_KG)parts.push((parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+' kg/แผ่น');
+  if(s.MILL_NAME&&String(s.MILL_NAME).trim())parts.push(String(s.MILL_NAME).trim());
   return parts.join(' · ');
 }
 
@@ -3201,6 +3202,13 @@ function openViewer(idx){
   var tDisplay = t || tmt || '—';
   setText('sh-t', tDisplay);
   setText('sh-tmt', tmt||'—');
+  // Mill
+  var millName = String(s.MILL_NAME||'').trim();
+  var millEl = document.getElementById('sh-millcert');
+  if(millEl){
+    if(millName){ millEl.textContent=millName; millEl.parentElement.style.display=''; }
+    else { millEl.textContent='—'; millEl.parentElement.style.display='none'; }
+  }
   setText('sh-grade', s.GRADE||'—');
   setText('sh-w', w||'—');
   setText('sh-l', l||'—');
