@@ -2297,9 +2297,7 @@ body{
                 <span class="seg-label">Marking</span>
                 <div class="seg-toggle-group">
                   <button class="seg-toggle active" onclick="setMarking('none',this)">ไม่มี</button>
-                  <button class="seg-toggle" onclick="setMarking('mill',this)">Mill</button>
-                  <button class="seg-toggle" onclick="setMarking('grade',this)">Grade</button>
-                  <button class="seg-toggle" onclick="setMarking('both',this)">ทั้งคู่</button>
+                  <button class="seg-toggle" onclick="setMarking('show',this)">แสดง</button>
                 </div>
               </div>
 
@@ -3369,9 +3367,8 @@ function openViewer(idx){
   // 3D controls in Packing
   var th=parseFloat(s.THICKNESS_TARGET_MM)||2.0;
   // แปลงค่า MARKING จาก Sheet → mode ที่ใช้ใน 3D (col AE)
-  var markingMap={'none':'none','ไม่มี':'none','mill':'mill','Mill':'mill','MILL':'mill',
-    'grade':'grade','Grade':'grade','GRADE':'grade','both':'both','Both':'both','BOTH':'both','ทั้งคู่':'both'};
-  var sheetMarking=markingMap[String(s.MARKING||'').trim()]||'none';
+  var markingRaw=String(s.MARKING||'').trim().toLowerCase();
+  var sheetMarking=(markingRaw===''||markingRaw==='none'||markingRaw==='ไม่มี')?'none':'show';
   // Parse STRAP_TYPE: NO/N0/0 = ไม่มีสาย, ตัวเลข = จำนวนสาย
   var strapRaw=String(s.STRAP_TYPE||'2').trim().toUpperCase();
   var strapCount=(strapRaw==='NO'||strapRaw==='N0'||strapRaw==='0'||strapRaw==='')?0:(parseInt(strapRaw)||2);
@@ -3439,6 +3436,7 @@ function openViewer(idx){
     grp.querySelectorAll('button').forEach(function(b){
       var oc=b.getAttribute('onclick')||'';
       var ok=oc==='setStraps('+strapCount+',this)'||oc==="setMarking('"+sheetMarking+"',this)";
+      // fallback: ถ้า sheet marking ไม่ใช่ none/show ให้ active 'show'
       b.classList.toggle('active',ok);
     });
   });
@@ -4615,7 +4613,7 @@ function render3d(){
   drawBox3d(bw/2+0.045,yOff+totalH/2,-bl*0.28,0.012,0.32,0.52,'#f0f0ee','#e8e8e4',fl);
 
   // ── MARKING — floating info label ──────────────────────────────
-  if(S.marking!=='none' && N>0){
+  if(S.marking==='show' && N>0){
     try{
       ctx.globalAlpha=1;
       ctx.setLineDash([]);
@@ -4636,25 +4634,21 @@ function render3d(){
       var fSz3 = Math.round(9  * sc);   // รายละเอียด
       var fSz4 = Math.round(8  * sc);   // footer
 
-      // ── build rows ──
+      // ── build rows — ตามรูปจริง STAY FLAT marking ──
+      // row 1: SIZE  NON SKINPASSED  TMT°
+      // row 2: std + grade + type + MILL EDGE THAILAND
+      // row 3: coil / heat no.
       var rows=[];
-      if(S.marking==='mill'||S.marking==='both'){
-        rows.push({text:thick2M+' × '+ww2+' × '+ll2+' mm', size:fSz1, bold:true,  col:'#0a0a0a'});
-        rows.push({text:'NON SKINPASSED · '+grade2,          size:fSz2, bold:false, col:'#404040'});
-      }
-      if(S.marking==='grade'||S.marking==='both'){
-        rows.push({text:std2,                   size:fSz2, bold:true,  col:'#0a0a0a'});
-        rows.push({text:surf2+' STEEL SHEET',   size:fSz3, bold:false, col:'#505050'});
-        rows.push({text:'MILL EDGE · THAILAND', size:fSz3, bold:false, col:'#606060'});
-      }
-      rows.push({text:'TIS 528 · '+new Date().getFullYear(), size:fSz4, bold:false, col:'#999999'});
+      rows.push({text:thick2M+' X '+ww2+' X '+ll2+' mm  NON SKINPASSED  TMT°', size:fSz1, bold:true,  col:'#0a0a0a'});
+      rows.push({text:std2+'  '+grade2+'  '+surf2+' STEEL PLATE  MILL EDGE THAILAND', size:fSz2, bold:false, col:'#3a3a3a'});
+      rows.push({text:'XXXXXXXXXX  HEAT NO. XXXXXXX', size:fSz3, bold:false, col:'#606060'});
 
       // ── label geometry ────────────────────────────────────────────
       var pad    = Math.round(10 * sc);
       var lineH  = Math.round(fSz1 * 1.55);
       var logoR  = Math.round(14 * sc);
       var margin = Math.round(12 * sc);
-      var lw     = Math.min(Math.round(260 * sc), W - margin * 2);
+      var lw     = Math.min(Math.round(340 * sc), W - margin * 2);
       var lh     = pad * 2 + rows.length * lineH + Math.round(4 * sc);
       var lx     = margin, ly = margin;
 
@@ -4706,18 +4700,28 @@ function render3d(){
       ctx.fillStyle='#0a0a0a';
       ctx.fillRect(lx,ly,lw,Math.max(1.5,2.5*sc));
 
-      // TMT logo circle
-      var logoCx=lx+pad+logoR, logoCy=ly+pad+logoR+Math.round(2*sc);
-      ctx.beginPath();ctx.arc(logoCx,logoCy,logoR,0,Math.PI*2);
+      // STAY FLAT logo — 2 lines bold left of rows
+      var logoX=lx+pad, logoY=ly+pad+Math.round(2*sc);
+      var sfSz = Math.round(fSz1*1.1);
+      ctx.textAlign='left'; ctx.textBaseline='top';
+      ctx.font='900 '+sfSz+'px "Courier New",monospace';
+      ctx.fillStyle='#0a0a0a';
+      ctx.fillText('STAY',logoX,logoY);
+      ctx.fillText('FLAT',logoX,logoY+Math.round(sfSz*1.2));
+      // circle logo (เล็ก) หลัง STAY
+      var ciR=Math.round(sfSz*0.38);
+      var ciX=logoX+ctx.measureText('STAY').width+ciR+Math.round(3*sc);
+      var ciY=logoY+Math.round(sfSz*0.5);
+      ctx.beginPath();ctx.arc(ciX,ciY,ciR,0,Math.PI*2);
       ctx.strokeStyle='#0a0a0a';ctx.lineWidth=Math.max(1,1.5*sc);ctx.stroke();
-      ctx.fillStyle='#0a0a0a';ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.font='bold '+Math.round(7*sc)+'px "Courier New",monospace';
-      ctx.fillText('TMT',logoCx,logoCy-Math.round(2*sc));
-      ctx.font='500 '+Math.round(5.5*sc)+'px "Courier New",monospace';
-      ctx.fillText('FLAT',logoCx,logoCy+Math.round(5*sc));
+      // crosshair inside circle
+      ctx.beginPath();ctx.moveTo(ciX-ciR*0.6,ciY);ctx.lineTo(ciX+ciR*0.6,ciY);
+      ctx.moveTo(ciX,ciY-ciR*0.6);ctx.lineTo(ciX,ciY+ciR*0.6);
+      ctx.strokeStyle='#0a0a0a';ctx.lineWidth=Math.max(0.8,sc);ctx.stroke();
+      var logoCx=ciX; // ใช้ต่อ (unused แต่ไม่ error)
 
       // text rows
-      var tx=lx+pad*2+logoR*2+Math.round(2*sc), ty=ly+pad+Math.round(3*sc);
+      var tx=lx+pad+Math.round(52*sc), ty=ly+pad+Math.round(3*sc);
       ctx.textAlign='left';ctx.textBaseline='top';
       rows.forEach(function(r){
         ctx.font=(r.bold?'bold ':'')+r.size+'px "Courier New",monospace';
