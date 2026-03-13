@@ -370,8 +370,49 @@ body{
 .tech-collapse-hdr.open .tech-collapse-title::before{background:var(--green);}
 .tech-collapse-arr{font-size:9px;color:var(--g400);transition:transform .22s;}
 .tech-collapse-hdr.open .tech-collapse-arr{transform:rotate(180deg);}
-.tech-collapse-body{overflow:hidden;max-height:0;transition:max-height .3s ease;}
-.tech-collapse-body.open{max-height:400px;}
+.tech-collapse-body{overflow:hidden;max-height:0;transition:max-height .45s ease;}
+.tech-collapse-body.open{max-height:900px;}
+
+/* ── Dimension & Standard — ds-* ── */
+.ds-divider{
+  font-size:8px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);font-weight:600;
+  padding:8px 16px 5px;background:var(--g50);
+  border-top:1px solid var(--g200);border-bottom:1px solid var(--g100);
+}
+.ds-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px;border-bottom:1px solid var(--g100);
+}
+.ds-label{display:flex;flex-direction:column;gap:2px;min-width:62px;}
+.ds-name{font-size:10px;font-weight:600;font-family:var(--mono);color:var(--black);}
+.ds-note{font-size:8px;color:var(--g400);font-family:var(--mono);}
+.ds-range-bar{flex:1;display:flex;align-items:center;gap:7px;}
+.ds-limit{font-size:10px;font-family:var(--mono);font-weight:600;min-width:44px;text-align:center;
+  padding:2px 5px;border-radius:3px;}
+.ds-limit--lo{color:var(--g600);background:var(--g100);}
+.ds-limit--hi{color:#1a5c2e;background:#e6f4eb;}
+.ds-bar{flex:1;height:6px;background:var(--g100);border-radius:3px;position:relative;overflow:visible;}
+.ds-bar-fill{position:absolute;inset:0;background:linear-gradient(90deg,var(--g200),#6bcf8a);border-radius:3px;}
+.ds-bar-marker{position:absolute;top:50%;transform:translate(-50%,-50%);
+  width:10px;height:10px;border-radius:50%;
+  background:var(--black);border:2px solid var(--white);
+  box-shadow:0 0 0 1px var(--black);left:50%;}
+.ds-unit{font-size:9px;color:var(--g400);font-family:var(--mono);min-width:20px;}
+/* form tolerances grid */
+.ds-form-grid{grid-template-columns:1fr 1fr 1fr!important;}
+.ds-form-item{
+  padding:12px 14px;border-right:1px solid var(--g100);border-bottom:1px solid var(--g100);
+  display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;
+}
+.ds-form-item:last-child{border-right:none;}
+.ds-form-icon{color:var(--g500);margin-bottom:2px;}
+.ds-form-item label{
+  font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);
+}
+.ds-form-item .tv{font-size:12px;font-weight:700;font-family:var(--mono);color:var(--black);}
+.ds-form-note{font-size:8px;color:var(--g400);font-family:var(--mono);}
 
 /* tech grid — premium data table style */
 .tech-grid{
@@ -1881,18 +1922,106 @@ body{
           </div>
           <!-- ── LEVEL 2: TECH DETAIL — collapsible ── -->
           <div class="tech-collapse-hdr" onclick="toggleTechCollapse(this)">
-            <span class="tech-collapse-title">ข้อมูลทางเทคนิค &amp; มาตรฐาน</span>
+            <span class="tech-collapse-title">Dimension &amp; Standard</span>
             <span class="tech-collapse-arr">▼</span>
           </div>
           <div class="tech-collapse-body" id="tech-collapse-body">
+
+            <!-- Row 1: Grade / Standard / Weight -->
             <div class="tech-grid">
               <div class="tech-item"><label>Grade</label><div class="tv" id="tc-grade">—</div></div>
               <div class="tech-item"><label>Standard</label><div class="tv" id="tc-std">—</div></div>
               <div class="tech-item"><label>น้ำหนัก/แผ่น</label><div class="tv" id="tc-kg">—</div></div>
+            </div>
+
+            <!-- Divider: Dimensional Tolerances -->
+            <div class="ds-divider">Dimensional Tolerances</div>
+
+            <!-- Thickness tolerance -->
+            <div class="ds-row">
+              <div class="ds-label">
+                <span class="ds-name">Thickness</span>
+                <span class="ds-note">Target ± tol.</span>
+              </div>
+              <div class="ds-range-bar">
+                <span class="ds-limit ds-limit--lo" id="tc-t-min">—</span>
+                <div class="ds-bar">
+                  <div class="ds-bar-fill"></div>
+                  <div class="ds-bar-marker" id="tc-t-marker"></div>
+                </div>
+                <span class="ds-limit ds-limit--hi" id="tc-t-max">—</span>
+              </div>
+              <span class="ds-unit">mm</span>
+            </div>
+
+            <!-- Width tolerance -->
+            <div class="ds-row">
+              <div class="ds-label">
+                <span class="ds-name">Width</span>
+                <span class="ds-note">Min → Max</span>
+              </div>
+              <div class="ds-range-bar">
+                <span class="ds-limit ds-limit--lo" id="tc-w-min">—</span>
+                <div class="ds-bar">
+                  <div class="ds-bar-fill"></div>
+                  <div class="ds-bar-marker"></div>
+                </div>
+                <span class="ds-limit ds-limit--hi" id="tc-w-max">—</span>
+              </div>
+              <span class="ds-unit">mm</span>
+            </div>
+
+            <!-- Divider: Form Tolerances -->
+            <div class="ds-divider">Form Tolerances</div>
+
+            <div class="tech-grid ds-form-grid">
+              <!-- Flatness -->
+              <div class="ds-form-item">
+                <div class="ds-form-icon">
+                  <svg width="28" height="12" viewBox="0 0 28 12" fill="none">
+                    <path d="M2 9 Q7 3 14 6 Q21 9 26 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+                    <line x1="2" y1="10.5" x2="26" y2="10.5" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
+                  </svg>
+                </div>
+                <label>Flatness</label>
+                <div class="tv" id="tc-flat">—</div>
+                <span class="ds-form-note">per 1 m</span>
+              </div>
+              <!-- Camber -->
+              <div class="ds-form-item">
+                <div class="ds-form-icon">
+                  <svg width="28" height="14" viewBox="0 0 28 14" fill="none">
+                    <path d="M2 12 Q14 2 26 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+                    <line x1="2" y1="12" x2="26" y2="12" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
+                  </svg>
+                </div>
+                <label>Camber</label>
+                <div class="tv" id="tc-camber">—</div>
+                <span class="ds-form-note">per full length</span>
+              </div>
+              <!-- Squareness -->
+              <div class="ds-form-item">
+                <div class="ds-form-icon">
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <rect x="3" y="3" width="16" height="16" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                    <line x1="3" y1="3" x2="19" y2="19" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.5"/>
+                    <line x1="19" y1="3" x2="3" y2="19" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.5"/>
+                  </svg>
+                </div>
+                <label>Squareness</label>
+                <div class="tv" id="tc-sq1">—</div>
+                <div class="tv" style="font-size:10px;color:var(--g500)" id="tc-sq2">—</div>
+              </div>
+            </div>
+
+            <!-- Tensile / Yield / Elongation -->
+            <div class="ds-divider">Mechanical Properties</div>
+            <div class="tech-grid">
               <div class="tech-item"><label>Tensile</label><div class="tv" id="tc-ts">—</div></div>
               <div class="tech-item"><label>Yield</label><div class="tv" id="tc-ys">—</div></div>
               <div class="tech-item"><label>Elongation</label><div class="tv" id="tc-el">—</div></div>
             </div>
+
           </div>
           <!-- ── existing sections below ── -->
           <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Limit Spec</span></div>
@@ -3072,13 +3201,52 @@ function openViewer(idx){
   var shStockTxt=document.getElementById('sh-stock');
   if(shStockTxt) shStockTxt.style.color=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
 
-  // ── tech detail Level 2 ──
+  // ── Dimension & Standard panel ──────────────────────────────────
   setText('tc-grade', s.GRADE||'—');
-  setText('tc-std', s.STANDARD||'—');
-  setText('tc-kg', (parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+' kg');
+  setText('tc-std',   s.STANDARD||'—');
+  setText('tc-kg',    (parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+' kg');
   setText('tc-ts', s.TENSILE_STRENGTH||'—');
   setText('tc-ys', s.YIELD_STRENGTH||'—');
   setText('tc-el', s.ELONGATION||'—');
+
+  // 1. Thickness tolerance: target ± TOLERANCE_THICKNESS
+  var tTgt  = parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
+  var tTol  = parseFloat(s.TOLERANCE_THICKNESS||0);
+  if(tTgt>0 && tTol>0){
+    setText('tc-t-min', (tTgt-tTol).toFixed(2));
+    setText('tc-t-max', (tTgt+tTol).toFixed(2));
+    // marker at nominal (center of range)
+    var tMark=document.getElementById('tc-t-marker');
+    if(tMark) tMark.style.left='50%';
+  } else {
+    setText('tc-t-min', tTgt>0?tTgt.toFixed(2):'—');
+    setText('tc-t-max', '—');
+  }
+
+  // 2. Width tolerance: min=WIDTH, max=WIDTH+TOLERANCE_MAX
+  var wNom  = parseFloat(s.WIDTH_MM||0);
+  var wTol  = parseFloat(s.TOLERANCE_MAX||0);
+  if(wNom>0){
+    setText('tc-w-min', wNom.toFixed(0));
+    setText('tc-w-max', wTol>0?(wNom+wTol).toFixed(0):'—');
+  } else {
+    setText('tc-w-min','—'); setText('tc-w-max','—');
+  }
+
+  // 3. Flatness: STAY FLAT → ≤5mm, others → ≤12mm
+  var stdVal = String(s.STANDARD||'').toUpperCase().trim();
+  var flatLim = (stdVal.indexOf('STAY')!==-1 && stdVal.indexOf('FLAT')!==-1) ? 5 : 12;
+  setText('tc-flat', '≤ '+flatLim+' mm');
+
+  // 4. Camber: 3 / full-length (mm → m), express as mm per full sheet
+  var lenM  = parseFloat(s.LENGTH_MM||2400)/1000;
+  var camber = (3/lenM).toFixed(2);
+  setText('tc-camber','≤ '+camber+' mm');
+
+  // 5. Squareness
+  var sq1mm = (wNom * 0.007).toFixed(1);
+  setText('tc-sq1','≤ '+sq1mm+' mm');
+  setText('tc-sq2','Δ diagonal ≤ 3 mm');
 
   // ── vp badge ──
   var vpBadge=document.getElementById('vp-surface-badge');
