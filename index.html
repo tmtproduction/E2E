@@ -823,26 +823,18 @@ body{
 .cr .crv{font-size:20px;font-weight:400;}
 
 /* Packing */
-.pack-chips{
-  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;
+.pack-cards{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;
 }
-.pack-chip{
-  display:flex;align-items:baseline;gap:5px;
-  background:var(--g50);border:1px solid var(--g200);
-  border-radius:6px;padding:7px 12px;
-  min-width:0;
+.pack-card{
+  border:1px solid var(--g200);border-radius:8px;padding:12px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  text-align:center;background:var(--white);
 }
-.pack-chip-lbl{
-  font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--g400);font-family:var(--mono);font-weight:500;white-space:nowrap;
-}
-.pack-chip-val{
-  font-size:13px;font-weight:600;color:var(--black);
-  font-family:var(--mono);white-space:nowrap;
-}
-.pack-chip-unit{
-  font-size:8px;color:var(--g400);font-family:var(--mono);white-space:nowrap;
-}
+.pack-card svg{color:var(--g500);}
+.pack-card-lbl{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
+.pack-card-val{font-size:14px;font-weight:700;font-family:var(--mono);color:var(--black);line-height:1.2;}
+.pack-card-sub{font-size:8px;color:var(--g400);font-family:var(--mono);}
 
 .cta-row{display:flex;gap:0;flex-shrink:0;}
 .btn-cta{
@@ -1832,7 +1824,7 @@ body{
 .ds-tol-actual-lbl--ng{color:#ef4444;}
 /* Form tolerances */
 .ds-form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.ds-form-card{border:1px solid var(--g200);border-radius:8px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:var(--white);}
+.ds-form-card{border:1px solid var(--g200);border-radius:8px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:var(--white);}
 .ds-form-card svg{color:var(--g500);}
 .ds-form-card .ds-form-lbl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
 .ds-form-card .ds-form-val{font-size:16px;font-weight:800;font-family:var(--mono);color:var(--black);line-height:1;}
@@ -2388,27 +2380,33 @@ body{
           <!-- ── existing sections below ── -->
           <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Packing &amp; 3D Live</span></div>
           <div class="sec">
-            <div class="pack-chips">
-              <div class="pack-chip">
-                <span class="pack-chip-lbl">มัด</span>
-                <span class="pack-chip-val" id="v-bnd">—</span>
-                <span class="pack-chip-unit">แผ่น/มัด</span>
+            <div class="pack-cards">
+              <div class="pack-card">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="6" width="16" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6 6V5a4 4 0 018 0v1" stroke="currentColor" stroke-width="1.4"/><line x1="2" y1="10" x2="18" y2="10" stroke="currentColor" stroke-width="1.2"/></svg>
+                <div class="pack-card-lbl">Bundle</div>
+                <div class="pack-card-val" id="v-bnd">—</div>
+                <div class="pack-card-sub">แผ่น/มัด</div>
               </div>
-              <div class="pack-chip">
-                <span class="pack-chip-lbl">น้ำหนัก</span>
-                <span class="pack-chip-val" id="v-bwt">—</span>
+              <div class="pack-card">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4"/><line x1="10" y1="5" x2="10" y2="10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="10" y1="10.5" x2="13" y2="12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div class="pack-card-lbl">น้ำหนัก/มัด</div>
+                <div class="pack-card-val" id="v-bwt">—</div>
+                <div class="pack-card-sub">kg</div>
               </div>
-              <div class="pack-chip">
-                <span class="pack-chip-lbl">สายรัด</span>
-                <span class="pack-chip-val" id="v-strap">—</span>
+              <div class="pack-card">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="7" y1="5" x2="7" y2="15" stroke="currentColor" stroke-width="1.2"/><line x1="13" y1="5" x2="13" y2="15" stroke="currentColor" stroke-width="1.2"/></svg>
+                <div class="pack-card-lbl">สายรัด</div>
+                <div class="pack-card-val" id="v-strap">—</div>
               </div>
-              <div class="pack-chip">
-                <span class="pack-chip-lbl">ห่อ</span>
-                <span class="pack-chip-val" id="v-wrap">—</span>
+              <div class="pack-card">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h16M7 7v11" stroke="currentColor" stroke-width="1.2"/></svg>
+                <div class="pack-card-lbl">ห่อ</div>
+                <div class="pack-card-val" id="v-wrap">—</div>
               </div>
-              <div class="pack-chip">
-                <span class="pack-chip-lbl">ยก</span>
-                <span class="pack-chip-val" id="v-lift">—</span>
+              <div class="pack-card">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v11M7 11l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div class="pack-card-lbl">ยก</div>
+                <div class="pack-card-val" id="v-lift">—</div>
               </div>
             </div>
 
