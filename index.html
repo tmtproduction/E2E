@@ -3320,7 +3320,7 @@ function openViewer(idx){
   var wNom2  = parseFloat(s.WIDTH_MM||1219);
   var stdVal2 = String((currentSku&&currentSku.STANDARD)||'').toUpperCase().trim();
   var flatLim = stdVal2.indexOf('STAY FLAT') >= 0 ? 5 : 12;
-  setText('tc-flat', '≤ '+flatLim+' mm / 2m');
+  setText('tc-flat', '≤ '+flatLim+' mm ');
 
   // 4. Camber: W-SD-QA-01 §5 Cut to Length
   var lenMM2 = parseFloat(s.LENGTH_MM||2400);
