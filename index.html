@@ -541,8 +541,31 @@ body{
   color:var(--g400);font-family:var(--mono);font-weight:600;
 }
 
-/* ── LSS wrap subtle border top ── */
-.lss-group-row,.lss-label,.lss-value,.lss-note,.lss-group-hd{}
+/* ── LSS — Limit Spec Summary ── */
+.lss-wrap{background:var(--black);padding:14px 18px 16px;}
+.lss-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;}
+.lss-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--white);font-weight:500;font-family:var(--mono);}
+.lss-sku{font-family:var(--mono);font-size:9px;color:var(--g600);}
+.lss-pills{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.07);margin-bottom:12px;}
+.lss-pill{padding:10px 12px;display:flex;flex-direction:column;gap:3px;}
+.lss-pill-lbl{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);font-family:var(--mono);}
+.lss-pill-val{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--white);}
+.lss-acc{}
+.lss-acc-hdr{padding:10px 0;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.lss-acc-hdr:first-child{border-top:none;}
+.lss-acc-name{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);font-family:var(--mono);}
+.lss-acc-arr{font-size:9px;color:rgba(255,255,255,.30);transition:transform .22s;}
+.lss-acc-hdr.open .lss-acc-arr{transform:rotate(180deg);}
+.lss-acc-body{overflow:hidden;max-height:0;transition:max-height .28s ease;}
+.lss-acc-body.open{max-height:300px;}
+.lss-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.lss-lbl{font-size:9px;color:rgba(255,255,255,.45);font-family:var(--mono);}
+.lss-val{font-size:11px;font-weight:600;font-family:var(--mono);color:rgba(255,255,255,.85);}
+.lss-note{font-size:8px;color:rgba(255,255,255,.25);font-family:var(--mono);}
+.lss-foot{font-size:8px;color:rgba(255,255,255,.22);padding-top:8px;border-top:1px solid rgba(255,255,255,.07);font-family:var(--mono);}
+.lss-table{display:none;}
+.lss-group-row,.lss-label,.lss-value,.lss-group-hd{}
+
 .overlay.open{display:flex;}
 .order-modal{background:var(--white);width:100%;max-width:540px;animation:slideUp .2s ease;}
 @keyframes slideUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -924,6 +947,22 @@ body{
 
           </div>
           <!-- ── existing sections below ── -->
+          <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Limit Spec</span></div>
+          <div class="sec" style="padding:0">
+            <div style="padding:14px 18px 10px;display:flex;align-items:center;gap:6px;">
+              <span class="sec-lbl" style="margin-bottom:0;flex:1">Limit Spec <button class="tip-btn" onclick="showTip(this,'Limit Spec Summary','ตารางนี้แสดงค่ามาตรฐาน JIS ที่แผ่นเหล็กต้องผ่าน ไม่ใช่ค่าที่วัดจริง — ใช้เพื่อ confirm กับลูกค้าว่าสินค้าตรงมาตรฐานอะไร')">?</button></span>
+            </div>
+            <div class="lss-wrap" style="margin:0">
+              <div class="lss-head">
+                <span class="lss-title">Limit Spec Summary</span>
+                <span class="lss-sku" id="lss-sku">—</span>
+              </div>
+              <div class="lss-pills" id="lss-pills"></div>
+              <div class="lss-acc" id="lss-acc"></div>
+              <div class="lss-foot" id="lss-foot"></div>
+              <table class="lss-table" id="lss-table" style="display:none"></table>
+            </div>
+          </div>
           <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Packing &amp; 3D Live</span></div>
           <div class="sec">
             <div class="pack-grid" style="margin-bottom:14px">
@@ -2164,6 +2203,8 @@ function openViewer(idx){
   var svgbr1=document.getElementById('svgbr1'); if(svgbr1) svgbr1.textContent=gDef.br1;
   var svgbr2=document.getElementById('svgbr2'); if(svgbr2) svgbr2.textContent=gDef.br2;
 
+  buildLSS(s);
+
   // Admin fields
   var adminMap={
     'a-ts':s.TENSILE_STRENGTH||'',
@@ -2563,6 +2604,76 @@ function syncSheetsNum(el){
     var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=v+' แผ่น/มัด';
   }
 }
+// ── LIMIT SPEC SUMMARY ───────────────────────────
+function buildLSS(s) {
+  var tag=function(v){return v?'':' *';};
+  var th   = parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||2);
+  var ww   = parseInt(s.WIDTH_MM)||1200;
+  var ll   = parseInt(s.LENGTH_MM)||2400;
+  var std  = s.STANDARD||'JIS G3131';
+  var gr   = s.GRADE||'SPHC';
+  var ts   = s.TENSILE_STRENGTH    || (gr==='SPHC'?'≥270':gr==='SS400'?'400–510':'≥340')+' N/mm²';
+  var ys   = s.YIELD_STRENGTH      || (gr==='SPHC'?'—':gr==='SS400'?'≥245':'≥205')+' N/mm²';
+  var el   = s.ELONGATION          || (gr==='SPHC'?'≥27':gr==='SS400'?'≥21':'≥27')+' %';
+  var tTol = parseFloat(s.TOLERANCE_THICKNESS||0);
+  var wTol = parseFloat(s.TOLERANCE_MAX||0);
+  var tMin = tTol>0?(th-tTol).toFixed(2):th.toFixed(2);
+  var tMax = tTol>0?(th+tTol).toFixed(2):'—';
+  var wMax = wTol>0?(ww+wTol).toFixed(0):'—';
+  var stdU = std.toUpperCase();
+  var flatLim = (stdU.indexOf('STAY')!==-1&&stdU.indexOf('FLAT')!==-1)?5:12;
+  var camber  = (3/(ll/1000)).toFixed(2);
+  var sq1mm   = (ww*0.007).toFixed(1);
+
+  setText('lss-sku', s.SKU || '—');
+
+  // Pills — top 3 key values
+  var pillEl=document.getElementById('lss-pills');
+  if(pillEl){
+    pillEl.innerHTML=[
+      {lbl:'Tensile',val:ts},
+      {lbl:'Yield',  val:ys},
+      {lbl:'Elongation',val:el}
+    ].map(function(p){
+      return '<div class="lss-pill"><div class="lss-pill-lbl">'+p.lbl+'</div><div class="lss-pill-val">'+p.val+'</div></div>';
+    }).join('');
+  }
+
+  // Accordion groups
+  var groups=[
+    {name:'Thickness Tolerance', rows:[
+      {lbl:'Min',val:tMin+' mm'},{lbl:'Target',val:th.toFixed(2)+' mm'},{lbl:'Max',val:tMax+' mm'}
+    ]},
+    {name:'Width Tolerance', rows:[
+      {lbl:'Nominal',val:ww+' mm'},{lbl:'Max',val:wMax+' mm'}
+    ]},
+    {name:'Form Tolerances', rows:[
+      {lbl:'Flatness',val:'≤ '+flatLim+' mm / 1m'},
+      {lbl:'Camber',  val:'≤ '+camber+' mm'},
+      {lbl:'Squareness',val:'≤ '+sq1mm+' mm  |  Δdiag ≤ 3 mm'}
+    ]},
+    {name:'Mechanical', rows:[
+      {lbl:'Tensile',val:ts+tag(s.TENSILE_STRENGTH)},
+      {lbl:'Yield',  val:ys+tag(s.YIELD_STRENGTH)},
+      {lbl:'Elongation',val:el+tag(s.ELONGATION)}
+    ]}
+  ];
+  var accEl=document.getElementById('lss-acc');
+  if(accEl){
+    accEl.innerHTML=groups.map(function(g){
+      var rows=g.rows.map(function(r){
+        return '<div class="lss-row"><span class="lss-lbl">'+r.lbl+'</span><span class="lss-val">'+r.val+'</span></div>';
+      }).join('');
+      return '<div class="lss-acc-hdr" onclick="this.classList.toggle(\'open\');this.nextElementSibling.classList.toggle(\'open\')">'
+        +'<span class="lss-acc-name">'+g.name+'</span><span class="lss-acc-arr">▼</span></div>'
+        +'<div class="lss-acc-body">'+rows+'</div>';
+    }).join('');
+  }
+
+  var footEl=document.getElementById('lss-foot');
+  if(footEl) footEl.textContent='* ค่าอ้างอิงจากมาตรฐาน — ไม่ใช่ค่าวัดจริง  |  '+std;
+}
+
 function setStraps(n,btn){
   S.straps=n;
   // support both old .strap-btn and new .seg-toggle inside same group
