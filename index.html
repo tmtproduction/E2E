@@ -3239,12 +3239,8 @@ function openViewer(idx){
   var tMin  = parseFloat(s.THICK_MIN||'');
   var tMax  = parseFloat(s.THICK_MAX||'');
   var hasActual = !isNaN(tMin) && !isNaN(tMax) && tMin>0 && tMax>0;
-  // pill strip: ใช้ THICK_MIN/MAX เป็นหลัก ถ้าไม่มีใช้ TARGET±TOL
-  if(hasActual){
-    setText('tc-t-min', tMin.toFixed(2));
-    setText('tc-t-nom', tTgt>0?tTgt.toFixed(2):'—');
-    setText('tc-t-max', tMax.toFixed(2));
-  } else if(tTgt>0 && tTol>0){
+  // pill strip: MIN/MAX = TARGET ± TOLERANCE_THICKNESS เสมอ
+  if(tTgt>0 && tTol>0){
     setText('tc-t-min', (tTgt-tTol).toFixed(2));
     setText('tc-t-nom', tTgt.toFixed(2));
     setText('tc-t-max', (tTgt+tTol).toFixed(2));
@@ -3268,11 +3264,9 @@ function openViewer(idx){
   var dot    = document.getElementById('tc-t-dot');
   var dotLbl = document.getElementById('tc-t-dot-lbl');
   if(dot && dotLbl && !isNaN(tActual) && tActual>0){
-    // resolve display MIN/MAX (same logic used above for pill strip)
-    var dotMin, dotMax;
-    if(hasActual){ dotMin=tMin; dotMax=tMax; }
-    else if(tTgt>0 && tTol>0){ dotMin=tTgt-tTol; dotMax=tTgt+tTol; }
-    else { dotMin=tActual; dotMax=tActual; }
+    // dot วางบนเส้น TARGET±TOLERANCE เสมอ (เหมือน pill strip)
+    var dotMin = tTgt>0&&tTol>0 ? tTgt-tTol : tActual;
+    var dotMax = tTgt>0&&tTol>0 ? tTgt+tTol : tActual;
     var pct = (dotMax>dotMin) ? Math.min(Math.max((tActual-dotMin)/(dotMax-dotMin),0),1)*100 : 50;
     // color: green if within ±5% of range edges, orange if TMT≠TARGET, red if outside
     var insideRange = tActual>=dotMin && tActual<=dotMax;
@@ -3320,7 +3314,7 @@ function openViewer(idx){
   var wNom2  = parseFloat(s.WIDTH_MM||1219);
   var stdVal2 = String((currentSku&&currentSku.STANDARD)||'').toUpperCase().trim();
   var flatLim = stdVal2.indexOf('STAY FLAT') >= 0 ? 5 : 12;
-  setText('tc-flat', '≤ '+flatLim+' mm ');
+  setText('tc-flat', '≤ '+flatLim+' mm / 2m');
 
   // 4. Camber: W-SD-QA-01 §5 Cut to Length
   var lenMM2 = parseFloat(s.LENGTH_MM||2400);
