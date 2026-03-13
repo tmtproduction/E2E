@@ -329,6 +329,16 @@ body{
   display:grid;grid-template-columns:1fr 1fr 1fr;
   gap:0;border-bottom:1px solid var(--g200);
 }
+.spec-dim-item--thick{
+  grid-column:span 2;
+  border-right:1px solid var(--g200);
+}
+.sh-tmt-row{
+  display:flex;align-items:center;gap:6px;
+  margin-top:8px;font-family:var(--mono);
+}
+.sh-tmt-label{font-size:9px;color:var(--g400);}
+.sh-tmt-val{font-size:13px;font-weight:700;color:var(--black);}
 .spec-dim-item{
   padding:16px 18px;
   border-right:1px solid var(--g200);
@@ -2191,17 +2201,38 @@ body{
                 </div>
               </div>
             </div>
-            <!-- hidden TMT value — used by 3D/JS only, not displayed -->
+            <!-- Thickness pill strip + dims -->
             <div class="spec-hero-dims">
-              <div class="spec-dim-item">
-                <label>Target หนา</label>
-                <div class="spec-dim-val" id="sh-t">—</div>
-                <div class="spec-dim-unit">mm (nominal)</div>
-              </div>
-              <div class="spec-dim-item">
-                <label>TMT หนา (Actual)</label>
-                <div class="spec-dim-val" id="sh-tmt">—</div>
-                <div class="spec-dim-unit">mm (ผลิตจริง)</div>
+              <div id="sh-t" style="display:none">—</div>
+              <!-- Thickness strip — spans 2 cols -->
+              <div class="spec-dim-item spec-dim-item--thick">
+                <label>ความหนา</label>
+                <div class="ds-tol-strip" style="margin-top:6px;">
+                  <div class="ds-tol-pill ds-tol-pill--min">
+                    <div class="ds-tol-pill-val" id="tc-t-min">—</div>
+                    <div class="ds-tol-pill-lbl">Min</div>
+                  </div>
+                  <div class="ds-tol-track-wrap">
+                    <div class="ds-tol-track-line"></div>
+                    <div class="ds-tol-actual-dot" id="ds-tol-dot" style="left:50%"></div>
+                  </div>
+                  <div class="ds-tol-pill ds-tol-pill--nom">
+                    <div class="ds-tol-pill-val" id="tc-t-nom">—</div>
+                    <div class="ds-tol-pill-lbl">Target</div>
+                  </div>
+                  <div class="ds-tol-track-wrap">
+                    <div class="ds-tol-track-line"></div>
+                  </div>
+                  <div class="ds-tol-pill ds-tol-pill--max">
+                    <div class="ds-tol-pill-val" id="tc-t-max">—</div>
+                    <div class="ds-tol-pill-lbl">Max</div>
+                  </div>
+                  <span class="ds-tol-unit">mm</span>
+                </div>
+                <div class="sh-tmt-row" id="sh-tmt-row">
+                  <span class="sh-tmt-label">(Sheet) ●</span>
+                  <span class="sh-tmt-val" id="sh-tmt">—</span>
+                </div>
               </div>
               <div class="spec-dim-item">
                 <label>เกรด</label>
