@@ -728,7 +728,7 @@ body{
 .vtm-btn.active::after{background:var(--black);}
 
 .vp-main{display:grid;grid-template-columns:1fr 480px;flex:1;min-height:0;overflow:hidden;}
-.canvas-col{display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.canvas-col{display:flex;flex-direction:column;min-height:0;overflow:visible;}
 @media(min-width:1400px){.vp-main{grid-template-columns:1fr 540px;}}
 @media(min-width:1700px){.vp-main{grid-template-columns:1fr 600px;}}
 
@@ -738,7 +738,7 @@ body{
 .canvas-wrap{
   position:relative;background:#f0f0ee;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
-  flex:1;min-height:0;
+  flex:1;min-height:0;min-width:0;
 }
 /* refined grid */
 .canvas-wrap::before{
@@ -1816,7 +1816,7 @@ body{
 .ctrl3d-bar{
   background:var(--white);border-top:1px solid var(--g100);
   padding:8px 14px;flex-shrink:0;
-  position:relative;
+  position:relative;overflow:visible;
 }
 .ctrl3d-float{
   display:inline-flex;flex-direction:column;align-items:flex-start;gap:0;
@@ -3273,12 +3273,14 @@ function openViewer(idx){
   var tDisplay = t || tmt || '—';
   setText('sh-t', tDisplay);
   setText('sh-tmt', tmt||'—');
-  // Mill
-  var millName = String(s.MILL_NAME||'').trim();
+  // Mill — แสดงชื่อ Mill จริง กรอง boolean-like ออก
+  var millRaw = String(s.MILL_NAME||'').trim();
+  var millBool = ['yes','no','y','n','true','false','1','0','มี','ไม่มี','-',''].indexOf(millRaw.toLowerCase()) >= 0;
+  var millName = millBool ? '' : millRaw;
   var millEl = document.getElementById('sh-millcert');
   if(millEl){
     if(millName){ millEl.textContent=millName; millEl.parentElement.style.display=''; }
-    else { millEl.textContent='—'; millEl.parentElement.style.display='none'; }
+    else { millEl.parentElement.style.display='none'; }
   }
   setText('sh-grade', s.GRADE||'—');
   setText('sh-w', w||'—');
