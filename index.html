@@ -1665,6 +1665,10 @@ body{
 .qc-sku{font-size:14px;font-weight:700;font-family:var(--mono);color:var(--white);}
 .qc-badge{font-size:8px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:3px 8px;border-radius:20px;font-family:var(--mono);}
 .qc-meta{font-size:10px;color:rgba(255,255,255,.45);font-family:var(--mono);}
+.qc-identity-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.qc-id-chip{display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.08);border-radius:6px;padding:6px 10px;border:1px solid rgba(255,255,255,.1);}
+.qc-id-lbl{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4);font-family:var(--mono);}
+.qc-id-val{font-size:13px;font-weight:700;color:var(--white);font-family:var(--mono);}
 
 .qc-section{padding:14px 16px;border-bottom:1px solid var(--g100);}
 .qc-section-title{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
@@ -2221,162 +2225,6 @@ body{
             </div>
 
           </div>
-          <!-- ── LEVEL 2: TECH DETAIL — collapsible ── -->
-          <div class="tech-collapse-hdr" onclick="toggleTechCollapse(this)">
-            <span class="tech-collapse-title">Dimension &amp; Standard</span>
-            <span class="tech-collapse-arr">▼</span>
-          </div>
-          <div class="tech-collapse-body" id="tech-collapse-body">
-
-            <!-- ① Identity -->
-            <div class="ds-section">
-              <div class="ds-section-title">Identity</div>
-              <div class="ds-id-row">
-                <div class="ds-id-card"><label>Grade</label><div class="ds-id-val" id="tc-grade">—</div></div>
-                <div class="ds-id-card"><label>Standard</label><div class="ds-id-val" id="tc-std">—</div></div>
-                <div class="ds-id-card"><label>น้ำหนัก/แผ่น</label><div class="ds-id-val" id="tc-kg">—</div></div>
-              </div>
-            </div>
-
-            <!-- ② Dimensional Tolerances -->
-            <div class="ds-section">
-              <div class="ds-section-title">Dimensional Tolerances</div>
-
-              <!-- Thickness -->
-              <div class="ds-tol-card">
-                <div class="ds-tol-head">
-                  <span class="ds-tol-name">Thickness</span>
-                  <span class="ds-tol-desc">TARGET ± TOLERANCE</span>
-                </div>
-                <div class="ds-tol-strip">
-                  <div class="ds-tol-pill ds-tol-pill--min">
-                    <div class="ds-tol-pill-val" id="tc-t-min">—</div>
-                    <div class="ds-tol-pill-lbl">Min</div>
-                  </div>
-                  <!-- unified track with actual dot -->
-                  <div class="ds-tol-track-wrap" id="tc-t-track">
-                    <div class="ds-tol-track-line"></div>
-                    <div class="ds-tol-actual-dot" id="tc-t-dot" style="display:none;left:50%"></div>
-                    <div class="ds-tol-actual-lbl" id="tc-t-dot-lbl" style="display:none;left:50%">—</div>
-                  </div>
-                  <div class="ds-tol-pill ds-tol-pill--nom">
-                    <div class="ds-tol-pill-val" id="tc-t-nom">—</div>
-                    <div class="ds-tol-pill-lbl">Target</div>
-                  </div>
-                  <div class="ds-tol-arrow"></div>
-                  <div class="ds-tol-pill ds-tol-pill--max">
-                    <div class="ds-tol-pill-val" id="tc-t-max">—</div>
-                    <div class="ds-tol-pill-lbl">Max</div>
-                  </div>
-                  <span class="ds-tol-unit">mm</span>
-                </div>
-                <!-- THICK_MIN/MAX actual range row -->
-                <div class="ds-tol-actual" id="tc-t-actual-row" style="display:none">
-                  <span class="ds-tol-actual-label">ความหนาจริงที่เป็นไปได้</span>
-                  <span class="ds-tol-actual-range"><strong id="tc-t-actual-min">—</strong> – <strong id="tc-t-actual-max">—</strong> mm</span>
-                  <span class="ds-tol-actual-note">(THICK_MIN / THICK_MAX จากชีท)</span>
-                </div>
-              </div>
-
-              <!-- Width + Length — inline row -->
-              <div class="ds-tol-wl-row">
-                <!-- Width -->
-                <div class="ds-tol-card ds-tol-card--half">
-                  <div class="ds-tol-head">
-                    <span class="ds-tol-name">Width</span>
-                    <span class="ds-tol-desc">NOM → MAX</span>
-                  </div>
-                  <div class="ds-tol-strip">
-                    <div class="ds-tol-pill ds-tol-pill--nom">
-                      <div class="ds-tol-pill-val" id="tc-w-min">—</div>
-                      <div class="ds-tol-pill-lbl">Nominal</div>
-                    </div>
-                    <div class="ds-tol-arrow"></div>
-                    <div class="ds-tol-pill ds-tol-pill--max">
-                      <div class="ds-tol-pill-val" id="tc-w-max">—</div>
-                      <div class="ds-tol-pill-lbl">Max</div>
-                    </div>
-                    <span class="ds-tol-unit">mm</span>
-                  </div>
-                </div>
-                <!-- Length -->
-                <div class="ds-tol-card ds-tol-card--half">
-                  <div class="ds-tol-head">
-                    <span class="ds-tol-name">Length</span>
-                    <span class="ds-tol-desc">NOM → MAX</span>
-                  </div>
-                  <div class="ds-tol-strip">
-                    <div class="ds-tol-pill ds-tol-pill--nom">
-                      <div class="ds-tol-pill-val" id="tc-l-min">—</div>
-                      <div class="ds-tol-pill-lbl">Nominal</div>
-                    </div>
-                    <div class="ds-tol-arrow"></div>
-                    <div class="ds-tol-pill ds-tol-pill--max">
-                      <div class="ds-tol-pill-val" id="tc-l-max">—</div>
-                      <div class="ds-tol-pill-lbl">Max</div>
-                    </div>
-                    <span class="ds-tol-unit">mm</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- ③ Form Tolerances -->
-            <div class="ds-section">
-              <div class="ds-section-title">Form Tolerances</div>
-              <div class="ds-form-row">
-
-                <!-- Flatness -->
-                <div class="ds-form-card">
-                  <svg width="32" height="14" viewBox="0 0 32 14" fill="none">
-                    <path d="M2 10 Q8 3 16 7 Q24 11 30 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/>
-                    <line x1="2" y1="12" x2="30" y2="12" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
-                    <line x1="16" y1="7" x2="16" y2="12" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-                  </svg>
-                  <div class="ds-form-lbl">Flatness</div>
-                  <div class="ds-form-val" id="tc-flat">—</div>
-                  <div class="ds-form-sub">per 1 m length</div>
-                </div>
-
-                <!-- Camber -->
-                <div class="ds-form-card">
-                  <svg width="32" height="14" viewBox="0 0 32 14" fill="none">
-                    <path d="M2 13 Q16 1 30 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/>
-                    <line x1="2" y1="13" x2="30" y2="13" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
-                    <line x1="16" y1="5" x2="16" y2="13" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-                  </svg>
-                  <div class="ds-form-lbl">Camber</div>
-                  <div class="ds-form-val" id="tc-camber">—</div>
-                  <div class="ds-form-sub">per full sheet</div>
-                </div>
-
-                <!-- Squareness -->
-                <div class="ds-form-card">
-                  <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-                    <rect x="3" y="3" width="20" height="20" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
-                    <line x1="3" y1="3" x2="23" y2="23" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
-                    <line x1="23" y1="3" x2="3" y2="23" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
-                    <path d="M3 8 L8 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
-                  </svg>
-                  <div class="ds-form-lbl">Squareness</div>
-                  <div class="ds-form-val" id="tc-sq1">—</div>
-                  <div class="ds-form-val2" id="tc-sq2">—</div>
-                  <div class="ds-form-sub">0.7% W &amp; Δdiag ≤3mm</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- ④ Mechanical Properties -->
-            <div class="ds-section" style="border-bottom:none;">
-              <div class="ds-section-title">Mechanical Properties</div>
-              <div class="ds-mech-row">
-                <div class="ds-mech-card"><label>Tensile</label><div class="ds-mech-val" id="tc-ts">—</div></div>
-                <div class="ds-mech-card"><label>Yield</label><div class="ds-mech-val" id="tc-ys">—</div></div>
-                <div class="ds-mech-card"><label>Elongation</label><div class="ds-mech-val" id="tc-el">—</div></div>
-              </div>
-            </div>
-
-          </div>
           <!-- ── existing sections below ── -->
           <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Packing &amp; 3D Live</span></div>
           <div class="sec">
@@ -2463,6 +2311,13 @@ body{
               <div class="qc-badge" id="qc-std-badge">—</div>
             </div>
             <div class="qc-meta" id="qc-meta">เลือก SKU เพื่อดูค่ามาตรฐานการตรวจสอบ</div>
+            <div class="qc-identity-row">
+              <div class="qc-id-chip"><span class="qc-id-lbl">Grade</span><span class="qc-id-val" id="qc-grade">—</span></div>
+              <div class="qc-id-chip"><span class="qc-id-lbl">Standard</span><span class="qc-id-val" id="qc-std">—</span></div>
+              <div class="qc-id-chip"><span class="qc-id-lbl">น้ำหนัก/แผ่น</span><span class="qc-id-val" id="qc-kg">—</span></div>
+              <div class="qc-id-chip"><span class="qc-id-lbl">หนา Target</span><span class="qc-id-val" id="qc-thick">—</span></div>
+              <div class="qc-id-chip"><span class="qc-id-lbl">W × L</span><span class="qc-id-val" id="qc-wl">—</span></div>
+            </div>
           </div>
 
           <!-- ① Dimensional Tolerance ───────────────────── -->
@@ -3591,6 +3446,14 @@ function openViewer(idx){
   setText('qc-meta', (s.GRADE||'—')+' · '+
     (parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||'—')+'mm × '+
     (s.WIDTH_MM||'—')+' × '+(s.LENGTH_MM||'—')+' mm');
+  // identity chips in QC header
+  setText('qc-grade', s.GRADE||'—');
+  setText('qc-std', s.STANDARD||'—');
+  var kgVal=parseFloat(s.WEIGHT_PER_SHEET_KG)||0;
+  setText('qc-kg', kgVal?kgVal+' kg':'—');
+  var thkTarget=parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||0;
+  setText('qc-thick', thkTarget?thkTarget+' mm':'—');
+  setText('qc-wl', (s.WIDTH_MM||'—')+' × '+(s.LENGTH_MM||'—'));
 
   // ── Thickness tolerance ───
   var qcTgt=parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
