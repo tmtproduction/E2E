@@ -728,6 +728,7 @@ body{
 .vtm-btn.active::after{background:var(--black);}
 
 .vp-main{display:grid;grid-template-columns:1fr 480px;flex:1;min-height:0;overflow:hidden;}
+.canvas-col{display:flex;flex-direction:column;min-height:0;overflow:hidden;}
 @media(min-width:1400px){.vp-main{grid-template-columns:1fr 540px;}}
 @media(min-width:1700px){.vp-main{grid-template-columns:1fr 600px;}}
 
@@ -737,6 +738,7 @@ body{
 .canvas-wrap{
   position:relative;background:#f0f0ee;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
+  flex:1;min-height:0;
 }
 /* refined grid */
 .canvas-wrap::before{
@@ -1813,11 +1815,12 @@ body{
 /* ── 3D Floating Controls ──────────────────────────────────── */
 .ctrl3d-bar{
   background:var(--white);border-top:1px solid var(--g100);
-  padding:10px 14px;flex-shrink:0;
+  padding:8px 14px;flex-shrink:0;
+  position:relative;
 }
 .ctrl3d-float{
-  display:flex;flex-direction:column;align-items:flex-start;gap:0;
-  font-family:var(--mono);
+  display:inline-flex;flex-direction:column;align-items:flex-start;gap:0;
+  font-family:var(--mono);position:relative;
 }
 .ctrl3d-toggle{
   display:flex;align-items:center;gap:6px;
@@ -1830,17 +1833,18 @@ body{
 .ctrl3d-toggle:hover{background:#222;}
 .ctrl3d-toggle-icon{font-size:11px;line-height:1;}
 .ctrl3d-panel{
-  margin-top:6px;
+  position:absolute;bottom:calc(100% + 6px);left:0;
   background:var(--white);
   border:1px solid var(--g200);
   border-radius:8px;overflow:hidden;
   min-width:220px;max-width:280px;
-  box-shadow:0 4px 16px rgba(0,0,0,0.10);
-  transform-origin:top left;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.12);
+  z-index:100;
+  transform-origin:bottom left;
   transition:opacity .2s, transform .2s;
 }
 .ctrl3d-panel.collapsed{
-  opacity:0;pointer-events:none;transform:scaleY(0.85) translateY(-6px);
+  opacity:0;pointer-events:none;transform:scaleY(0.85) translateY(8px);
 }
 /* rows inside floating panel */
 .ctrl3d-panel .seg-row{
@@ -2021,6 +2025,7 @@ body{
 
   <div class="vp-main">
     <!-- 3D Canvas -->
+    <div class="canvas-col">
     <div class="canvas-wrap">
       <canvas id="c3d"></canvas>
       <div class="view-btns">
@@ -2114,8 +2119,8 @@ body{
           </div>
         </div>
       </div>
-    </div>
-
+    </div><!-- /ctrl3d-bar -->
+    </div><!-- /canvas-col -->
     <!-- Sidebar -->
     <div class="sidebar">
 
@@ -3278,15 +3283,7 @@ function openViewer(idx){
   setText('sh-grade', s.GRADE||'—');
   setText('sh-w', w||'—');
   setText('sh-l', l||'—');
-  // Mill Cert → YES / NO
-  var mcRaw = String(getMC(s)).trim().toLowerCase();
-  var mcYes = mcRaw==='yes'||mcRaw==='y'||mcRaw==='true'||mcRaw==='1'||mcRaw==='มี'||mcRaw==='✓';
-  var mcNo  = mcRaw==='no'||mcRaw==='n'||mcRaw==='false'||mcRaw==='0'||mcRaw==='ไม่มี'||mcRaw===''||mcRaw==='-';
-  var mcEl = document.getElementById('sh-millcert');
-  if(mcEl){
-    if(mcYes){mcEl.textContent='YES';mcEl.style.color='var(--green)';}
-    else{mcEl.textContent='NO';mcEl.style.color='var(--g400)';}
-  }
+  // Mill: แสดงชื่อ MILL_NAME (จัดการโดย block ด้านบนแล้ว)
   setText('sh-price', price?'฿ '+price.toLocaleString():'฿ —');
   var pricekgViewer = parseFloat(s.PRICE_PER_KG_THB)||0;
   setText('sh-prickg', pricekgViewer ? pricekgViewer.toFixed(1)+' ฿/kg' : '—');
@@ -4732,32 +4729,13 @@ function render3d(){
       var margin = Math.round(12 * sc);
       var lw     = Math.min(Math.round(340 * sc), W - margin * 2);
       var lh     = pad * 2 + rows.length * lineH + Math.round(4 * sc);
-      var lx     = margin, ly = margin;
+      var lx     = ax, ly = ay;
 
-      // ── anchor: top-center of model ──────────────────────────────
-      var topSurface=yOff+totalH+fl;
-      var anc=pr(tp([0, topSurface, 0]));
-      var ax=Math.max(4,Math.min(W-4,anc[0]));
-      var ay=Math.max(4,Math.min(H-4,anc[1]));
+      // ── anchor: fixed top-left area of canvas ───────────────────
+      var ax = Math.round(W * 0.04);
+      var ay = Math.round(H * 0.06);
 
       ctx.save();
-
-      // leader line: label bottom-right corner → model top
-      var ldrX=lx+lw*0.65, ldrY=ly+lh;
-      ctx.beginPath();
-      ctx.moveTo(ldrX,ldrY);
-      ctx.lineTo(ax,ay);
-      ctx.strokeStyle='rgba(10,10,10,0.22)';
-      ctx.lineWidth=Math.max(0.8, sc);
-      ctx.setLineDash([Math.round(3*sc), Math.round(4*sc)]);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      // dot ที่ anchor
-      ctx.beginPath();
-      ctx.arc(ax,ay,Math.max(2,2.5*sc),0,Math.PI*2);
-      ctx.fillStyle='rgba(10,10,10,0.38)';
-      ctx.fill();
 
       // label bg + shadow
       ctx.save();
