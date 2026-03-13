@@ -273,20 +273,42 @@ body{
 .spec-hero{
   background:var(--white);
   flex-shrink:0;
-  /* slide-in on open */
   animation:specHeroIn .35s cubic-bezier(.4,0,.2,1) both;
 }
+/* top row: identity left + price right */
+.spec-hero-top{
+  display:grid;grid-template-columns:1fr auto;
+  border-bottom:1px solid var(--g200);
+}
+.spec-identity{
+  padding:18px 22px 16px;
+  display:flex;flex-direction:column;gap:4px;
+}
+/* price box — top right */
+.spec-price-box{
+  padding:18px 20px 16px;
+  background:var(--black);
+  display:flex;flex-direction:column;justify-content:center;
+  min-width:140px;text-align:right;
+}
+.spec-price-box-num{
+  font-size:26px;font-weight:300;letter-spacing:-.6px;
+  color:var(--white);line-height:1;
+}
+.spec-price-box-sub{
+  display:flex;gap:6px;justify-content:flex-end;align-items:baseline;
+  font-size:10px;color:rgba(255,255,255,.45);font-family:var(--mono);
+  margin-top:4px;
+}
+.spec-price-box-kg{color:rgba(255,255,255,.3);}
+.spec-price-box .spec-stock-pill{justify-content:flex-end;}
+.spec-price-box .spec-stock-txt{color:rgba(255,255,255,.55);}
 @keyframes specHeroIn{
   from{opacity:0;transform:translateY(8px);}
   to{opacity:1;transform:translateY(0);}
 }
 
-/* ── product identity strip — sits above dims ── */
-.spec-identity{
-  padding:18px 22px 16px;
-  border-bottom:1px solid var(--g200);
-  display:flex;flex-direction:column;gap:4px;
-}
+/* spec-identity moved into spec-hero-top grid */
 .spec-identity-eyebrow{
   font-size:9px;letter-spacing:3.5px;text-transform:uppercase;
   color:var(--g400);font-family:var(--mono);font-weight:500;
@@ -330,19 +352,6 @@ body{
   margin-top:4px;letter-spacing:.5px;text-transform:uppercase;
 }
 
-/* ── price + stock row ── */
-.spec-price-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:14px 18px;
-  background:var(--black);
-}
-.spec-price-left{display:flex;align-items:baseline;gap:6px;}
-.spec-price-big{
-  font-size:32px;font-weight:300;letter-spacing:-.8px;
-  color:var(--white);
-}
-.spec-price-unit{font-size:11px;color:rgba(255,255,255,.4);font-family:var(--mono);letter-spacing:.5px;}
-#sh-prickg{font-size:10px;color:rgba(255,255,255,.35);font-family:var(--mono);}
 .spec-stock-pill{display:inline-flex;align-items:center;gap:7px;}
 .spec-stock-dot{width:6px;height:6px;border-radius:50%;}
 .spec-stock-txt{font-size:11px;font-weight:500;color:var(--g300);font-family:var(--mono);}
@@ -2148,14 +2157,28 @@ body{
         <div class="panel-scroll">
           <!-- ── LEVEL 1: KEY INFO — always visible, big ── -->
           <div class="spec-hero" id="spec-hero">
-            <!-- product identity strip -->
-            <div class="spec-identity">
-              <div class="spec-identity-eyebrow" id="v-eyebrow2">—</div>
-              <div class="spec-identity-name" id="v-sku2">—</div>
-              <div class="spec-identity-meta" id="v-meta">
-                <span id="v-std-meta">—</span>
-                <span class="spec-identity-meta-sep">·</span>
-                <span id="v-kg-meta">— kg/แผ่น</span>
+            <!-- product identity strip + price -->
+            <div class="spec-hero-top">
+              <div class="spec-identity">
+                <div class="spec-identity-eyebrow" id="v-eyebrow2">—</div>
+                <div class="spec-identity-name" id="v-sku2">—</div>
+                <div class="spec-identity-meta" id="v-meta">
+                  <span id="v-std-meta">—</span>
+                  <span class="spec-identity-meta-sep">·</span>
+                  <span id="v-kg-meta">— kg/แผ่น</span>
+                </div>
+              </div>
+              <!-- price block — top right -->
+              <div class="spec-price-box">
+                <div class="spec-price-box-num" id="sh-price2">฿ —</div>
+                <div class="spec-price-box-sub">
+                  <span>/ แผ่น</span>
+                  <span id="sh-prickg2" class="spec-price-box-kg">—</span>
+                </div>
+                <div class="spec-stock-pill" style="margin-top:8px;">
+                  <div class="spec-stock-dot" id="sh-dot2" style="background:var(--green)"></div>
+                  <span class="spec-stock-txt" id="sh-stock2">—</span>
+                </div>
               </div>
             </div>
             <!-- hidden TMT value — used by 3D/JS only, not displayed -->
@@ -2190,17 +2213,7 @@ body{
                 <div id="sh-millcert" style="font-size:16px;font-weight:600;font-family:var(--mono);letter-spacing:1px;">—</div>
               </div>
             </div>
-            <div class="spec-price-row">
-              <div class="spec-price-left">
-                <span class="spec-price-big" id="sh-price">฿ —</span>
-                <span class="spec-price-unit">/ แผ่น</span>
-                <span id="sh-prickg" style="font-size:10px;color:rgba(255,255,255,.35);margin-left:8px;font-family:'Courier New',monospace;">—</span>
-              </div>
-              <div class="spec-stock-pill">
-                <div class="spec-stock-dot" id="sh-dot" style="background:var(--green)"></div>
-                <span class="spec-stock-txt" id="sh-stock">—</span>
-              </div>
-            </div>
+
           </div>
           <!-- ── LEVEL 2: TECH DETAIL — collapsible ── -->
           <div class="tech-collapse-hdr" onclick="toggleTechCollapse(this)">
@@ -3308,13 +3321,16 @@ function openViewer(idx){
   setText('sh-l', l||'—');
   // Mill: แสดงชื่อ MILL_NAME (จัดการโดย block ด้านบนแล้ว)
   setText('sh-price', price?'฿ '+price.toLocaleString():'฿ —');
+  setText('sh-price2', price?'฿ '+price.toLocaleString():'฿ —');
   var pricekgViewer = parseFloat(s.PRICE_PER_KG_THB)||0;
   setText('sh-prickg', pricekgViewer ? pricekgViewer.toFixed(1)+' ฿/kg' : '—');
-  setText('sh-stock', stock+' แผ่น '+(stock===0?'หมดสต็อก':stock<10?'(เหลือน้อย)':'พร้อมส่ง'));
-  var shDot=document.getElementById('sh-dot');
-  if(shDot) shDot.style.background=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
-  var shStockTxt=document.getElementById('sh-stock');
-  if(shStockTxt) shStockTxt.style.color=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
+  setText('sh-prickg2', pricekgViewer ? pricekgViewer.toFixed(1)+' ฿/kg' : '—');
+  var stockTxt=stock+' แผ่น '+(stock===0?'หมดสต็อก':stock<10?'(เหลือน้อย)':'พร้อมส่ง');
+  var stockCol=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
+  setText('sh-stock', stockTxt);
+  setText('sh-stock2', stockTxt);
+  ['sh-dot','sh-dot2'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.background=stockCol; });
+  ['sh-stock','sh-stock2'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.color=stockCol; });
 
   // ── Dimension & Standard panel ──────────────────────────────────
   setText('tc-grade', s.GRADE||'—');
