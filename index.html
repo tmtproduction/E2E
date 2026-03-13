@@ -369,8 +369,8 @@ body{
 .tech-collapse-hdr.open .tech-collapse-title::before{background:var(--green);}
 .tech-collapse-arr{font-size:9px;color:var(--g400);transition:transform .22s;}
 .tech-collapse-hdr.open .tech-collapse-arr{transform:rotate(180deg);}
-.tech-collapse-body{overflow:hidden;max-height:0;transition:max-height .3s ease;}
-.tech-collapse-body.open{max-height:400px;}
+.tech-collapse-body{overflow:hidden;max-height:0;transition:max-height .45s ease;}
+.tech-collapse-body.open{max-height:1200px;}
 
 /* tech grid — premium data table style */
 .tech-grid{
@@ -1632,93 +1632,54 @@ body{
 
 .config-banner{display:none;}
 
-/* ── Session additions ── */
-.tech-collapse-body{overflow:hidden;max-height:0;transition:max-height .45s ease;}
-.tech-collapse-body.open{max-height:900px;}
 /* ══════════════════════════════════════════
    Dimension & Standard — redesign
 ══════════════════════════════════════════ */
-.ds-section{ padding:16px; border-bottom:1px solid var(--g100); }
+.ds-section{padding:16px;border-bottom:1px solid var(--g100);}
 .ds-section-title{
+  font-size:8px;letter-spacing:3px;text-transform:uppercase;
   color:var(--g400);font-family:var(--mono);font-weight:700;
   margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
 .ds-section-title::after{content:'';flex:1;height:1px;background:var(--g200);}
-/* ── Identity row (Grade / Standard / Weight) ── */
-.ds-id-row{
-  gap:8px;margin-bottom:0;
-.ds-id-card{
-  background:var(--g50);border-radius:8px;padding:10px 12px;
-.ds-id-card label{
-.ds-id-card .ds-id-val{
-  font-size:15px;font-weight:700;font-family:var(--mono);
-  color:var(--black);line-height:1.2;
-/* ── Tolerance rows ── */
-.ds-tol-card{
-  background:var(--white);border:1px solid var(--g200);
-  border-radius:8px;padding:12px 14px;margin-bottom:8px;
+/* Identity */
+.ds-id-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.ds-id-card{background:var(--g50);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;}
+.ds-id-card label{font-size:8px!important;letter-spacing:1.5px!important;text-transform:uppercase!important;color:var(--g400)!important;font-family:var(--mono)!important;font-weight:400!important;display:block!important;margin-bottom:0!important;}
+.ds-id-card .ds-id-val{font-size:15px;font-weight:700;font-family:var(--mono);color:var(--black);line-height:1.2;}
+/* Tolerance */
+.ds-tol-card{background:var(--white);border:1px solid var(--g200);border-radius:8px;padding:12px 14px;margin-bottom:8px;}
 .ds-tol-card:last-child{margin-bottom:0;}
-.ds-tol-head{
-  margin-bottom:10px;
-.ds-tol-name{
-  font-size:11px;font-weight:700;font-family:var(--mono);color:var(--black);
-.ds-tol-desc{
-  font-size:8px;color:var(--g400);font-family:var(--mono);letter-spacing:1px;
-/* the range strip */
+.ds-tol-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.ds-tol-name{font-size:11px;font-weight:700;font-family:var(--mono);color:var(--black);}
+.ds-tol-desc{font-size:8px;color:var(--g400);font-family:var(--mono);letter-spacing:1px;}
 .ds-tol-strip{display:flex;align-items:center;gap:0;}
-.ds-tol-pill{
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  min-width:52px;
-.ds-tol-pill-val{
-  font-size:13px;font-weight:700;font-family:var(--mono);
-  padding:4px 10px;border-radius:6px;line-height:1;
-.ds-tol-pill--min .ds-tol-pill-val{
-  background:var(--g100);color:var(--g600);
-.ds-tol-pill--nom .ds-tol-pill-val{
-  background:var(--black);color:var(--white);font-size:14px;
-.ds-tol-pill--max .ds-tol-pill-val{
-  background:#d4edda;color:#155724;
-.ds-tol-pill-lbl{
-  font-size:7px;letter-spacing:1px;text-transform:uppercase;
-.ds-tol-arrow{
-  flex:1;height:2px;background:var(--g200);position:relative;margin:0 4px;
-  align-self:center;margin-bottom:18px;
-.ds-tol-arrow::after{
-  content:'';position:absolute;right:-4px;top:-3px;
-  border:4px solid transparent;border-left:6px solid var(--g300);
-.ds-tol-unit{
-  font-size:9px;color:var(--g400);font-family:var(--mono);
-  margin-left:8px;align-self:flex-start;margin-top:6px;
-/* ── Form tolerance cards (Flatness / Camber / Squareness) ── */
-.ds-form-row{
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
-.ds-form-card{
-  border:1px solid var(--g200);border-radius:8px;padding:12px 10px;
-  display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;
+.ds-tol-pill{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px;}
+.ds-tol-pill-val{font-size:13px;font-weight:700;font-family:var(--mono);padding:4px 10px;border-radius:6px;line-height:1;}
+.ds-tol-pill--min .ds-tol-pill-val{background:var(--g100);color:var(--g600);}
+.ds-tol-pill--nom .ds-tol-pill-val{background:var(--black);color:var(--white);font-size:14px;}
+.ds-tol-pill--max .ds-tol-pill-val{background:#d4edda;color:#155724;}
+.ds-tol-pill-lbl{font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
+.ds-tol-arrow{flex:1;height:2px;background:var(--g200);position:relative;margin:0 4px;align-self:center;margin-bottom:18px;}
+.ds-tol-arrow::after{content:'';position:absolute;right:-4px;top:-3px;border:4px solid transparent;border-left:6px solid var(--g300);}
+.ds-tol-unit{font-size:9px;color:var(--g400);font-family:var(--mono);margin-left:8px;align-self:flex-start;margin-top:6px;}
+/* Form tolerances */
+.ds-form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.ds-form-card{border:1px solid var(--g200);border-radius:8px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:var(--white);}
 .ds-form-card svg{color:var(--g500);}
-.ds-form-card .ds-form-lbl{
-.ds-form-card .ds-form-val{
-  font-size:16px;font-weight:800;font-family:var(--mono);color:var(--black);
-  line-height:1;
-.ds-form-card .ds-form-sub{
-  font-size:8px;color:var(--g500);font-family:var(--mono);line-height:1.4;
-/* squareness has 2 values */
-.ds-form-card .ds-form-val2{
-  font-size:11px;font-weight:600;font-family:var(--mono);color:var(--g600);
-  line-height:1;margin-top:2px;
-/* ── Mechanical ── */
-.ds-mech-row{
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
-.ds-mech-card{
-  background:var(--g50);border-radius:8px;padding:10px 12px;
-.ds-mech-card label{
-.ds-mech-card .ds-mech-val{
-  font-size:13px;font-weight:700;font-family:var(--mono);
-  color:var(--black);line-height:1.2;
-/* ── LSS — Limit Spec Summary ── */
+.ds-form-card .ds-form-lbl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
+.ds-form-card .ds-form-val{font-size:16px;font-weight:800;font-family:var(--mono);color:var(--black);line-height:1;}
+.ds-form-card .ds-form-sub{font-size:8px;color:var(--g500);font-family:var(--mono);line-height:1.4;}
+.ds-form-card .ds-form-val2{font-size:11px;font-weight:600;font-family:var(--mono);color:var(--g600);line-height:1;margin-top:2px;}
+/* Mechanical */
+.ds-mech-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.ds-mech-card{background:var(--g50);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;}
+.ds-mech-card label{font-size:8px!important;letter-spacing:1.5px!important;text-transform:uppercase!important;color:var(--g400)!important;font-family:var(--mono)!important;font-weight:400!important;display:block!important;margin-bottom:0!important;}
+.ds-mech-card .ds-mech-val{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--black);line-height:1.2;}
+/* LSS extras */
 .lss-pill{padding:10px 12px;display:flex;flex-direction:column;gap:3px;}
 .lss-pill-lbl{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);font-family:var(--mono);}
 .lss-pill-val{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--white);}
-.lss-acc-hdr{padding:10px 0;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
 .lss-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);}
 .lss-lbl{font-size:9px;color:rgba(255,255,255,.45);font-family:var(--mono);}
 .lss-val{font-size:11px;font-weight:600;font-family:var(--mono);color:rgba(255,255,255,.85);}
