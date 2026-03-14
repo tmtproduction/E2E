@@ -3293,7 +3293,26 @@ function openViewer(idx){
       var distFromTmt = Math.abs(mid - kgTmt);
       binTypes.push(distFromTmt < span*0.2 ? 'ok' : distFromTmt < span*0.4 ? 'warn' : 'ng');
     }
-    // render bars
+    // คำนวณน้ำหนักเฉลี่ย (weighted avg จาก distribution)
+    var totalPct = rawPcts.reduce(function(a,b){return a+b;},0);
+    var kgAvg = 0;
+    rawPcts.forEach(function(pct,i){
+      var midKg = kgMin + (i+0.5)*step;
+      kgAvg += midKg * (pct/totalPct);
+    });
+    // แสดงน้ำหนักเฉลี่ยใน big number
+    setText('sh-wt-tmt', kgAvg.toFixed(1));
+    var wtLbl2 = document.getElementById('sh-wt-label');
+    if(wtLbl2) wtLbl2.textContent = 'kg เฉลี่ย';
+    // ราคาเฉลี่ย = น้ำหนักเฉลี่ย × ราคา/kg
+    var priceKg = parseFloat(s.PRICE_PER_KG_THB)||0;
+    if(priceKg>0){
+      var avgPrice = Math.round(kgAvg * priceKg);
+      setText('sh-price2', '฿ '+avgPrice.toLocaleString());
+      setText('sh-prickg2', kgAvg.toFixed(1)+' kg × '+priceKg.toFixed(1)+' ฿/kg');
+    }
+
+    // render bars — แสดงจำนวนแผ่น (stock × pct%)
     var barsEl = document.getElementById('sh-dist-bars');
     if(barsEl){
       barsEl.innerHTML = '';
@@ -3303,10 +3322,11 @@ function openViewer(idx){
         var isMax = (i === maxIdx);
         var fillStyle = isMax ? 'background:#f36f22;' : '';
         var fillClass = isMax ? '' : 'sh-dist-fill--'+binTypes[i];
+        var sheets = Math.round(stock * pct / totalPct);
         var row = document.createElement('div'); row.className='sh-dist-row';
         row.innerHTML = '<div class="sh-dist-lbl">'+binLabels[i]+' kg</div>' +
           '<div class="sh-dist-track"><div class="sh-dist-fill '+fillClass+'" style="width:'+(pct/maxPct*100)+'%;'+fillStyle+'"></div></div>' +
-          '<div class="sh-dist-pct">'+pct+'%</div>';
+          '<div class="sh-dist-pct">'+sheets+' แผ่น</div>';
         barsEl.appendChild(row);
       });
     }
