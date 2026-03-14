@@ -338,6 +338,8 @@ body{
 .sh-weight-sub{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-left:2px;}
 .sh-weight-range{display:none;}
 .sh-dist-wrap{margin-top:10px;}
+.sh-dist-notice{display:flex;align-items:flex-start;gap:8px;background:var(--g50);border-left:2px solid var(--g400);padding:7px 10px;margin-bottom:10px;font-size:10px;font-family:var(--mono);color:var(--g600);line-height:1.5;}
+.sh-dist-notice-icon{flex-shrink:0;font-size:10px;font-weight:700;color:var(--g400);}
 .sh-dist-bars{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
 .sh-dist-row{display:flex;align-items:center;gap:6px;}
 .sh-dist-lbl{font-size:9px;font-family:var(--mono);color:var(--g400);width:72px;text-align:right;flex-shrink:0;}
@@ -2287,6 +2289,10 @@ body{
                 </div>
                 <!-- Distribution bars -->
                 <div class="sh-dist-wrap" id="sh-dist-wrap" style="display:none">
+                  <div class="sh-dist-notice">
+                    <span class="sh-dist-notice-icon">!</span>
+                    ไม่สามารถเลือกน้ำหนักต่อแผ่นได้ — ข้อมูลแสดงค่าน้ำหนักจริงจากการผลิต ไม่สามารถแยกกองตามน้ำหนักได้
+                  </div>
                   <div class="sh-dist-bars" id="sh-dist-bars"></div>
 
                   <!-- Range bar -->
