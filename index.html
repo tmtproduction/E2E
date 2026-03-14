@@ -1967,6 +1967,29 @@ body{
   color:var(--g400);border-bottom:1px solid var(--g100);
 }
 
+
+/* ── SPEC FINDER BAR (inline catalog) ───────────────────────── */
+.sfb{display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:0;height:48px;}
+.sfb-fields{display:flex;align-items:center;gap:0;flex:1;height:100%;}
+.sfb-group{display:flex;align-items:center;gap:6px;padding:0 14px;height:100%;}
+.sfb-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);white-space:nowrap;}
+.sfb-sep{font-size:11px;color:var(--g400);font-family:var(--mono);}
+.sfb-input{border:none;outline:none;background:transparent;font-size:13px;font-family:var(--mono);font-weight:600;color:var(--black);width:64px;padding:0;}
+.sfb-input--sm{width:36px;}
+.sfb-input--grade{width:72px;}
+.sfb-input::placeholder{color:var(--g300);font-weight:400;}
+.sfb-divider{width:1px;height:24px;background:var(--g200);flex-shrink:0;}
+.sfb-btn{margin-left:14px;padding:6px 16px;background:var(--black);color:var(--white);border:none;border-radius:20px;font-size:11px;font-family:var(--mono);letter-spacing:1px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.sfb-btn:hover{opacity:.8;}
+.sfb-clear{margin-left:8px;padding:5px 12px;background:transparent;color:var(--g400);border:1px solid var(--g200);border-radius:20px;font-size:10px;font-family:var(--mono);cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.sfb-clear:hover{color:var(--black);border-color:var(--black);}
+.sfb-result-badge{font-size:9px;font-family:var(--mono);background:#fff5f0;color:#f36f22;border:1px solid rgba(243,111,34,.25);border-radius:20px;padding:2px 10px;margin-left:10px;white-space:nowrap;}
+@media(max-width:767px){
+  .sfb{padding:0 12px;height:auto;flex-wrap:wrap;gap:6px;padding-top:8px;padding-bottom:8px;}
+  .sfb-fields{flex-wrap:wrap;gap:6px;height:auto;}
+  .sfb-group{padding:0 6px;}
+  .sfb-divider{display:none;}
+}
 /* ── SPEC FINDER ─────────────────────────────── */
 .sf-title{font-size:16px;font-weight:700;font-family:var(--mono);color:var(--black);margin-bottom:3px;}
 .sf-sub{font-size:10px;color:var(--g400);font-family:var(--mono);margin-bottom:16px;letter-spacing:.3px;}
@@ -2045,16 +2068,33 @@ body{
     </div><!-- /hero-filter-zone -->
   </div>
 
-  <!-- ── QUICK FILTER CHIPS ── -->
-  <div class="chip-bar" id="chip-bar">
-    <span class="chip-bar-label">ประเภท</span>
-    <button class="chip active" onclick="setChip(this,'')">ทั้งหมด</button>
-    <button class="chip" onclick="setChip(this,'ดำ (Hot Rolled)')">เหล็กดำ</button>
-    <button class="chip" onclick="setChip(this,'ชุบสังกะสี (Galvanized)')">ชุบสังกะสี</button>
-    <button class="chip" onclick="setChip(this,'Cold Rolled')">Cold Rolled</button>
-    <button class="chip" onclick="setChip(this,'สเตนเลส')">สเตนเลส</button>
-    <div class="chip-divider"></div>
-    <button class="chip" id="chip-adv-btn" onclick="toggleAdvFilter(this)">ตัวกรองเพิ่มเติม ▾</button>
+  <!-- ── SPEC FINDER SEARCH BAR ── -->
+  <div class="chip-bar sfb" id="chip-bar">
+    <div class="sfb-fields">
+      <div class="sfb-group">
+        <span class="sfb-lbl">หนา</span>
+        <input class="sfb-input" id="sfb-thick" type="number" step="0.25" placeholder="mm">
+        <span class="sfb-sep">±</span>
+        <input class="sfb-input sfb-input--sm" id="sfb-tol" type="number" step="0.1" placeholder="tol" value="0.5">
+      </div>
+      <div class="sfb-divider"></div>
+      <div class="sfb-group">
+        <span class="sfb-lbl">กว้าง</span>
+        <input class="sfb-input" id="sfb-w" type="number" placeholder="mm">
+      </div>
+      <div class="sfb-divider"></div>
+      <div class="sfb-group">
+        <span class="sfb-lbl">ยาว</span>
+        <input class="sfb-input" id="sfb-l" type="number" placeholder="mm">
+      </div>
+      <div class="sfb-divider"></div>
+      <div class="sfb-group">
+        <span class="sfb-lbl">Grade</span>
+        <input class="sfb-input sfb-input--grade" id="sfb-grade" type="text" placeholder="SS400…">
+      </div>
+      <button class="sfb-btn" onclick="runInlineSpecFinder()">ค้นหา</button>
+      <button class="sfb-clear" id="sfb-clear-btn" onclick="clearInlineFinder()" style="display:none">✕ ล้าง</button>
+    </div>
     <button class="hdr-toggle-btn" id="hdr-toggle-btn" onclick="toggleHero()" title="ซ่อน/แสดง header">
       <span id="hdr-toggle-txt">ซ่อน</span>
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
@@ -4101,6 +4141,60 @@ document.querySelectorAll('.sf-chips .sf-chip').forEach(function(btn){
     btn.closest('.sf-chips').querySelectorAll('.sf-chip').forEach(function(b){b.classList.remove('active');});
     btn.classList.add('active');
   });
+});
+
+
+function runInlineSpecFinder(){
+  var thick = parseFloat(document.getElementById('sfb-thick').value)||0;
+  var tol   = parseFloat(document.getElementById('sfb-tol').value)||0.5;
+  var w     = parseInt(document.getElementById('sfb-w').value)||0;
+  var l     = parseInt(document.getElementById('sfb-l').value)||0;
+  var grade = (document.getElementById('sfb-grade').value||'').trim().toUpperCase();
+  if(!thick&&!w&&!l&&!grade){ clearInlineFinder(); return; }
+  if(!allSkus||!allSkus.length) return;
+  var scored = allSkus.map(function(s){
+    var t2=parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||0;
+    var w2=parseInt(s.WIDTH_MM)||0, l2=parseInt(s.LENGTH_MM)||0;
+    var g2=(s.GRADE||'').toUpperCase();
+    var score=100, possible=true;
+    if(thick>0){var d=Math.abs(t2-thick);if(d<0.001){}else if(d<=tol)score-=10;else if(d<=tol*2)score-=30;else{score-=80;possible=false;}}
+    if(w>0){if(w2!==w){if(Math.abs(w2-w)<=5)score-=15;else score-=40;}}
+    if(l>0){if(l2!==l){if(Math.abs(l2-l)<=5)score-=15;else score-=40;}}
+    if(grade&&g2!==grade) score-=20;
+    if((parseInt(s.STOCK_QTY)||0)===0) score-=15;
+    return {s:s,score:Math.max(score,0),possible:possible,idx:allSkus.indexOf(s)};
+  }).filter(function(r){return r.possible&&r.score>20;});
+  scored.sort(function(a,b){return b.score-a.score;});
+  // แสดง badge จำนวน
+  var oldBadge=document.getElementById('sfb-badge');
+  if(oldBadge) oldBadge.remove();
+  if(scored.length){
+    var badge=document.createElement('span');
+    badge.id='sfb-badge'; badge.className='sfb-result-badge';
+    badge.textContent='พบ '+scored.length+' SKU';
+    document.querySelector('.sfb-btn').after(badge);
+  }
+  // filter grid ให้แสดงเฉพาะ scored
+  var topIdxs = scored.slice(0,20).map(function(r){return r.idx;});
+  filteredSkus = topIdxs.map(function(i){return allSkus[i];});
+  renderGrid();
+  document.getElementById('sfb-clear-btn').style.display='';
+}
+function clearInlineFinder(){
+  document.getElementById('sfb-thick').value='';
+  document.getElementById('sfb-tol').value='0.5';
+  document.getElementById('sfb-w').value='';
+  document.getElementById('sfb-l').value='';
+  document.getElementById('sfb-grade').value='';
+  var b=document.getElementById('sfb-badge'); if(b)b.remove();
+  document.getElementById('sfb-clear-btn').style.display='none';
+  filteredSkus=allSkus.slice();
+  renderGrid();
+}
+// Enter key triggers search
+['sfb-thick','sfb-tol','sfb-w','sfb-l','sfb-grade'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(el) el.addEventListener('keydown',function(e){if(e.key==='Enter')runInlineSpecFinder();});
 });
 
 function runSpecFinder(){
