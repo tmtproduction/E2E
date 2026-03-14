@@ -343,19 +343,14 @@ body{
 .sh-dist-lbl{font-size:9px;font-family:var(--mono);color:var(--g400);width:72px;text-align:right;flex-shrink:0;}
 .sh-dist-track{flex:1;height:14px;background:var(--g100);border-radius:2px;overflow:hidden;}
 .sh-dist-fill{height:100%;border-radius:2px;transition:width .4s ease;}
-.sh-dist-fill--ok{background:#639922;}
-.sh-dist-fill--warn{background:#BA7517;}
-.sh-dist-fill--ng{background:#E24B4A;}
-.sh-dist-pct{font-size:9px;font-family:var(--mono);color:var(--g500);width:24px;flex-shrink:0;}
-.sh-dist-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-.sh-dist-pill{font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:20px;}
-.sh-dist-ok{background:#EAF3DE;color:#3B6D11;}
-.sh-dist-warn{background:#FAEEDA;color:#854F0B;}
-.sh-dist-ng{background:#FCEBEB;color:#A32D2D;}
+.sh-dist-fill--ok{background:var(--black);}
+.sh-dist-fill--warn{background:var(--g400);}
+.sh-dist-fill--ng{background:var(--g200);}
+.sh-dist-pct{font-size:9px;font-family:var(--mono);color:var(--g400);width:24px;flex-shrink:0;}
 .sh-range-section{margin-top:4px;}
 .sh-range-track{position:relative;height:5px;background:var(--g100);border-radius:3px;margin-bottom:5px;}
-.sh-range-fill{position:absolute;height:100%;background:#639922;border-radius:3px;}
-.sh-range-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:#E24B4A;border:2px solid var(--white);}
+.sh-range-fill{position:absolute;height:100%;background:var(--g300);border-radius:3px;}
+.sh-range-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:var(--black);border:2px solid var(--white);}
 .sh-range-labels{display:flex;justify-content:space-between;font-size:9px;font-family:var(--mono);color:var(--g400);}
 .spec-dim-thick-wrap{
   grid-column:1 / -1;padding:14px 16px;border-right:none;border-bottom:1px solid var(--g200);
@@ -2293,11 +2288,7 @@ body{
                 <!-- Distribution bars -->
                 <div class="sh-dist-wrap" id="sh-dist-wrap" style="display:none">
                   <div class="sh-dist-bars" id="sh-dist-bars"></div>
-                  <div class="sh-dist-pills">
-                    <span class="sh-dist-pill sh-dist-ok" id="sh-dist-ok-pct">—% ในเกณฑ์</span>
-                    <span class="sh-dist-pill sh-dist-warn" id="sh-dist-warn-pct">—% ขอบเขต</span>
-                    <span class="sh-dist-pill sh-dist-ng" id="sh-dist-ng-pct">—% นอก</span>
-                  </div>
+
                   <!-- Range bar -->
                   <div class="sh-range-section">
                     <div class="sh-range-track" id="sh-range-track">
@@ -3315,12 +3306,7 @@ function openViewer(idx){
         barsEl.appendChild(row);
       });
     }
-    // pills summary
-    var okPct=0,warnPct=0,ngPct=0;
-    rawPcts.forEach(function(p,i){ if(binTypes[i]==='ok') okPct+=p; else if(binTypes[i]==='warn') warnPct+=p; else ngPct+=p; });
-    setText('sh-dist-ok-pct', okPct+'% ในเกณฑ์');
-    setText('sh-dist-warn-pct', warnPct+'% ขอบเขต');
-    setText('sh-dist-ng-pct', ngPct+'% นอก');
+
     // range bar
     setText('sh-wt-min', kgMin.toFixed(1)+' kg');
     setText('sh-wt-max', kgMax.toFixed(1)+' kg');
