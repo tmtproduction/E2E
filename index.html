@@ -326,11 +326,11 @@ body{
 
 /* ── 3 dims grid ── */
 .spec-hero-dims{
-  display:grid;grid-template-columns:1fr 1fr 1fr;
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;
   gap:0;border-bottom:1px solid var(--g200);
 }
 .spec-dim-weight-wrap{
-  grid-column:span 2;padding:14px 16px;
+  grid-column:span 3;padding:14px 16px;
 }
 .sh-weight-row{display:flex;align-items:baseline;gap:5px;margin-top:4px;}
 .sh-weight-tmt{font-size:26px;font-weight:700;font-family:var(--mono);letter-spacing:-1px;line-height:1;}
@@ -338,7 +338,7 @@ body{
 .sh-weight-sub{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-left:2px;}
 .sh-weight-range{font-size:10px;font-family:var(--mono);color:var(--g600);background:#fff5f0;border:1px solid rgba(243,111,34,.2);border-radius:4px;padding:4px 8px;margin-top:6px;display:inline-block;}
 .spec-dim-thick-wrap{
-  grid-column:span 2;padding:14px 16px;border-right:1px solid var(--g200);
+  grid-column:span 4;padding:14px 16px;border-right:none;border-bottom:1px solid var(--g200);
 }
 .spec-dim-thick-wrap .sh-thick-card{border:none;padding:0;}
 
@@ -1300,7 +1300,9 @@ body{
   .spec-identity-name{font-size:17px;}
   .spec-identity-meta{font-size:9px;}
 
-  .spec-hero-dims{grid-template-columns:1fr 1fr 1fr;}
+  .spec-hero-dims{grid-template-columns:1fr 1fr;}
+  .spec-dim-thick-wrap{grid-column:span 2;}
+  .spec-dim-weight-wrap{grid-column:span 2;}
   .spec-dim-item{padding:14px 12px;}
   .spec-dim-val{font-size:28px;letter-spacing:-1px;}
   .spec-dim-unit{font-size:9px;}
@@ -2223,7 +2225,7 @@ body{
             <div id="sh-t" style="display:none">—</div>
             <div id="sh-tmt" style="display:none">—</div>
             <div class="spec-hero-dims">
-              <!-- Thickness tolerance card — spans 2 cols -->
+              <!-- Thickness tolerance card — spans 4 cols full width -->
               <div class="spec-dim-item spec-dim-thick-wrap">
                 <div class="sh-thick-card">
                   <div class="sh-thick-top">
@@ -2260,12 +2262,7 @@ body{
                   </div>
                 </div>
               </div>
-              <div class="spec-dim-item">
-                <label>เกรด</label>
-                <div class="spec-dim-val" id="sh-grade" style="font-size:22px;letter-spacing:-.3px;">—</div>
-                <div class="spec-dim-unit">grade</div>
-              </div>
-              <!-- Weight — spans 2 cols (TMT weight + range) -->
+              <!-- Row2: Weight×3 + กว้าง -->
               <div class="spec-dim-item spec-dim-weight-wrap">
                 <label>น้ำหนัก/แผ่น</label>
                 <div class="sh-weight-row">
@@ -2283,6 +2280,7 @@ body{
                 <div class="spec-dim-val" id="sh-w">—</div>
                 <div class="spec-dim-unit">mm</div>
               </div>
+              <!-- Row3: ยาว + Mill + Grade + (border end) -->
               <div class="spec-dim-item">
                 <label>ความยาว</label>
                 <div class="spec-dim-val" id="sh-l">—</div>
@@ -2291,6 +2289,11 @@ body{
               <div class="spec-dim-item" style="display:flex;flex-direction:column;justify-content:center;">
                 <label style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:6px;font-family:var(--mono);font-weight:500;">Mill</label>
                 <div id="sh-millcert" style="font-size:16px;font-weight:600;font-family:var(--mono);letter-spacing:1px;">—</div>
+              </div>
+              <div class="spec-dim-item">
+                <label>เกรด</label>
+                <div class="spec-dim-val" id="sh-grade" style="font-size:22px;letter-spacing:-.3px;">—</div>
+                <div class="spec-dim-unit">grade</div>
               </div>
             </div>
 
