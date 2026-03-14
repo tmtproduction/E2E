@@ -338,6 +338,8 @@ body{
 .sh-weight-sub{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-left:2px;}
 .sh-weight-range{display:none;}
 .sh-dist-wrap{margin-top:10px;}
+.sh-weight-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;}
+.sh-weight-header-row>div:first-child{flex-shrink:0;}
 .sh-dist-notice{display:flex;align-items:flex-start;gap:9px;background:#fffbe6;border:1px solid #e6c200;border-left:3px solid #b8860b;border-radius:4px;padding:8px 12px;margin-bottom:10px;}
 .sh-dist-notice-title{font-size:11px;font-weight:700;font-family:var(--mono);color:#5a3e00;letter-spacing:.3px;margin-bottom:2px;}
 .sh-dist-notice-sub{font-size:9px;font-family:var(--mono);color:#7a5c00;line-height:1.5;}
@@ -2282,21 +2284,25 @@ body{
               </div>
               <!-- Row2: Weight×4 full -->
               <div class="spec-dim-item spec-dim-weight-wrap">
-                <label>น้ำหนัก/แผ่น</label>
-                <div class="sh-weight-row">
-                  <span class="sh-weight-tmt" id="sh-wt-tmt">—</span>
-                  <span class="sh-weight-unit">kg</span>
-                  <span class="sh-weight-sub" id="sh-wt-label">TMT</span>
-                </div>
-                <!-- Distribution bars -->
-                <div class="sh-dist-wrap" id="sh-dist-wrap" style="display:none">
-                  <div class="sh-dist-notice">
+                <div class="sh-weight-header-row">
+                  <div>
+                    <label>น้ำหนัก/แผ่น</label>
+                    <div class="sh-weight-row">
+                      <span class="sh-weight-tmt" id="sh-wt-tmt">—</span>
+                      <span class="sh-weight-unit">kg</span>
+                      <span class="sh-weight-sub" id="sh-wt-label">TMT</span>
+                    </div>
+                  </div>
+                  <div class="sh-dist-notice" id="sh-dist-notice" style="display:none">
                     <svg width="18" height="16" viewBox="0 0 18 16" fill="none" style="flex-shrink:0;margin-top:1px"><polygon points="9,1 17,15 1,15" fill="#f5c518" stroke="#b8860b" stroke-width="1"/><text x="9" y="12.5" text-anchor="middle" font-size="8" font-weight="700" fill="#5a3e00" font-family="monospace">!</text></svg>
                     <div>
                       <div class="sh-dist-notice-title">ไม่สามารถเลือกน้ำหนักต่อแผ่นได้</div>
                       <div class="sh-dist-notice-sub">ข้อมูลแสดงค่าน้ำหนักจริงจากการผลิต ไม่สามารถแยกกองตามน้ำหนักได้</div>
                     </div>
                   </div>
+                </div>
+                <!-- Distribution bars -->
+                <div class="sh-dist-wrap" id="sh-dist-wrap" style="display:none">
                   <div class="sh-dist-bars" id="sh-dist-bars"></div>
 
                   <!-- Range bar -->
@@ -3354,7 +3360,8 @@ function openViewer(idx){
       dot.style.left = dotPct+'%';
     }
     distWrap.style.display = '';
-  } else if(distWrap){ distWrap.style.display='none'; }
+    var noticeEl = document.getElementById('sh-dist-notice'); if(noticeEl) noticeEl.style.display='';
+  } else if(distWrap){ distWrap.style.display='none'; var noticeEl=document.getElementById('sh-dist-notice'); if(noticeEl) noticeEl.style.display='none'; }
 
   // ── spec hero Level 1 ──
   // Target: fallback to TMT if TARGET is empty
