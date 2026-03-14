@@ -330,7 +330,7 @@ body{
   gap:0;border-bottom:1px solid var(--g200);
 }
 .spec-dim-weight-wrap{
-  grid-column:span 3;padding:14px 16px;
+  grid-column:1 / -1;padding:14px 16px;border-bottom:1px solid var(--g200);
 }
 .sh-weight-row{display:flex;align-items:baseline;gap:5px;margin-top:4px;}
 .sh-weight-tmt{font-size:26px;font-weight:700;font-family:var(--mono);letter-spacing:-1px;line-height:1;}
@@ -338,7 +338,7 @@ body{
 .sh-weight-sub{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-left:2px;}
 .sh-weight-range{font-size:10px;font-family:var(--mono);color:var(--g600);background:#fff5f0;border:1px solid rgba(243,111,34,.2);border-radius:4px;padding:4px 8px;margin-top:6px;display:inline-block;}
 .spec-dim-thick-wrap{
-  grid-column:span 4;padding:14px 16px;border-right:none;border-bottom:1px solid var(--g200);
+  grid-column:1 / -1;padding:14px 16px;border-right:none;border-bottom:1px solid var(--g200);
 }
 .spec-dim-thick-wrap .sh-thick-card{border:none;padding:0;}
 
@@ -2262,7 +2262,7 @@ body{
                   </div>
                 </div>
               </div>
-              <!-- Row2: Weight×3 + กว้าง -->
+              <!-- Row2: Weight×4 full -->
               <div class="spec-dim-item spec-dim-weight-wrap">
                 <label>น้ำหนัก/แผ่น</label>
                 <div class="sh-weight-row">
@@ -2275,12 +2275,12 @@ body{
                   ที่เป็นไปได้: <strong id="sh-wt-min">—</strong>–<strong id="sh-wt-max">—</strong> kg
                 </div>
               </div>
+              <!-- Row3: กว้าง + ยาว + Mill + Grade -->
               <div class="spec-dim-item">
                 <label>ความกว้าง</label>
                 <div class="spec-dim-val" id="sh-w">—</div>
                 <div class="spec-dim-unit">mm</div>
               </div>
-              <!-- Row3: ยาว + Mill + Grade + (border end) -->
               <div class="spec-dim-item">
                 <label>ความยาว</label>
                 <div class="spec-dim-val" id="sh-l">—</div>
