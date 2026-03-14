@@ -1968,6 +1968,26 @@ body{
 }
 
 
+
+.sqc-wrap{padding:10px 0 6px;}
+.sqc-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.sqc-overall-dot{width:10px;height:10px;border-radius:50%;background:#1a7a4a;flex-shrink:0;}
+.sqc-overall-info{flex:1;}
+.sqc-overall-title{font-size:12px;font-weight:700;color:var(--black);font-family:var(--mono);}
+.sqc-overall-grade{font-size:10px;color:var(--g400);font-family:var(--mono);margin-top:1px;}
+.sqc-grade-bar{display:flex;gap:3px;width:80px;}
+.sqc-seg{height:4px;flex:1;border-radius:2px;background:var(--g200);}
+.sqc-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sqc-card{background:var(--white);border:0.5px solid var(--g200);border-radius:8px;padding:10px 12px;}
+.sqc-card--advice{background:var(--g50);}
+.sqc-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.sqc-card-title{font-size:11px;font-weight:700;color:var(--black);font-family:var(--mono);}
+.sqc-sel{font-size:9px;padding:2px 6px;border:0.5px solid var(--g200);border-radius:20px;background:var(--white);color:var(--g600);cursor:pointer;font-family:var(--mono);outline:none;}
+.sqc-levels{display:flex;flex-direction:column;gap:4px;}
+.sqc-lvl{display:flex;align-items:center;gap:6px;font-size:9px;font-family:var(--mono);color:var(--g400);line-height:1.3;}
+.sqc-lvl.active{color:var(--black);font-weight:700;}
+.sqc-lvl-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.sqc-advice{font-size:10px;font-family:var(--mono);color:var(--g600);line-height:1.5;}
 /* ── SPEC FINDER BAR (inline catalog) ───────────────────────── */
 .sfb{display:flex;align-items:center;justify-content:space-between;padding:0 20px;gap:0;height:40px;}
 .sfb-fields{display:flex;align-items:center;gap:0;flex:1;height:100%;}
@@ -2763,11 +2783,77 @@ body{
           <div class="qc-section">
             <div class="qc-section-title">③ Appearance</div>
             <div class="qc-checklist">
-              <div class="qc-item">
-                <div class="qc-item-dot qc-ok"></div>
-                <div class="qc-item-body">
-                  <div class="qc-item-title">Surface</div>
-                  <div class="qc-item-desc">Mill scale ยอมรับได้ · ห้าม Heavy Rust / Pitting / Scratch ลึก</div>
+              <!-- Surface Quality Cards -->
+              <div class="sqc-wrap">
+                <div class="sqc-header">
+                  <div class="sqc-overall-dot" id="sqc-dot"></div>
+                  <div class="sqc-overall-info">
+                    <div class="sqc-overall-title">Surface</div>
+                    <div class="sqc-overall-grade" id="sqc-grade-lbl">ระดับ 1 — ผิวดี</div>
+                  </div>
+                  <div class="sqc-grade-bar">
+                    <div class="sqc-seg" id="sqc-seg1"></div>
+                    <div class="sqc-seg" id="sqc-seg2"></div>
+                    <div class="sqc-seg" id="sqc-seg3"></div>
+                    <div class="sqc-seg" id="sqc-seg4"></div>
+                  </div>
+                </div>
+                <div class="sqc-cards">
+                  <div class="sqc-card">
+                    <div class="sqc-card-top">
+                      <span class="sqc-card-title">สนิม</span>
+                      <select class="sqc-sel" id="sqc-rust" onchange="sqcUpdate()">
+                        <option value="0">ไม่มี</option>
+                        <option value="1">ระดับ 1.5</option>
+                        <option value="2">ระดับ 2</option>
+                        <option value="3">ระดับ 3</option>
+                      </select>
+                    </div>
+                    <div class="sqc-levels">
+                      <div class="sqc-lvl" id="sqcr0"><span class="sqc-lvl-dot" style="background:#1a7a4a"></span>ไม่มี — ผิวปกติ</div>
+                      <div class="sqc-lvl" id="sqcr1"><span class="sqc-lvl-dot" style="background:#b8860b"></span>คราบน้ำ/สนิมบนผิว</div>
+                      <div class="sqc-lvl" id="sqcr2"><span class="sqc-lvl-dot" style="background:#d97706"></span>สนิมไม่กินผิว</div>
+                      <div class="sqc-lvl" id="sqcr3"><span class="sqc-lvl-dot" style="background:#b03a2e"></span>สนิมกินเนื้อเหล็ก</div>
+                    </div>
+                  </div>
+                  <div class="sqc-card">
+                    <div class="sqc-card-top">
+                      <span class="sqc-card-title">สเกลล่อน</span>
+                      <select class="sqc-sel" id="sqc-scale" onchange="sqcUpdate()">
+                        <option value="0">ไม่มี</option>
+                        <option value="1">ระดับ 1.5</option>
+                        <option value="2">ระดับ 2</option>
+                        <option value="3">ระดับ 3</option>
+                      </select>
+                    </div>
+                    <div class="sqc-levels">
+                      <div class="sqc-lvl" id="sqcs0"><span class="sqc-lvl-dot" style="background:#1a7a4a"></span>ไม่มี — ผิวปกติ</div>
+                      <div class="sqc-lvl" id="sqcs1"><span class="sqc-lvl-dot" style="background:#b8860b"></span>สเกลแตกร่อน ไม่เข้าเนื้อ</div>
+                      <div class="sqc-lvl" id="sqcs2"><span class="sqc-lvl-dot" style="background:#d97706"></span>สเกลแตกลายงา</div>
+                      <div class="sqc-lvl" id="sqcs3"><span class="sqc-lvl-dot" style="background:#b03a2e"></span>สเกลเข้าเนื้อเหล็ก</div>
+                    </div>
+                  </div>
+                  <div class="sqc-card">
+                    <div class="sqc-card-top">
+                      <span class="sqc-card-title">รอยหัก/คลื่น</span>
+                      <select class="sqc-sel" id="sqc-crack" onchange="sqcUpdate()">
+                        <option value="0">ไม่มี</option>
+                        <option value="1">ระดับ 1.5</option>
+                        <option value="2">ระดับ 2</option>
+                        <option value="3">ระดับ 3</option>
+                      </select>
+                    </div>
+                    <div class="sqc-levels">
+                      <div class="sqc-lvl" id="sqck0"><span class="sqc-lvl-dot" style="background:#1a7a4a"></span>ไม่มี — ผิวปกติ</div>
+                      <div class="sqc-lvl" id="sqck1"><span class="sqc-lvl-dot" style="background:#b8860b"></span>เห็นรอย ไม่สะดุดมือ</div>
+                      <div class="sqc-lvl" id="sqck2"><span class="sqc-lvl-dot" style="background:#d97706"></span>เห็นชัด สะดุดมือ</div>
+                      <div class="sqc-lvl" id="sqck3"><span class="sqc-lvl-dot" style="background:#b03a2e"></span>เห็นชัดมาก สะดุดรุนแรง</div>
+                    </div>
+                  </div>
+                  <div class="sqc-card sqc-card--advice" id="sqc-advice-card">
+                    <div class="sqc-card-top"><span class="sqc-card-title">คำแนะนำ</span></div>
+                    <div class="sqc-advice" id="sqc-advice">เหมาะทุกงาน รวมถึงงานพ่นสี ชุบ</div>
+                  </div>
                 </div>
               </div>
               <div class="qc-item">
@@ -4143,6 +4229,36 @@ document.querySelectorAll('.sf-chips .sf-chip').forEach(function(btn){
   });
 });
 
+
+
+function sqcUpdate(){
+  var r=parseInt((document.getElementById('sqc-rust')||{}).value||0);
+  var s=parseInt((document.getElementById('sqc-scale')||{}).value||0);
+  var c=parseInt((document.getElementById('sqc-crack')||{}).value||0);
+  var max=Math.max(r,s,c);
+  var colors=['#1a7a4a','#b8860b','#d97706','#b03a2e'];
+  var gradeLabels=['ระดับ 1 — ผิวดี','ระดับ 1.5 — มีรอยเล็กน้อย','ระดับ 2 — มีรอยปานกลาง','ระดับ 3 — รุนแรง'];
+  var advices=['เหมาะทุกงาน รวมถึงงานพ่นสี ชุบ','เหมาะงานโครงสร้างทั่วไป ไม่แนะนำงานผิวสวย','แนะนำงานโครงสร้างเท่านั้น แจ้งลูกค้าก่อน','ไม่แนะนำ — ควรตรวจสอบกับฝ่าย QC ก่อน'];
+  var dot=document.getElementById('sqc-dot');
+  if(dot) dot.style.background=colors[max];
+  var gl=document.getElementById('sqc-grade-lbl');
+  if(gl) gl.textContent=gradeLabels[max];
+  var segs=[1,2,3,4];
+  segs.forEach(function(i){
+    var el=document.getElementById('sqc-seg'+i);
+    if(el) el.style.background = i<=(max===0?1:max===1?2:max===2?3:4) ? colors[max] : 'var(--g200)';
+  });
+  [['sqcr',r],['sqcs',s],['sqck',c]].forEach(function(pair){
+    [0,1,2,3].forEach(function(l){
+      var el=document.getElementById(pair[0]+l);
+      if(el) el.classList.toggle('active', l===pair[1]);
+    });
+  });
+  var adv=document.getElementById('sqc-advice');
+  if(adv) adv.textContent=advices[max];
+  var ac=document.getElementById('sqc-advice-card');
+  if(ac) ac.style.borderColor=colors[max];
+}
 
 function runInlineSpecFinder(){
   var thick = parseFloat(document.getElementById('sfb-thick').value)||0;
