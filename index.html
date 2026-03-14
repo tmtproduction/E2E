@@ -3298,10 +3298,14 @@ function openViewer(idx){
     if(barsEl){
       barsEl.innerHTML = '';
       var maxPct = Math.max.apply(null, rawPcts);
+      var maxIdx = rawPcts.indexOf(maxPct);
       rawPcts.forEach(function(pct,i){
+        var isMax = (i === maxIdx);
+        var fillStyle = isMax ? 'background:#f36f22;' : '';
+        var fillClass = isMax ? '' : 'sh-dist-fill--'+binTypes[i];
         var row = document.createElement('div'); row.className='sh-dist-row';
         row.innerHTML = '<div class="sh-dist-lbl">'+binLabels[i]+' kg</div>' +
-          '<div class="sh-dist-track"><div class="sh-dist-fill sh-dist-fill--'+binTypes[i]+'" style="width:'+(pct/maxPct*100)+'%"></div></div>' +
+          '<div class="sh-dist-track"><div class="sh-dist-fill '+fillClass+'" style="width:'+(pct/maxPct*100)+'%;'+fillStyle+'"></div></div>' +
           '<div class="sh-dist-pct">'+pct+'%</div>';
         barsEl.appendChild(row);
       });
