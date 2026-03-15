@@ -1969,6 +1969,14 @@ body{
 
 
 
+
+.sqc-img{width:100%;aspect-ratio:4/3;background:var(--g100);border-radius:6px;overflow:hidden;margin-top:8px;cursor:zoom-in;display:flex;align-items:center;justify-content:center;border:0.5px solid var(--g200);}
+.sqc-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.sqc-img-placeholder{font-size:9px;color:var(--g400);font-family:var(--mono);text-align:center;padding:8px;}
+.sqc-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;}
+.sqc-lightbox.open{display:flex;}
+.sqc-lightbox img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:8px;}
+.sqc-lightbox-close{position:absolute;top:16px;right:20px;color:#fff;font-size:24px;cursor:pointer;font-family:var(--mono);line-height:1;}
 .sqc-wrap{padding:10px 0 6px;}
 .sqc-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .sqc-overall-dot{width:10px;height:10px;border-radius:50%;background:#1a7a4a;flex-shrink:0;}
@@ -2815,6 +2823,9 @@ body{
                       <div class="sqc-lvl" id="sqcr2"><span class="sqc-lvl-dot" style="background:#d97706"></span>สนิมไม่กินผิว</div>
                       <div class="sqc-lvl" id="sqcr3"><span class="sqc-lvl-dot" style="background:#b03a2e"></span>สนิมกินเนื้อเหล็ก</div>
                     </div>
+                    <div class="sqc-img" id="sqc-img-rust" onclick="sqcOpenLightbox(this)">
+                      <div class="sqc-img-placeholder">เลือกระดับเพื่อดูรูป</div>
+                    </div>
                   </div>
                   <div class="sqc-card">
                     <div class="sqc-card-top">
@@ -2832,6 +2843,9 @@ body{
                       <div class="sqc-lvl" id="sqcs2"><span class="sqc-lvl-dot" style="background:#d97706"></span>สเกลแตกลายงา</div>
                       <div class="sqc-lvl" id="sqcs3"><span class="sqc-lvl-dot" style="background:#b03a2e"></span>สเกลเข้าเนื้อเหล็ก</div>
                     </div>
+                    <div class="sqc-img" id="sqc-img-scale" onclick="sqcOpenLightbox(this)">
+                      <div class="sqc-img-placeholder">เลือกระดับเพื่อดูรูป</div>
+                    </div>
                   </div>
                   <div class="sqc-card">
                     <div class="sqc-card-top">
@@ -2848,6 +2862,9 @@ body{
                       <div class="sqc-lvl" id="sqck1"><span class="sqc-lvl-dot" style="background:#b8860b"></span>เห็นรอย ไม่สะดุดมือ</div>
                       <div class="sqc-lvl" id="sqck2"><span class="sqc-lvl-dot" style="background:#d97706"></span>เห็นชัด สะดุดมือ</div>
                       <div class="sqc-lvl" id="sqck3"><span class="sqc-lvl-dot" style="background:#b03a2e"></span>เห็นชัดมาก สะดุดรุนแรง</div>
+                    </div>
+                    <div class="sqc-img" id="sqc-img-crack" onclick="sqcOpenLightbox(this)">
+                      <div class="sqc-img-placeholder">เลือกระดับเพื่อดูรูป</div>
                     </div>
                   </div>
                   <div class="sqc-card sqc-card--advice" id="sqc-advice-card">
@@ -4231,6 +4248,60 @@ document.querySelectorAll('.sf-chips .sf-chip').forEach(function(btn){
 
 
 
+
+var sqcLinks = {};
+
+function loadLinkSheet(){
+  var url = 'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=Link&nocache='+Date.now();
+  fetch(url).then(function(r){return r.text();}).then(function(text){
+    var s=text.indexOf('{'), e=text.lastIndexOf('}')+1;
+    var json=JSON.parse(text.substring(s,e));
+    var cols=json.table.cols.map(function(c){return(c.label||c.id).trim();});
+    (json.table.rows||[]).forEach(function(row){
+      if(!row||!row.c) return;
+      var key=(row.c[0]&&row.c[0].v)?String(row.c[0].v).trim():'';
+      var link=(row.c[1]&&row.c[1].v)?String(row.c[1].v).trim():'';
+      if(key&&link) sqcLinks[key]=link;
+    });
+  }).catch(function(){});
+}
+loadLinkSheet();
+
+function sqcDriveUrl(fileUrl){
+  var m = fileUrl.match(/\/d\/([^\/\?]+)/);
+  if(!m) return fileUrl;
+  return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w600';
+}
+
+function sqcSetImg(boxId, url, label){
+  var box = document.getElementById(boxId);
+  if(!box) return;
+  if(url){
+    box.innerHTML = '<img src="'+sqcDriveUrl(url)+'" alt="'+label+'" loading="lazy">';
+    box.style.cursor = 'zoom-in';
+  } else {
+    box.innerHTML = '<div class="sqc-img-placeholder">'+label+'</div>';
+    box.style.cursor = 'default';
+  }
+}
+
+function sqcOpenLightbox(box){
+  var img = box.querySelector('img');
+  if(!img) return;
+  var lb = document.getElementById('sqc-lightbox');
+  var lbImg = document.getElementById('sqc-lightbox-img');
+  lbImg.src = img.src;
+  lb.classList.add('open');
+}
+
+function sqcCloseLightbox(){
+  document.getElementById('sqc-lightbox').classList.remove('open');
+}
+
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape') sqcCloseLightbox();
+});
+
 function sqcUpdate(){
   var r=parseInt((document.getElementById('sqc-rust')||{}).value||0);
   var s=parseInt((document.getElementById('sqc-scale')||{}).value||0);
@@ -4258,6 +4329,13 @@ function sqcUpdate(){
   if(adv) adv.textContent=advices[max];
   var ac=document.getElementById('sqc-advice-card');
   if(ac) ac.style.borderColor=colors[max];
+  // อัพเดตรูป
+  var rustKeys=['','rust_1.5','rust_2','rust_3'];
+  var scaleKeys=['','scale_1.5','scale_2','scale_3'];
+  var crackKeys=['','break_1.5','break_2','break_3'];
+  sqcSetImg('sqc-img-rust',  r>0?sqcLinks[rustKeys[r]]:null,  r>0?rustKeys[r]:'เลือกระดับเพื่อดูรูป');
+  sqcSetImg('sqc-img-scale', s>0?sqcLinks[scaleKeys[s]]:null, s>0?scaleKeys[s]:'เลือกระดับเพื่อดูรูป');
+  sqcSetImg('sqc-img-crack', c>0?sqcLinks[crackKeys[c]]:null, c>0?crackKeys[c]:'เลือกระดับเพื่อดูรูป');
 }
 
 function runInlineSpecFinder(){
@@ -4861,7 +4939,11 @@ function printLabel(){
   `;
   win.document.write('<html><head><title>TMT Tag</title><style>'+css+'</style></head><body>');
   win.document.write(el.outerHTML);
-  win.document.write('</body></html>');
+  win.document.write('<div class="sqc-lightbox" id="sqc-lightbox" onclick="sqcCloseLightbox()">
+  <span class="sqc-lightbox-close">✕</span>
+  <img id="sqc-lightbox-img" src="" alt="">
+</div>
+</body></html>');
   win.document.close();
   setTimeout(function(){ win.print(); }, 600);
 }
