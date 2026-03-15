@@ -2000,8 +2000,8 @@ body{
 .sqc-lvl-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 .sqc-advice{font-size:10px;font-family:var(--mono);color:var(--g600);line-height:1.5;}
 /* ── SPEC FINDER BAR (inline catalog) ───────────────────────── */
-.sfb{display:flex;align-items:center;justify-content:space-between;padding:0 20px;gap:0;height:40px;}
-.sfb-fields{display:flex;align-items:center;gap:0;flex:1;height:100%;}
+.sfb{display:flex;flex-direction:column;height:auto;}
+.sfb-fields{display:flex;align-items:center;gap:0;flex:1;height:40px;padding:0 20px;width:100%;}
 .sfb-group{display:flex;align-items:center;gap:5px;padding:0 10px;height:100%;}
 .sfb-lbl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);white-space:nowrap;}
 .sfb-sep{font-size:10px;color:var(--g400);font-family:var(--mono);}
@@ -2012,6 +2012,10 @@ body{
 .sfb-divider{width:1px;height:18px;background:var(--g200);flex-shrink:0;}
 .sfb-btn{margin-left:10px;padding:4px 14px;background:var(--black);color:var(--white);border:none;border-radius:20px;font-size:10px;font-family:var(--mono);letter-spacing:1px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .sfb-btn:hover{opacity:.8;}
+.sfb-priority-row{display:flex;align-items:center;gap:6px;padding:5px 20px;border-bottom:1px solid var(--g200);background:var(--white);}
+.sfb-priority-lbl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-right:2px;}
+.sfb-priority-chip{font-size:9px;padding:2px 10px;border:1px solid var(--g200);border-radius:20px;background:transparent;color:var(--g600);cursor:pointer;font-family:var(--mono);}
+.sfb-priority-chip.active{background:var(--black);color:var(--white);border-color:var(--black);}
 .sfb-clear{margin-left:8px;padding:5px 12px;background:transparent;color:var(--g400);border:1px solid var(--g200);border-radius:20px;font-size:10px;font-family:var(--mono);cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .sfb-clear:hover{color:var(--black);border-color:var(--black);}
 .sfb-result-badge{font-size:9px;font-family:var(--mono);background:#fff5f0;color:#f36f22;border:1px solid rgba(243,111,34,.25);border-radius:20px;padding:2px 10px;margin-left:10px;white-space:nowrap;}
@@ -2124,20 +2128,21 @@ body{
         <input class="sfb-input sfb-input--grade" id="sfb-grade" type="text" placeholder="SS400…">
       </div>
       <button class="sfb-btn" onclick="runInlineSpecFinder()">ค้นหา</button>
-      <div class="sfb-divider"></div>
-      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
-        <button class="sfb-priority-chip active" data-val="price" onclick="setSfbPriority('price',this)" title="สำคัญ: ราคา" style="font-size:8px;padding:2px 8px;border:1px solid var(--g300);border-radius:20px;background:var(--black);color:var(--white);cursor:pointer;font-family:var(--mono);white-space:nowrap;">฿</button>
-        <button class="sfb-priority-chip" data-val="stock" onclick="setSfbPriority('stock',this)" title="สำคัญ: สต็อก" style="font-size:8px;padding:2px 8px;border:1px solid var(--g200);border-radius:20px;background:transparent;color:var(--g600);cursor:pointer;font-family:var(--mono);white-space:nowrap;">สต็อก</button>
-        <button class="sfb-priority-chip" data-val="thick" onclick="setSfbPriority('thick',this)" title="สำคัญ: ความแม่น" style="font-size:8px;padding:2px 8px;border:1px solid var(--g200);border-radius:20px;background:transparent;color:var(--g600);cursor:pointer;font-family:var(--mono);white-space:nowrap;">หนา</button>
-      </div>
       <button class="sfb-clear" id="sfb-clear-btn" onclick="clearInlineFinder()" style="display:none">✕ ล้าง</button>
+      <button class="hdr-toggle-btn" id="hdr-toggle-btn" onclick="toggleHero()" title="ซ่อน/แสดง header">
+        <span id="hdr-toggle-txt">ซ่อน</span>
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2 6.5L5 3.5L8 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
-    <button class="hdr-toggle-btn" id="hdr-toggle-btn" onclick="toggleHero()" title="ซ่อน/แสดง header">
-      <span id="hdr-toggle-txt">ซ่อน</span>
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-        <path d="M2 6.5L5 3.5L8 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
+    <!-- Priority row — ใต้ search bar -->
+    <div class="sfb-priority-row">
+      <span class="sfb-priority-lbl">สำคัญ</span>
+      <button class="sfb-priority-chip active" data-val="price" onclick="setSfbPriority('price',this)">ราคา</button>
+      <button class="sfb-priority-chip" data-val="stock" onclick="setSfbPriority('stock',this)">สต็อก</button>
+      <button class="sfb-priority-chip" data-val="thick" onclick="setSfbPriority('thick',this)">ความแม่นหนา</button>
+    </div>
   </div>
 
   <!-- Mobile filter toggle bar (shown only on mobile) -->
