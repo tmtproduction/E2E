@@ -4598,9 +4598,9 @@ function calcInitOfferUI(){
   var wConserv = wMin + (wMax-wMin)*0.15;
   var wAggress = wMin + (wMax-wMin)*0.85;
   var strats = [
-    {id:'conserv', name:'Conservative', w:wConserv, col:'#3B6D11', bg:'#EAF3DE'},
+    {id:'conserv', name:'Conservative', w:wConserv, col:'#A32D2D', bg:'#FCEBEB'},
     {id:'balanced', name:'Balanced',    w:wAvg,     col:'#854F0B', bg:'#FAEEDA'},
-    {id:'aggress',  name:'Aggressive',  w:wAggress, col:'#A32D2D', bg:'#FCEBEB'},
+    {id:'aggress',  name:'Aggressive',  w:wAggress, col:'#3B6D11', bg:'#EAF3DE'},
     {id:'custom',   name:'Custom ✏',   w:offerCustomW||wAvg, col:'#534AB7', bg:'#EEEDFE'}
   ];
   var stock = parseInt(s.STOCK_QTY)||0;
@@ -4710,11 +4710,17 @@ function calcUpdate(){
     probEl.style.display='';
     var col=prob>=70?'#1a7a4a':prob>=40?'#b8860b':'#b03a2e';
     var barBg=prob>=70?'#1a7a4a':prob>=40?'#f36f22':'#b03a2e';
-    var advice=prob>=70
-      ? '✓ ปลอดภัย — ลูกค้ามักได้รับมากกว่าหรือเท่าที่นำเสนอ'
-      : prob>=40
-      ? '~ ความเสี่ยงปานกลาง — พิจารณาลด strategy ลง'
-      : '⚠ ความเสี่ยงสูง — '+Math.round(100-prob)+'% ของสต็อกต่ำกว่าที่บอก';
+    // prob = โอกาสที่น้ำหนักจริง >= ที่นำเสนอ
+    // prob สูง = ส่งหนักกว่าที่บอก = บริษัทขาดทุนส่วนต่าง
+    // prob ต่ำ = ส่งเบากว่าที่บอก = ลูกค้าจ่ายเกิน → ร้องเรียน
+    var advice = prob>=80
+      ? '⚠ เสี่ยงขาดทุน — '+prob+'% ของสต็อกหนักกว่าที่นำเสนอ บริษัทรับส่วนต่าง'
+      : prob>=50
+      ? '~ สมดุล — ส่งหนักกว่าที่บอก '+prob+'% / เบากว่า '+Math.round(100-prob)+'%'
+      : '⚠ เสี่ยงลูกค้าร้องเรียน — '+Math.round(100-prob)+'% ของสต็อกเบากว่าที่นำเสนอ';
+    // ปรับสีให้สะท้อน risk ที่แท้จริง
+    col = prob>=80 ? '#b03a2e' : prob>=50 ? '#b8860b' : '#b03a2e';
+    barBg = prob>=80 ? '#b03a2e' : prob>=50 ? '#f36f22' : '#b03a2e';
     var pctEl=document.getElementById('r-offer-pct');
     var descEl=document.getElementById('r-offer-desc');
     var barEl=document.getElementById('r-offer-bar');
