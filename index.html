@@ -4939,11 +4939,7 @@ function printLabel(){
   `;
   win.document.write('<html><head><title>TMT Tag</title><style>'+css+'</style></head><body>');
   win.document.write(el.outerHTML);
-  win.document.write('<div class="sqc-lightbox" id="sqc-lightbox" onclick="sqcCloseLightbox()">
-  <span class="sqc-lightbox-close">✕</span>
-  <img id="sqc-lightbox-img" src="" alt="">
-</div>
-</body></html>');
+  win.document.write('</body></html>');
   win.document.close();
   setTimeout(function(){ win.print(); }, 600);
 }
@@ -6203,6 +6199,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.ge
       <div id="cc-copied" style="display:none;text-align:center;font-size:10px;color:var(--green);margin-top:8px;letter-spacing:1px;">✓ COPIED</div>
     </div>
   </div>
+</div>
+<div class="sqc-lightbox" id="sqc-lightbox" onclick="sqcCloseLightbox()">
+  <span class="sqc-lightbox-close">&#x2715;</span>
+  <img id="sqc-lightbox-img" src="" alt="">
 </div>
 </body>
 </html>
