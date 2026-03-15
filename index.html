@@ -1371,6 +1371,8 @@ body{
   .geo-sec-divider{padding:8px 16px 5px;font-size:8px;}
   .admin-sec{padding:12px 14px;}
   .label-preview{padding:12px 14px;}
+  .pack-cards{grid-template-columns:repeat(3,1fr);}
+
   .label-fields{padding:12px 14px;}
 
   /* misc */
@@ -2122,6 +2124,12 @@ body{
         <input class="sfb-input sfb-input--grade" id="sfb-grade" type="text" placeholder="SS400…">
       </div>
       <button class="sfb-btn" onclick="runInlineSpecFinder()">ค้นหา</button>
+      <div class="sfb-divider"></div>
+      <div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
+        <button class="sfb-priority-chip active" data-val="price" onclick="setSfbPriority('price',this)" title="สำคัญ: ราคา" style="font-size:8px;padding:2px 8px;border:1px solid var(--g300);border-radius:20px;background:var(--black);color:var(--white);cursor:pointer;font-family:var(--mono);white-space:nowrap;">฿</button>
+        <button class="sfb-priority-chip" data-val="stock" onclick="setSfbPriority('stock',this)" title="สำคัญ: สต็อก" style="font-size:8px;padding:2px 8px;border:1px solid var(--g200);border-radius:20px;background:transparent;color:var(--g600);cursor:pointer;font-family:var(--mono);white-space:nowrap;">สต็อก</button>
+        <button class="sfb-priority-chip" data-val="thick" onclick="setSfbPriority('thick',this)" title="สำคัญ: ความแม่น" style="font-size:8px;padding:2px 8px;border:1px solid var(--g200);border-radius:20px;background:transparent;color:var(--g600);cursor:pointer;font-family:var(--mono);white-space:nowrap;">หนา</button>
+      </div>
       <button class="sfb-clear" id="sfb-clear-btn" onclick="clearInlineFinder()" style="display:none">✕ ล้าง</button>
     </div>
     <button class="hdr-toggle-btn" id="hdr-toggle-btn" onclick="toggleHero()" title="ซ่อน/แสดง header">
@@ -3159,7 +3167,9 @@ body{
             <div class="frow"><label>TMT No.</label><input type="text" id="l-tmtno" placeholder="เช่น 031D093672" oninput="syncLabel()"></div>
             <div class="frow"><label>P/O No.</label><input type="text" id="l-pono" placeholder="เช่น 1020141120" oninput="syncLabel()"></div>
             <div class="frow"><label>Remark</label><input type="text" id="l-remark" value="Made in Thailand" oninput="syncLabel()"></div>
-            <button class="btn-print" onclick="printLabel()">🖨 พิมพ์ Tag</button>
+            <div style="position:sticky;bottom:0;background:var(--white);border-top:1px solid var(--g200);padding:10px 0 4px;margin-top:8px;">
+              <button class="btn-print" onclick="printLabel()" style="margin-top:0;">🖨 พิมพ์ Tag</button>
+            </div>
           </div>
         </div>
       </div>
@@ -4302,6 +4312,8 @@ document.querySelectorAll('.sf-chips .sf-chip').forEach(function(btn){
   btn.addEventListener('click',function(){
     btn.closest('.sf-chips').querySelectorAll('.sf-chip').forEach(function(b){b.classList.remove('active');});
     btn.classList.add('active');
+    // sync กลับ catalog search bar
+    if(typeof setSfbPriority==='function') setSfbPriority(btn.dataset.val, btn);
   });
 });
 
@@ -4397,6 +4409,22 @@ function sqcUpdate(){
   sqcSetImg('sqc-img-crack', c>0?sqcLinks[crackKeys[c]]:null, c>0?crackKeys[c]:'เลือกระดับเพื่อดูรูป');
 }
 
+
+var sfbPriority = 'price';
+function setSfbPriority(val, btn) {
+  sfbPriority = val;
+  document.querySelectorAll('.sfb-priority-chip').forEach(function(b){
+    var isActive = b.dataset.val === val;
+    b.style.background = isActive ? 'var(--black)' : 'transparent';
+    b.style.color = isActive ? 'var(--white)' : 'var(--g600)';
+    b.style.borderColor = isActive ? 'var(--black)' : 'var(--g200)';
+  });
+  // sync กับ Spec Finder panel priority chips
+  document.querySelectorAll('#sf-priority .sf-chip').forEach(function(b){
+    b.classList.toggle('active', b.dataset.val === val);
+  });
+}
+
 function runInlineSpecFinder(){
   var thick = parseFloat(document.getElementById('sfb-thick').value)||0;
   var tol   = parseFloat(document.getElementById('sfb-tol').value)||0.5;
@@ -4405,6 +4433,7 @@ function runInlineSpecFinder(){
   var grade = (document.getElementById('sfb-grade').value||'').trim().toUpperCase();
   if(!thick&&!w&&!l&&!grade){ clearInlineFinder(); return; }
   if(!allSkus||!allSkus.length) return;
+  var prio = sfbPriority || 'price';
   var scored = allSkus.map(function(s){
     var t2=parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||0;
     var w2=parseInt(s.WIDTH_MM)||0, l2=parseInt(s.LENGTH_MM)||0;
