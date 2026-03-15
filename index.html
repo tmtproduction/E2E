@@ -5330,8 +5330,16 @@ function render3d(){
     });
   }
 
-  // ── TAG ──
-  drawBox3d(bw/2+0.045,yOff+totalH/2,-bl*0.28,0.012,0.32,0.52,'#f0f0ee','#e8e8e4',fl);
+  // ── TAG — ขอบด้านข้างขวา 3 จุด (เหมือนในรูปจริง) ──
+  var tagH = Math.min(0.18, totalH*0.6);       // สูงไม่เกินกอง
+  var tagW = 0.018;                             // บาง
+  var tagL = 0.30;                              // กว้าง (ตามแนวความยาว)
+  var tagX = bw/2 + tagW*0.5;                  // ยื่นออกจากขอบขวา
+  var tagY = yOff + totalH/2;                  // กลางความสูงกอง
+  // 3 จุดตามความยาว
+  drawBox3d(tagX, tagY, -bl*0.20, tagW, tagH, tagL, '#f5f0e8','#ede8dc',fl);
+  drawBox3d(tagX, tagY, -bl*0.50, tagW, tagH, tagL, '#f5f0e8','#ede8dc',fl);
+  drawBox3d(tagX, tagY, -bl*0.80, tagW, tagH, tagL, '#f5f0e8','#ede8dc',fl);
 
   // ── MARKING — floating info label ──────────────────────────────
   if(S.marking==='show' && N>0){
