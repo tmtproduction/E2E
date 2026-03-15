@@ -2102,19 +2102,19 @@ body{
     <div class="sfb-fields">
       <div class="sfb-group">
         <span class="sfb-lbl">หนา</span>
-        <input class="sfb-input" id="sfb-thick" type="number" step="0.25" placeholder="mm">
+        <input class="sfb-input" id="sfb-thick" type="number" step="0.25" placeholder="4.5">
         <span class="sfb-sep">±</span>
         <input class="sfb-input sfb-input--sm" id="sfb-tol" type="number" step="0.1" placeholder="tol" value="0.5">
       </div>
       <div class="sfb-divider"></div>
       <div class="sfb-group">
         <span class="sfb-lbl">กว้าง</span>
-        <input class="sfb-input" id="sfb-w" type="number" placeholder="mm">
+        <input class="sfb-input" id="sfb-w" type="number" placeholder="1219">
       </div>
       <div class="sfb-divider"></div>
       <div class="sfb-group">
         <span class="sfb-lbl">ยาว</span>
-        <input class="sfb-input" id="sfb-l" type="number" placeholder="mm">
+        <input class="sfb-input" id="sfb-l" type="number" placeholder="2438">
       </div>
       <div class="sfb-divider"></div>
       <div class="sfb-group">
@@ -2245,7 +2245,7 @@ body{
         <button class="ctrl3d-toggle" onclick="toggle3dPanel()" id="ctrl3d-btn">
           <span>3D Controls</span>
         </button>
-        <div class="ctrl3d-panel collapsed" id="ctrl3d-panel">
+        <div class="ctrl3d-panel" id="ctrl3d-panel">
           <div class="ctrl3d-panel-header">Live Controls → 3D Updates</div>
           <!-- แผ่น/มัด -->
           <div class="seg-row">
@@ -2504,7 +2504,8 @@ body{
 
               <!-- strategy selector -->
               <div style="border-top:1px solid var(--g200);padding:10px 0 6px;">
-                <div style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:8px;">น้ำหนักที่นำเสนอ</div>
+                <div style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:4px;">น้ำหนักที่นำเสนอกับลูกค้า</div>
+              <div style="font-size:9px;color:var(--g400);font-family:var(--mono);margin-bottom:8px;">เลือก strategy เพื่อดูโอกาสขาดทุน vs ลูกค้าร้องเรียน</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;" id="offer-strats"></div>
                 <!-- custom input -->
                 <div id="offer-custom-row" style="display:none;margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -2578,7 +2579,7 @@ body{
             </div>
           </div>
         </div>
-        <div class="cta-row">
+        <div class="cta-row" style="position:sticky;bottom:0;background:var(--white);border-top:1px solid var(--g200);z-index:10;margin:0 -1px;">
           <button class="btn-cta" id="btn-cta" onclick="openOrderModal()">เลือกรายการนี้</button>
           <button class="btn-custom" onclick="openCustomChecker()">
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 6.5h4M6.5 4.5v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
@@ -3700,7 +3701,6 @@ function openViewer(idx){
   var tMin  = parseFloat(s.THICK_MIN||'');
   var tMax  = parseFloat(s.THICK_MAX||'');
   var hasActual = !isNaN(tMin) && !isNaN(tMax) && tMin>0 && tMax>0;
-  console.log('[THICK] MIN='+s.THICK_MIN+' MAX='+s.THICK_MAX+' parsed='+tMin+'/'+tMax+' hasActual='+hasActual);
   // pill strip: MIN/MAX = TARGET ± TOLERANCE_THICKNESS เสมอ
   if(tTgt>0 && tTol>0){
     setText('tc-t-min', (tTgt-tTol).toFixed(2));
@@ -5003,7 +5003,6 @@ function setMarking(mode,btn){
   var group=btn.parentElement;
   group.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  console.log('[setMarking] mode='+mode+' S.sheets='+S.sheets+' loopRunning='+loopRunning);
   if(typeof render3d==='function') render3d();
 }
 function liveUpdate(){
@@ -5540,8 +5539,8 @@ function render3d(){
   drawBox3d(tagX2, tagY2, tagZ2, tagW2, tagThick, tagL2, '#f5f0e8','#ede8dc',fl);
 
   // ── MARKING — floating info label ──────────────────────────────
-  if(S.marking==='show' && N>0){
-    console.log('[Marking] triggered, currentSku=',currentSku?'ok':'null','N=',N,'ctx=',ctx?'ok':'null');
+  if(S.marking==='show' && N>0 && W>10 && H>10){
+    ctx.save(); ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.shadowOffsetY=0;
     try{
       ctx.globalAlpha=1;
       ctx.setLineDash([]);
@@ -5638,7 +5637,8 @@ function render3d(){
       });
 
       ctx.restore();
-    }catch(e){console.error('[Marking]',e.message);}
+    }catch(e){}
+    ctx.restore();
   }
 
   // ── INFO ──
