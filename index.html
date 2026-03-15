@@ -2556,7 +2556,22 @@ body{
                   </div>
                 </div>
                 <!-- offer probability -->
-                <div id="r-offer-prob" style="display:none;font-size:9px;font-family:var(--mono);padding:5px 8px;border-radius:4px;margin-top:4px;"></div>
+                <div id="r-offer-prob" style="display:none;margin-top:8px;border:0.5px solid var(--g200);border-radius:8px;overflow:hidden;">
+                  <div style="padding:8px 12px 6px;display:flex;align-items:center;gap:12px;">
+                    <div style="flex:1;">
+                      <div style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;">โอกาสที่ลูกค้าได้รับ ≥ ที่นำเสนอ</div>
+                      <div style="font-size:9px;font-family:var(--mono);color:var(--g500);" id="r-offer-desc">—</div>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;">
+                      <div style="font-size:28px;font-weight:700;font-family:var(--mono);line-height:1;" id="r-offer-pct">—</div>
+                      <div style="font-size:9px;color:var(--g400);">%</div>
+                    </div>
+                  </div>
+                  <div style="height:5px;background:var(--g100);">
+                    <div id="r-offer-bar" style="height:100%;width:0%;transition:width .4s;border-radius:0;"></div>
+                  </div>
+                  <div style="padding:5px 12px 7px;font-size:9px;font-family:var(--mono);" id="r-offer-advice"></div>
+                </div>
                 <!-- overstock warning -->
                 <div id="r-overstock" style="display:none;font-size:9px;color:var(--red);font-family:var(--mono);padding:4px 0;"></div>
               </div>
@@ -4693,10 +4708,21 @@ function calcUpdate(){
   var probEl=document.getElementById('r-offer-prob');
   if(probEl && offerW>0){
     probEl.style.display='';
-    var col=prob>=70?'#3B6D11':prob>=40?'#854F0B':'#A32D2D';
-    var bg=prob>=70?'#EAF3DE':prob>=40?'#FAEEDA':'#FCEBEB';
-    probEl.style.background=bg; probEl.style.color=col;
-    probEl.textContent='โอกาสที่ลูกค้าได้รับ ≥ '+offerW.toFixed(1)+' kg: '+prob+'%';
+    var col=prob>=70?'#1a7a4a':prob>=40?'#b8860b':'#b03a2e';
+    var barBg=prob>=70?'#1a7a4a':prob>=40?'#f36f22':'#b03a2e';
+    var advice=prob>=70
+      ? '✓ ปลอดภัย — ลูกค้ามักได้รับมากกว่าหรือเท่าที่นำเสนอ'
+      : prob>=40
+      ? '~ ความเสี่ยงปานกลาง — พิจารณาลด strategy ลง'
+      : '⚠ ความเสี่ยงสูง — '+Math.round(100-prob)+'% ของสต็อกต่ำกว่าที่บอก';
+    var pctEl=document.getElementById('r-offer-pct');
+    var descEl=document.getElementById('r-offer-desc');
+    var barEl=document.getElementById('r-offer-bar');
+    var advEl=document.getElementById('r-offer-advice');
+    if(pctEl){ pctEl.textContent=prob; pctEl.style.color=col; }
+    if(descEl){ descEl.textContent='นำเสนอ '+offerW.toFixed(1)+' kg / ช่วงจริง '+wMinK.toFixed(1)+'–'+wMaxK.toFixed(1)+' kg'; }
+    if(barEl){ barEl.style.width=prob+'%'; barEl.style.background=barBg; }
+    if(advEl){ advEl.textContent=advice; advEl.style.color=col; }
   }
 }
 
