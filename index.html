@@ -2488,33 +2488,77 @@ body{
 
           </div>
           <div class="sec" style="padding-bottom:0">
-            <!-- calc — segmented underline style -->
             <div style="margin-top:16px;border-top:1.5px solid var(--black);padding-top:0;">
               <div style="padding:7px 0 6px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200);">
                 <span style="font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g600);font-weight:700;">คำนวณราคา</span>
               </div>
-              <!-- qty input row -->
-              <div class="seg-row" style="padding:10px 0;">
+              <!-- qty + quick buttons -->
+              <div class="seg-row" style="padding:10px 0 6px;">
                 <span class="seg-label">จำนวน</span>
                 <div class="seg-input-unit">
                   <input type="number" class="seg-num seg-num--lg" id="qty" value="10" min="1" oninput="calcUpdate()">
                   <span class="seg-unit">แผ่น</span>
                 </div>
               </div>
-              <!-- result row -->
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--g200);padding-top:10px;padding-bottom:4px;">
-                <div class="calc-seg-result">
-                  <span class="calc-seg-lbl">น้ำหนัก</span>
-                  <span class="calc-seg-val" id="r-w">—</span>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;padding-bottom:10px;" id="qty-quick-btns"></div>
+
+              <!-- strategy selector -->
+              <div style="border-top:1px solid var(--g200);padding:10px 0 6px;">
+                <div style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:8px;">น้ำหนักที่นำเสนอ</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;" id="offer-strats"></div>
+                <!-- custom input -->
+                <div id="offer-custom-row" style="display:none;margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <input type="number" id="offer-custom-val" step="0.1" style="width:80px;font-size:13px;font-weight:600;font-family:var(--mono);border:1px solid var(--g300);border-radius:6px;padding:5px 8px;background:var(--white);color:var(--black);" oninput="calcOfferCustom()">
+                  <span style="font-size:10px;color:var(--g400)">kg</span>
+                  <input type="range" id="offer-custom-slider" step="0.1" style="flex:1;min-width:60px;" oninput="calcOfferSlider()">
                 </div>
-                <div class="calc-seg-result" style="border-left:1px solid var(--g200);border-right:1px solid var(--g200);">
-                  <span class="calc-seg-lbl">ราคารวม</span>
-                  <span class="calc-seg-val" id="r-p">—</span>
+              </div>
+
+              <!-- results -->
+              <div style="border-top:1px solid var(--g200);padding-top:10px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-bottom:8px;">
+                  <div class="calc-seg-result">
+                    <span class="calc-seg-lbl">น้ำหนัก</span>
+                    <span class="calc-seg-val" id="r-w">—</span>
+                  </div>
+                  <div class="calc-seg-result" style="border-left:1px solid var(--g200);border-right:1px solid var(--g200);">
+                    <span class="calc-seg-lbl">ราคารวม</span>
+                    <span class="calc-seg-val" id="r-p">—</span>
+                  </div>
+                  <div class="calc-seg-result">
+                    <span class="calc-seg-lbl">มัด</span>
+                    <span class="calc-seg-val" id="r-b">—</span>
+                  </div>
                 </div>
-                <div class="calc-seg-result">
-                  <span class="calc-seg-lbl">มัด</span>
-                  <span class="calc-seg-val" id="r-b">—</span>
+                <!-- VAT row -->
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--g200);padding-top:8px;margin-bottom:8px;">
+                  <div class="calc-seg-result">
+                    <span class="calc-seg-lbl">ก่อน VAT</span>
+                    <span class="calc-seg-val" style="font-size:11px;" id="r-excl">—</span>
+                  </div>
+                  <div class="calc-seg-result" style="border-left:1px solid var(--g200);border-right:1px solid var(--g200);">
+                    <span class="calc-seg-lbl">VAT 7%</span>
+                    <span class="calc-seg-val" style="font-size:11px;color:var(--red)" id="r-vat">—</span>
+                  </div>
+                  <div class="calc-seg-result">
+                    <span class="calc-seg-lbl">รวม VAT</span>
+                    <span class="calc-seg-val" style="font-size:11px;" id="r-incl">—</span>
+                  </div>
                 </div>
+                <!-- stock bar -->
+                <div id="r-stock-wrap" style="padding-bottom:6px;">
+                  <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--g400);margin-bottom:3px;">
+                    <span>ต้องการ <strong id="r-need" style="color:var(--black)">—</strong> แผ่น</span>
+                    <span>สต็อก <strong id="r-stock-lbl" style="color:var(--green)">—</strong> แผ่น</span>
+                  </div>
+                  <div style="height:4px;background:var(--g100);border-radius:2px;overflow:hidden;">
+                    <div id="r-bar" style="height:100%;background:var(--green);border-radius:2px;width:0%;transition:width .3s;"></div>
+                  </div>
+                </div>
+                <!-- offer probability -->
+                <div id="r-offer-prob" style="display:none;font-size:9px;font-family:var(--mono);padding:5px 8px;border-radius:4px;margin-top:4px;"></div>
+                <!-- overstock warning -->
+                <div id="r-overstock" style="display:none;font-size:9px;color:var(--red);font-family:var(--mono);padding:4px 0;"></div>
               </div>
             </div>
           </div>
@@ -4522,15 +4566,138 @@ function calcKgPerSheet(){
   // T(mm) × W(mm) × L(mm) × 0.00785 g/cm³ ÷ 1000 = kg
   return (S.thick/10) * (S.w/10) * (S.l/10) * 0.00785;
 }
+var offerStrat = 0; // 0=conserv 1=balanced 2=aggress 3=custom
+var offerCustomW = 0;
+
+function calcInitOfferUI(){
+  if(!currentSku) return;
+  var s = currentSku;
+  var kgMin = parseFloat(s.THICK_MIN||'')||0;
+  var kgMax = parseFloat(s.THICK_MAX||'')||0;
+  var w = parseInt(s.WIDTH_MM)||0, l = parseInt(s.LENGTH_MM)||0;
+  var D = 7.85;
+  function kgOf(t){ return w>0&&l>0 ? t*w*l*D/1000000 : 0; }
+  var wMin = kgMin>0 ? kgOf(kgMin) : calcKgPerSheet()*0.97;
+  var wMax = kgMax>0 ? kgOf(kgMax) : calcKgPerSheet()*1.03;
+  var wAvg = (wMin+wMax)/2;
+  var wConserv = wMin + (wMax-wMin)*0.15;
+  var wAggress = wMin + (wMax-wMin)*0.85;
+  var strats = [
+    {id:'conserv', name:'Conservative', w:wConserv, col:'#3B6D11', bg:'#EAF3DE'},
+    {id:'balanced', name:'Balanced',    w:wAvg,     col:'#854F0B', bg:'#FAEEDA'},
+    {id:'aggress',  name:'Aggressive',  w:wAggress, col:'#A32D2D', bg:'#FCEBEB'},
+    {id:'custom',   name:'Custom ✏',   w:offerCustomW||wAvg, col:'#534AB7', bg:'#EEEDFE'}
+  ];
+  var stock = parseInt(s.STOCK_QTY)||0;
+  // quick buttons
+  var bnd = parseInt(s.BUNDLE_SIZE)||5;
+  var qb = document.getElementById('qty-quick-btns');
+  if(qb){
+    qb.innerHTML = '';
+    var presets = [{lbl:'1 มัด',v:bnd},{lbl:'ครึ่งสต็อก',v:Math.floor(stock/2)},{lbl:'ทั้งหมด',v:stock}];
+    presets.forEach(function(p){
+      if(p.v<=0) return;
+      var btn = document.createElement('button');
+      btn.textContent = p.lbl+' ('+p.v+')';
+      btn.style.cssText='font-size:9px;padding:3px 10px;border:1px solid var(--g200);border-radius:20px;background:transparent;color:var(--g600);cursor:pointer;font-family:var(--mono)';
+      btn.onclick=function(){ document.getElementById('qty').value=p.v; calcUpdate(); };
+      qb.appendChild(btn);
+    });
+  }
+  // strategy buttons
+  var sg = document.getElementById('offer-strats');
+  if(!sg) return;
+  sg.innerHTML='';
+  strats.forEach(function(st,i){
+    var d = document.createElement('div');
+    d.style.cssText='border-radius:8px;padding:8px 10px;cursor:pointer;border:1.5px solid transparent;background:'+st.bg;
+    d.id='os-'+i;
+    if(i===offerStrat) d.style.borderColor=st.col;
+    d.innerHTML='<div style="font-size:10px;font-weight:700;color:var(--black)">'+st.name+'</div>'+
+      '<div style="font-size:14px;font-weight:500;color:'+st.col+'">'+st.w.toFixed(1)+' kg</div>';
+    d.onclick=(function(idx){return function(){ offerStrat=idx; calcInitOfferUI(); calcUpdate(); };})(i);
+    sg.appendChild(d);
+  });
+  // custom row
+  var cr = document.getElementById('offer-custom-row');
+  var cv = document.getElementById('offer-custom-val');
+  var cs = document.getElementById('offer-custom-slider');
+  if(cr && cv && cs){
+    if(offerStrat===3){
+      cr.style.display='flex';
+      if(!offerCustomW) offerCustomW=wAvg;
+      cv.value=offerCustomW.toFixed(1);
+      cs.min=wMin.toFixed(1); cs.max=wMax.toFixed(1); cs.step='0.1';
+      cs.value=offerCustomW.toFixed(1);
+    } else {
+      cr.style.display='none';
+    }
+  }
+  window._calcStrats=strats;
+  window._calcStock=stock;
+  window._calcBnd=bnd;
+}
+
+function calcOfferCustom(){
+  var v=parseFloat(document.getElementById('offer-custom-val').value)||0;
+  offerCustomW=v;
+  var cs=document.getElementById('offer-custom-slider');
+  if(cs) cs.value=v;
+  calcUpdate();
+}
+function calcOfferSlider(){
+  var v=parseFloat(document.getElementById('offer-custom-slider').value)||0;
+  offerCustomW=v;
+  var cv=document.getElementById('offer-custom-val');
+  if(cv) cv.value=v.toFixed(1);
+  calcUpdate();
+}
+
 function calcUpdate(){
   if(!currentSku)return;
+  calcInitOfferUI();
   var q=parseInt(document.getElementById('qty').value)||0;
   var p=parseInt(currentSku.PRICE_PER_SHEET_THB)||0;
   var w=calcKgPerSheet();
-  var b=parseInt(currentSku.BUNDLE_SIZE)||5;   // ใช้ BUNDLE_SIZE จาก Sheet เท่านั้น ไม่ปนกับ 3D slider
-  setText('r-w',(q*w).toFixed(1)+' kg');
-  setText('r-p','฿ '+(q*p).toLocaleString());
-  setText('r-b',q+' แผ่น · '+Math.ceil(q/b)+' มัด');
+  var b=parseInt(currentSku.BUNDLE_SIZE)||5;
+  var stock=window._calcStock||parseInt(currentSku.STOCK_QTY)||0;
+  var strats=window._calcStrats||[];
+  var offerW = strats[offerStrat] ? strats[offerStrat].w : w;
+  if(offerStrat===3 && offerCustomW>0) offerW=offerCustomW;
+  // weight uses offer weight if available
+  var totalW = (q * offerW).toFixed(1);
+  var totalP = q*p;
+  setText('r-w', totalW+' kg');
+  setText('r-p','฿ '+totalP.toLocaleString());
+  setText('r-b', q+' แผ่น · '+Math.ceil(q/b)+' มัด');
+  // VAT
+  setText('r-excl','฿ '+totalP.toLocaleString());
+  setText('r-vat', '+ ฿ '+Math.round(totalP*0.07).toLocaleString());
+  setText('r-incl','฿ '+Math.round(totalP*1.07).toLocaleString());
+  // stock bar
+  var needEl=document.getElementById('r-need'); if(needEl) needEl.textContent=q;
+  var stLbl=document.getElementById('r-stock-lbl'); if(stLbl) stLbl.textContent=stock;
+  var bar=document.getElementById('r-bar');
+  if(bar){ var pct=stock>0?Math.min(q/stock*100,100):0; bar.style.width=pct+'%'; bar.style.background=q>stock?'var(--red)':'var(--green)'; }
+  var ov=document.getElementById('r-overstock');
+  if(ov) ov.style.display=q>stock?'':(ov.style.display='none','none');
+  if(ov&&q>stock) ov.textContent='⚠ เกินสต็อก — เหลือเพียง '+stock+' แผ่น';
+  // offer probability
+  var kgMin=parseFloat(currentSku.THICK_MIN||'')||0;
+  var kgMax=parseFloat(currentSku.THICK_MAX||'')||0;
+  var ww=parseInt(currentSku.WIDTH_MM)||0, ll=parseInt(currentSku.LENGTH_MM)||0;
+  var D=7.85;
+  var wMinK=kgMin>0?kgMin*ww*ll*D/1000000:w*0.97;
+  var wMaxK=kgMax>0?kgMax*ww*ll*D/1000000:w*1.03;
+  var prob=wMaxK>wMinK?Math.round(Math.max(0,Math.min(100,(wMaxK-offerW)/(wMaxK-wMinK)*100))):50;
+  var probEl=document.getElementById('r-offer-prob');
+  if(probEl && offerW>0){
+    probEl.style.display='';
+    var col=prob>=70?'#3B6D11':prob>=40?'#854F0B':'#A32D2D';
+    var bg=prob>=70?'#EAF3DE':prob>=40?'#FAEEDA':'#FCEBEB';
+    probEl.style.background=bg; probEl.style.color=col;
+    probEl.textContent='โอกาสที่ลูกค้าได้รับ ≥ '+offerW.toFixed(1)+' kg: '+prob+'%';
+  }
 }
 
 // ── ADMIN SYNC ────────────────────────────────────
