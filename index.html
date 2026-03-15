@@ -4804,6 +4804,7 @@ function setMarking(mode,btn){
   var group=btn.parentElement;
   group.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
+  console.log('[setMarking] mode='+mode+' S.sheets='+S.sheets+' loopRunning='+loopRunning);
   if(typeof render3d==='function') render3d();
 }
 function liveUpdate(){
@@ -5334,6 +5335,7 @@ function render3d(){
 
   // ── MARKING — floating info label ──────────────────────────────
   if(S.marking==='show' && N>0){
+    console.log('[Marking] triggered, currentSku=',currentSku?'ok':'null','N=',N,'ctx=',ctx?'ok':'null');
     try{
       ctx.globalAlpha=1;
       ctx.setLineDash([]);
@@ -5368,13 +5370,11 @@ function render3d(){
       var lineH  = Math.round(fSz1 * 1.55);
       var logoR  = Math.round(14 * sc);
       var margin = Math.round(12 * sc);
+      var ax     = Math.round(W * 0.04);
+      var ay     = Math.round(H * 0.06);
       var lw     = Math.min(Math.round(340 * sc), W - margin * 2);
       var lh     = pad * 2 + rows.length * lineH + Math.round(4 * sc);
       var lx     = ax, ly = ay;
-
-      // ── anchor: fixed top-left area of canvas ───────────────────
-      var ax = Math.round(W * 0.04);
-      var ay = Math.round(H * 0.06);
 
       ctx.save();
 
