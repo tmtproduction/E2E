@@ -5330,13 +5330,14 @@ function render3d(){
     });
   }
 
-  // ── TAG — 1 ใบ ติดขอบขวา บนสุดของกอง ──
+  // ── TAG — ขอบซ้ายบน มุมหน้า ──
   var tagW = 0.016;
-  var tagH = 0.22;
-  var tagL = 0.28;
-  var tagX = bw/2 + tagW*0.5;
+  var tagH = 0.20;
+  var tagL = 0.26;
+  var tagX = -(bw/2 + tagW*0.5);         // ขอบซ้าย ยื่นออก
   var tagY = yOff + totalH - tagH*0.5;   // บนสุด
-  drawBox3d(tagX, tagY, -bl*0.18, tagW, tagH, tagL, '#f5f0e8','#ede8dc',fl);
+  var tagZ = bl*0.42;                     // ด้านหน้า
+  drawBox3d(tagX, tagY, tagZ, tagW, tagH, tagL, '#f5f0e8','#ede8dc',fl);
 
   // ── MARKING — floating info label ──────────────────────────────
   if(S.marking==='show' && N>0){
