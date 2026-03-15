@@ -5330,14 +5330,14 @@ function render3d(){
     });
   }
 
-  // ── TAG — ขอบซ้ายบน มุมหน้า ──
-  var tagW = 0.016;
-  var tagH = 0.20;
-  var tagL = 0.26;
-  var tagX = -(bw/2 + tagW*0.5);         // ขอบซ้าย ยื่นออก
-  var tagY = yOff + totalH - tagH*0.5;   // บนสุด
-  var tagZ = bl*0.42;                     // ด้านหน้า
-  drawBox3d(tagX, tagY, tagZ, tagW, tagH, tagL, '#f5f0e8','#ede8dc',fl);
+  // ── TAG — วางแบนบน top face มุมซ้าย-หน้า ──
+  var tagThick = 0.008;                           // บาง (วางแบนบน top)
+  var tagW2    = 0.30;                            // กว้าง (แนว bw)
+  var tagL2    = 0.42;                            // ยาว (แนว bl)
+  var tagX2    = -(bw/2 - tagW2*0.5 - 0.04);    // มุมซ้าย
+  var tagY2    = yOff + totalH + tagThick*0.5;   // วางบน top
+  var tagZ2    = bl*0.5 - tagL2*0.5 - 0.04;     // มุมหน้า
+  drawBox3d(tagX2, tagY2, tagZ2, tagW2, tagThick, tagL2, '#f5f0e8','#ede8dc',fl);
 
   // ── MARKING — floating info label ──────────────────────────────
   if(S.marking==='show' && N>0){
