@@ -3705,12 +3705,12 @@ function openViewer(idx){
       var offerCol2 = offerW2<=mu?'#A32D2D':offerW2<wCrvMax?'#BA7517':'#3B6D11';
 
       // axis ขยายให้ curve กว้าง: ใช้ mu±4σ อย่างน้อย
-      var sigmaAxis2 = Math.max(sigma, 0.05);
-      var autoMin2 = mu - 4*sigmaAxis2;
-      var autoMax2 = Math.max(mu + 4*sigmaAxis2, wAxisMax2);
+      // axis = (TARGET-TOL)→TARGET ในหน่วย kg
+      var axisL2 = wAxisMin2; // TARGET-TOL → kg
+      var axisR2 = wAxisMax2; // TARGET → kg
       function gpx(v){
-        var uw=W-PAD*2, span=autoMax2-autoMin2;
-        return span>0 ? PAD+(v-autoMin2)/span*uw : PAD+uw*0.5;
+        var uw=W-PAD*2, span=axisR2-axisL2;
+        return span>0 ? PAD+(v-axisL2)/span*uw : PAD+uw*0.5;
       }
 
       function gauss(v){ return Math.exp(-0.5*Math.pow((v-mu)/sigma,2)); }
@@ -3747,11 +3747,11 @@ function openViewer(idx){
         '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol2+'"/>'+
         '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol2+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW2.toFixed(1)+'</text>'+
         // labels สลับบน/ล่าง เพื่อลดการทับซ้อน
-        '<text x="'+gpx(wAxisMin2)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="start">'+wAxisMin2.toFixed(1)+'</text>'+
+        '<text x="'+gpx(axisL2)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="start">'+axisL2.toFixed(1)+'</text>'+
         '<text x="'+gpx(wCrvMin)+'" y="'+(base-2)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
         '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+' (TMT)</text>'+
         '<text x="'+gpx(wCrvMax)+'" y="'+(base-2)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
-        '<text x="'+gpx(wAxisMax2)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="end">'+wAxisMax2.toFixed(1)+'</text>';
+        '<text x="'+gpx(axisR2)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="end">'+axisR2.toFixed(1)+'</text>';
     })();
 
     // range bar
@@ -4951,12 +4951,12 @@ function drawBellOnly(){
   var offerOutOfRange = offerW3 > wCrvMax;
   var offerCol3=offerW3<=mu?'#A32D2D':offerW3<wCrvMax?'#BA7517':'#3B6D11';
   // axis ขยายให้ curve กว้าง: ใช้ mu±4σ อย่างน้อย
-  var sigmaAxis3 = Math.max(sigma, 0.05);
-  var autoMin3 = mu - 4*sigmaAxis3;
-  var autoMax3 = Math.max(mu + 4*sigmaAxis3, wAxisMax3);
+      // axis = (TARGET-TOL)→TARGET ในหน่วย kg
+  var axisL3 = wAxisMin3; // TARGET-TOL → kg
+  var axisR3 = wAxisMax3; // TARGET → kg
   function gpx3(v){
-    var uw=W-PAD*2, span=autoMax3-autoMin3;
-    return span>0 ? PAD+(v-autoMin3)/span*uw : PAD+uw*0.5;
+    var uw=W-PAD*2, span=axisR3-axisL3;
+    return span>0 ? PAD+(v-axisL3)/span*uw : PAD+uw*0.5;
   }
   function gauss3(v){ return Math.exp(-0.5*Math.pow((v-mu)/sigma,2)); }
   var STEPS=200, gpts=[];
@@ -4986,11 +4986,11 @@ function drawBellOnly(){
       '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol3+'"/>'+
       '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol3+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW3.toFixed(1)+'</text>'
     )+
-    '<text x="'+gpx3(wAxisMin3)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="start">'+wAxisMin3.toFixed(1)+'</text>'+
+    '<text x="'+gpx3(axisL3)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="start">'+axisL3.toFixed(1)+'</text>'+
     '<text x="'+gpx3(wCrvMin)+'" y="'+(base-2)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
     '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+' (TMT)</text>'+
     '<text x="'+gpx3(wCrvMax)+'" y="'+(base-2)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
-    '<text x="'+gpx3(wAxisMax3)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="end">'+wAxisMax3.toFixed(1)+'</text>'+
+    '<text x="'+gpx3(axisR3)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="end">'+axisR3.toFixed(1)+'</text>'+
     (function(){
       var zones=[
         {lo:mu-3*sigma,hi:mu-2*sigma,pct:'2.2%'},
