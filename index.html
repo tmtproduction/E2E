@@ -4747,6 +4747,7 @@ function calcInitOfferUI(){
   window._calcBnd      = bnd;
   window._calcWCurveMin = wCurveMin;
   window._calcWCurveMax = wCurveMax;
+  window._calcWTmt = wTmt;
   window._calcWAxisMin  = wAxisMin;
   window._calcWAxisMax  = wAxisMax;
   window._calcWSpec     = wSpec;
@@ -4812,15 +4813,28 @@ function renderOfferSlider(wMin, wSpec, wTmt){
 
   var probEl=document.getElementById('offer-slider-prob');
   if(probEl){
-    var cs2=document.getElementById('offer-custom-slider');
+    var wCrvMin3=window._calcWCurveMin||wMin;
     var wCrvMax3=window._calcWCurveMax||0;
-    if(wCrvMax3>0 && offerCustomW>wCrvMax3){
-      probEl.textContent='เกินช่วงที่เป็นไปได้ — ไม่มีข้อมูล';
+    if(wCrvMax3>0 && v>wCrvMax3){
+      probEl.textContent='เกินช่วงที่เป็นไปได้';
       probEl.style.background='#f5f5f3'; probEl.style.color='var(--g400)';
     } else {
-      var bg=prob>=70?'#FCEBEB':prob>=40?'#FAEEDA':'#EAF3DE';
-      probEl.textContent='โอกาสได้ครบ '+prob+'%';
-      probEl.style.background=bg; probEl.style.color=col;
+      // คำนวณ P(X >= v) จาก Gaussian: mu=wTmt, sigma=(wCrvMax-wCrvMin)/6
+      var mu3  = window._calcWTmt||((wCrvMin3+wCrvMax3)/2);
+      var sig3 = wCrvMax3>wCrvMin3 ? (wCrvMax3-wCrvMin3)/6 : 0.1;
+      // erf approximation
+      function erfc(x){
+        var t=1/(1+0.3275911*Math.abs(x));
+        var p=t*(0.254829592+t*(-0.284496736+t*(1.421413741+t*(-1.453152027+t*1.061405429))));
+        var e=1-p*Math.exp(-x*x);
+        return x>=0 ? 1-e : 1+e;
+      }
+      var gaussProb = Math.round(erfc((v-mu3)/(sig3*Math.sqrt(2)))*50); // P(X>=v)*100
+      gaussProb = Math.min(Math.max(gaussProb,0),100);
+      var bg3 = gaussProb>=60?'#FCEBEB':gaussProb>=30?'#FAEEDA':'#EAF3DE';
+      var col3= gaussProb>=60?'#A32D2D':gaussProb>=30?'#854F0B':'#3B6D11';
+      probEl.textContent='P(≥นำเสนอ) '+gaussProb+'%';
+      probEl.style.background=bg3; probEl.style.color=col3;
     }
   }
 
