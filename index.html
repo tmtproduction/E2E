@@ -5856,89 +5856,81 @@ function render3d(){
       var fSz3 = Math.round(9  * sc);   // รายละเอียด
       var fSz4 = Math.round(8  * sc);   // footer
 
-      // ── STAY FLAT marking — สมจริงตามรูป ──────────────────────────
-      var pad   = Math.round(10*sc);
-      var lw    = Math.min(Math.round(380*sc), W-Math.round(20*sc));
-      var lh    = Math.round(72*sc);
-      var lx    = Math.round(W*0.03);
-      var ly    = Math.round(H*0.07);
+      // ── STAY FLAT marking — ใช้รูปจาก Drive + text ─────────────────
+      var lw  = Math.min(Math.round(400*sc), W-Math.round(16*sc));
+      var lh  = Math.round(74*sc);
+      var lx  = Math.round(W*0.02);
+      var ly  = Math.round(H*0.06);
 
       ctx.save();
-
-      // bg สีอ่อน ขอบโค้งเล็กน้อย
-      ctx.fillStyle='rgba(245,243,240,0.97)';
-      var rx2=Math.round(4*sc);
+      // bg
+      ctx.fillStyle='rgba(245,243,240,0.96)';
+      var rx3=Math.round(4*sc);
       ctx.beginPath();
-      ctx.moveTo(lx+rx2,ly);ctx.lineTo(lx+lw-rx2,ly);
-      ctx.quadraticCurveTo(lx+lw,ly,lx+lw,ly+rx2);
-      ctx.lineTo(lx+lw,ly+lh-rx2);
-      ctx.quadraticCurveTo(lx+lw,ly+lh,lx+lw-rx2,ly+lh);
-      ctx.lineTo(lx+rx2,ly+lh);
-      ctx.quadraticCurveTo(lx,ly+lh,lx,ly+lh-rx2);
-      ctx.lineTo(lx,ly+rx2);
-      ctx.quadraticCurveTo(lx,ly,lx+rx2,ly);
+      ctx.moveTo(lx+rx3,ly);ctx.lineTo(lx+lw-rx3,ly);
+      ctx.quadraticCurveTo(lx+lw,ly,lx+lw,ly+rx3);
+      ctx.lineTo(lx+lw,ly+lh-rx3);
+      ctx.quadraticCurveTo(lx+lw,ly+lh,lx+lw-rx3,ly+lh);
+      ctx.lineTo(lx+rx3,ly+lh);
+      ctx.quadraticCurveTo(lx,ly+lh,lx,ly+lh-rx3);
+      ctx.lineTo(lx,ly+rx3);
+      ctx.quadraticCurveTo(lx,ly,lx+rx3,ly);
       ctx.closePath(); ctx.fill();
 
-      // ── LOGO ZONE (ซ้าย) ─────────────────────────────
-      var logoZoneW = Math.round(52*sc);
-      var logoX = lx+Math.round(8*sc);
-      var sfSz  = Math.round(fSz1*1.15);
-      ctx.textAlign='left'; ctx.textBaseline='top';
+      var logoW = Math.round(62*sc);
+      var textX = lx+logoW+Math.round(10*sc);
+      var textW = lw-logoW-Math.round(18*sc);
+      var ty3   = ly+Math.round(8*sc);
+      var lh1   = Math.round(fSz1*1.5), lh2=Math.round(fSz2*1.5);
 
-      // STAY — bold black
-      ctx.font='900 '+sfSz+'px "Arial Narrow","Arial",sans-serif';
-      ctx.fillStyle='#0a0a0a';
-      ctx.fillText('STAY', logoX, ly+Math.round(8*sc));
+      // ── วาดโลโก้จาก Drive (async) ────────────────────
+      var sfUrl = sqcLinks&&sqcLinks['stay flat'] ? sqcDriveUrl(sqcLinks['stay flat']) : null;
+      if(sfUrl){
+        // โหลด/cache รูป
+        if(!window._sfLogoImg){
+          window._sfLogoImg = new Image();
+          window._sfLogoImg.crossOrigin='anonymous';
+          window._sfLogoImg.onload=function(){ if(typeof render3d==='function') render3d(); };
+          window._sfLogoImg.src=sfUrl;
+        }
+        var img=window._sfLogoImg;
+        if(img.complete&&img.naturalWidth>0){
+          // วาดรูปใน logo zone
+          var iw=logoW-Math.round(8*sc), ih=lh-Math.round(12*sc);
+          var ir=img.naturalWidth/img.naturalHeight;
+          var dw=iw, dh=iw/ir;
+          if(dh>ih){dh=ih;dw=ih*ir;}
+          ctx.drawImage(img, lx+Math.round(4*sc), ly+Math.round((lh-dh)/2), dw, dh);
+        } else {
+          // fallback ถ้ายังโหลดไม่เสร็จ
+          ctx.font='900 '+Math.round(fSz1*1.1)+'px "Arial Narrow","Arial",sans-serif';
+          ctx.fillStyle='#0a0a0a'; ctx.textAlign='left'; ctx.textBaseline='top';
+          ctx.fillText('STAY', lx+Math.round(6*sc), ly+Math.round(8*sc));
+          ctx.fillText('FLAT', lx+Math.round(6*sc), ly+Math.round(8*sc)+Math.round(fSz1*1.3));
+        }
+      } else {
+        // ไม่มีลิ้งก์ — วาด text fallback
+        ctx.font='900 '+Math.round(fSz1*1.1)+'px "Arial Narrow","Arial",sans-serif';
+        ctx.fillStyle='#0a0a0a'; ctx.textAlign='left'; ctx.textBaseline='top';
+        ctx.fillText('STAY', lx+Math.round(6*sc), ly+Math.round(8*sc));
+        ctx.fillText('FLAT', lx+Math.round(6*sc), ly+Math.round(8*sc)+Math.round(fSz1*1.3));
+      }
 
-      // วงกลม O หลัง STAY
-      var stayW = ctx.measureText('STAY').width;
-      var ciR   = Math.round(sfSz*0.36);
-      var ciX   = logoX+stayW+ciR+Math.round(2*sc);
-      var ciY   = ly+Math.round(8*sc)+Math.round(sfSz*0.45);
-      ctx.beginPath(); ctx.arc(ciX,ciY,ciR,0,Math.PI*2);
-      ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=Math.max(1,1.8*sc); ctx.stroke();
-      // circle inner dot
-      ctx.beginPath(); ctx.arc(ciX,ciY,Math.round(ciR*0.3),0,Math.PI*2);
-      ctx.fillStyle='#0a0a0a'; ctx.fill();
-
-      // FLAT — bold black
-      ctx.font='900 '+sfSz+'px "Arial Narrow","Arial",sans-serif';
-      ctx.fillStyle='#0a0a0a';
-      ctx.fillText('FLAT', logoX, ly+Math.round(8*sc)+Math.round(sfSz*1.25));
-
-      // crosshair circle หลัง FLAT
-      var ciX2 = logoX+ctx.measureText('FLAT').width+ciR+Math.round(2*sc);
-      var ciY2 = ly+Math.round(8*sc)+Math.round(sfSz*1.25)+Math.round(sfSz*0.45);
-      ctx.beginPath(); ctx.arc(ciX2,ciY2,ciR,0,Math.PI*2);
-      ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=Math.max(1,1.8*sc); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(ciX2-ciR*0.65,ciY2); ctx.lineTo(ciX2+ciR*0.65,ciY2);
-      ctx.moveTo(ciX2,ciY2-ciR*0.65); ctx.lineTo(ciX2,ciY2+ciR*0.65);
-      ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=Math.max(0.8,sc); ctx.stroke();
-
-      // ── TEXT ZONE (ขวา) ───────────────────────────────
-      var tx2 = lx+logoZoneW+Math.round(12*sc);
-      var tw2 = lw-logoZoneW-Math.round(20*sc);
-      var ty2 = ly+Math.round(7*sc);
-      var lh1 = Math.round(fSz1*1.5), lh2=Math.round(fSz2*1.5);
-
-      // row 1: SIZE  NON SKINPASSED  TMT°  (bold ใหญ่)
+      // ── TEXT rows ─────────────────────────────────────
       ctx.textAlign='left'; ctx.textBaseline='top';
       ctx.font='bold '+fSz1+'px "Arial Narrow","Arial",sans-serif';
       ctx.fillStyle='#0a0a0a';
-      ctx.fillText(thick2M+' X '+ww2+' X '+ll2+' mm  NON SKINPASSED  TMT°', tx2, ty2, tw2);
-      ty2+=lh1;
+      ctx.fillText(thick2M+' X '+ww2+' X '+ll2+' mm  NON SKINPASSED  TMT°', textX, ty3, textW);
+      ty3+=lh1;
 
-      // row 2: std  grade  surf  STEEL PLATE  MILL EDGE THAILAND
       ctx.font=fSz2+'px "Arial Narrow","Arial",sans-serif';
       ctx.fillStyle='#2a2a2a';
-      ctx.fillText(std2+'  '+grade2+'  '+surf2+' STEEL PLATE  MILL EDGE THAILAND', tx2, ty2, tw2);
-      ty2+=lh2;
+      ctx.fillText(std2+'  '+grade2+'  '+surf2+' STEEL PLATE  MILL EDGE THAILAND', textX, ty3, textW);
+      ty3+=lh2;
 
-      // row 3: coil no.  HEAT NO.
       ctx.font=fSz3+'px "Arial Narrow","Arial",sans-serif';
       ctx.fillStyle='#555';
-      ctx.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX', tx2, ty2, tw2);
+      ctx.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX', textX, ty3, textW);
 
       ctx.restore();
     }catch(e){}
