@@ -2595,7 +2595,10 @@ body{
                     <!-- offer (วงกลม) -->
                     <div style="display:flex;justify-content:space-between;align-items:baseline;margin:4px 0;">
                       <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">นำเสนอ</span>
-                      <span style="font-size:14px;font-weight:700;font-family:var(--mono);" id="gap-lbl-offer">—</span>
+                      <div style="text-align:right;">
+                        <div style="font-size:14px;font-weight:700;font-family:var(--mono);" id="gap-lbl-offer">—</div>
+                        <div style="font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:10px;display:inline-block;margin-top:2px;" id="gap-lbl-zone">—</div>
+                      </div>
                     </div>
                     <!-- hidden compat -->
                     <div id="gap-lbl-min" style="display:none"></div>
@@ -3701,10 +3704,13 @@ function openViewer(idx){
       var offerW2 = offerCustomW>0 ? offerCustomW : kgTmt;
       var offerCol2 = offerW2<=mu?'#A32D2D':offerW2<wCrvMax?'#BA7517':'#3B6D11';
 
-      // linear px: axis = TARGET±TOLERANCE
+      // axis ขยายให้ curve กว้าง: ใช้ mu±4σ อย่างน้อย
+      var sigmaAxis2 = sigma;
+      var autoMin2 = mu - Math.max(4*sigmaAxis2, (mu-wAxisMin2));
+      var autoMax2 = mu + Math.max(4*sigmaAxis2, (wAxisMax2-mu));
       function gpx(v){
-        var uw=W-PAD*2, span=wAxisMax2-wAxisMin2;
-        return span>0 ? PAD+(v-wAxisMin2)/span*uw : PAD+uw*0.5;
+        var uw=W-PAD*2, span=autoMax2-autoMin2;
+        return span>0 ? PAD+(v-autoMin2)/span*uw : PAD+uw*0.5;
       }
 
       function gauss(v){ return Math.exp(-0.5*Math.pow((v-mu)/sigma,2)); }
@@ -4835,18 +4841,25 @@ function renderOfferSlider(wMin, wSpec, wTmt){
       var col3= gaussProb>=60?'#A32D2D':gaussProb>=30?'#854F0B':'#3B6D11';
       // บอก zone ตาม σ
       var zScore = (v - mu3) / sig3;
-      var zoneText, zoneBg, zoneCol;
-      if(zScore <= -3)      { zoneText='zone μ−3σ (0.1%)'; zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
-      else if(zScore <= -2) { zoneText='zone μ−2σ (2.2%)'; zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
-      else if(zScore <= -1) { zoneText='zone μ−1σ (13.6%)'; zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
-      else if(zScore <= 0)  { zoneText='zone μ−0 (34.1%)'; zoneBg='#FAEEDA'; zoneCol='#854F0B'; }
-      else if(zScore <= 1)  { zoneText='zone μ+1σ (34.1%)'; zoneBg='#FAEEDA'; zoneCol='#854F0B'; }
-      else if(zScore <= 2)  { zoneText='zone μ+2σ (13.6%)'; zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
-      else if(zScore <= 3)  { zoneText='zone μ+3σ (2.2%)';  zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
-      else                  { zoneText='zone μ+3σ+ (0.1%)'; zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
-      probEl.textContent = zoneText;
+      var zoneText, zoneBg, zoneCol, zonePct;
+      if(zScore <= -3)      { zoneText='μ−3σ'; zonePct='0.1%';  zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
+      else if(zScore <= -2) { zoneText='μ−2σ'; zonePct='2.2%';  zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
+      else if(zScore <= -1) { zoneText='μ−1σ'; zonePct='13.6%'; zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
+      else if(zScore <= 0)  { zoneText='μ';    zonePct='34.1%'; zoneBg='#FAEEDA'; zoneCol='#854F0B'; }
+      else if(zScore <= 1)  { zoneText='μ+1σ'; zonePct='34.1%'; zoneBg='#FAEEDA'; zoneCol='#854F0B'; }
+      else if(zScore <= 2)  { zoneText='μ+2σ'; zonePct='13.6%'; zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
+      else if(zScore <= 3)  { zoneText='μ+3σ'; zonePct='2.2%';  zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
+      else                  { zoneText='>μ+3σ';zonePct='0.1%';  zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
+      probEl.textContent = zoneText+' ('+zonePct+')';
       probEl.style.background = zoneBg;
       probEl.style.color = zoneCol;
+      // sync กับ card
+      var zoneCardEl = document.getElementById('gap-lbl-zone');
+      if(zoneCardEl){
+        zoneCardEl.textContent = zonePct;
+        zoneCardEl.style.background = zoneBg;
+        zoneCardEl.style.color = zoneCol;
+      }
     }
   }
 
@@ -4937,10 +4950,13 @@ function drawBellOnly(){
   var offerW3=offerCustomW>0?offerCustomW:mu;
   var offerOutOfRange = offerW3 > wCrvMax;
   var offerCol3=offerW3<=mu?'#A32D2D':offerW3<wCrvMax?'#BA7517':'#3B6D11';
-  // axis = TARGET±TOLERANCE (linear scale)
+  // axis ขยายให้ curve กว้าง: ใช้ mu±4σ อย่างน้อย
+  var sigmaAxis3 = sigma;
+  var autoMin3 = mu - Math.max(4*sigmaAxis3, (mu-wAxisMin3));
+  var autoMax3 = mu + Math.max(4*sigmaAxis3, (wAxisMax3-mu));
   function gpx3(v){
-    var uw=W-PAD*2, span=wAxisMax3-wAxisMin3;
-    return span>0 ? PAD+(v-wAxisMin3)/span*uw : PAD+uw*0.5;
+    var uw=W-PAD*2, span=autoMax3-autoMin3;
+    return span>0 ? PAD+(v-autoMin3)/span*uw : PAD+uw*0.5;
   }
   function gauss3(v){ return Math.exp(-0.5*Math.pow((v-mu)/sigma,2)); }
   var STEPS=200, gpts=[];
