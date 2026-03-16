@@ -4741,8 +4741,9 @@ function calcInitOfferUI(){
   var wCurveMax = tMax2>0 ? kgOf(tMax2) : calcKgPerSheet()*1.03;
   // axis bounds = THICKNESS_TARGET ± TOLERANCE (spec limit)
   var tTol2    = parseFloat(s.TOLERANCE_THICKNESS||0);
+  // axis: ซ้าย = TARGET-TOL, ขวา = TARGET (THICKNESS_TARGET_MM)
   var wAxisMin = tSpec>0&&tTol2>0 ? kgOf(tSpec-tTol2) : wCurveMin*0.99;
-  var wAxisMax = tSpec>0&&tTol2>0 ? kgOf(tSpec+tTol2) : wCurveMax*1.01;
+  var wAxisMax = tSpec>0 ? kgOf(tSpec) : wCurveMax;
   // slider range = wCurveMin → wCurveMax
   var wMin     = wCurveMin;
   var wSpec    = wCurveMax;          // slider max = THICK_MAX
