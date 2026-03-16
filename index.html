@@ -2568,7 +2568,6 @@ body{
                   <span style="font-size:10px;color:var(--g400);">kg</span>
                   <span style="font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:20px;margin-left:4px;" id="offer-slider-prob"></span>
                 </div>
-                <div style="font-size:9px;color:var(--g400);font-family:var(--mono);margin-bottom:8px;">ยิ่งสูง ยิ่งเสี่ยงส่งไม่ครบ — เลื่อนเพื่อดูโอกาส</div>
                 <!-- track -->
                 <div style="position:relative;height:6px;border-radius:3px;background:var(--g100);margin-bottom:4px;" id="offer-track-bg">
                   <div style="position:absolute;height:100%;border-radius:3px;transition:width .15s,background .15s;" id="offer-track-fill"></div>
@@ -3662,24 +3661,19 @@ function openViewer(idx){
       // พิกัด
       var wCrvMin = window._calcWCurveMin||kgMin;
       var wCrvMax = window._calcWCurveMax||kgMax;
-      var wSpec2  = window._calcWSpec||kgMax;
-      var mu      = kgTmt; // mean = TMT
-      var sigma   = (wCrvMax-wCrvMin)/6; // ±3σ ครอบ distribution
+      var wAxisMin2 = window._calcWAxisMin||wCrvMin;
+      var wAxisMax2 = window._calcWAxisMax||wCrvMax;
+      var mu      = kgTmt;
+      var sigma   = (wCrvMax-wCrvMin)/6;
       if(sigma<=0) sigma=0.1;
 
-      // offer
       var offerW2 = offerCustomW>0 ? offerCustomW : kgTmt;
-      var offerCol2 = offerW2<=mu?'#A32D2D':offerW2<=wSpec2?'#BA7517':'#3B6D11';
+      var offerCol2 = offerW2<=mu?'#A32D2D':offerW2<wCrvMax?'#BA7517':'#3B6D11';
 
-      // non-linear px: 75% สำหรับ wCrvMin→wSpec2, 25% สำหรับ wSpec2→wCrvMax*1.1
-      var axisMin2 = wCrvMin - (wCrvMax-wCrvMin)*0.1;
-      var axisMax2 = wSpec2 + (wSpec2-wCrvMin)*0.15;
+      // linear px: axis = TARGET±TOLERANCE
       function gpx(v){
-        var uw=W-PAD*2, bp=wSpec2;
-        var ls=bp-axisMin2, rs=axisMax2-bp;
-        return v<=bp
-          ? PAD+(v-axisMin2)/ls*(uw*0.75)
-          : PAD+uw*0.75+(v-bp)/rs*(uw*0.25);
+        var uw=W-PAD*2, span=wAxisMax2-wAxisMin2;
+        return span>0 ? PAD+(v-wAxisMin2)/span*uw : PAD+uw*0.5;
       }
 
       function gauss(v){ return Math.exp(-0.5*Math.pow((v-mu)/sigma,2)); }
@@ -3711,16 +3705,17 @@ function openViewer(idx){
         '<line x1="'+PAD+'" y1="'+base+'" x2="'+(W-PAD)+'" y2="'+base+'" stroke="#c4c4bf" stroke-width="0.5"/>'+
         '<line x1="'+gpx(wCrvMin)+'" y1="4" x2="'+gpx(wCrvMin)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.5" stroke-dasharray="2,2"/>'+
         '<line x1="'+gpx(wCrvMax)+'" y1="4" x2="'+gpx(wCrvMax)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.5" stroke-dasharray="2,2"/>'+
-        '<line x1="'+tgx3+'" y1="4" x2="'+tgx3+'" y2="'+base+'" stroke="#1a7a4a" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>'+
-        '<line x1="'+sx3+'" y1="4" x2="'+sx3+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
+        '<line x1="'+gpx3(wAxisMin3)+'" y1="4" x2="'+gpx3(wAxisMin3)+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
+        '<line x1="'+gpx3(wAxisMax3)+'" y1="4" x2="'+gpx3(wAxisMax3)+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
         '<circle cx="'+tx3+'" cy="'+base+'" r="3.5" fill="#f36f22"/>'+
         '<line x1="'+ox3+'" y1="5" x2="'+ox3+'" y2="'+base+'" stroke="'+offerCol2+'" stroke-width="2"/>'+
         '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol2+'"/>'+
         '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol2+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW2.toFixed(1)+'</text>'+
+        '<text x="'+gpx(wAxisMin2)+'" y="'+(base+11)+'" font-size="7" fill="#aaa" font-family="monospace" text-anchor="middle">'+wAxisMin2.toFixed(1)+'</text>'+
         '<text x="'+gpx(wCrvMin)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
         '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+'</text>'+
         '<text x="'+gpx(wCrvMax)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
-        '<text x="'+tgx3+'" y="'+(base+11)+'" font-size="7" fill="#1a7a4a" font-family="monospace" text-anchor="middle">'+wSpec2.toFixed(1)+'</text>';
+        '<text x="'+gpx(wAxisMax2)+'" y="'+(base+11)+'" font-size="7" fill="#aaa" font-family="monospace" text-anchor="middle">'+wAxisMax2.toFixed(1)+'</text>';
     })();
 
     // range bar
@@ -4705,23 +4700,26 @@ function calcInitOfferUI(){
   var ww = parseInt(s.WIDTH_MM)||0, ll = parseInt(s.LENGTH_MM)||0;
   var D = 7.85;
   function kgOf(t){ return ww>0&&ll>0 ? t*ww*ll*D/1000000 : 0; }
-  // ใช้ค่าเดียวกับ Thickness strip: tTgt±tTol
-  var tTol2 = parseFloat(s.TOLERANCE_THICKNESS||0);
-  var tThickMin = tSpec>0&&tTol2>0 ? tSpec-tTol2 : (tMin2>0?tMin2:tSpec*0.97);
-  var tThickMax = tSpec>0&&tTol2>0 ? tSpec+tTol2 : (tMax2>0?tMax2:tSpec*1.03);
-  // bell curve ขอบ = MIN..MAX ของ Thickness strip
-  var wMin      = kgOf(tThickMin);   // kg ที่ความหนา MIN
-  var wCurveMax = kgOf(tThickMax);   // kg ที่ความหนา MAX
-  // Slider และ bell curve center = TARGET
-  var wSpec     = kgOf(tSpec);       // kg ที่ความหนา TARGET (spec max offer)
-  var wTmt      = calcKgPerSheet();  // kg จาก TMT actual
+  // curve bounds = THICK_MIN / THICK_MAX จาก sheet column
+  var wCurveMin = tMin2>0 ? kgOf(tMin2) : calcKgPerSheet()*0.97;
+  var wCurveMax = tMax2>0 ? kgOf(tMax2) : calcKgPerSheet()*1.03;
+  // axis bounds = THICKNESS_TARGET ± TOLERANCE (spec limit)
+  var tTol2    = parseFloat(s.TOLERANCE_THICKNESS||0);
+  var wAxisMin = tSpec>0&&tTol2>0 ? kgOf(tSpec-tTol2) : wCurveMin*0.99;
+  var wAxisMax = tSpec>0&&tTol2>0 ? kgOf(tSpec+tTol2) : wCurveMax*1.01;
+  // slider range = wCurveMin → wCurveMax
+  var wMin     = wCurveMin;
+  var wSpec    = wCurveMax;          // slider max = THICK_MAX
+  var wTmt     = calcKgPerSheet();   // TMT actual
   var stock = parseInt(s.STOCK_QTY)||0;
   var bnd   = parseInt(s.BUNDLE_SIZE)||5;
   window._calcStock    = stock;
   window._calcBnd      = bnd;
-  window._calcWCurveMin = wMin;
+  window._calcWCurveMin = wCurveMin;
   window._calcWCurveMax = wCurveMax;
-  window._calcWSpec = wSpec;
+  window._calcWAxisMin  = wAxisMin;
+  window._calcWAxisMax  = wAxisMax;
+  window._calcWSpec     = wSpec;
   // compat: strats array for bell curve
   window._calcStrats = [{name:'Custom',w:offerCustomW||wTmt,color:'#f36f22'}];
 
@@ -4849,17 +4847,17 @@ function drawBellOnly(){
   var svg=document.getElementById('sh-bell-svg');
   if(!svg||!window._calcWCurveMin||!window._calcWCurveMax) return;
   var W=320, H=72, PAD=10, base=H-10;
-  var wCrvMin=window._calcWCurveMin, wCrvMax=window._calcWCurveMax, wSpec3=window._calcWSpec||wCrvMax;
+  var wCrvMin=window._calcWCurveMin, wCrvMax=window._calcWCurveMax;
+  var wAxisMin3=window._calcWAxisMin||wCrvMin, wAxisMax3=window._calcWAxisMax||wCrvMax;
   var mu=kgTmt2, sigma=(wCrvMax-wCrvMin)/6;
   if(sigma<=0) sigma=0.1;
   var offerW3=offerCustomW>0?offerCustomW:mu;
   var offerOutOfRange = offerW3 > wCrvMax;
-  var offerCol3=offerW3<=mu?'#A32D2D':offerW3<=wSpec3?'#BA7517':'#3B6D11';
-  var axisMin3=wCrvMin-(wCrvMax-wCrvMin)*0.1;
-  var axisMax3=wSpec3+(wSpec3-wCrvMin)*0.15;
+  var offerCol3=offerW3<=mu?'#A32D2D':offerW3<wCrvMax?'#BA7517':'#3B6D11';
+  // axis = TARGET±TOLERANCE (linear scale)
   function gpx3(v){
-    var uw=W-PAD*2, bp=wSpec3, ls=bp-axisMin3, rs=axisMax3-bp;
-    return v<=bp ? PAD+(v-axisMin3)/ls*(uw*0.75) : PAD+uw*0.75+(v-bp)/rs*(uw*0.25);
+    var uw=W-PAD*2, span=wAxisMax3-wAxisMin3;
+    return span>0 ? PAD+(v-wAxisMin3)/span*uw : PAD+uw*0.5;
   }
   function gauss3(v){ return Math.exp(-0.5*Math.pow((v-mu)/sigma,2)); }
   var STEPS=200, gpts=[];
@@ -4871,7 +4869,7 @@ function drawBellOnly(){
   for(var j=1;j<gpts.length;j++) gp+=' L '+gpts[j][0]+' '+gpts[j][1];
   gp+=' L '+gpx3(wCrvMax)+' '+base;
   var ox3=Math.min(Math.max(gpx3(offerW3),PAD),W-PAD);
-  var tx3=gpx3(mu), tgx3=gpx3(wSpec3), sx3=gpx3(axisMax3*0.98);
+  var tx3=gpx3(mu);
   svg.innerHTML=
     '<defs><clipPath id="bcl"><rect x="0" y="0" width="'+ox3+'" height="'+H+'"/></clipPath>'+
     '<clipPath id="bcr"><rect x="'+ox3+'" y="0" width="'+(W-ox3)+'" height="'+H+'"/></clipPath></defs>'+
@@ -4879,20 +4877,21 @@ function drawBellOnly(){
     '<path d="'+gp+' Z" fill="'+offerCol3+'" opacity="0.22" clip-path="url(#bcr)"/>'+
     '<path d="'+gp+'" fill="none" stroke="#565650" stroke-width="1.8"/>'+
     '<line x1="'+PAD+'" y1="'+base+'" x2="'+(W-PAD)+'" y2="'+base+'" stroke="#c4c4bf" stroke-width="0.5"/>'+
-    '<line x1="'+gpx3(wCrvMin)+'" y1="4" x2="'+gpx3(wCrvMin)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.5" stroke-dasharray="2,2"/>'+
-    '<line x1="'+gpx3(wCrvMax)+'" y1="4" x2="'+gpx3(wCrvMax)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.5" stroke-dasharray="2,2"/>'+
-    '<line x1="'+tgx3+'" y1="4" x2="'+tgx3+'" y2="'+base+'" stroke="#1a7a4a" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>'+
-    '<line x1="'+sx3+'" y1="4" x2="'+sx3+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
+    '<line x1="'+gpx3(wCrvMin)+'" y1="4" x2="'+gpx3(wCrvMin)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.8" stroke-dasharray="2,2"/>'+
+    '<line x1="'+gpx3(wCrvMax)+'" y1="4" x2="'+gpx3(wCrvMax)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.8" stroke-dasharray="2,2"/>'+
+    '<line x1="'+gpx3(wAxisMin3)+'" y1="4" x2="'+gpx3(wAxisMin3)+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
+    '<line x1="'+gpx3(wAxisMax3)+'" y1="4" x2="'+gpx3(wAxisMax3)+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
     '<circle cx="'+tx3+'" cy="'+base+'" r="3.5" fill="#f36f22"/>'+
     (offerOutOfRange ? '' :
       '<line x1="'+ox3+'" y1="5" x2="'+ox3+'" y2="'+base+'" stroke="'+offerCol3+'" stroke-width="2"/>'+
       '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol3+'"/>'+
       '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol3+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW3.toFixed(1)+'</text>'
     )+
+    '<text x="'+gpx3(wAxisMin3)+'" y="'+(base+11)+'" font-size="7" fill="#aaa" font-family="monospace" text-anchor="middle">'+wAxisMin3.toFixed(1)+'</text>'+
     '<text x="'+gpx3(wCrvMin)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
     '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+'</text>'+
     '<text x="'+gpx3(wCrvMax)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
-    '<text x="'+tgx3+'" y="'+(base+11)+'" font-size="7" fill="#1a7a4a" font-family="monospace" text-anchor="middle">'+wSpec3.toFixed(1)+'</text>';
+    '<text x="'+gpx3(wAxisMax3)+'" y="'+(base+11)+'" font-size="7" fill="#aaa" font-family="monospace" text-anchor="middle">'+wAxisMax3.toFixed(1)+'</text>';
 }
 
 function calcUpdate(){
