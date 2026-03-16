@@ -2580,15 +2580,18 @@ body{
                   <span style="color:#A32D2D;">◀ เสี่ยงขาดทุน</span>
                   <span style="color:#3B6D11;">โอกาสได้ครบ ▶</span>
                 </div>
-                <!-- risk card เดียว -->
-                <div style="margin-top:8px;background:var(--g50);border-radius:6px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;">
-                  <div>
-                    <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;">ความเสี่ยง</div>
-                    <div style="font-size:12px;font-weight:600;font-family:var(--mono);" id="offer-risk">—</div>
-                  </div>
-                  <div style="text-align:right;">
-                    <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;">ช่องว่างจาก max</div>
-                    <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--black);" id="offer-gap-max">—</div>
+                <!-- risk card -->
+                <div style="margin-top:8px;background:var(--g50);border-radius:6px;padding:8px 10px;">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                    <div>
+                      <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;">ความเสี่ยง</div>
+                      <div style="font-size:12px;font-weight:600;font-family:var(--mono);" id="offer-risk">—</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;">vs spec target</div>
+                      <div style="font-size:18px;font-weight:700;font-family:var(--mono);" id="offer-vs-spec">—</div>
+                      <div style="font-size:8px;color:var(--g400);font-family:var(--mono);" id="offer-vs-spec-sub">—</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -4809,6 +4812,21 @@ function renderOfferSlider(wMin, wSpec, wTmt){
     rsk.innerHTML = (prob>=70?'เสี่ยงขาดทุน':prob>=40?'สมดุล':'ลูกค้าร้องเรียน') +
       (qty2>0 ? '<br><span style="font-size:10px;color:var(--g400);">'+qty2+' แผ่น · '+bundles2+' มัด</span>' : '');
     rsk.style.color=col;
+  }
+  // vs spec target
+  var wSpecTarget = window._calcWSpec||wSpec;
+  var diff = v - wSpecTarget;
+  var vsEl  = document.getElementById('offer-vs-spec');
+  var vsSub = document.getElementById('offer-vs-spec-sub');
+  if(vsEl){
+    var sign = diff>=0 ? '+' : '';
+    vsEl.textContent = sign+diff.toFixed(2)+' kg';
+    vsEl.style.color = diff<0 ? '#1a7a4a' : diff===0 ? 'var(--black)' : '#b03a2e';
+  }
+  if(vsSub){
+    var specKg = wSpecTarget.toFixed(1);
+    vsSub.textContent = 'นำเสนอ '+v.toFixed(1)+' vs spec '+specKg+' kg';
+    vsSub.style.color = diff<0 ? '#1a7a4a' : '#b03a2e';
   }
 
   // update bell curve compat
