@@ -2507,17 +2507,41 @@ body{
               </div>
               <div style="display:flex;gap:5px;flex-wrap:wrap;padding-bottom:10px;" id="qty-quick-btns"></div>
 
-              <!-- strategy selector -->
+              <!-- weight offer slider -->
               <div style="border-top:1px solid var(--g200);padding:10px 0 6px;">
-                <div style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:4px;">น้ำหนักที่นำเสนอกับลูกค้า</div>
-              <div style="font-size:9px;color:var(--g400);font-family:var(--mono);margin-bottom:8px;">เลือก strategy เพื่อดูโอกาสขาดทุน vs ลูกค้าร้องเรียน</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;" id="offer-strats"></div>
-                <!-- custom input -->
-                <div id="offer-custom-row" style="display:none;margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                  <input type="number" id="offer-custom-val" step="0.1" style="width:80px;font-size:13px;font-weight:600;font-family:var(--mono);border:1px solid var(--g300);border-radius:6px;padding:5px 8px;background:var(--white);color:var(--black);" oninput="calcOfferCustom()">
-                  <span style="font-size:10px;color:var(--g400)">kg</span>
-                  <input type="range" id="offer-custom-slider" step="0.1" style="flex:1;min-width:60px;" oninput="calcOfferSlider()">
+                <div style="font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:8px;">น้ำหนักที่นำเสนอกับลูกค้า</div>
+                <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:10px;">
+                  <span style="font-size:24px;font-weight:700;font-family:var(--mono);" id="offer-slider-val">—</span>
+                  <span style="font-size:10px;color:var(--g400);">kg</span>
+                  <span style="font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:20px;margin-left:4px;" id="offer-slider-prob"></span>
                 </div>
+                <!-- track -->
+                <div style="position:relative;height:6px;border-radius:3px;background:var(--g100);margin-bottom:4px;" id="offer-track-bg">
+                  <div style="position:absolute;height:100%;border-radius:3px;transition:width .15s,background .15s;" id="offer-track-fill"></div>
+                </div>
+                <input type="range" id="offer-custom-slider" step="0.1"
+                  style="width:100%;margin:0 0 4px;" oninput="calcOfferSlider()">
+                <!-- ticks -->
+                <div style="position:relative;height:22px;" id="offer-ticks"></div>
+                <!-- gap info -->
+                <div style="display:flex;gap:8px;margin-top:8px;" id="offer-gaps">
+                  <div style="flex:1;background:var(--g50);border-radius:6px;padding:6px 8px;">
+                    <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);">ช่องว่างจาก min</div>
+                    <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--black);" id="offer-gap-min">—</div>
+                  </div>
+                  <div style="flex:1;background:var(--g50);border-radius:6px;padding:6px 8px;">
+                    <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);">ช่องว่างจาก max</div>
+                    <div style="font-size:13px;font-weight:600;font-family:var(--mono);color:var(--black);" id="offer-gap-max">—</div>
+                  </div>
+                  <div style="flex:1;background:var(--g50);border-radius:6px;padding:6px 8px;">
+                    <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);">ความเสี่ยง</div>
+                    <div style="font-size:11px;font-weight:600;font-family:var(--mono);" id="offer-risk">—</div>
+                  </div>
+                </div>
+                <!-- hidden compat -->
+                <div id="offer-strats" style="display:none"></div>
+                <div id="offer-custom-row" style="display:none"></div>
+                <input type="number" id="offer-custom-val" style="display:none">
               </div>
 
               <!-- results -->
@@ -4651,70 +4675,95 @@ var offerCustomW = 0;
 function calcInitOfferUI(){
   if(!currentSku) return;
   var s = currentSku;
-  var kgMin = parseFloat(s.THICK_MIN||'')||0;
-  var kgMax = parseFloat(s.THICK_MAX||'')||0;
-  var w = parseInt(s.WIDTH_MM)||0, l = parseInt(s.LENGTH_MM)||0;
+  var kgMin2 = parseFloat(s.THICK_MIN||'')||0;
+  var kgMax2 = parseFloat(s.THICK_MAX||'')||0;
+  var ww = parseInt(s.WIDTH_MM)||0, ll = parseInt(s.LENGTH_MM)||0;
   var D = 7.85;
-  function kgOf(t){ return w>0&&l>0 ? t*w*l*D/1000000 : 0; }
-  var wMin = kgMin>0 ? kgOf(kgMin) : calcKgPerSheet()*0.97;
-  var wMax = kgMax>0 ? kgOf(kgMax) : calcKgPerSheet()*1.03;
-  var wAvg = (wMin+wMax)/2;
-  var wConserv = wMin + (wMax-wMin)*0.15;
-  var wAggress = wMin + (wMax-wMin)*0.85;
-  var strats = [
-    {id:'conserv', name:'Conservative', w:wConserv, col:'#A32D2D', bg:'#FCEBEB'},
-    {id:'balanced', name:'Balanced',    w:wAvg,     col:'#854F0B', bg:'#FAEEDA'},
-    {id:'aggress',  name:'Aggressive',  w:wAggress, col:'#3B6D11', bg:'#EAF3DE'},
-    {id:'custom',   name:'Custom ✏',   w:offerCustomW||wAvg, col:'#534AB7', bg:'#EEEDFE'}
-  ];
+  function kgOf(t){ return ww>0&&ll>0 ? t*ww*ll*D/1000000 : 0; }
+  var tTarget = parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||0;
+  var wMin = kgMin2>0 ? kgOf(kgMin2) : calcKgPerSheet()*0.97;
+  var wSpec = tTarget>0 ? kgOf(tTarget) : calcKgPerSheet(); // max = spec target
+  var wMax = kgMax2>0 ? kgOf(kgMax2) : calcKgPerSheet()*1.03;
+  var wTmt  = calcKgPerSheet();
   var stock = parseInt(s.STOCK_QTY)||0;
+  var bnd   = parseInt(s.BUNDLE_SIZE)||5;
+  window._calcStock = stock;
+  window._calcBnd   = bnd;
+  // compat: strats array for bell curve
+  window._calcStrats = [{name:'Custom',w:offerCustomW||wTmt,color:'#f36f22'}];
+
   // quick buttons
-  var bnd = parseInt(s.BUNDLE_SIZE)||5;
   var qb = document.getElementById('qty-quick-btns');
   if(qb){
-    qb.innerHTML = '';
-    var presets = [{lbl:'1 มัด',v:bnd},{lbl:'ครึ่งสต็อก',v:Math.floor(stock/2)},{lbl:'ทั้งหมด',v:stock}];
-    presets.forEach(function(p){
+    qb.innerHTML='';
+    [{lbl:'1 มัด',v:bnd},{lbl:'ครึ่งสต็อก',v:Math.floor(stock/2)},{lbl:'ทั้งหมด',v:stock}].forEach(function(p){
       if(p.v<=0) return;
-      var btn = document.createElement('button');
-      btn.textContent = p.lbl+' ('+p.v+')';
+      var btn=document.createElement('button');
+      btn.textContent=p.lbl+' ('+p.v+')';
       btn.style.cssText='font-size:9px;padding:3px 10px;border:1px solid var(--g200);border-radius:20px;background:transparent;color:var(--g600);cursor:pointer;font-family:var(--mono)';
       btn.onclick=function(){ document.getElementById('qty').value=p.v; calcUpdate(); };
       qb.appendChild(btn);
     });
   }
-  // strategy buttons
-  var sg = document.getElementById('offer-strats');
-  if(!sg) return;
-  sg.innerHTML='';
-  strats.forEach(function(st,i){
-    var d = document.createElement('div');
-    d.style.cssText='border-radius:8px;padding:8px 10px;cursor:pointer;border:1.5px solid transparent;background:'+st.bg;
-    d.id='os-'+i;
-    if(i===offerStrat) d.style.borderColor=st.col;
-    d.innerHTML='<div style="font-size:10px;font-weight:700;color:var(--black)">'+st.name+'</div>'+
-      '<div style="font-size:14px;font-weight:500;color:'+st.col+'">'+st.w.toFixed(1)+' kg</div>';
-    d.onclick=(function(idx){return function(){ offerStrat=idx; calcInitOfferUI(); calcUpdate(); };})(i);
-    sg.appendChild(d);
-  });
-  // custom row
-  var cr = document.getElementById('offer-custom-row');
-  var cv = document.getElementById('offer-custom-val');
+
+  // init slider range
   var cs = document.getElementById('offer-custom-slider');
-  if(cr && cv && cs){
-    if(offerStrat===3){
-      cr.style.display='flex';
-      if(!offerCustomW) offerCustomW=wAvg;
-      cv.value=offerCustomW.toFixed(1);
-      cs.min=wMin.toFixed(1); cs.max=wMax.toFixed(1); cs.step='0.1';
-      cs.value=offerCustomW.toFixed(1);
-    } else {
-      cr.style.display='none';
-    }
+  if(!cs) return;
+  cs.min  = wMin.toFixed(2);
+  cs.max  = wSpec.toFixed(2);
+  cs.step = '0.1';
+  if(!offerCustomW || offerCustomW < wMin || offerCustomW > wSpec)
+    offerCustomW = parseFloat(wTmt.toFixed(1));
+  cs.value = offerCustomW.toFixed(1);
+
+  // build ticks
+  var tickWrap = document.getElementById('offer-ticks');
+  if(tickWrap){
+    tickWrap.innerHTML='';
+    var span = wSpec - wMin;
+    [{v:wMin,lbl:'min'},{v:wTmt,lbl:'TMT'},{v:wSpec,lbl:'spec'}].forEach(function(tk){
+      var pct=span>0?((tk.v-wMin)/span*100).toFixed(1):50;
+      var el=document.createElement('div');
+      el.style.cssText='position:absolute;left:'+pct+'%;transform:translateX(-50%);text-align:center;';
+      el.innerHTML='<div style="font-size:7px;color:var(--g400);font-family:var(--mono)">'+tk.lbl+'</div>'+
+        '<div style="font-size:8px;font-weight:600;font-family:var(--mono);color:var(--black)">'+tk.v.toFixed(1)+'</div>';
+      tickWrap.appendChild(el);
+    });
   }
-  window._calcStrats=strats;
-  window._calcStock=stock;
-  window._calcBnd=bnd;
+
+  renderOfferSlider(wMin, wSpec, wTmt);
+}
+
+function renderOfferSlider(wMin, wSpec, wTmt){
+  var v = offerCustomW;
+  var span = wSpec - wMin;
+  var pct = span>0 ? Math.min(Math.max((v-wMin)/span,0),1) : 0.5;
+  var prob = Math.round((1-pct)*100);
+  var col = prob>=70?'#A32D2D':prob>=40?'#BA7517':'#3B6D11';
+
+  var valEl=document.getElementById('offer-slider-val');
+  if(valEl){ valEl.textContent=v.toFixed(1); valEl.style.color=col; }
+
+  var probEl=document.getElementById('offer-slider-prob');
+  if(probEl){
+    var bg=prob>=70?'#FCEBEB':prob>=40?'#FAEEDA':'#EAF3DE';
+    probEl.textContent='โอกาสได้ครบ '+prob+'%';
+    probEl.style.background=bg; probEl.style.color=col;
+  }
+
+  var fill=document.getElementById('offer-track-fill');
+  if(fill){ fill.style.width=(pct*100).toFixed(1)+'%'; fill.style.background='linear-gradient(to right,#c4c4bf,'+'#c4c4bf '+((pct*50)).toFixed(0)+'%,'+col+')'; }
+
+  var gMin=document.getElementById('offer-gap-min');
+  var gMax=document.getElementById('offer-gap-max');
+  var rsk=document.getElementById('offer-risk');
+  if(gMin) gMin.textContent='+'+((v-wMin).toFixed(2))+' kg';
+  if(gMax) gMax.textContent=(wSpec-v).toFixed(2)+' kg';
+  if(rsk){ rsk.textContent=prob>=70?'เสี่ยงขาดทุน':prob>=40?'สมดุล':'ลูกค้าร้องเรียน'; rsk.style.color=col; }
+
+  // update bell curve compat
+  window._calcStrats=[{name:'Custom',w:v,color:col}];
+  offerStrat=0; offerCustomW=v;
 }
 
 function calcOfferCustom(){
@@ -4727,8 +4776,11 @@ function calcOfferCustom(){
 function calcOfferSlider(){
   var v=parseFloat(document.getElementById('offer-custom-slider').value)||0;
   offerCustomW=v;
-  var cv=document.getElementById('offer-custom-val');
-  if(cv) cv.value=v.toFixed(1);
+  var cv=document.getElementById('offer-custom-val'); if(cv) cv.value=v.toFixed(1);
+  var cs=document.getElementById('offer-custom-slider');
+  var wMin=cs?parseFloat(cs.min)||0:0;
+  var wSpec=cs?parseFloat(cs.max)||0:0;
+  renderOfferSlider(wMin, wSpec, 0);
   calcUpdate();
 }
 
