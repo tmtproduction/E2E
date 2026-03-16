@@ -5294,6 +5294,8 @@ function toggle3dPanel(){
   btn.querySelector('span:last-child').textContent = collapsed ? '3D Controls' : 'ปิด';
 }
 function setMarking(mode,btn){
+  var ov=document.getElementById('sf-logo-overlay');
+  if(ov) ov.style.display = mode==='show' ? '' : 'none';
   S.marking=mode;
   var group=btn.parentElement;
   group.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
@@ -5883,33 +5885,42 @@ function render3d(){
       var ty3   = ly+Math.round(8*sc);
       var lh1   = Math.round(fSz1*1.5), lh2=Math.round(fSz2*1.5);
 
-      // ── วาดโลโก้จาก Drive (async) ────────────────────
+      // ── โลโก้ STAY FLAT — overlay <img> บน canvas (ไม่มี CORS) ────
       var sfUrl = sqcLinks&&sqcLinks['stay flat'] ? sqcDriveUrl(sqcLinks['stay flat']) : null;
-      if(sfUrl){
-        // โหลด/cache รูป
-        if(!window._sfLogoImg){
-          window._sfLogoImg = new Image();
-          window._sfLogoImg.crossOrigin='anonymous';
-          window._sfLogoImg.onload=function(){ if(typeof render3d==='function') render3d(); };
-          window._sfLogoImg.src=sfUrl;
+      var canvasEl = canvas; // canvas element จาก outer scope
+      var overlayId = 'sf-logo-overlay';
+      var existing = document.getElementById(overlayId);
+      if(sfUrl && canvasEl){
+        var pr2 = window.devicePixelRatio||1;
+        // คำนวณ pixel position บน screen
+        var cRect = canvasEl.getBoundingClientRect();
+        var scaleX = cRect.width / (canvasEl.width);
+        var scaleY = cRect.height / (canvasEl.height);
+        var imgLeft = Math.round((lx/pr2)*scaleX + cRect.left - canvasEl.parentElement.getBoundingClientRect().left);
+        var imgTop  = Math.round((ly/pr2)*scaleY + cRect.top  - canvasEl.parentElement.getBoundingClientRect().top);
+        var imgW    = Math.round((logoW/pr2)*scaleX);
+        var imgH    = Math.round((lh/pr2)*scaleY);
+        if(!existing){
+          existing = document.createElement('img');
+          existing.id = overlayId;
+          existing.style.cssText='position:absolute;object-fit:contain;pointer-events:none;z-index:2;';
+          existing.src = sfUrl;
+          canvasEl.parentElement.style.position='relative';
+          canvasEl.parentElement.appendChild(existing);
         }
-        var img=window._sfLogoImg;
-        if(img.complete&&img.naturalWidth>0){
-          // วาดรูปใน logo zone
-          var iw=logoW-Math.round(8*sc), ih=lh-Math.round(12*sc);
-          var ir=img.naturalWidth/img.naturalHeight;
-          var dw=iw, dh=iw/ir;
-          if(dh>ih){dh=ih;dw=ih*ir;}
-          ctx.drawImage(img, lx+Math.round(4*sc), ly+Math.round((lh-dh)/2), dw, dh);
-        } else {
-          // fallback ถ้ายังโหลดไม่เสร็จ
-          ctx.font='900 '+Math.round(fSz1*1.1)+'px "Arial Narrow","Arial",sans-serif';
-          ctx.fillStyle='#0a0a0a'; ctx.textAlign='left'; ctx.textBaseline='top';
-          ctx.fillText('STAY', lx+Math.round(6*sc), ly+Math.round(8*sc));
-          ctx.fillText('FLAT', lx+Math.round(6*sc), ly+Math.round(8*sc)+Math.round(fSz1*1.3));
-        }
+        existing.style.left  = imgLeft+'px';
+        existing.style.top   = imgTop+'px';
+        existing.style.width = imgW+'px';
+        existing.style.height= imgH+'px';
+        existing.style.display='';
+      } else if(existing){
+        existing.style.display='none';
+        // fallback text
+        ctx.font='900 '+Math.round(fSz1*1.1)+'px "Arial Narrow","Arial",sans-serif';
+        ctx.fillStyle='#0a0a0a'; ctx.textAlign='left'; ctx.textBaseline='top';
+        ctx.fillText('STAY', lx+Math.round(6*sc), ly+Math.round(8*sc));
+        ctx.fillText('FLAT', lx+Math.round(6*sc), ly+Math.round(8*sc)+Math.round(fSz1*1.3));
       } else {
-        // ไม่มีลิ้งก์ — วาด text fallback
         ctx.font='900 '+Math.round(fSz1*1.1)+'px "Arial Narrow","Arial",sans-serif';
         ctx.fillStyle='#0a0a0a'; ctx.textAlign='left'; ctx.textBaseline='top';
         ctx.fillText('STAY', lx+Math.round(6*sc), ly+Math.round(8*sc));
