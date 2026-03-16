@@ -4775,9 +4775,16 @@ function renderOfferSlider(wMin, wSpec, wTmt){
 
   var probEl=document.getElementById('offer-slider-prob');
   if(probEl){
-    var bg=prob>=70?'#FCEBEB':prob>=40?'#FAEEDA':'#EAF3DE';
-    probEl.textContent='โอกาสได้ครบ '+prob+'%';
-    probEl.style.background=bg; probEl.style.color=col;
+    var cs2=document.getElementById('offer-custom-slider');
+    var wCrvMax3=window._calcWCurveMax||0;
+    if(wCrvMax3>0 && offerCustomW>wCrvMax3){
+      probEl.textContent='เกินช่วงที่เป็นไปได้ — ไม่มีข้อมูล';
+      probEl.style.background='#f5f5f3'; probEl.style.color='var(--g400)';
+    } else {
+      var bg=prob>=70?'#FCEBEB':prob>=40?'#FAEEDA':'#EAF3DE';
+      probEl.textContent='โอกาสได้ครบ '+prob+'%';
+      probEl.style.background=bg; probEl.style.color=col;
+    }
   }
 
   var fill=document.getElementById('offer-track-fill');
@@ -4837,6 +4844,7 @@ function drawBellOnly(){
   var mu=kgTmt2, sigma=(wCrvMax-wCrvMin)/6;
   if(sigma<=0) sigma=0.1;
   var offerW3=offerCustomW>0?offerCustomW:mu;
+  var offerOutOfRange = offerW3 > wCrvMax;
   var offerCol3=offerW3<=mu?'#A32D2D':offerW3<=wSpec3?'#BA7517':'#3B6D11';
   var axisMin3=wCrvMin-(wCrvMax-wCrvMin)*0.1;
   var axisMax3=wSpec3+(wSpec3-wCrvMin)*0.15;
@@ -4867,9 +4875,11 @@ function drawBellOnly(){
     '<line x1="'+tgx3+'" y1="4" x2="'+tgx3+'" y2="'+base+'" stroke="#1a7a4a" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>'+
     '<line x1="'+sx3+'" y1="4" x2="'+sx3+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
     '<circle cx="'+tx3+'" cy="'+base+'" r="3.5" fill="#f36f22"/>'+
-    '<line x1="'+ox3+'" y1="5" x2="'+ox3+'" y2="'+base+'" stroke="'+offerCol3+'" stroke-width="2"/>'+
-    '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol3+'"/>'+
-    '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol3+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW3.toFixed(1)+'</text>'+
+    (offerOutOfRange ? '' :
+      '<line x1="'+ox3+'" y1="5" x2="'+ox3+'" y2="'+base+'" stroke="'+offerCol3+'" stroke-width="2"/>'+
+      '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol3+'"/>'+
+      '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol3+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW3.toFixed(1)+'</text>'
+    )+
     '<text x="'+gpx3(wCrvMin)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
     '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+'</text>'+
     '<text x="'+gpx3(wCrvMax)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
