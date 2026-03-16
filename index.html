@@ -3657,7 +3657,9 @@ function openViewer(idx){
       var svg = document.getElementById('sh-bell-svg');
       if(!svg) return;
       var W=320, H=72;
-      var minW=kgMin, maxW=kgMax, span=maxW-minW;
+      var minW = window._calcWCurveMin||kgMin;
+      var maxW = window._calcWCurveMax||kgMax;
+      var span = maxW-minW;
       if(span<=0) return;
       function x2px(v){ return (v-minW)/span*(W-20)+10; }
       var maxPct2=Math.max.apply(null,rawPcts);
@@ -4675,20 +4677,24 @@ var offerCustomW = 0;
 function calcInitOfferUI(){
   if(!currentSku) return;
   var s = currentSku;
-  var kgMin2 = parseFloat(s.THICK_MIN||'')||0;
-  var kgMax2 = parseFloat(s.THICK_MAX||'')||0;
+  var tMin2  = parseFloat(s.THICK_MIN||'')||0;
+  var tMax2  = parseFloat(s.THICK_MAX||'')||0;
+  var tSpec  = parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||0;
   var ww = parseInt(s.WIDTH_MM)||0, ll = parseInt(s.LENGTH_MM)||0;
   var D = 7.85;
   function kgOf(t){ return ww>0&&ll>0 ? t*ww*ll*D/1000000 : 0; }
-  var tTarget = parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||0;
-  var wMin = kgMin2>0 ? kgOf(kgMin2) : calcKgPerSheet()*0.97;
-  var wSpec = tTarget>0 ? kgOf(tTarget) : calcKgPerSheet(); // max = spec target
-  var wMax = kgMax2>0 ? kgOf(kgMax2) : calcKgPerSheet()*1.03;
+  // Bell curve ขอบ = THICK_MIN → THICK_MAX
+  var wMin  = tMin2>0 ? kgOf(tMin2) : calcKgPerSheet()*0.97;
+  var wCurveMax = tMax2>0 ? kgOf(tMax2) : calcKgPerSheet()*1.03;
+  // Slider range = THICK_MIN → THICKNESS_TARGET (spec)
+  var wSpec = tSpec>0 ? kgOf(tSpec) : wCurveMax;
   var wTmt  = calcKgPerSheet();
   var stock = parseInt(s.STOCK_QTY)||0;
   var bnd   = parseInt(s.BUNDLE_SIZE)||5;
-  window._calcStock = stock;
-  window._calcBnd   = bnd;
+  window._calcStock    = stock;
+  window._calcBnd      = bnd;
+  window._calcWCurveMin = wMin;
+  window._calcWCurveMax = wCurveMax;
   // compat: strats array for bell curve
   window._calcStrats = [{name:'Custom',w:offerCustomW||wTmt,color:'#f36f22'}];
 
@@ -4721,7 +4727,8 @@ function calcInitOfferUI(){
   if(tickWrap){
     tickWrap.innerHTML='';
     var span = wSpec - wMin;
-    [{v:wMin,lbl:'min'},{v:wTmt,lbl:'TMT'},{v:wSpec,lbl:'spec'}].forEach(function(tk){
+    var wCurveMax2 = window._calcWCurveMax||wSpec;
+  [{v:wMin,lbl:'min'},{v:wTmt,lbl:'TMT'},{v:wSpec,lbl:'spec (max slider)'}].forEach(function(tk){
       var pct=span>0?((tk.v-wMin)/span*100).toFixed(1):50;
       var el=document.createElement('div');
       el.style.cssText='position:absolute;left:'+pct+'%;transform:translateX(-50%);text-align:center;';
@@ -4757,9 +4764,18 @@ function renderOfferSlider(wMin, wSpec, wTmt){
   var gMin=document.getElementById('offer-gap-min');
   var gMax=document.getElementById('offer-gap-max');
   var rsk=document.getElementById('offer-risk');
-  if(gMin) gMin.textContent='+'+((v-wMin).toFixed(2))+' kg';
-  if(gMax) gMax.textContent=(wSpec-v).toFixed(2)+' kg';
-  if(rsk){ rsk.textContent=prob>=70?'เสี่ยงขาดทุน':prob>=40?'สมดุล':'ลูกค้าร้องเรียน'; rsk.style.color=col; }
+  var gMinKg = (v-wMin).toFixed(2);
+  var gMaxKg = (wSpec-v).toFixed(2);
+  var stock2 = window._calcStock||0, bnd2 = window._calcBnd||5;
+  var qty2 = parseInt((document.getElementById('qty')||{}).value)||0;
+  var bundles2 = bnd2>0 ? Math.ceil(qty2/bnd2) : 0;
+  if(gMin) gMin.textContent = '+'+gMinKg+' kg';
+  if(gMax) gMax.textContent = gMaxKg+' kg';
+  if(rsk){
+    rsk.innerHTML = (prob>=70?'เสี่ยงขาดทุน':prob>=40?'สมดุล':'ลูกค้าร้องเรียน') +
+      (qty2>0 ? '<br><span style="font-size:10px;color:var(--g400);">'+qty2+' แผ่น · '+bundles2+' มัด</span>' : '');
+    rsk.style.color=col;
+  }
 
   // update bell curve compat
   window._calcStrats=[{name:'Custom',w:v,color:col}];
