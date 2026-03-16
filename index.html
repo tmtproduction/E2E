@@ -3699,15 +3699,15 @@ function openViewer(idx){
       var wAxisMax2 = window._calcWAxisMax||wCrvMax;
       var mu      = kgTmt;
       var sigma   = (wCrvMax-wCrvMin)/6;
-      if(sigma<=0) sigma=0.1;
+      if(sigma<0.05) sigma=0.05;
 
       var offerW2 = offerCustomW>0 ? offerCustomW : kgTmt;
       var offerCol2 = offerW2<=mu?'#A32D2D':offerW2<wCrvMax?'#BA7517':'#3B6D11';
 
       // axis ขยายให้ curve กว้าง: ใช้ mu±4σ อย่างน้อย
-      var sigmaAxis2 = sigma;
-      var autoMin2 = mu - Math.max(4*sigmaAxis2, (mu-wAxisMin2));
-      var autoMax2 = wAxisMax2; // ขวาสุด = TARGET (spec)
+      var sigmaAxis2 = Math.max(sigma, 0.05);
+      var autoMin2 = mu - 4*sigmaAxis2;
+      var autoMax2 = Math.max(mu + 4*sigmaAxis2, wAxisMax2);
       function gpx(v){
         var uw=W-PAD*2, span=autoMax2-autoMin2;
         return span>0 ? PAD+(v-autoMin2)/span*uw : PAD+uw*0.5;
@@ -4946,14 +4946,14 @@ function drawBellOnly(){
   var wCrvMin=window._calcWCurveMin, wCrvMax=window._calcWCurveMax;
   var wAxisMin3=window._calcWAxisMin||wCrvMin, wAxisMax3=window._calcWAxisMax||wCrvMax;
   var mu=kgTmt2, sigma=(wCrvMax-wCrvMin)/6;
-  if(sigma<=0) sigma=0.1;
+  if(sigma<0.05) sigma=0.05;
   var offerW3=offerCustomW>0?offerCustomW:mu;
   var offerOutOfRange = offerW3 > wCrvMax;
   var offerCol3=offerW3<=mu?'#A32D2D':offerW3<wCrvMax?'#BA7517':'#3B6D11';
   // axis ขยายให้ curve กว้าง: ใช้ mu±4σ อย่างน้อย
-  var sigmaAxis3 = sigma;
-  var autoMin3 = mu - Math.max(4*sigmaAxis3, (mu-wAxisMin3));
-  var autoMax3 = wAxisMax3; // ขวาสุด = TARGET (spec)
+  var sigmaAxis3 = Math.max(sigma, 0.05);
+  var autoMin3 = mu - 4*sigmaAxis3;
+  var autoMax3 = Math.max(mu + 4*sigmaAxis3, wAxisMax3);
   function gpx3(v){
     var uw=W-PAD*2, span=autoMax3-autoMin3;
     return span>0 ? PAD+(v-autoMin3)/span*uw : PAD+uw*0.5;
