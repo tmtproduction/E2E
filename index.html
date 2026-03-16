@@ -3707,7 +3707,7 @@ function openViewer(idx){
       // axis ขยายให้ curve กว้าง: ใช้ mu±4σ อย่างน้อย
       var sigmaAxis2 = sigma;
       var autoMin2 = mu - Math.max(4*sigmaAxis2, (mu-wAxisMin2));
-      var autoMax2 = mu + Math.max(4*sigmaAxis2, (wAxisMax2-mu));
+      var autoMax2 = wAxisMax2; // ขวาสุด = TARGET (spec)
       function gpx(v){
         var uw=W-PAD*2, span=autoMax2-autoMin2;
         return span>0 ? PAD+(v-autoMin2)/span*uw : PAD+uw*0.5;
@@ -4953,7 +4953,7 @@ function drawBellOnly(){
   // axis ขยายให้ curve กว้าง: ใช้ mu±4σ อย่างน้อย
   var sigmaAxis3 = sigma;
   var autoMin3 = mu - Math.max(4*sigmaAxis3, (mu-wAxisMin3));
-  var autoMax3 = mu + Math.max(4*sigmaAxis3, (wAxisMax3-mu));
+  var autoMax3 = wAxisMax3; // ขวาสุด = TARGET (spec)
   function gpx3(v){
     var uw=W-PAD*2, span=autoMax3-autoMin3;
     return span>0 ? PAD+(v-autoMin3)/span*uw : PAD+uw*0.5;
