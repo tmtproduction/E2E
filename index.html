@@ -2428,7 +2428,7 @@ body{
                     <span id="sh-wt-tmt-lbl" style="color:#f36f22;font-weight:500;">—</span>
                     <span id="sh-wt-max">—</span>
                   </div>
-                  <div id="sh-bell-prob" style="display:none;font-size:9px;font-family:var(--mono);padding:4px 8px;border-radius:4px;margin-top:5px;"></div>
+            
                 </div>
                 <div id="sh-wt-range" style="display:none">
                   <span id="sh-wt-min-hidden" style="display:none">—</span>
@@ -3652,7 +3652,7 @@ function openViewer(idx){
       var path='M '+pts[0][0]+' '+pts[0][1];
       for(var i=1;i<pts.length-2;i++){
         var p0=pts[Math.max(i-1,0)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(i+2,pts.length-1)];
-        for(var t=0;t<=1;t+=0.15){
+        for(var t=0;t<=1;t+=0.05){
           path+=' L '+cm(p0[0],p1[0],p2[0],p3[0],t).toFixed(1)+' '+cm(p0[1],p1[1],p2[1],p3[1],t).toFixed(1);
         }
       }
@@ -3682,16 +3682,7 @@ function openViewer(idx){
         '<text x="'+(ox>W-50?ox-4:ox+4)+'" y="15" font-size="8" fill="'+offerCol2+'" font-family="monospace" font-weight="700" text-anchor="'+(ox>W-50?'end':'start')+'">'+offerW2.toFixed(1)+'</text>'+
         '<line x1="10" y1="'+(H-10)+'" x2="'+(W-10)+'" y2="'+(H-10)+'" stroke="#ddddd9" stroke-width="0.5"/>';
 
-      // prob pill
-      var probEl2=document.getElementById('sh-bell-prob');
-      if(probEl2){
-        var pc=prob2>=70?'#3B6D11':prob2>=40?'#854F0B':'#A32D2D';
-        var bg=prob2>=70?'#EAF3DE':prob2>=40?'#FAEEDA':'#FCEBEB';
-        var adv=prob2>=80?'⚠ เสี่ยงขาดทุน':prob2>=50?'~ สมดุล':'⚠ เสี่ยงลูกค้าร้องเรียน';
-        probEl2.style.display='';
-        probEl2.style.background=bg; probEl2.style.color=pc;
-        probEl2.textContent=adv+' — โอกาสได้ ≥ ที่นำเสนอ '+prob2+'%';
-      }
+
     })();
 
     // range bar
