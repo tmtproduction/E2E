@@ -3712,8 +3712,10 @@ function openViewer(idx){
     })();
 
     // range bar
-    setText('sh-wt-min', kgMin.toFixed(1)+' kg');
-    setText('sh-wt-max', kgMax.toFixed(1)+' kg');
+    var rMin2 = window._calcWCurveMin||kgMin;
+    var rMax2 = window._calcWCurveMax||kgMax;
+    setText('sh-wt-min', rMin2.toFixed(1)+' kg');
+    setText('sh-wt-max', rMax2.toFixed(1)+' kg');
     setText('sh-wt-tmt-lbl', kgTmt.toFixed(1)+' kg (TMT)');
     var fill = document.getElementById('sh-range-fill');
     var dot  = document.getElementById('sh-range-dot');
@@ -4683,10 +4685,13 @@ function calcInitOfferUI(){
   var ww = parseInt(s.WIDTH_MM)||0, ll = parseInt(s.LENGTH_MM)||0;
   var D = 7.85;
   function kgOf(t){ return ww>0&&ll>0 ? t*ww*ll*D/1000000 : 0; }
-  // Bell curve ขอบ = THICK_MIN → THICK_MAX
-  var wMin  = tMin2>0 ? kgOf(tMin2) : calcKgPerSheet()*0.97;
-  var wCurveMax = tMax2>0 ? kgOf(tMax2) : calcKgPerSheet()*1.03;
-  // Slider range = THICK_MIN → THICKNESS_TARGET (spec)
+  // Bell curve ขอบ = TARGET ± TOLERANCE (spec limit)
+  var tTol2 = parseFloat(s.TOLERANCE_THICKNESS||0);
+  var specLimitMin = tSpec>0&&tTol2>0 ? tSpec-tTol2 : (tMin2>0?tMin2:0);
+  var specLimitMax = tSpec>0&&tTol2>0 ? tSpec+tTol2 : (tMax2>0?tMax2:0);
+  var wMin  = specLimitMin>0 ? kgOf(specLimitMin) : calcKgPerSheet()*0.97;
+  var wCurveMax = specLimitMax>0 ? kgOf(specLimitMax) : calcKgPerSheet()*1.03;
+  // Slider range = spec limit min → THICKNESS_TARGET (spec)
   var wSpec = tSpec>0 ? kgOf(tSpec) : wCurveMax;
   var wTmt  = calcKgPerSheet();
   var stock = parseInt(s.STOCK_QTY)||0;
@@ -4728,7 +4733,8 @@ function calcInitOfferUI(){
     tickWrap.innerHTML='';
     var span = wSpec - wMin;
     var wCurveMax2 = window._calcWCurveMax||wSpec;
-  [{v:wMin,lbl:'min'},{v:wTmt,lbl:'TMT'},{v:wSpec,lbl:'spec (max slider)'}].forEach(function(tk){
+  var wCurveMax2 = window._calcWCurveMax||wSpec;
+  [{v:wMin,lbl:'−tol'},{v:wTmt,lbl:'TMT'},{v:wSpec,lbl:'target'},{v:wCurveMax,lbl:'+tol'}].forEach(function(tk){
       var pct=span>0?((tk.v-wMin)/span*100).toFixed(1):50;
       var el=document.createElement('div');
       el.style.cssText='position:absolute;left:'+pct+'%;transform:translateX(-50%);text-align:center;';
