@@ -2582,16 +2582,32 @@ body{
                 </div>
                 <!-- risk card -->
                 <div style="margin-top:8px;background:var(--g50);border-radius:6px;padding:8px 10px;">
-                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
-                    <div>
-                      <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;">ความเสี่ยง</div>
-                      <div style="font-size:12px;font-weight:600;font-family:var(--mono);" id="offer-risk">—</div>
+                  <!-- row 1: ความเสี่ยง -->
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                    <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);">ความเสี่ยง</div>
+                    <div style="font-size:12px;font-weight:600;font-family:var(--mono);" id="offer-risk">—</div>
+                  </div>
+                  <!-- row 2: gap bar -->
+                  <div style="margin-bottom:6px;">
+                    <div style="display:flex;justify-content:space-between;font-size:8px;font-family:var(--mono);color:var(--g400);margin-bottom:3px;">
+                      <span>THICK_MIN</span>
+                      <span id="offer-gap-bar-label" style="font-weight:600;color:var(--black);">—</span>
+                      <span>TARGET</span>
                     </div>
-                    <div style="text-align:right;">
-                      <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;">vs spec target</div>
-                      <div style="font-size:18px;font-weight:700;font-family:var(--mono);" id="offer-vs-spec">—</div>
-                      <div style="font-size:8px;color:var(--g400);font-family:var(--mono);" id="offer-vs-spec-sub">—</div>
+                    <div style="position:relative;height:8px;background:var(--g200);border-radius:4px;overflow:hidden;">
+                      <div id="offer-gap-bar-fill" style="position:absolute;height:100%;border-radius:4px;transition:width .2s,background .2s;"></div>
+                      <div id="offer-gap-bar-dot" style="position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--black);border:2px solid var(--white);transform:translate(-50%,-50%);transition:left .2s;"></div>
                     </div>
+                    <div style="display:flex;justify-content:space-between;font-size:8px;font-family:var(--mono);color:var(--g400);margin-top:2px;">
+                      <span id="offer-gap-min-lbl">—</span>
+                      <span id="offer-gap-max-lbl">—</span>
+                    </div>
+                  </div>
+                  <!-- row 3: diff จาก target -->
+                  <div style="display:flex;align-items:baseline;gap:6px;">
+                    <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);">ห่างจาก target</div>
+                    <div style="font-size:16px;font-weight:700;font-family:var(--mono);" id="offer-vs-spec">—</div>
+                    <div style="font-size:9px;font-family:var(--mono);color:var(--g400);" id="offer-vs-spec-sub">—</div>
                   </div>
                 </div>
               </div>
@@ -4809,24 +4825,42 @@ function renderOfferSlider(wMin, wSpec, wTmt){
   if(gMin) gMin.textContent = '+'+gMinKg+' kg';
   if(gMax) gMax.textContent = gMaxKg+' kg';
   if(rsk){
-    rsk.innerHTML = (prob>=70?'เสี่ยงขาดทุน':prob>=40?'สมดุล':'ลูกค้าร้องเรียน') +
-      (qty2>0 ? '<br><span style="font-size:10px;color:var(--g400);">'+qty2+' แผ่น · '+bundles2+' มัด</span>' : '');
-    rsk.style.color=col;
+    rsk.innerHTML = qty2>0 ? qty2+' แผ่น · '+bundles2+' มัด' : '—';
+    rsk.style.color = 'var(--black)';
   }
-  // vs spec target
-  var wSpecTarget = window._calcWSpec||wSpec;
-  var diff = v - wSpecTarget;
+  // gap bar + vs spec target
+  // wSpecTarget = น้ำหนักจาก THICKNESS_TARGET_MM โดยตรง
+  var _tgt = currentSku ? parseFloat(currentSku.THICKNESS_TARGET_MM||0) : 0;
+  var _w   = currentSku ? parseInt(currentSku.WIDTH_MM)||0 : 0;
+  var _l   = currentSku ? parseInt(currentSku.LENGTH_MM)||0 : 0;
+  var wSpecTarget = (_tgt>0&&_w>0&&_l>0) ? _tgt*_w*_l*7.85/1e6 : (window._calcWSpec||wSpec);
+  var wBarMin     = window._calcWCurveMin||wMin;
+  var span3       = wSpecTarget - wBarMin;
+  var pctBar      = span3>0 ? Math.min(Math.max((v-wBarMin)/span3*100,0),100) : 50;
+  var diff        = v - wSpecTarget;
+  var barCol      = diff<0 ? '#1a7a4a' : diff===0 ? '#888' : '#b03a2e';
+
+  var barFill = document.getElementById('offer-gap-bar-fill');
+  var barDot  = document.getElementById('offer-gap-bar-dot');
+  var barLbl  = document.getElementById('offer-gap-bar-label');
+  var minLbl  = document.getElementById('offer-gap-min-lbl');
+  var maxLbl  = document.getElementById('offer-gap-max-lbl');
+  if(barFill){ barFill.style.width=pctBar+'%'; barFill.style.background=barCol; }
+  if(barDot){ barDot.style.left=pctBar+'%'; }
+  if(barLbl){ barLbl.textContent=v.toFixed(1)+' kg'; barLbl.style.color=barCol; }
+  if(minLbl){ minLbl.textContent=wBarMin.toFixed(1)+' kg'; }
+  if(maxLbl){ maxLbl.textContent=wSpecTarget.toFixed(1)+' kg'; }
+
   var vsEl  = document.getElementById('offer-vs-spec');
   var vsSub = document.getElementById('offer-vs-spec-sub');
   if(vsEl){
     var sign = diff>=0 ? '+' : '';
     vsEl.textContent = sign+diff.toFixed(2)+' kg';
-    vsEl.style.color = diff<0 ? '#1a7a4a' : diff===0 ? 'var(--black)' : '#b03a2e';
+    vsEl.style.color = barCol;
   }
   if(vsSub){
-    var specKg = wSpecTarget.toFixed(1);
-    vsSub.textContent = 'นำเสนอ '+v.toFixed(1)+' vs spec '+specKg+' kg';
-    vsSub.style.color = diff<0 ? '#1a7a4a' : '#b03a2e';
+    vsSub.textContent = v.toFixed(1)+' kg vs target '+wSpecTarget.toFixed(1)+' kg';
+    vsSub.style.color = 'var(--g400)';
   }
 
   // update bell curve compat
