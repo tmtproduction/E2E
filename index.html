@@ -2580,36 +2580,59 @@ body{
                   <span style="color:#A32D2D;">◀ เสี่ยงขาดทุน</span>
                   <span style="color:#3B6D11;">โอกาสได้ครบ ▶</span>
                 </div>
-                <!-- risk card -->
-                <div style="margin-top:8px;background:var(--g50);border-radius:6px;padding:8px 10px;">
-                  <!-- row 1: ความเสี่ยง -->
-                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                    <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);">ความเสี่ยง</div>
-                    <div style="font-size:12px;font-weight:600;font-family:var(--mono);" id="offer-risk">—</div>
+                <!-- gap axis card -->
+                <div style="margin-top:8px;background:var(--g50);border-radius:6px;padding:10px 12px;display:flex;gap:14px;align-items:stretch;">
+                  <!-- แกนตั้ง -->
+                  <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;padding:2px 0;">
+                    <div style="width:1.5px;height:14px;background:var(--g300);"></div>
+                    <div style="font-size:7px;font-family:var(--mono);color:var(--g400);writing-mode:horizontal-tb;white-space:nowrap;transform:none;margin:0;">┬</div>
+                    <div style="width:1.5px;flex:1;background:var(--g300);"></div>
+                    <div style="width:10px;height:10px;border-radius:50%;border:2px solid var(--black);background:var(--white);flex-shrink:0;" id="offer-axis-dot"></div>
+                    <div style="width:1.5px;flex:1;background:var(--g300);"></div>
+                    <div style="font-size:7px;font-family:var(--mono);color:var(--g400);">┬</div>
+                    <div style="width:1.5px;flex:1;background:var(--g300);"></div>
+                    <div style="font-size:7px;font-family:var(--mono);color:var(--g400);">┬</div>
+                    <div style="width:1.5px;height:14px;background:var(--g300);"></div>
                   </div>
-                  <!-- row 2: gap bar -->
-                  <div style="margin-bottom:6px;">
-                    <div style="display:flex;justify-content:space-between;font-size:8px;font-family:var(--mono);color:var(--g400);margin-bottom:3px;">
-                      <span>THICK_MIN</span>
-                      <span id="offer-gap-bar-label" style="font-weight:600;color:var(--black);">—</span>
-                      <span>TARGET</span>
+                  <!-- labels -->
+                  <div style="display:flex;flex-direction:column;flex:1;justify-content:space-between;">
+                    <!-- THICK_MIN -->
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                      <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">THICK_MIN</span>
+                      <span style="font-size:10px;font-weight:600;font-family:var(--mono);" id="gap-lbl-min">—</span>
                     </div>
-                    <div style="position:relative;height:8px;background:var(--g200);border-radius:4px;overflow:hidden;">
-                      <div id="offer-gap-bar-fill" style="position:absolute;height:100%;border-radius:4px;transition:width .2s,background .2s;"></div>
-                      <div id="offer-gap-bar-dot" style="position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--black);border:2px solid var(--white);transform:translate(-50%,-50%);transition:left .2s;"></div>
+                    <!-- offer (วงกลม) -->
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;margin:4px 0;">
+                      <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">นำเสนอ</span>
+                      <span style="font-size:14px;font-weight:700;font-family:var(--mono);" id="gap-lbl-offer">—</span>
                     </div>
-                    <div style="display:flex;justify-content:space-between;font-size:8px;font-family:var(--mono);color:var(--g400);margin-top:2px;">
-                      <span id="offer-gap-min-lbl">—</span>
-                      <span id="offer-gap-max-lbl">—</span>
+                    <!-- THICK_MAX -->
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                      <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">THICK_MAX</span>
+                      <span style="font-size:10px;font-weight:600;font-family:var(--mono);" id="gap-lbl-max">—</span>
                     </div>
-                  </div>
-                  <!-- row 3: diff จาก target -->
-                  <div style="display:flex;align-items:baseline;gap:6px;">
-                    <div style="font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);">ห่างจาก target</div>
-                    <div style="font-size:16px;font-weight:700;font-family:var(--mono);" id="offer-vs-spec">—</div>
-                    <div style="font-size:9px;font-family:var(--mono);color:var(--g400);" id="offer-vs-spec-sub">—</div>
+                    <!-- gap line -->
+                    <div style="border-top:1px dashed var(--g200);margin:4px 0;"></div>
+                    <!-- THICKNESS_TARGET -->
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                      <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">TARGET</span>
+                      <span style="font-size:10px;font-weight:600;font-family:var(--mono);color:#1a7a4a;" id="gap-lbl-target">—</span>
+                    </div>
+                    <!-- diff -->
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px;padding-top:4px;border-top:1px solid var(--g200);">
+                      <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">ห่างจาก target</span>
+                      <span style="font-size:16px;font-weight:700;font-family:var(--mono);" id="offer-vs-spec">—</span>
+                    </div>
                   </div>
                 </div>
+                <!-- compat hidden -->
+                <div id="offer-gap-bar-label" style="display:none"></div>
+                <div id="offer-gap-bar-fill" style="display:none"></div>
+                <div id="offer-gap-bar-dot" style="display:none"></div>
+                <div id="offer-gap-min-lbl" style="display:none"></div>
+                <div id="offer-gap-max-lbl" style="display:none"></div>
+                <div id="offer-vs-spec-sub" style="display:none"></div>
+                <div id="offer-risk" style="display:none"></div>
               </div>
 
               <!-- hidden compat -->
@@ -4840,28 +4863,20 @@ function renderOfferSlider(wMin, wSpec, wTmt){
   var diff        = v - wSpecTarget;
   var barCol      = diff<0 ? '#1a7a4a' : diff===0 ? '#888' : '#b03a2e';
 
-  var barFill = document.getElementById('offer-gap-bar-fill');
-  var barDot  = document.getElementById('offer-gap-bar-dot');
-  var barLbl  = document.getElementById('offer-gap-bar-label');
-  var minLbl  = document.getElementById('offer-gap-min-lbl');
-  var maxLbl  = document.getElementById('offer-gap-max-lbl');
-  if(barFill){ barFill.style.width=pctBar+'%'; barFill.style.background=barCol; }
-  if(barDot){ barDot.style.left=pctBar+'%'; }
-  if(barLbl){ barLbl.textContent=v.toFixed(1)+' kg'; barLbl.style.color=barCol; }
-  if(minLbl){ minLbl.textContent=wBarMin.toFixed(1)+' kg'; }
-  if(maxLbl){ maxLbl.textContent=wSpecTarget.toFixed(1)+' kg'; }
-
-  var vsEl  = document.getElementById('offer-vs-spec');
-  var vsSub = document.getElementById('offer-vs-spec-sub');
-  if(vsEl){
-    var sign = diff>=0 ? '+' : '';
-    vsEl.textContent = sign+diff.toFixed(2)+' kg';
-    vsEl.style.color = barCol;
-  }
-  if(vsSub){
-    vsSub.textContent = v.toFixed(1)+' kg vs target '+wSpecTarget.toFixed(1)+' kg';
-    vsSub.style.color = 'var(--g400)';
-  }
+  // vertical axis labels
+  var setText2 = function(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; };
+  var setColor2 = function(id,c){ var el=document.getElementById(id); if(el) el.style.color=c; };
+  var wCrvMax2 = window._calcWCurveMax||wSpec;
+  setText2('gap-lbl-min',   wBarMin.toFixed(2)+' kg');
+  setText2('gap-lbl-offer', v.toFixed(2)+' kg');
+  setText2('gap-lbl-max',   wCrvMax2.toFixed(2)+' kg');
+  setText2('gap-lbl-target',wSpecTarget.toFixed(2)+' kg');
+  var sign = diff>=0 ? '+' : '';
+  setText2('offer-vs-spec', sign+diff.toFixed(2)+' kg');
+  setColor2('offer-vs-spec', barCol);
+  // dot color
+  var dotEl = document.getElementById('offer-axis-dot');
+  if(dotEl){ dotEl.style.borderColor = barCol; }
 
   // update bell curve compat
   window._calcStrats=[{name:'Custom',w:v,color:col}];
