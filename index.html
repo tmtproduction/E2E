@@ -3656,94 +3656,70 @@ function openViewer(idx){
     (function drawBell(){
       var svg = document.getElementById('sh-bell-svg');
       if(!svg) return;
-      var W=320, H=72;
-      var minW = window._calcWCurveMin||kgMin;
-      var maxW = window._calcWCurveMax||kgMax;
-      var span = maxW-minW;
-      if(span<=0) return;
-      function x2px(v){ return (v-minW)/span*(W-20)+10; }
-      var maxPct2=Math.max.apply(null,rawPcts);
-      // build smooth curve points
-      var pts=[[x2px(minW), H-10]];
-      rawPcts.forEach(function(pct,i){
-        var mid=(kgMin+(i+0.5)*step);
-        pts.push([x2px(mid), H-10-(pct/maxPct2)*(H-22)]);
-      });
-      pts.push([x2px(maxW), H-10]);
-      // catmull-rom smooth
-      function cm(p0,p1,p2,p3,t){
-        var t2=t*t,t3=t2*t;
-        return 0.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t2+(-p0+3*p1-3*p2+p3)*t3);
-      }
-      var path='M '+pts[0][0]+' '+pts[0][1];
-      for(var i=1;i<pts.length-2;i++){
-        var p0=pts[Math.max(i-1,0)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(i+2,pts.length-1)];
-        for(var t=0;t<=1;t+=0.05){
-          path+=' L '+cm(p0[0],p1[0],p2[0],p3[0],t).toFixed(1)+' '+cm(p0[1],p1[1],p2[1],p3[1],t).toFixed(1);
-        }
-      }
-      path+=' L '+pts[pts.length-1][0]+' '+pts[pts.length-1][1];
+      var W=320, H=72, PAD=10, base=H-10;
 
-      // offer strategy
-      var strats2=window._calcStrats||[];
-      var offerW2=strats2[offerStrat]?strats2[offerStrat].w:kgTmt;
-      if(offerStrat===3&&offerCustomW>0) offerW2=offerCustomW;
-      var offerCol2=strats2[offerStrat]?strats2[offerStrat].color:'#f36f22';
-      var ox=x2px(Math.min(Math.max(offerW2,minW),maxW));
-      var tx=x2px(kgTmt);
-      var prob2=Math.round(Math.max(0,Math.min(100,(maxW-offerW2)/span*100)));
+      // พิกัด
+      var wCrvMin = window._calcWCurveMin||kgMin;
+      var wCrvMax = window._calcWCurveMax||kgMax;
+      var wSpec2  = window._calcWSpec||kgMax;
+      var mu      = kgTmt; // mean = TMT
+      var sigma   = (wCrvMax-wCrvMin)/6; // ±3σ ครอบ distribution
+      if(sigma<=0) sigma=0.1;
 
-      // แกน x กว้างตลอด: min → spec (wSpec ที่ได้จาก _calcStrats[0])
-      var axisMin = window._calcWCurveMin||minW;
-      var axisMax = window._calcWSpec||(window._calcStrats&&window._calcStrats[0]?window._calcStrats[0].w*1.04:maxW*1.04);
-      // bell curve อยู่ใน axisMin..curveMaxW เท่านั้น
-      var curveMaxW = window._calcWCurveMax||maxW;
-      // remap x2px ให้ใช้ axis เต็ม
-      function x2pxFull(v){ return (v-axisMin)/(axisMax-axisMin)*(W-20)+10; }
-      var lx = x2pxFull(axisMin);
-      var rx = x2pxFull(curveMaxW); // ขอบขวา curve
-      var sx = x2pxFull(axisMax);   // ขอบขวา spec (สุดแกน)
-      var ox2 = x2pxFull(offerW2);
-      var tx2 = x2pxFull(kgTmt);
-      // สร้าง curve path ใหม่ใน full axis space
-      var pts2=[[x2pxFull(minW), H-10]];
-      rawPcts.forEach(function(pct,i){
-        var mid=(kgMin+(i+0.5)*step);
-        pts2.push([x2pxFull(mid), H-10-(pct/maxPct2)*(H-22)]);
-      });
-      pts2.push([x2pxFull(maxW), H-10]);
-      var path2='M '+pts2[0][0]+' '+pts2[0][1];
-      for(var i2=1;i2<pts2.length-2;i2++){
-        var p0=pts2[Math.max(i2-1,0)],p1=pts2[i2],p2=pts2[i2+1],p3=pts2[Math.min(i2+2,pts2.length-1)];
-        for(var t2=0;t2<=1;t2+=0.05){
-          path2+=' L '+cm(p0[0],p1[0],p2[0],p3[0],t2).toFixed(1)+' '+cm(p0[1],p1[1],p2[1],p3[1],t2).toFixed(1);
-        }
+      // offer
+      var offerW2 = offerCustomW>0 ? offerCustomW : kgTmt;
+      var offerCol2 = offerW2<=mu?'#A32D2D':offerW2<=wSpec2?'#BA7517':'#3B6D11';
+
+      // non-linear px: 75% สำหรับ wCrvMin→wSpec2, 25% สำหรับ wSpec2→wCrvMax*1.1
+      var axisMin2 = wCrvMin - (wCrvMax-wCrvMin)*0.1;
+      var axisMax2 = wSpec2 + (wSpec2-wCrvMin)*0.15;
+      function gpx(v){
+        var uw=W-PAD*2, bp=wSpec2;
+        var ls=bp-axisMin2, rs=axisMax2-bp;
+        return v<=bp
+          ? PAD+(v-axisMin2)/ls*(uw*0.75)
+          : PAD+uw*0.75+(v-bp)/rs*(uw*0.25);
       }
-      path2+=' L '+pts2[pts2.length-1][0]+' '+pts2[pts2.length-1][1];
+
+      function gauss(v){ return Math.exp(-0.5*Math.pow((v-mu)/sigma,2)); }
+
+      // build gaussian path 200 steps
+      var STEPS=200;
+      var gpts=[];
+      for(var i=0;i<=STEPS;i++){
+        var v=wCrvMin+(wCrvMax-wCrvMin)*i/STEPS;
+        gpts.push([gpx(v), base-gauss(v)*(base-12)]);
+      }
+      var gpath='M '+gpx(wCrvMin)+' '+base+' L '+gpts[0][0]+' '+gpts[0][1];
+      for(var j=1;j<gpts.length;j++) gpath+=' L '+gpts[j][0]+' '+gpts[j][1];
+      gpath+=' L '+gpx(wCrvMax)+' '+base;
+
+      var ox3=Math.min(Math.max(gpx(offerW2),PAD),W-PAD);
+      var tx3=gpx(mu);
+      var tgx3=gpx(wSpec2);
+      var sx3=gpx(axisMax2*0.98);
 
       svg.innerHTML=
         '<defs>'+
-          '<clipPath id="bcl"><rect x="0" y="0" width="'+ox2+'" height="'+H+'"/></clipPath>'+
-          '<clipPath id="bcr"><rect x="'+ox2+'" y="0" width="'+(W-ox2)+'" height="'+H+'"/></clipPath>'+
+          '<clipPath id="bcl"><rect x="0" y="0" width="'+ox3+'" height="'+H+'"/></clipPath>'+
+          '<clipPath id="bcr"><rect x="'+ox3+'" y="0" width="'+(W-ox3)+'" height="'+H+'"/></clipPath>'+
         '</defs>'+
-        // curve fill
-        '<path d="'+path2+' Z" fill="#c4c4bf" opacity="0.35" clip-path="url(#bcl)"/>'+
-        '<path d="'+path2+' Z" fill="'+offerCol2+'" opacity="0.2" clip-path="url(#bcr)"/>'+
-        // curve line
-        '<path d="'+path2+'" fill="none" stroke="#888780" stroke-width="1.5"/>'+
-        // offer line
-        '<line x1="'+ox2+'" y1="6" x2="'+ox2+'" y2="'+(H-10)+'" stroke="'+offerCol2+'" stroke-width="2"/>'+
-        '<circle cx="'+ox2+'" cy="6" r="4" fill="'+offerCol2+'"/>'+
-        '<text x="'+(ox2>W-50?ox2-4:ox2+4)+'" y="15" font-size="8" fill="'+offerCol2+'" font-family="monospace" font-weight="700" text-anchor="'+(ox2>W-50?'end':'start')+'">'+offerW2.toFixed(1)+'</text>'+
-        // TMT dot
-        '<line x1="'+tx2+'" y1="8" x2="'+tx2+'" y2="'+(H-10)+'" stroke="#f36f22" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>'+
-        '<circle cx="'+tx2+'" cy="'+(H-10)+'" r="3" fill="#f36f22"/>'+
-        // spec limit line (ขวาสุด)
-        '<line x1="'+sx+'" y1="4" x2="'+sx+'" y2="'+(H-10)+'" stroke="#888780" stroke-width="1.5"/>'+
-        // baseline เต็มแกน
-        '<line x1="10" y1="'+(H-10)+'" x2="'+(W-10)+'" y2="'+(H-10)+'" stroke="#888780" stroke-width="1"/>';
-
-
+        '<path d="'+gpath+' Z" fill="#9a9a95" opacity="0.28" clip-path="url(#bcl)"/>'+
+        '<path d="'+gpath+' Z" fill="'+offerCol2+'" opacity="0.22" clip-path="url(#bcr)"/>'+
+        '<path d="'+gpath+'" fill="none" stroke="#565650" stroke-width="1.8" stroke-linejoin="round"/>'+
+        '<line x1="'+PAD+'" y1="'+base+'" x2="'+(W-PAD)+'" y2="'+base+'" stroke="#c4c4bf" stroke-width="0.5"/>'+
+        '<line x1="'+gpx(wCrvMin)+'" y1="4" x2="'+gpx(wCrvMin)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.5" stroke-dasharray="2,2"/>'+
+        '<line x1="'+gpx(wCrvMax)+'" y1="4" x2="'+gpx(wCrvMax)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.5" stroke-dasharray="2,2"/>'+
+        '<line x1="'+tgx3+'" y1="4" x2="'+tgx3+'" y2="'+base+'" stroke="#1a7a4a" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>'+
+        '<line x1="'+sx3+'" y1="4" x2="'+sx3+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
+        '<circle cx="'+tx3+'" cy="'+base+'" r="3.5" fill="#f36f22"/>'+
+        '<line x1="'+ox3+'" y1="5" x2="'+ox3+'" y2="'+base+'" stroke="'+offerCol2+'" stroke-width="2"/>'+
+        '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol2+'"/>'+
+        '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol2+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW2.toFixed(1)+'</text>'+
+        '<text x="'+gpx(wCrvMin)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
+        '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+'</text>'+
+        '<text x="'+gpx(wCrvMax)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
+        '<text x="'+tgx3+'" y="'+(base+11)+'" font-size="7" fill="#1a7a4a" font-family="monospace" text-anchor="middle">'+wSpec2.toFixed(1)+'</text>';
     })();
 
     // range bar
