@@ -5862,7 +5862,7 @@ function render3d(){
 
       // ── STAY FLAT marking — ใช้รูปจาก Drive + text ─────────────────
       var lw  = Math.min(Math.round(400*sc), W-Math.round(16*sc));
-      var lh  = Math.round(74*sc);
+      var lh  = Math.round(68*sc);
       var lx  = Math.round(W*0.02);
       var ly  = Math.round(H*0.06);
 
@@ -5882,11 +5882,10 @@ function render3d(){
       ctx.closePath(); ctx.fill();
 
       var logoW = Math.round(62*sc);
-      var logoW = Math.round(120*sc); // STAY FLAT + TIS รวมกัน
-      var textX = lx+logoW+Math.round(10*sc);
-      var textW = lw-logoW-Math.round(18*sc);
-      var ty3   = ly+Math.round(8*sc);
-      var lh1   = Math.round(fSz1*1.5), lh2=Math.round(fSz2*1.5);
+      var textX = lx+Math.round(130*sc);
+      var textW = lw-Math.round(140*sc);
+      var ty3   = ly+Math.round(6*sc);
+      var lh1   = Math.round(fSz1*1.6), lh2=Math.round(fSz2*1.5);
 
       // ── โลโก้ overlay — STAY FLAT + TIS (ไม่มี CORS) ────────────
       var pr2 = window.devicePixelRatio||1;
@@ -5913,10 +5912,12 @@ function render3d(){
         el.style.display= '';
       }
 
-      // STAY FLAT logo — ขยายให้เต็มความสูง label
+      // STAY FLAT logo — scale ตาม lh จริง (สี่เหลี่ยมใกล้เคียง)
       var sfUrl = sqcLinks&&sqcLinks['stay flat'] ? sqcDriveUrl(sqcLinks['stay flat']) : null;
+      var sfLogoH = lh-Math.round(6*sc);
+      var sfLogoW = Math.round(sfLogoH*0.7); // aspect ratio STAY FLAT ~ 0.7
       if(sfUrl){
-        placeLogoOverlay('sf-logo-overlay', sfUrl, lx+Math.round(2*sc), ly+Math.round(2*sc), Math.round(62*sc), lh-Math.round(4*sc));
+        placeLogoOverlay('sf-logo-overlay', sfUrl, lx+Math.round(3*sc), ly+Math.round(3*sc), sfLogoW, sfLogoH);
       } else {
         ctx.font='900 '+Math.round(fSz1*1.05)+'px "Arial Narrow","Arial",sans-serif';
         ctx.fillStyle='#0a0a0a'; ctx.textAlign='left'; ctx.textBaseline='top';
@@ -5924,15 +5925,15 @@ function render3d(){
         ctx.fillText('FLAT', lx+Math.round(4*sc), ly+Math.round(6*sc)+Math.round(fSz1*1.3));
       }
 
-      // TIS logo — ขนาดเท่ากัน วางข้างขวาของ STAY FLAT
+      // TIS logo — สูงเท่า STAY FLAT วางข้างขวา
       var tisUrl = sqcLinks&&sqcLinks['TIS'] ? sqcDriveUrl(sqcLinks['TIS']) : null;
-      var tisLogoW = Math.round(52*sc);
-      var tisLogoX = lx+Math.round(66*sc);
+      var tisLogoW = sfLogoH; // สี่เหลี่ยมจัตุรัส
+      var tisLogoX = lx+sfLogoW+Math.round(8*sc);
       if(tisUrl){
-        placeLogoOverlay('tis-logo-overlay', tisUrl, tisLogoX, ly+Math.round(2*sc), tisLogoW, lh-Math.round(4*sc));
+        placeLogoOverlay('tis-logo-overlay', tisUrl, tisLogoX, ly+Math.round(3*sc), tisLogoW, sfLogoH);
       } else {
         // fallback: วาด วงกลม มอก
-        var ciX3=tisLogoX+Math.round(tisLogoW*0.35), ciY3=ly+Math.round(lh*0.5);
+        var ciX3=tisLogoX+Math.round(tisLogoW*0.5), ciY3=ly+Math.round(lh*0.5);
         var ciR3=Math.round(lh*0.32);
         ctx.beginPath(); ctx.arc(ciX3,ciY3,ciR3,0,Math.PI*2);
         ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=Math.max(1,1.5*sc); ctx.stroke();
