@@ -338,6 +338,8 @@ body{
 .sh-weight-sub{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-left:2px;}
 .sh-weight-range{display:none;}
 .sh-dist-wrap{margin-top:10px;}
+.sh-bell-wrap{margin-top:8px;}
+.sh-bell-labels{display:flex;justify-content:space-between;font-size:9px;font-family:var(--mono);color:var(--g400);}
 .sh-weight-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;}
 .sh-weight-header-row>div:first-child{flex-shrink:0;}
 .sh-dist-notice{display:flex;align-items:flex-start;gap:9px;background:#fffbe6;border:1px solid #e6c200;border-left:3px solid #b8860b;border-radius:4px;padding:8px 12px;margin-bottom:10px;}
@@ -2418,22 +2420,15 @@ body{
                     </div>
                   </div>
                 </div>
-                <!-- Distribution bars -->
-                <div class="sh-dist-wrap" id="sh-dist-wrap" style="display:none">
-                  <div class="sh-dist-bars" id="sh-dist-bars"></div>
-
-                  <!-- Range bar -->
-                  <div class="sh-range-section">
-                    <div class="sh-range-track" id="sh-range-track">
-                      <div class="sh-range-fill" id="sh-range-fill"></div>
-                      <div class="sh-range-dot" id="sh-range-dot"></div>
-                    </div>
-                    <div class="sh-range-labels">
-                      <span id="sh-wt-min">—</span>
-                      <span id="sh-wt-tmt-lbl">— kg (TMT)</span>
-                      <span id="sh-wt-max">—</span>
-                    </div>
+                <!-- Bell curve -->
+                <div class="sh-bell-wrap" id="sh-dist-wrap" style="display:none">
+                  <svg id="sh-bell-svg" width="100%" viewBox="0 0 320 72" style="display:block;overflow:visible;margin:6px 0 2px;"></svg>
+                  <div class="sh-bell-labels">
+                    <span id="sh-wt-min">—</span>
+                    <span id="sh-wt-tmt-lbl" style="color:#f36f22;font-weight:500;">—</span>
+                    <span id="sh-wt-max">—</span>
                   </div>
+                  <div id="sh-bell-prob" style="display:none;font-size:9px;font-family:var(--mono);padding:4px 8px;border-radius:4px;margin-top:5px;"></div>
                 </div>
                 <div id="sh-wt-range" style="display:none">
                   <span id="sh-wt-min-hidden" style="display:none">—</span>
@@ -3633,24 +3628,71 @@ function openViewer(idx){
       setText('sh-prickg2', kgAvg.toFixed(1)+' kg × '+priceKg.toFixed(1)+' ฿/kg');
     }
 
-    // render bars — แสดงจำนวนแผ่น (stock × pct%)
-    var barsEl = document.getElementById('sh-dist-bars');
-    if(barsEl){
-      barsEl.innerHTML = '';
-      var maxPct = Math.max.apply(null, rawPcts);
-      var maxIdx = rawPcts.indexOf(maxPct);
+    // Bell curve render
+    (function drawBell(){
+      var svg = document.getElementById('sh-bell-svg');
+      if(!svg) return;
+      var W=320, H=72;
+      var minW=kgMin, maxW=kgMax, span=maxW-minW;
+      if(span<=0) return;
+      function x2px(v){ return (v-minW)/span*(W-20)+10; }
+      var maxPct2=Math.max.apply(null,rawPcts);
+      // build smooth curve points
+      var pts=[[x2px(minW), H-10]];
       rawPcts.forEach(function(pct,i){
-        var isMax = (i === maxIdx);
-        var fillStyle = isMax ? 'background:#f36f22;' : '';
-        var fillClass = isMax ? '' : 'sh-dist-fill--'+binTypes[i];
-        var sheets = Math.round(stock * pct / totalPct);
-        var row = document.createElement('div'); row.className='sh-dist-row';
-        row.innerHTML = '<div class="sh-dist-lbl">'+binLabels[i]+' kg</div>' +
-          '<div class="sh-dist-track"><div class="sh-dist-fill '+fillClass+'" style="width:'+(pct/maxPct*100)+'%;'+fillStyle+'"></div></div>' +
-          '<div class="sh-dist-pct">'+sheets+' แผ่น</div>';
-        barsEl.appendChild(row);
+        var mid=(kgMin+(i+0.5)*step);
+        pts.push([x2px(mid), H-10-(pct/maxPct2)*(H-22)]);
       });
-    }
+      pts.push([x2px(maxW), H-10]);
+      // catmull-rom smooth
+      function cm(p0,p1,p2,p3,t){
+        var t2=t*t,t3=t2*t;
+        return 0.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t2+(-p0+3*p1-3*p2+p3)*t3);
+      }
+      var path='M '+pts[0][0]+' '+pts[0][1];
+      for(var i=1;i<pts.length-2;i++){
+        var p0=pts[Math.max(i-1,0)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(i+2,pts.length-1)];
+        for(var t=0;t<=1;t+=0.15){
+          path+=' L '+cm(p0[0],p1[0],p2[0],p3[0],t).toFixed(1)+' '+cm(p0[1],p1[1],p2[1],p3[1],t).toFixed(1);
+        }
+      }
+      path+=' L '+pts[pts.length-1][0]+' '+pts[pts.length-1][1];
+
+      // offer strategy
+      var strats2=window._calcStrats||[];
+      var offerW2=strats2[offerStrat]?strats2[offerStrat].w:kgTmt;
+      if(offerStrat===3&&offerCustomW>0) offerW2=offerCustomW;
+      var offerCol2=strats2[offerStrat]?strats2[offerStrat].color:'#f36f22';
+      var ox=x2px(Math.min(Math.max(offerW2,minW),maxW));
+      var tx=x2px(kgTmt);
+      var prob2=Math.round(Math.max(0,Math.min(100,(maxW-offerW2)/span*100)));
+
+      svg.innerHTML=
+        '<defs>'+
+          '<clipPath id="bcl"><rect x="0" y="0" width="'+ox+'" height="'+H+'"/></clipPath>'+
+          '<clipPath id="bcr"><rect x="'+ox+'" y="0" width="'+(W-ox)+'" height="'+H+'"/></clipPath>'+
+        '</defs>'+
+        '<path d="'+path+' Z" fill="#c4c4bf" opacity="0.3" clip-path="url(#bcl)"/>'+
+        '<path d="'+path+' Z" fill="'+offerCol2+'" opacity="0.2" clip-path="url(#bcr)"/>'+
+        '<path d="'+path+'" fill="none" stroke="#888780" stroke-width="1.5"/>'+
+        '<line x1="'+tx+'" y1="8" x2="'+tx+'" y2="'+(H-10)+'" stroke="#f36f22" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>'+
+        '<circle cx="'+tx+'" cy="'+(H-10)+'" r="3" fill="#f36f22"/>'+
+        '<line x1="'+ox+'" y1="6" x2="'+ox+'" y2="'+(H-10)+'" stroke="'+offerCol2+'" stroke-width="2"/>'+
+        '<circle cx="'+ox+'" cy="6" r="4" fill="'+offerCol2+'"/>'+
+        '<text x="'+(ox>W-50?ox-4:ox+4)+'" y="15" font-size="8" fill="'+offerCol2+'" font-family="monospace" font-weight="700" text-anchor="'+(ox>W-50?'end':'start')+'">'+offerW2.toFixed(1)+'</text>'+
+        '<line x1="10" y1="'+(H-10)+'" x2="'+(W-10)+'" y2="'+(H-10)+'" stroke="#ddddd9" stroke-width="0.5"/>';
+
+      // prob pill
+      var probEl2=document.getElementById('sh-bell-prob');
+      if(probEl2){
+        var pc=prob2>=70?'#3B6D11':prob2>=40?'#854F0B':'#A32D2D';
+        var bg=prob2>=70?'#EAF3DE':prob2>=40?'#FAEEDA':'#FCEBEB';
+        var adv=prob2>=80?'⚠ เสี่ยงขาดทุน':prob2>=50?'~ สมดุล':'⚠ เสี่ยงลูกค้าร้องเรียน';
+        probEl2.style.display='';
+        probEl2.style.background=bg; probEl2.style.color=pc;
+        probEl2.textContent=adv+' — โอกาสได้ ≥ ที่นำเสนอ '+prob2+'%';
+      }
+    })();
 
     // range bar
     setText('sh-wt-min', kgMin.toFixed(1)+' kg');
