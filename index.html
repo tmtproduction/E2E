@@ -4816,51 +4816,7 @@ function renderOfferSlider(wMin, wSpec, wTmt){
   var valEl=document.getElementById('offer-slider-val');
   if(valEl){ valEl.textContent=v.toFixed(1); valEl.style.color=col; }
 
-  var probEl=document.getElementById('offer-slider-prob');
-  if(probEl){
-    var wCrvMin3=window._calcWCurveMin||wMin;
-    var wCrvMax3=window._calcWCurveMax||0;
-    if(wCrvMax3>0 && v>wCrvMax3){
-      probEl.textContent='เกินช่วงที่เป็นไปได้';
-      probEl.style.background='#f5f5f3'; probEl.style.color='var(--g400)';
-    } else {
-      // คำนวณ P(X >= v) จาก Gaussian: mu=wTmt, sigma=(wCrvMax-wCrvMin)/6
-      var mu3  = window._calcWTmt||((wCrvMin3+wCrvMax3)/2);
-      var sig3 = wCrvMax3>wCrvMin3 ? (wCrvMax3-wCrvMin3)/6 : 0.1;
-      // erf approximation
-      function erfc(x){
-        var t=1/(1+0.3275911*Math.abs(x));
-        var p=t*(0.254829592+t*(-0.284496736+t*(1.421413741+t*(-1.453152027+t*1.061405429))));
-        var e=1-p*Math.exp(-x*x);
-        return x>=0 ? 1-e : 1+e;
-      }
-      var gaussProb = Math.round(erfc((v-mu3)/(sig3*Math.sqrt(2)))*50); // P(X>=v)*100
-      gaussProb = Math.min(Math.max(gaussProb,0),100);
-      var bg3 = gaussProb>=60?'#FCEBEB':gaussProb>=30?'#FAEEDA':'#EAF3DE';
-      var col3= gaussProb>=60?'#A32D2D':gaussProb>=30?'#854F0B':'#3B6D11';
-      // บอก zone ตาม σ
-      var zScore = (v - mu3) / sig3;
-      var zoneText, zoneBg, zoneCol, zonePct;
-      if(zScore <= -3)      { zoneText='μ−3σ'; zonePct='0.1%';  zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
-      else if(zScore <= -2) { zoneText='μ−2σ'; zonePct='2.2%';  zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
-      else if(zScore <= -1) { zoneText='μ−1σ'; zonePct='13.6%'; zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
-      else if(zScore <= 0)  { zoneText='μ';    zonePct='34.1%'; zoneBg='#FAEEDA'; zoneCol='#854F0B'; }
-      else if(zScore <= 1)  { zoneText='μ+1σ'; zonePct='34.1%'; zoneBg='#FAEEDA'; zoneCol='#854F0B'; }
-      else if(zScore <= 2)  { zoneText='μ+2σ'; zonePct='13.6%'; zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
-      else if(zScore <= 3)  { zoneText='μ+3σ'; zonePct='2.2%';  zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
-      else                  { zoneText='>μ+3σ';zonePct='0.1%';  zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
-      probEl.textContent = zoneText+' ('+zonePct+')';
-      probEl.style.background = zoneBg;
-      probEl.style.color = zoneCol;
-      // sync กับ card
-      var zoneCardEl = document.getElementById('gap-lbl-zone');
-      if(zoneCardEl){
-        zoneCardEl.textContent = zonePct;
-        zoneCardEl.style.background = zoneBg;
-        zoneCardEl.style.color = zoneCol;
-      }
-    }
-  }
+  // badge + zone updated by drawBellOnly
 
   var fill=document.getElementById('offer-track-fill');
   if(fill){ fill.style.width=(pct*100).toFixed(1)+'%'; fill.style.background='linear-gradient(to right,#c4c4bf,'+'#c4c4bf '+((pct*50)).toFixed(0)+'%,'+col+')'; }
@@ -4931,62 +4887,106 @@ function calcOfferSlider(){
   var q2=parseInt((document.getElementById('qty')||{}).value)||0;
   if(q2>0){ setText('r-w', (q2*v).toFixed(1)+' kg'); }
 }
+function bellProbAbove(v, mu, sigma){
+  var z=(v-mu)/(sigma*Math.sqrt(2));
+  var t=1/(1+0.3275911*Math.abs(z));
+  var p=t*(0.254829592+t*(-0.284496736+t*(1.421413741+t*(-1.453152027+t*1.061405429))));
+  var erf=1-p*Math.exp(-z*z); if(z<0) erf=-erf;
+  return Math.round((1-erf)*50);
+}
+function bellZonePct(v, mu, sigma){
+  var z=(v-mu)/sigma;
+  var lo=Math.floor(z/0.5)*0.5, hi=lo+0.5;
+  return Math.abs(bellProbAbove(mu+lo*sigma,mu,sigma)-bellProbAbove(mu+hi*sigma,mu,sigma));
+}
+
 function drawBellOnly(){
   if(!currentSku) return;
   var s=currentSku;
-  var tmt2=parseFloat(s.THICKNESS_TMT_MM)||parseFloat(s.THICKNESS_TARGET_MM)||0;
-  var ww2=parseInt(s.WIDTH_MM)||0, ll2=parseInt(s.LENGTH_MM)||0;
-  var D=7.85;
+  var ww2=parseInt(s.WIDTH_MM)||0, ll2=parseInt(s.LENGTH_MM)||0, D=7.85;
   function kg2(t){ return ww2>0&&ll2>0?t*ww2*ll2*D/1000000:0; }
-  var kgTmt2 = kg2(parseFloat(s.THICKNESS_TMT_MM)||parseFloat(s.THICKNESS_TARGET_MM)||0);
+  var mu=kg2(parseFloat(s.THICKNESS_TMT_MM)||parseFloat(s.THICKNESS_TARGET_MM)||0);
   var svg=document.getElementById('sh-bell-svg');
   if(!svg||!window._calcWCurveMin||!window._calcWCurveMax) return;
   var W=320, H=72, PAD=10, base=H-10;
-  var wCrvMin=window._calcWCurveMin, wCrvMax=window._calcWCurveMax;
-  var wAxisMin3=window._calcWAxisMin||wCrvMin, wAxisMax3=window._calcWAxisMax||wCrvMax;
-  var mu=kgTmt2, sigma=(wCrvMax-wCrvMin)/6;
-  if(sigma<0.05) sigma=0.05;
-  var offerW3=offerCustomW>0?offerCustomW:mu;
-  var offerOutOfRange = offerW3 > wCrvMax;
-  var offerCol3=offerW3<=mu?'#A32D2D':offerW3<wCrvMax?'#BA7517':'#3B6D11';
-  // axis ขยายให้ curve กว้าง: ใช้ mu±4σ อย่างน้อย
-      // axis = (TARGET-TOL)→TARGET ในหน่วย kg
-  var axisL3 = wAxisMin3; // TARGET-TOL → kg
-  var axisR3 = wAxisMax3; // TARGET → kg
-  function gpx3(v){
-    var uw=W-PAD*2, span=axisR3-axisL3;
-    return span>0 ? PAD+(v-axisL3)/span*uw : PAD+uw*0.5;
-  }
-  function gauss3(v){ return Math.exp(-0.5*Math.pow((v-mu)/sigma,2)); }
-  var STEPS=200, gpts=[];
+  var crvMin=window._calcWCurveMin, crvMax=window._calcWCurveMax;
+  var axL=window._calcWAxisMin||crvMin, axR=window._calcWAxisMax||crvMax;
+  var sigma=(crvMax-crvMin)/6; if(sigma<0.01) sigma=0.01;
+  var offer=offerCustomW>0?offerCustomW:mu;
+  var outOfRange=offer>crvMax;
+  var offerCol=offer<=mu?'#A32D2D':offer<crvMax?'#BA7517':'#3B6D11';
+
+  function gpx(v){ var uw=W-PAD*2,span=axR-axL; return span>0?PAD+(v-axL)/span*uw:PAD+uw*0.5; }
+  function gauss(v){ return Math.exp(-0.5*Math.pow((v-mu)/sigma,2)); }
+
+  // curve path (300 steps, crvMin→crvMax เท่านั้น)
+  var STEPS=300, gpts=[];
   for(var i=0;i<=STEPS;i++){
-    var v=wCrvMin+(wCrvMax-wCrvMin)*i/STEPS;
-    gpts.push([gpx3(v), base-gauss3(v)*(base-12)]);
+    var gv=crvMin+(crvMax-crvMin)*i/STEPS;
+    gpts.push([gpx(gv).toFixed(1),(base-gauss(gv)*(base-10)).toFixed(1)]);
   }
-  var gp='M '+gpx3(wCrvMin)+' '+base+' L '+gpts[0][0]+' '+gpts[0][1];
-  for(var j=1;j<gpts.length;j++) gp+=' L '+gpts[j][0]+' '+gpts[j][1];
-  gp+=' L '+gpx3(wCrvMax)+' '+base;
-  var ox3=Math.min(Math.max(gpx3(offerW3),PAD),W-PAD);
-  var tx3=gpx3(mu);
+  var gp='M '+gpx(crvMin)+' '+base;
+  gpts.forEach(function(p){gp+=' L '+p[0]+' '+p[1];});
+  gp+=' L '+gpx(crvMax)+' '+base;
+
+  // zone highlights 0.5σ
+  var zoneFills='';
+  for(var zs=-4;zs<4;zs+=0.5){
+    var vlo=mu+zs*sigma, vhi=mu+(zs+0.5)*sigma;
+    var xlo=Math.max(gpx(Math.max(vlo,crvMin)),PAD);
+    var xhi=Math.min(gpx(Math.min(vhi,crvMax)),W-PAD);
+    if(xhi<=xlo+1) continue;
+    var z=(offer-mu)/sigma;
+    var lo2=Math.floor(z/0.5)*0.5;
+    var isActive=(zs===lo2);
+    if(!isActive) continue;
+    // วาด filled zone
+    var zpts=[],zv;
+    for(var si=0;si<=40;si++){
+      zv=Math.max(vlo,crvMin)+(Math.min(vhi,crvMax)-Math.max(vlo,crvMin))*si/40;
+      zpts.push([gpx(zv).toFixed(1),(base-gauss(zv)*(base-10)).toFixed(1)]);
+    }
+    var zp='M '+gpx(Math.max(vlo,crvMin))+' '+base;
+    zpts.forEach(function(p){zp+=' L '+p[0]+' '+p[1];});
+    zp+=' L '+gpx(Math.min(vhi,crvMax))+' '+base+' Z';
+    var zBg=offer<=mu?'#F09595':offer<crvMax?'#FAC775':'#97C459';
+    zoneFills='<path d="'+zp+'" fill="'+zBg+'" opacity="0.55"/>';
+  }
+
+  var ox=Math.max(PAD,Math.min(gpx(offer),W-PAD));
+  var tx=Math.min(gpx(mu),W-30);
   svg.innerHTML=
-    '<defs><clipPath id="bcl"><rect x="0" y="0" width="'+ox3+'" height="'+H+'"/></clipPath>'+
-    '<clipPath id="bcr"><rect x="'+ox3+'" y="0" width="'+(W-ox3)+'" height="'+H+'"/></clipPath></defs>'+
-    '<path d="'+gp+' Z" fill="#9a9a95" opacity="0.28" clip-path="url(#bcl)"/>'+
-    '<path d="'+gp+' Z" fill="'+offerCol3+'" opacity="0.22" clip-path="url(#bcr)"/>'+
+    zoneFills+
     '<path d="'+gp+'" fill="none" stroke="#565650" stroke-width="1.8"/>'+
     '<line x1="'+PAD+'" y1="'+base+'" x2="'+(W-PAD)+'" y2="'+base+'" stroke="#c4c4bf" stroke-width="0.5"/>'+
-    '<line x1="'+gpx3(wCrvMin)+'" y1="4" x2="'+gpx3(wCrvMin)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.8" stroke-dasharray="2,2"/>'+
-    '<line x1="'+gpx3(wCrvMax)+'" y1="4" x2="'+gpx3(wCrvMax)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.8" stroke-dasharray="2,2"/>'+
-    '<line x1="'+gpx3(wAxisMin3)+'" y1="4" x2="'+gpx3(wAxisMin3)+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
-    '<line x1="'+gpx3(wAxisMax3)+'" y1="4" x2="'+gpx3(wAxisMax3)+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
-    '<circle cx="'+tx3+'" cy="'+base+'" r="3.5" fill="#f36f22"/>'+
-    (offerOutOfRange ? '' :
-      '<line x1="'+ox3+'" y1="5" x2="'+ox3+'" y2="'+base+'" stroke="'+offerCol3+'" stroke-width="2"/>'+
-      '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol3+'"/>'+
-      '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol3+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW3.toFixed(1)+'</text>'
+    '<line x1="'+gpx(axL)+'" y1="4" x2="'+gpx(axL)+'" y2="'+base+'" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3"/>'+
+    '<line x1="'+gpx(axR)+'" y1="4" x2="'+gpx(axR)+'" y2="'+base+'" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3"/>'+
+    '<circle cx="'+gpx(mu)+'" cy="'+base+'" r="3.5" fill="#f36f22"/>'+
+    (outOfRange?'':
+      '<line x1="'+ox+'" y1="5" x2="'+ox+'" y2="'+base+'" stroke="'+offerCol+'" stroke-width="2"/>'+
+      '<circle cx="'+ox+'" cy="5" r="4" fill="'+offerCol+'"/>'+
+      '<text x="'+(ox>W-60?ox-4:ox+4)+'" y="14" font-size="8" fill="'+offerCol+'" font-family="monospace" font-weight="700" text-anchor="'+(ox>W-60?'end':'start')+'">'+offer.toFixed(1)+'</text>'
     )+
-    '<text x="'+Math.min(tx3,W-30)+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+' (TMT)</text>'+
-''
+    '<text x="'+tx+'" y="'+(base+12)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(2)+'</text>';
+
+  // อัพเดต badge + card zone
+  var zonePct=outOfRange?0:bellZonePct(offer,mu,sigma);
+  var probEl=document.getElementById('offer-slider-prob');
+  if(probEl){
+    if(outOfRange){
+      probEl.textContent='เกินช่วงที่เป็นไปได้'; probEl.style.background='#f5f5f3'; probEl.style.color='var(--g400)';
+    } else {
+      var bg=offer<=mu?'#FCEBEB':offer<crvMax?'#FAEEDA':'#EAF3DE';
+      var col=offer<=mu?'#A32D2D':offer<crvMax?'#854F0B':'#3B6D11';
+      probEl.textContent=zonePct+'%'; probEl.style.background=bg; probEl.style.color=col;
+    }
+  }
+  var zoneCardEl=document.getElementById('gap-lbl-zone');
+  if(zoneCardEl&&!outOfRange){
+    var bg2=offer<=mu?'#FCEBEB':offer<crvMax?'#FAEEDA':'#EAF3DE';
+    var col2=offer<=mu?'#A32D2D':offer<crvMax?'#854F0B':'#3B6D11';
+    zoneCardEl.textContent=zonePct+'%'; zoneCardEl.style.background=bg2; zoneCardEl.style.color=col2;
+  }
 }
 
 function calcUpdate(){
