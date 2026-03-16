@@ -4899,8 +4899,10 @@ function calcOfferSlider(){
   var wMin=cs?parseFloat(cs.min)||0:0;
   var wSpec=cs?parseFloat(cs.max)||0:0;
   renderOfferSlider(wMin, wSpec, 0);
-  // redraw bell curve โดยตรง ไม่ reset ค่าผ่าน calcUpdate
   drawBellOnly();
+  // อัพเดต r-w ตาม offer ใหม่
+  var q2=parseInt((document.getElementById('qty')||{}).value)||0;
+  if(q2>0){ setText('r-w', (q2*v).toFixed(1)+' kg'); }
 }
 function drawBellOnly(){
   if(!currentSku) return;
@@ -4972,7 +4974,7 @@ function calcUpdate(){
   var offerW = strats[offerStrat] ? strats[offerStrat].w : w;
   if(offerStrat===3 && offerCustomW>0) offerW=offerCustomW;
   // weight uses offer weight if available
-  var totalW = (q * offerW).toFixed(1);
+  var totalW = (q * (offerCustomW>0 ? offerCustomW : w)).toFixed(1);
   var totalP = q*p;
   setText('r-w', totalW+' kg');
   setText('r-p', totalP>0 ? '฿ '+totalP.toLocaleString() : '—');
@@ -4989,39 +4991,7 @@ function calcUpdate(){
   var ov=document.getElementById('r-overstock');
   if(ov) ov.style.display=q>stock?'':(ov.style.display='none','none');
   if(ov&&q>stock) ov.textContent='⚠ เกินสต็อก — เหลือเพียง '+stock+' แผ่น';
-  // offer probability
-  var kgMin=parseFloat(currentSku.THICK_MIN||'')||0;
-  var kgMax=parseFloat(currentSku.THICK_MAX||'')||0;
-  var ww=parseInt(currentSku.WIDTH_MM)||0, ll=parseInt(currentSku.LENGTH_MM)||0;
-  var D=7.85;
-  var wMinK=kgMin>0?kgMin*ww*ll*D/1000000:w*0.97;
-  var wMaxK=kgMax>0?kgMax*ww*ll*D/1000000:w*1.03;
-  var prob=wMaxK>wMinK?Math.round(Math.max(0,Math.min(100,(wMaxK-offerW)/(wMaxK-wMinK)*100))):50;
-  var probEl=document.getElementById('r-offer-prob');
-  if(probEl && offerW>0){
-    probEl.style.display='';
-    var col=prob>=70?'#1a7a4a':prob>=40?'#b8860b':'#b03a2e';
-    var barBg=prob>=70?'#1a7a4a':prob>=40?'#f36f22':'#b03a2e';
-    // prob = โอกาสที่น้ำหนักจริง >= ที่นำเสนอ
-    // prob สูง = ส่งหนักกว่าที่บอก = บริษัทขาดทุนส่วนต่าง
-    // prob ต่ำ = ส่งเบากว่าที่บอก = ลูกค้าจ่ายเกิน → ร้องเรียน
-    var advice = prob>=80
-      ? '⚠ เสี่ยงขาดทุน — '+prob+'% ของสต็อกหนักกว่าที่นำเสนอ บริษัทรับส่วนต่าง'
-      : prob>=50
-      ? '~ สมดุล — ส่งหนักกว่าที่บอก '+prob+'% / เบากว่า '+Math.round(100-prob)+'%'
-      : '⚠ เสี่ยงลูกค้าร้องเรียน — '+Math.round(100-prob)+'% ของสต็อกเบากว่าที่นำเสนอ';
-    // ปรับสีให้สะท้อน risk ที่แท้จริง
-    col = prob>=80 ? '#b03a2e' : prob>=50 ? '#b8860b' : '#b03a2e';
-    barBg = prob>=80 ? '#b03a2e' : prob>=50 ? '#f36f22' : '#b03a2e';
-    var pctEl=document.getElementById('r-offer-pct');
-    var descEl=document.getElementById('r-offer-desc');
-    var barEl=document.getElementById('r-offer-bar');
-    var advEl=document.getElementById('r-offer-advice');
-    if(pctEl){ pctEl.textContent=prob; pctEl.style.color=col; }
-    if(descEl){ descEl.textContent='นำเสนอ '+offerW.toFixed(1)+' kg / ช่วงจริง '+wMinK.toFixed(1)+'–'+wMaxK.toFixed(1)+' kg'; }
-    if(barEl){ barEl.style.width=prob+'%'; barEl.style.background=barBg; }
-    if(advEl){ advEl.textContent=advice; advEl.style.color=col; }
-  }
+
 }
 
 // ── ADMIN SYNC ────────────────────────────────────
