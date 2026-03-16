@@ -4736,8 +4736,11 @@ function calcInitOfferUI(){
   cs.min  = wMin.toFixed(2);
   cs.max  = wSpec.toFixed(2);
   cs.step = '0.1';
-  if(!offerCustomW || offerCustomW < wMin || offerCustomW > wSpec)
+  if(!offerCustomW || offerCustomW < wMin || offerCustomW > wSpec){
     offerCustomW = parseFloat(wTmt.toFixed(1));
+  }
+  cs.min   = wMin.toFixed(2);
+  cs.max   = wSpec.toFixed(2);
   cs.value = offerCustomW.toFixed(1);
 
   // build ticks
@@ -4816,7 +4819,61 @@ function calcOfferSlider(){
   var wMin=cs?parseFloat(cs.min)||0:0;
   var wSpec=cs?parseFloat(cs.max)||0:0;
   renderOfferSlider(wMin, wSpec, 0);
-  calcUpdate();
+  // redraw bell curve โดยตรง ไม่ reset ค่าผ่าน calcUpdate
+  drawBellOnly();
+}
+function drawBellOnly(){
+  if(!currentSku) return;
+  var s=currentSku;
+  var tmt2=parseFloat(s.THICKNESS_TMT_MM)||parseFloat(s.THICKNESS_TARGET_MM)||0;
+  var ww2=parseInt(s.WIDTH_MM)||0, ll2=parseInt(s.LENGTH_MM)||0;
+  var D=7.85;
+  function kg2(t){ return ww2>0&&ll2>0?t*ww2*ll2*D/1000000:0; }
+  var kgTmt2 = kg2(parseFloat(s.THICKNESS_TMT_MM)||parseFloat(s.THICKNESS_TARGET_MM)||0);
+  var svg=document.getElementById('sh-bell-svg');
+  if(!svg||!window._calcWCurveMin||!window._calcWCurveMax) return;
+  var W=320, H=72, PAD=10, base=H-10;
+  var wCrvMin=window._calcWCurveMin, wCrvMax=window._calcWCurveMax, wSpec3=window._calcWSpec||wCrvMax;
+  var mu=kgTmt2, sigma=(wCrvMax-wCrvMin)/6;
+  if(sigma<=0) sigma=0.1;
+  var offerW3=offerCustomW>0?offerCustomW:mu;
+  var offerCol3=offerW3<=mu?'#A32D2D':offerW3<=wSpec3?'#BA7517':'#3B6D11';
+  var axisMin3=wCrvMin-(wCrvMax-wCrvMin)*0.1;
+  var axisMax3=wSpec3+(wSpec3-wCrvMin)*0.15;
+  function gpx3(v){
+    var uw=W-PAD*2, bp=wSpec3, ls=bp-axisMin3, rs=axisMax3-bp;
+    return v<=bp ? PAD+(v-axisMin3)/ls*(uw*0.75) : PAD+uw*0.75+(v-bp)/rs*(uw*0.25);
+  }
+  function gauss3(v){ return Math.exp(-0.5*Math.pow((v-mu)/sigma,2)); }
+  var STEPS=200, gpts=[];
+  for(var i=0;i<=STEPS;i++){
+    var v=wCrvMin+(wCrvMax-wCrvMin)*i/STEPS;
+    gpts.push([gpx3(v), base-gauss3(v)*(base-12)]);
+  }
+  var gp='M '+gpx3(wCrvMin)+' '+base+' L '+gpts[0][0]+' '+gpts[0][1];
+  for(var j=1;j<gpts.length;j++) gp+=' L '+gpts[j][0]+' '+gpts[j][1];
+  gp+=' L '+gpx3(wCrvMax)+' '+base;
+  var ox3=Math.min(Math.max(gpx3(offerW3),PAD),W-PAD);
+  var tx3=gpx3(mu), tgx3=gpx3(wSpec3), sx3=gpx3(axisMax3*0.98);
+  svg.innerHTML=
+    '<defs><clipPath id="bcl"><rect x="0" y="0" width="'+ox3+'" height="'+H+'"/></clipPath>'+
+    '<clipPath id="bcr"><rect x="'+ox3+'" y="0" width="'+(W-ox3)+'" height="'+H+'"/></clipPath></defs>'+
+    '<path d="'+gp+' Z" fill="#9a9a95" opacity="0.28" clip-path="url(#bcl)"/>'+
+    '<path d="'+gp+' Z" fill="'+offerCol3+'" opacity="0.22" clip-path="url(#bcr)"/>'+
+    '<path d="'+gp+'" fill="none" stroke="#565650" stroke-width="1.8"/>'+
+    '<line x1="'+PAD+'" y1="'+base+'" x2="'+(W-PAD)+'" y2="'+base+'" stroke="#c4c4bf" stroke-width="0.5"/>'+
+    '<line x1="'+gpx3(wCrvMin)+'" y1="4" x2="'+gpx3(wCrvMin)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.5" stroke-dasharray="2,2"/>'+
+    '<line x1="'+gpx3(wCrvMax)+'" y1="4" x2="'+gpx3(wCrvMax)+'" y2="'+base+'" stroke="#9a9a95" stroke-width="0.5" stroke-dasharray="2,2"/>'+
+    '<line x1="'+tgx3+'" y1="4" x2="'+tgx3+'" y2="'+base+'" stroke="#1a7a4a" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>'+
+    '<line x1="'+sx3+'" y1="4" x2="'+sx3+'" y2="'+base+'" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>'+
+    '<circle cx="'+tx3+'" cy="'+base+'" r="3.5" fill="#f36f22"/>'+
+    '<line x1="'+ox3+'" y1="5" x2="'+ox3+'" y2="'+base+'" stroke="'+offerCol3+'" stroke-width="2"/>'+
+    '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol3+'"/>'+
+    '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol3+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW3.toFixed(1)+'</text>'+
+    '<text x="'+gpx3(wCrvMin)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
+    '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+'</text>'+
+    '<text x="'+gpx3(wCrvMax)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
+    '<text x="'+tgx3+'" y="'+(base+11)+'" font-size="7" fill="#1a7a4a" font-family="monospace" text-anchor="middle">'+wSpec3.toFixed(1)+'</text>';
 }
 
 function calcUpdate(){
