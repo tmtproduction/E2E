@@ -3747,17 +3747,23 @@ function openViewer(idx){
         '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol2+'"/>'+
         '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol2+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW2.toFixed(1)+'</text>'+
         // labels สลับบน/ล่าง เพื่อลดการทับซ้อน
-        '<text x="'+Math.min(gpx(mu),W-30)+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+' (TMT)</text>';
+        '<text x="'+Math.min(Math.max(gpx(mu),30),W-30)+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(2)+'</text>';
     })();
 
     // range bar
-    var rMin2 = window._calcWCurveMin||kgMin;
-    var rSpec2 = window._calcWSpec||kgMax;
-    var rAxisMin2 = window._calcWAxisMin||rMin2;
-    var rAxisMax2 = window._calcWSpec||rSpec2;
-    setText('sh-wt-min', rAxisMin2.toFixed(1)+' kg');
-    setText('sh-wt-max', rAxisMax2.toFixed(1)+' kg');
-    setText('sh-wt-tmt-lbl', kgTmt.toFixed(1)+' kg (TMT)');
+    // คำนวณ axis labels จาก sheet โดยตรง
+    var _s2=currentSku||{};
+    var _ww2=parseInt(_s2.WIDTH_MM)||0, _ll2=parseInt(_s2.LENGTH_MM)||0;
+    function _kg2(t){ return _ww2>0&&_ll2>0?t*_ww2*_ll2*7.85/1e6:0; }
+    var _tgt2=parseFloat(_s2.THICKNESS_TARGET_MM||0);
+    var _tol2=parseFloat(_s2.TOLERANCE_THICKNESS||0);
+    var _tmt2=parseFloat(_s2.THICKNESS_TMT_MM||_s2.THICKNESS_TARGET_MM||0);
+    var axMinKg = _tgt2>0&&_tol2>0 ? _kg2(_tgt2-_tol2) : kgMin;
+    var axMaxKg = _tgt2>0 ? _kg2(_tgt2) : kgMax;
+    var tmtKg2  = _tmt2>0 ? _kg2(_tmt2) : kgTmt;
+    setText('sh-wt-min', axMinKg.toFixed(1)+' kg');
+    setText('sh-wt-max', axMaxKg.toFixed(1)+' kg');
+    setText('sh-wt-tmt-lbl', tmtKg2.toFixed(1)+' kg (TMT)');
     var fill = document.getElementById('sh-range-fill');
     var dot  = document.getElementById('sh-range-dot');
     if(fill) fill.style.width = '100%';
