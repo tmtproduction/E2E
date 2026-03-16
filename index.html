@@ -4720,15 +4720,16 @@ function calcInitOfferUI(){
   var ww = parseInt(s.WIDTH_MM)||0, ll = parseInt(s.LENGTH_MM)||0;
   var D = 7.85;
   function kgOf(t){ return ww>0&&ll>0 ? t*ww*ll*D/1000000 : 0; }
-  // Bell curve ขอบ = TARGET ± TOLERANCE (spec limit)
+  // ใช้ค่าเดียวกับ Thickness strip: tTgt±tTol
   var tTol2 = parseFloat(s.TOLERANCE_THICKNESS||0);
-  var specLimitMin = tSpec>0&&tTol2>0 ? tSpec-tTol2 : (tMin2>0?tMin2:0);
-  var specLimitMax = tSpec>0&&tTol2>0 ? tSpec+tTol2 : (tMax2>0?tMax2:0);
-  var wMin  = specLimitMin>0 ? kgOf(specLimitMin) : calcKgPerSheet()*0.97;
-  var wCurveMax = specLimitMax>0 ? kgOf(specLimitMax) : calcKgPerSheet()*1.03;
-  // Slider range = spec limit min → THICKNESS_TARGET (spec)
-  var wSpec = tSpec>0 ? kgOf(tSpec) : wCurveMax;
-  var wTmt  = calcKgPerSheet();
+  var tThickMin = tSpec>0&&tTol2>0 ? tSpec-tTol2 : (tMin2>0?tMin2:tSpec*0.97);
+  var tThickMax = tSpec>0&&tTol2>0 ? tSpec+tTol2 : (tMax2>0?tMax2:tSpec*1.03);
+  // bell curve ขอบ = MIN..MAX ของ Thickness strip
+  var wMin      = kgOf(tThickMin);   // kg ที่ความหนา MIN
+  var wCurveMax = kgOf(tThickMax);   // kg ที่ความหนา MAX
+  // Slider และ bell curve center = TARGET
+  var wSpec     = kgOf(tSpec);       // kg ที่ความหนา TARGET (spec max offer)
+  var wTmt      = calcKgPerSheet();  // kg จาก TMT actual
   var stock = parseInt(s.STOCK_QTY)||0;
   var bnd   = parseInt(s.BUNDLE_SIZE)||5;
   window._calcStock    = stock;
