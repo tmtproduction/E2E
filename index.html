@@ -4833,8 +4833,20 @@ function renderOfferSlider(wMin, wSpec, wTmt){
       gaussProb = Math.min(Math.max(gaussProb,0),100);
       var bg3 = gaussProb>=60?'#FCEBEB':gaussProb>=30?'#FAEEDA':'#EAF3DE';
       var col3= gaussProb>=60?'#A32D2D':gaussProb>=30?'#854F0B':'#3B6D11';
-      probEl.textContent='P(≥นำเสนอ) '+gaussProb+'%';
-      probEl.style.background=bg3; probEl.style.color=col3;
+      // บอก zone ตาม σ
+      var zScore = (v - mu3) / sig3;
+      var zoneText, zoneBg, zoneCol;
+      if(zScore <= -3)      { zoneText='zone μ−3σ (0.1%)'; zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
+      else if(zScore <= -2) { zoneText='zone μ−2σ (2.2%)'; zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
+      else if(zScore <= -1) { zoneText='zone μ−1σ (13.6%)'; zoneBg='#EAF3DE'; zoneCol='#3B6D11'; }
+      else if(zScore <= 0)  { zoneText='zone μ−0 (34.1%)'; zoneBg='#FAEEDA'; zoneCol='#854F0B'; }
+      else if(zScore <= 1)  { zoneText='zone μ+1σ (34.1%)'; zoneBg='#FAEEDA'; zoneCol='#854F0B'; }
+      else if(zScore <= 2)  { zoneText='zone μ+2σ (13.6%)'; zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
+      else if(zScore <= 3)  { zoneText='zone μ+3σ (2.2%)';  zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
+      else                  { zoneText='zone μ+3σ+ (0.1%)'; zoneBg='#FCEBEB'; zoneCol='#A32D2D'; }
+      probEl.textContent = zoneText;
+      probEl.style.background = zoneBg;
+      probEl.style.color = zoneCol;
     }
   }
 
@@ -4962,7 +4974,26 @@ function drawBellOnly(){
     '<text x="'+gpx3(wCrvMin)+'" y="'+(base-2)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
     '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+' (TMT)</text>'+
     '<text x="'+gpx3(wCrvMax)+'" y="'+(base-2)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
-    '<text x="'+gpx3(wAxisMax3)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="end">'+wAxisMax3.toFixed(1)+'</text>';
+    '<text x="'+gpx3(wAxisMax3)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="end">'+wAxisMax3.toFixed(1)+'</text>'+
+    (function(){
+      var zones=[
+        {lo:mu-3*sigma,hi:mu-2*sigma,pct:'2.2%'},
+        {lo:mu-2*sigma,hi:mu-1*sigma,pct:'13.6%'},
+        {lo:mu-1*sigma,hi:mu,        pct:'34.1%'},
+        {lo:mu,        hi:mu+1*sigma,pct:'34.1%'},
+        {lo:mu+1*sigma,hi:mu+2*sigma,pct:'13.6%'},
+        {lo:mu+2*sigma,hi:mu+3*sigma,pct:'2.2%'}
+      ];
+      var out='';
+      zones.forEach(function(z){
+        var cx=gpx3((z.lo+z.hi)/2);
+        var gy=gauss3((z.lo+z.hi)/2);
+        var ty=base-gy*(base-12)-8;
+        if(cx>PAD&&cx<W-PAD)
+          out+='<text x="'+cx.toFixed(0)+'" y="'+Math.max(ty,8).toFixed(0)+'" font-size="6" fill="#bbb" font-family="monospace" text-anchor="middle">'+z.pct+'</text>';
+      });
+      return out;
+    })();
 }
 
 function calcUpdate(){
