@@ -2422,7 +2422,7 @@ body{
                 </div>
                 <!-- Bell curve -->
                 <div class="sh-bell-wrap" id="sh-dist-wrap" style="display:none">
-                  <svg id="sh-bell-svg" width="100%" viewBox="0 0 320 72" style="display:block;overflow:visible;margin:6px 0 2px;"></svg>
+                  <svg id="sh-bell-svg" width="100%" viewBox="0 0 320 80" style="display:block;overflow:visible;margin:6px 0 2px;"></svg>
                   <div class="sh-bell-labels">
                     <span id="sh-wt-min">—</span>
                     <span id="sh-wt-tmt-lbl" style="color:#f36f22;font-weight:500;">—</span>
@@ -3751,11 +3751,12 @@ function openViewer(idx){
         '<line x1="'+ox3+'" y1="5" x2="'+ox3+'" y2="'+base+'" stroke="'+offerCol2+'" stroke-width="2"/>'+
         '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol2+'"/>'+
         '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol2+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW2.toFixed(1)+'</text>'+
-        '<text x="'+gpx(wAxisMin2)+'" y="'+(base+11)+'" font-size="7" fill="#aaa" font-family="monospace" text-anchor="middle">'+wAxisMin2.toFixed(1)+'</text>'+
-        '<text x="'+gpx(wCrvMin)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
-        '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+'</text>'+
-        '<text x="'+gpx(wCrvMax)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
-        '<text x="'+gpx(wAxisMax2)+'" y="'+(base+11)+'" font-size="7" fill="#aaa" font-family="monospace" text-anchor="middle">'+wAxisMax2.toFixed(1)+'</text>';
+        // labels สลับบน/ล่าง เพื่อลดการทับซ้อน
+        '<text x="'+gpx(wAxisMin2)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="start">'+wAxisMin2.toFixed(1)+'</text>'+
+        '<text x="'+gpx(wCrvMin)+'" y="'+(base-2)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
+        '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+' (TMT)</text>'+
+        '<text x="'+gpx(wCrvMax)+'" y="'+(base-2)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
+        '<text x="'+gpx(wAxisMax2)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="end">'+wAxisMax2.toFixed(1)+'</text>';
     })();
 
     // range bar
@@ -4952,11 +4953,11 @@ function drawBellOnly(){
       '<circle cx="'+ox3+'" cy="5" r="4" fill="'+offerCol3+'"/>'+
       '<text x="'+(ox3>W-60?ox3-4:ox3+4)+'" y="14" font-size="8" fill="'+offerCol3+'" font-family="monospace" font-weight="700" text-anchor="'+(ox3>W-60?'end':'start')+'">'+offerW3.toFixed(1)+'</text>'
     )+
-    '<text x="'+gpx3(wAxisMin3)+'" y="'+(base+11)+'" font-size="7" fill="#aaa" font-family="monospace" text-anchor="middle">'+wAxisMin3.toFixed(1)+'</text>'+
-    '<text x="'+gpx3(wCrvMin)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
-    '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+'</text>'+
-    '<text x="'+gpx3(wCrvMax)+'" y="'+(base+11)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
-    '<text x="'+gpx3(wAxisMax3)+'" y="'+(base+11)+'" font-size="7" fill="#aaa" font-family="monospace" text-anchor="middle">'+wAxisMax3.toFixed(1)+'</text>';
+    '<text x="'+gpx3(wAxisMin3)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="start">'+wAxisMin3.toFixed(1)+'</text>'+
+    '<text x="'+gpx3(wCrvMin)+'" y="'+(base-2)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMin.toFixed(1)+'</text>'+
+    '<text x="'+tx3+'" y="'+(base+11)+'" font-size="7" fill="#f36f22" font-family="monospace" text-anchor="middle">'+mu.toFixed(1)+' (TMT)</text>'+
+    '<text x="'+gpx3(wCrvMax)+'" y="'+(base-2)+'" font-size="7" fill="#888" font-family="monospace" text-anchor="middle">'+wCrvMax.toFixed(1)+'</text>'+
+    '<text x="'+gpx3(wAxisMax3)+'" y="'+(base+11)+'" font-size="7" fill="#bbb" font-family="monospace" text-anchor="end">'+wAxisMax3.toFixed(1)+'</text>';
 }
 
 function calcUpdate(){
