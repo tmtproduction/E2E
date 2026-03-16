@@ -2584,33 +2584,22 @@ body{
                 <div style="margin-top:8px;background:var(--g50);border-radius:6px;padding:10px 12px;display:flex;gap:14px;align-items:stretch;">
                   <!-- แกนตั้ง -->
                   <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;padding:2px 0;">
-                    <div style="width:1.5px;height:14px;background:var(--g300);"></div>
-                    <div style="font-size:7px;font-family:var(--mono);color:var(--g400);writing-mode:horizontal-tb;white-space:nowrap;transform:none;margin:0;">┬</div>
                     <div style="width:1.5px;flex:1;background:var(--g300);"></div>
                     <div style="width:10px;height:10px;border-radius:50%;border:2px solid var(--black);background:var(--white);flex-shrink:0;" id="offer-axis-dot"></div>
                     <div style="width:1.5px;flex:1;background:var(--g300);"></div>
-                    <div style="font-size:7px;font-family:var(--mono);color:var(--g400);">┬</div>
-                    <div style="width:1.5px;flex:1;background:var(--g300);"></div>
-                    <div style="font-size:7px;font-family:var(--mono);color:var(--g400);">┬</div>
+                    <div style="font-size:7px;color:var(--g400);">┬</div>
                     <div style="width:1.5px;height:14px;background:var(--g300);"></div>
                   </div>
                   <!-- labels -->
                   <div style="display:flex;flex-direction:column;flex:1;justify-content:space-between;">
-                    <!-- THICK_MIN -->
-                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                      <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">THICK_MIN</span>
-                      <span style="font-size:10px;font-weight:600;font-family:var(--mono);" id="gap-lbl-min">—</span>
-                    </div>
                     <!-- offer (วงกลม) -->
                     <div style="display:flex;justify-content:space-between;align-items:baseline;margin:4px 0;">
                       <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">นำเสนอ</span>
                       <span style="font-size:14px;font-weight:700;font-family:var(--mono);" id="gap-lbl-offer">—</span>
                     </div>
-                    <!-- THICK_MAX -->
-                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                      <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">THICK_MAX</span>
-                      <span style="font-size:10px;font-weight:600;font-family:var(--mono);" id="gap-lbl-max">—</span>
-                    </div>
+                    <!-- hidden compat -->
+                    <div id="gap-lbl-min" style="display:none"></div>
+                    <div id="gap-lbl-max" style="display:none"></div>
                     <!-- gap line -->
                     <div style="border-top:1px dashed var(--g200);margin:4px 0;"></div>
                     <!-- THICKNESS_TARGET -->
