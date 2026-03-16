@@ -3693,50 +3693,64 @@ function openViewer(idx){
       var tx=x2px(kgTmt);
       var prob2=Math.round(Math.max(0,Math.min(100,(maxW-offerW2)/span*100)));
 
-      // spec limit lines (TARGET±TOLERANCE) เป็นขอบ
-      var curveMinW = window._calcWCurveMin||minW;
+      // แกน x กว้างตลอด: min → spec (wSpec ที่ได้จาก _calcStrats[0])
+      var axisMin = window._calcWCurveMin||minW;
+      var axisMax = window._calcWSpec||(window._calcStrats&&window._calcStrats[0]?window._calcStrats[0].w*1.04:maxW*1.04);
+      // bell curve อยู่ใน axisMin..curveMaxW เท่านั้น
       var curveMaxW = window._calcWCurveMax||maxW;
-      var lx = x2px(curveMinW), rx = x2px(curveMaxW);
+      // remap x2px ให้ใช้ axis เต็ม
+      function x2pxFull(v){ return (v-axisMin)/(axisMax-axisMin)*(W-20)+10; }
+      var lx = x2pxFull(axisMin);
+      var rx = x2pxFull(curveMaxW); // ขอบขวา curve
+      var sx = x2pxFull(axisMax);   // ขอบขวา spec (สุดแกน)
+      var ox2 = x2pxFull(offerW2);
+      var tx2 = x2pxFull(kgTmt);
+      // สร้าง curve path ใหม่ใน full axis space
+      var pts2=[[x2pxFull(minW), H-10]];
+      rawPcts.forEach(function(pct,i){
+        var mid=(kgMin+(i+0.5)*step);
+        pts2.push([x2pxFull(mid), H-10-(pct/maxPct2)*(H-22)]);
+      });
+      pts2.push([x2pxFull(maxW), H-10]);
+      var path2='M '+pts2[0][0]+' '+pts2[0][1];
+      for(var i2=1;i2<pts2.length-2;i2++){
+        var p0=pts2[Math.max(i2-1,0)],p1=pts2[i2],p2=pts2[i2+1],p3=pts2[Math.min(i2+2,pts2.length-1)];
+        for(var t2=0;t2<=1;t2+=0.05){
+          path2+=' L '+cm(p0[0],p1[0],p2[0],p3[0],t2).toFixed(1)+' '+cm(p0[1],p1[1],p2[1],p3[1],t2).toFixed(1);
+        }
+      }
+      path2+=' L '+pts2[pts2.length-1][0]+' '+pts2[pts2.length-1][1];
 
       svg.innerHTML=
         '<defs>'+
-          '<clipPath id="bcl"><rect x="0" y="0" width="'+ox+'" height="'+H+'"/></clipPath>'+
-          '<clipPath id="bcr"><rect x="'+ox+'" y="0" width="'+(W-ox)+'" height="'+H+'"/></clipPath>'+
-          '<clipPath id="bcc"><rect x="'+lx+'" y="0" width="'+(rx-lx)+'" height="'+H+'"/></clipPath>'+
+          '<clipPath id="bcl"><rect x="0" y="0" width="'+ox2+'" height="'+H+'"/></clipPath>'+
+          '<clipPath id="bcr"><rect x="'+ox2+'" y="0" width="'+(W-ox2)+'" height="'+H+'"/></clipPath>'+
         '</defs>'+
-        // พื้น spec zone สีเขียวอ่อน
-        '<rect x="'+lx+'" y="0" width="'+(rx-lx)+'" height="'+(H-10)+'" fill="#EAF3DE" opacity="0.5"/>'+
-        // พื้นนอก spec zone ซ้าย-ขวา = สีแดงอ่อน
-        '<rect x="10" y="0" width="'+(lx-10)+'" height="'+(H-10)+'" fill="#FCEBEB" opacity="0.5"/>'+
-        '<rect x="'+rx+'" y="0" width="'+(W-10-rx)+'" height="'+(H-10)+'" fill="#FCEBEB" opacity="0.5"/>'+
         // curve fill
-        '<path d="'+path+' Z" fill="#c4c4bf" opacity="0.35" clip-path="url(#bcl)"/>'+
-        '<path d="'+path+' Z" fill="'+offerCol2+'" opacity="0.25" clip-path="url(#bcr)"/>'+
-        // spec limit lines
-        '<line x1="'+lx+'" y1="4" x2="'+lx+'" y2="'+(H-10)+'" stroke="#1a7a4a" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>'+
-        '<line x1="'+rx+'" y1="4" x2="'+rx+'" y2="'+(H-10)+'" stroke="#1a7a4a" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>'+
-        '<text x="'+(lx+3)+'" y="11" font-size="7" fill="#1a7a4a" font-family="monospace" opacity="0.9">−tol</text>'+
-        '<text x="'+(rx-3)+'" y="11" font-size="7" fill="#1a7a4a" font-family="monospace" text-anchor="end" opacity="0.9">+tol</text>'+
+        '<path d="'+path2+' Z" fill="#c4c4bf" opacity="0.35" clip-path="url(#bcl)"/>'+
+        '<path d="'+path2+' Z" fill="'+offerCol2+'" opacity="0.2" clip-path="url(#bcr)"/>'+
         // curve line
-        '<path d="'+path+'" fill="none" stroke="#888780" stroke-width="1.5"/>'+
-        // TMT dot
-        '<line x1="'+tx+'" y1="8" x2="'+tx+'" y2="'+(H-10)+'" stroke="#f36f22" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>'+
-        '<circle cx="'+tx+'" cy="'+(H-10)+'" r="3" fill="#f36f22"/>'+
+        '<path d="'+path2+'" fill="none" stroke="#888780" stroke-width="1.5"/>'+
         // offer line
-        '<line x1="'+ox+'" y1="6" x2="'+ox+'" y2="'+(H-10)+'" stroke="'+offerCol2+'" stroke-width="2"/>'+
-        '<circle cx="'+ox+'" cy="6" r="4" fill="'+offerCol2+'"/>'+
-        '<text x="'+(ox>W-50?ox-4:ox+4)+'" y="15" font-size="8" fill="'+offerCol2+'" font-family="monospace" font-weight="700" text-anchor="'+(ox>W-50?'end':'start')+'">'+offerW2.toFixed(1)+'</text>'+
-        // baseline
-        '<line x1="10" y1="'+(H-10)+'" x2="'+(W-10)+'" y2="'+(H-10)+'" stroke="#ddddd9" stroke-width="0.5"/>';
+        '<line x1="'+ox2+'" y1="6" x2="'+ox2+'" y2="'+(H-10)+'" stroke="'+offerCol2+'" stroke-width="2"/>'+
+        '<circle cx="'+ox2+'" cy="6" r="4" fill="'+offerCol2+'"/>'+
+        '<text x="'+(ox2>W-50?ox2-4:ox2+4)+'" y="15" font-size="8" fill="'+offerCol2+'" font-family="monospace" font-weight="700" text-anchor="'+(ox2>W-50?'end':'start')+'">'+offerW2.toFixed(1)+'</text>'+
+        // TMT dot
+        '<line x1="'+tx2+'" y1="8" x2="'+tx2+'" y2="'+(H-10)+'" stroke="#f36f22" stroke-width="1" stroke-dasharray="3,2" opacity="0.8"/>'+
+        '<circle cx="'+tx2+'" cy="'+(H-10)+'" r="3" fill="#f36f22"/>'+
+        // spec limit line (ขวาสุด)
+        '<line x1="'+sx+'" y1="4" x2="'+sx+'" y2="'+(H-10)+'" stroke="#888780" stroke-width="1.5"/>'+
+        // baseline เต็มแกน
+        '<line x1="10" y1="'+(H-10)+'" x2="'+(W-10)+'" y2="'+(H-10)+'" stroke="#888780" stroke-width="1"/>';
 
 
     })();
 
     // range bar
     var rMin2 = window._calcWCurveMin||kgMin;
-    var rMax2 = window._calcWCurveMax||kgMax;
+    var rSpec2 = window._calcWSpec||kgMax;
     setText('sh-wt-min', rMin2.toFixed(1)+' kg');
-    setText('sh-wt-max', rMax2.toFixed(1)+' kg');
+    setText('sh-wt-max', rSpec2.toFixed(1)+' kg (spec)');
     setText('sh-wt-tmt-lbl', kgTmt.toFixed(1)+' kg (TMT)');
     var fill = document.getElementById('sh-range-fill');
     var dot  = document.getElementById('sh-range-dot');
@@ -4721,6 +4735,7 @@ function calcInitOfferUI(){
   window._calcBnd      = bnd;
   window._calcWCurveMin = wMin;
   window._calcWCurveMax = wCurveMax;
+  window._calcWSpec = wSpec;
   // compat: strats array for bell curve
   window._calcStrats = [{name:'Custom',w:offerCustomW||wTmt,color:'#f36f22'}];
 
