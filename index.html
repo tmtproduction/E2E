@@ -5978,21 +5978,48 @@ function render3d(){
         surfType = 'HOT ROLLED STEEL PLATE';
       }
 
-      // ── Responsive scale — W เป็น base ──────────────────────────
-      // mobile ~360px → sc≈0.55 | tablet ~768px → sc≈0.82 | desktop ~1100px → sc≈1.0
-      var sc = Math.max(0.50, Math.min(1.0, W / 1100)) * 1.25;
+      // ── คำนวณ top face ของแผ่นบนสุด → หา screen bounding box จริง ──
+      // แผ่นบนสุด: cy = yOff + totalH - thick2/2  (เหมือนใน loop i=drawN-1)
+      var topSheetCy = yOff + totalH - thick2/2;
+      // 4 corners ของ top face (y = topSheetCy + thick2/2 = yOff + totalH)
+      var topY3d = topSheetCy + thick2/2 + fl;
+      var topCorners3d = [
+        [-bw/2, topY3d,  bl/2],   // front-left
+        [ bw/2, topY3d,  bl/2],   // front-right
+        [ bw/2, topY3d, -bl/2],   // back-right
+        [-bw/2, topY3d, -bl/2],   // back-left
+      ];
+      var topCorners2d = topCorners3d.map(function(p){ return pr(tp(p)); });
+      // หา bounding box ของ top face บน screen
+      var txMin = Math.min.apply(null, topCorners2d.map(function(p){return p[0];}));
+      var txMax = Math.max.apply(null, topCorners2d.map(function(p){return p[0];}));
+      var tyMin = Math.min.apply(null, topCorners2d.map(function(p){return p[1];}));
+      var tyMax = Math.max.apply(null, topCorners2d.map(function(p){return p[1];}));
+      var faceW = txMax - txMin;
+      var faceH = tyMax - tyMin;
+
+      // ── scale marking ตาม face width จริง — ไม่ใช้ W ──
+      var sc = Math.max(0.35, Math.min(1.4, faceW / 380));
 
       // font ratio จากรูปจริง: row1 ใหญ่กว่า row2 ประมาณ 1.75x
-      var fSz1 = Math.round(16 * sc);   // row1: size (ใหญ่ — ตรงรูปจริง)
-      var fSz2 = Math.round(9  * sc);   // row2: std + grade + surface
-      var fSz3 = Math.round(8  * sc);   // row3: heat no
-      var fSz4 = Math.round(8  * sc);   // footer
+      var fSz1 = Math.round(14 * sc);   // row1: size (ใหญ่)
+      var fSz2 = Math.round(8  * sc);   // row2: std + grade + surface
+      var fSz3 = Math.round(7  * sc);   // row3: heat no
+      var fSz4 = Math.round(7  * sc);   // footer
 
-      // ── STAY FLAT marking — ใช้รูปจาก Drive + text ─────────────────
-      var lw  = Math.min(Math.round(400*sc), W-Math.round(16*sc));
-      var lh  = Math.round(65*sc);
-      var lx  = Math.round(W*0.02);
-      var ly  = Math.round(H*0.06);
+      // ── วาง label บนแผ่น: ชิดขอบซ้ายล่างของ top face ──
+      // pad เล็กน้อยจากขอบซ้าย และลงมาจาก tyMin
+      var pad2   = Math.round(6*sc);
+      var lh1 = Math.round(fSz1*2.4);
+      var lh2 = Math.round(fSz2*2.0);
+      var lh3 = Math.round(fSz3*2.0);
+      var totalTextH = lh1+lh2+lh3;
+      var lh = totalTextH+pad2*2;
+      var lw = Math.round(faceW * 0.88);   // กว้างประมาณ 88% ของ face
+
+      // วางที่ครึ่งซ้ายล่างของ top face
+      var lx = Math.round(txMin + faceW*0.04);
+      var ly = Math.round(tyMin + faceH*0.18);   // ลงมาจากขอบบนนิดหน่อย
 
       ctx.save();
 
@@ -6033,14 +6060,6 @@ function render3d(){
 
       var sfUrl  = sqcLinks&&sqcLinks['stay flat'] ? sqcDriveUrl(sqcLinks['stay flat']) : null;
       var tisUrl = sqcLinks&&sqcLinks['TIS'] ? sqcDriveUrl(sqcLinks['TIS']) : null;
-
-      var pad2   = Math.round(5*sc);
-      // row heights สัดส่วนตามรูปจริง — row1 สูง, row2-3 เล็กลง
-      var lh1 = Math.round(fSz1*2.4);
-      var lh2 = Math.round(fSz2*2.0);
-      var lh3 = Math.round(fSz3*2.0);
-      var totalTextH = lh1+lh2+lh3;
-      var lh = totalTextH+pad2*2;
 
       // STAY FLAT: สูงเท่า totalTextH พอดี
       var sfLogoH = totalTextH;
@@ -6084,10 +6103,11 @@ function render3d(){
       var row2Y = sfY+lh1 + Math.round((lh2 - fSz2) / 2);
       var row3Y = sfY+lh1+lh2 + Math.round((lh3 - fSz3) / 2);
 
-      // bg (คำนวณ lh ก่อนแล้ว)
+      // bg — ไม่มี background box (inkjet พิมพ์บนผิวเหล็กโดยตรง)
+      // ใช้แค่ semi-transparent bg บางมากเพื่อให้อ่านง่ายขึ้นเล็กน้อย
       ctx.save();
-      ctx.fillStyle='rgba(245,243,240,0.96)';
-      var rx3=Math.round(4*sc);
+      ctx.fillStyle='rgba(200,195,188,0.22)';
+      var rx3=Math.round(3*sc);
       ctx.beginPath();
       ctx.moveTo(lx+rx3,ly);ctx.lineTo(lx+lw-rx3,ly);
       ctx.quadraticCurveTo(lx+lw,ly,lx+lw,ly+rx3);
@@ -6100,10 +6120,10 @@ function render3d(){
       ctx.closePath(); ctx.fill();
       ctx.restore();
 
-      // row1: SIZE (bold ใหญ่) — ตรงรูปจริง
+      // row1: SIZE (bold ใหญ่) — สีเข้มพิมพ์บนผิวเหล็ก
       ctx.textAlign='left'; ctx.textBaseline='top';
       ctx.font='bold '+fSz1+'px "Arial Narrow","Arial",sans-serif';
-      ctx.fillStyle='#0a0a0a';
+      ctx.fillStyle='#0d0d0b';
       ctx.fillText(thick2M+' X '+ww2+' X '+ll2+' mm  NON SKINPASSED  TMT°', col1X, row1Y, col1W);
 
       // row2: TIS std + grade + surface type — ดึงจาก sheet จริง
