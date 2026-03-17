@@ -3201,16 +3201,25 @@ body{
           <!-- EDITABLE FIELDS -->
           <div class="label-fields">
             <div class="lf-title">กรอกข้อมูล Tag</div>
-            <div class="frow"><label>Customer</label><input type="text" id="l-customer" placeholder="ชื่อลูกค้า" oninput="syncLabel()"></div>
-            <div class="frow"><label>Pcs (จำนวนแผ่น)</label><input type="number" id="l-pcs" placeholder="เช่น 170" oninput="syncLabel()"></div>
-            <div class="frow"><label>Machine No.</label><input type="text" id="l-machine" placeholder="เช่น CL05" oninput="syncLabel()"></div>
-            <div class="frow"><label>Heat No.</label><input type="text" id="l-heat" placeholder="เช่น —" oninput="syncLabel()"></div>
-            <div class="frow"><label>Bundle No.</label><input type="text" id="l-bundle" placeholder="เช่น 1007847476" oninput="syncLabel()"></div>
-            <div class="frow"><label>Batch No.</label><input type="text" id="l-batchno" placeholder="เช่น S53416-01" oninput="syncLabel()"></div>
-            <div class="frow"><label>Prod. Date</label><input type="date" id="l-date" oninput="syncLabel()"></div>
-            <div class="frow"><label>TMT No.</label><input type="text" id="l-tmtno" placeholder="เช่น 031D093672" oninput="syncLabel()"></div>
-            <div class="frow"><label>P/O No.</label><input type="text" id="l-pono" placeholder="เช่น 1020141120" oninput="syncLabel()"></div>
-            <div class="frow"><label>Remark</label><input type="text" id="l-remark" value="Made in Thailand" oninput="syncLabel()"></div>
+            <!-- Label form — collapsible -->
+            <div style="border:0.5px solid var(--g200);border-radius:8px;overflow:hidden;margin-bottom:10px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;background:var(--g50);" onclick="toggleLabelForm()">
+                <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g600);font-family:var(--mono);">กรอกข้อมูล TAG</span>
+                <span style="font-size:10px;color:var(--g400);" id="label-form-icon">▾</span>
+              </div>
+              <div id="label-form-body" style="padding:10px 12px;display:none;">
+                <div class="frow"><label>Customer</label><input type="text" id="l-customer" placeholder="ชื่อลูกค้า" oninput="syncLabel()"></div>
+                <div class="frow"><label>Pcs (จำนวนแผ่น)</label><input type="number" id="l-pcs" placeholder="เช่น 170" oninput="syncLabel()"></div>
+                <div class="frow"><label>Machine No.</label><input type="text" id="l-machine" placeholder="เช่น CL05" oninput="syncLabel()"></div>
+                <div class="frow"><label>Heat No.</label><input type="text" id="l-heat" placeholder="เช่น —" oninput="syncLabel()"></div>
+                <div class="frow"><label>Bundle No.</label><input type="text" id="l-bundle" placeholder="เช่น 1007847476" oninput="syncLabel()"></div>
+                <div class="frow"><label>Batch No.</label><input type="text" id="l-batchno" placeholder="เช่น S53416-01" oninput="syncLabel()"></div>
+                <div class="frow"><label>Prod. Date</label><input type="date" id="l-date" oninput="syncLabel()"></div>
+                <div class="frow"><label>TMT No.</label><input type="text" id="l-tmtno" placeholder="เช่น 031D093672" oninput="syncLabel()"></div>
+                <div class="frow"><label>P/O No.</label><input type="text" id="l-pono" placeholder="เช่น 1020141120" oninput="syncLabel()"></div>
+                <div class="frow"><label>Remark</label><input type="text" id="l-remark" value="Made in Thailand" oninput="syncLabel()"></div>
+              </div>
+            </div>
             <div style="position:sticky;bottom:0;background:var(--white);border-top:1px solid var(--g200);padding:10px 0 4px;margin-top:8px;">
               <button class="btn-print" onclick="printLabel()" style="margin-top:0;">🖨 พิมพ์ Tag</button>
             </div>
@@ -4713,6 +4722,14 @@ function calcKgPerSheet(){
   return (S.thick/10) * (S.w/10) * (S.l/10) * 0.00785;
 }
 var offerStrat = 0;
+var labelFormOpen = false;
+function toggleLabelForm(){
+  labelFormOpen = !labelFormOpen;
+  var body = document.getElementById('label-form-body');
+  var icon = document.getElementById('label-form-icon');
+  if(body) body.style.display = labelFormOpen ? 'block' : 'none';
+  if(icon) icon.textContent = labelFormOpen ? '▴' : '▾';
+}
 var vatOpen = false;
 function toggleVat(){
   vatOpen = !vatOpen;
@@ -5895,8 +5912,11 @@ function render3d(){
           canvasEl2.parentElement.appendChild(el);
         }
         el.src = url;
-        el.style.left   = Math.round(canvasOffX + (cx/pr2)*sx)+'px';
-        el.style.top    = Math.round(canvasOffY + (cy/pr2)*sy)+'px';
+        // position relative to canvas element (not parent scroll container)
+        var canvasL = canvasEl2.offsetLeft;
+        var canvasT = canvasEl2.offsetTop;
+        el.style.left   = Math.round(canvasL + (cx/pr2)*sx)+'px';
+        el.style.top    = Math.round(canvasT + (cy/pr2)*sy)+'px';
         el.style.width  = Math.round((cw/pr2)*sx)+'px';
         el.style.height = Math.round((ch/pr2)*sy)+'px';
         el.style.display= '';
