@@ -2215,10 +2215,10 @@ body{
     <div class="vp-hdr-right">
       <span id="vp-surface-badge" class="v-badge hr vp-badge-desktop" style="display:none;"></span>
       <div class="vp-tabs">
-        <button class="tab-btn active" onclick="switchTab('spec',this)">ข้อมูลสินค้า</button>
-        <button class="tab-btn" onclick="switchTab('geo',this)">ตรวจสอบ</button>
+        <button class="tab-btn active" onclick="switchTab('spec',this)">Product</button>
+        <button class="tab-btn" onclick="switchTab('geo',this)">Specification</button>
         <button class="tab-btn" disabled title="สงวนสิทธิ์ Admin" style="opacity:.35;cursor:not-allowed;">แก้ไข</button>
-        <button class="tab-btn" onclick="switchTab('label',this)">พิมพ์ Tag</button>
+        <button class="tab-btn" onclick="switchTab('label',this)">Tag</button>
         <button class="tab-btn" onclick="switchTab('finder',this)">Spec Finder</button>
       </div>
     </div>
@@ -3916,7 +3916,7 @@ function openViewer(idx){
   var wNom2  = parseFloat(s.WIDTH_MM||1219);
   var stdVal2 = String((currentSku&&currentSku.STANDARD)||'').toUpperCase().trim();
   var flatLim = stdVal2.indexOf('STAY FLAT') >= 0 ? 5 : 12;
-  setText('tc-flat', '≤ '+flatLim+' mm / 2m');
+  setText('tc-flat', '≤ '+flatLim+' mm ');
 
   // 4. Camber: W-SD-QA-01 §5 Cut to Length
   var lenMM2 = parseFloat(s.LENGTH_MM||2400);
@@ -5953,7 +5953,7 @@ function render3d(){
 
       // STAY FLAT: สูงเท่า totalTextH พอดี
       var sfLogoH = totalTextH;
-      var sfLogoW = Math.round(sfLogoH*0.72);
+      var sfLogoW = Math.round(sfLogoH*0.9);
       var sfX = lx+pad2, sfY = ly+pad2;
 
       if(sfUrl){
@@ -6017,7 +6017,7 @@ function render3d(){
       // row2: std + grade + surf (เล็ก)
       ctx.font=fSz2+'px "Arial Narrow","Arial",sans-serif';
       ctx.fillStyle='#1a1a1a';
-      ctx.fillText(std2+'  '+grade2+'  '+surf2+' STEEL PLATE  MILL EDGE THAILAND', col2X, row2Y, col2W);
+      ctx.fillText('TIS 1479 - 2566 STEEL PLATE  MILL EDGE THAILAND', col2X, row2Y, col2W);
 
       // row3: heat no (เล็กสุด)
       ctx.font=fSz3+'px "Arial Narrow","Arial",sans-serif';
