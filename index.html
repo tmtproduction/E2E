@@ -2063,6 +2063,7 @@ body{
 .sf-open-btn{display:block;width:100%;margin-top:8px;padding:6px;background:transparent;border:0.5px solid var(--g200);border-radius:6px;font-size:10px;font-family:var(--mono);color:var(--g600);cursor:pointer;text-align:center;}
 .sf-open-btn:hover{border-color:var(--black);color:var(--black);}
 </style>
+  <link rel="icon" href="data:,">
 </head>
 <body>
 
@@ -2580,42 +2581,27 @@ body{
                   <span style="color:#A32D2D;">◀ เสี่ยงขาดทุน</span>
                   <span style="color:#3B6D11;">โอกาสได้ครบ ▶</span>
                 </div>
-                <!-- gap axis card -->
-                <div style="margin-top:8px;background:var(--g50);border-radius:6px;padding:10px 12px;display:flex;gap:14px;align-items:stretch;">
-                  <!-- แกนตั้ง -->
-                  <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;padding:2px 0;">
-                    <div style="width:1.5px;flex:1;background:var(--g300);"></div>
-                    <div style="width:10px;height:10px;border-radius:50%;border:2px solid var(--black);background:var(--white);flex-shrink:0;" id="offer-axis-dot"></div>
-                    <div style="width:1.5px;flex:1;background:var(--g300);"></div>
-                    <div style="font-size:7px;color:var(--g400);">┬</div>
-                    <div style="width:1.5px;height:14px;background:var(--g300);"></div>
-                  </div>
-                  <!-- labels -->
-                  <div style="display:flex;flex-direction:column;flex:1;justify-content:space-between;">
-                    <!-- offer (วงกลม) -->
-                    <div style="display:flex;justify-content:space-between;align-items:baseline;margin:4px 0;">
-                      <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">นำเสนอ</span>
-                      <div style="text-align:right;">
-                        <div style="font-size:14px;font-weight:700;font-family:var(--mono);" id="gap-lbl-offer">—</div>
-                        <div style="font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:10px;display:inline-block;margin-top:2px;" id="gap-lbl-zone">—</div>
-                      </div>
-                    </div>
-                    <!-- hidden compat -->
-                    <div id="gap-lbl-min" style="display:none"></div>
-                    <div id="gap-lbl-max" style="display:none"></div>
-                    <!-- gap line -->
-                    <div style="border-top:1px dashed var(--g200);margin:4px 0;"></div>
-                    <!-- THICKNESS_TARGET -->
-                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                      <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">TARGET</span>
-                      <span style="font-size:10px;font-weight:600;font-family:var(--mono);color:#1a7a4a;" id="gap-lbl-target">—</span>
-                    </div>
-                    <!-- diff -->
-                    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px;padding-top:4px;border-top:1px solid var(--g200);">
-                      <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">ห่างจาก target</span>
-                      <span style="font-size:16px;font-weight:700;font-family:var(--mono);" id="offer-vs-spec">—</span>
+                <!-- gap axis card — compact -->
+                <div style="margin-top:6px;background:var(--g50);border-radius:6px;padding:6px 10px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">นำเสนอ</span>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                      <span style="font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:10px;" id="gap-lbl-zone">—</span>
+                      <span style="font-size:13px;font-weight:700;font-family:var(--mono);" id="gap-lbl-offer">—</span>
                     </div>
                   </div>
+                  <div style="border-top:1px dashed var(--g200);margin:3px 0;"></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                    <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">TARGET</span>
+                    <span style="font-size:10px;font-weight:600;font-family:var(--mono);color:#1a7a4a;" id="gap-lbl-target">—</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding-top:3px;border-top:1px solid var(--g200);">
+                    <span style="font-size:8px;color:var(--g400);font-family:var(--mono);">ห่างจาก target</span>
+                    <span style="font-size:14px;font-weight:700;font-family:var(--mono);" id="offer-vs-spec">—</span>
+                  </div>
+                  <div id="offer-axis-dot" style="display:none"></div>
+                  <div id="gap-lbl-min" style="display:none"></div>
+                  <div id="gap-lbl-max" style="display:none"></div>
                 </div>
                 <!-- compat hidden -->
                 <div id="offer-gap-bar-label" style="display:none"></div>
@@ -2936,7 +2922,7 @@ body{
                       <span class="sqc-card-title">สนิม</span>
                       <select class="sqc-sel" id="sqc-rust" onchange="sqcUpdate()">
                         <option value="0">ไม่มี</option>
-                        <option value="1">ระดับ 1.5</option>
+                        <option value="1" selected>ระดับ 1.5</option>
                         <option value="2">ระดับ 2</option>
                         <option value="3">ระดับ 3</option>
                       </select>
@@ -2956,7 +2942,7 @@ body{
                       <span class="sqc-card-title">สเกลล่อน</span>
                       <select class="sqc-sel" id="sqc-scale" onchange="sqcUpdate()">
                         <option value="0">ไม่มี</option>
-                        <option value="1">ระดับ 1.5</option>
+                        <option value="1" selected>ระดับ 1.5</option>
                         <option value="2">ระดับ 2</option>
                         <option value="3">ระดับ 3</option>
                       </select>
@@ -2976,7 +2962,7 @@ body{
                       <span class="sqc-card-title">รอยหัก/คลื่น</span>
                       <select class="sqc-sel" id="sqc-crack" onchange="sqcUpdate()">
                         <option value="0">ไม่มี</option>
-                        <option value="1">ระดับ 1.5</option>
+                        <option value="1" selected>ระดับ 1.5</option>
                         <option value="2">ระดับ 2</option>
                         <option value="3">ระดับ 3</option>
                       </select>
@@ -5199,6 +5185,7 @@ function syncSheetsNum(el){
   var rng=document.getElementById('a-sheets'); if(rng) rng.value=v;
   if(typeof render3d==='function') render3d();
   if(typeof calcUpdate==='function') calcUpdate();
+  if(typeof sqcUpdate==='function') sqcUpdate();
   if(typeof syncLabel==='function') syncLabel();
   // update bundle weight display
   if(currentSku){
