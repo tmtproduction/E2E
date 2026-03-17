@@ -5952,14 +5952,14 @@ function render3d(){
       var lh = totalTextH+pad2*2;
 
       // STAY FLAT: สูงเท่า totalTextH พอดี
-      var sfLogoH = totalTextH*1.15;
-      var sfLogoW = Math.round(sfLogoH*0.8);
+      var sfLogoH = totalTextH;
+      var sfLogoW = Math.round(sfLogoH*0.72);
       var sfX = lx+pad2, sfY = ly+pad2;
 
       if(sfUrl){
         placeLogoOverlay('sf-logo-overlay', sfUrl, sfX, sfY, sfLogoW, sfLogoH);
       } else {
-        var sfSz = Math.round(fSz1*1.1);
+        var sfSz = Math.round(fSz1*1.25);
         ctx.font='900 '+sfSz+'px "Arial Narrow","Arial",sans-serif';
         ctx.fillStyle='#0a0a0a'; ctx.textAlign='left'; ctx.textBaseline='top';
         ctx.fillText('STAY', sfX, sfY);
