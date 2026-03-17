@@ -5904,17 +5904,17 @@ function render3d(){
       var sfUrl  = sqcLinks&&sqcLinks['stay flat'] ? sqcDriveUrl(sqcLinks['stay flat']) : null;
       var tisUrl = sqcLinks&&sqcLinks['TIS'] ? sqcDriveUrl(sqcLinks['TIS']) : null;
 
-      var pad2   = Math.round(5*sc);
-      // คำนวณ row heights
-      var lh1 = Math.round(fSz1*1.7);
-      var lh2 = Math.round(fSz2*1.6);
-      var lh3 = Math.round(fSz3*1.5);
+      var pad2   = Math.round(6*sc);
+      // row heights — ให้ใหญ่พอ
+      var lh1 = Math.round(fSz1*2.0);
+      var lh2 = Math.round(fSz2*1.8);
+      var lh3 = Math.round(fSz3*1.7);
       var totalTextH = lh1+lh2+lh3;
       var lh = totalTextH+pad2*2;
 
-      // STAY FLAT: สูงเท่า 3 rows, aspect 0.75
+      // STAY FLAT: สูงเท่า totalTextH พอดี
       var sfLogoH = totalTextH;
-      var sfLogoW = Math.round(sfLogoH*0.75);
+      var sfLogoW = Math.round(sfLogoH*0.72);
       var sfX = lx+pad2, sfY = ly+pad2;
 
       if(sfUrl){
@@ -5928,8 +5928,8 @@ function render3d(){
       }
 
       // TIS logo: สูง = lh2 (row2 สูง), วาง col B ซ้ายสุด rows 2-3
-      var tisSize = Math.round((lh2+lh3)*0.72); // สี่เหลี่ยมจัตุรัส
-      var tisX    = sfX+sfLogoW+Math.round(8*sc);
+      var tisSize = Math.round((lh2+lh3)*0.85); // เกือบเต็ม row2+3
+      var tisX    = sfX+sfLogoW+Math.round(10*sc);
       var tisY    = sfY+lh1+Math.round((lh2+lh3-tisSize)/2);
       if(tisUrl){
         placeLogoOverlay('tis-logo-overlay', tisUrl, tisX, tisY, tisSize, tisSize);
@@ -5945,8 +5945,8 @@ function render3d(){
       }
 
       // TEXT positions
-      var col1X = sfX+sfLogoW+Math.round(12*sc); // row1: ชิดขวา STAY FLAT
-      var col2X = tisX+tisSize+Math.round(6*sc);  // row2-3: ชิดขวา TIS
+      var col1X = sfX+sfLogoW+Math.round(10*sc); // row1: ชิดขวา STAY FLAT
+      var col2X = tisX+tisSize+Math.round(8*sc);  // row2-3: ชิดขวา TIS
       var col1W = lx+lw-col1X-pad2;
       var col2W = lx+lw-col2X-pad2;
       var row1Y = sfY;
