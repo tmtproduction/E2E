@@ -3001,6 +3001,13 @@ body{
                 </div>
               </div>
             </div>
+            <!-- Marking sample image -->
+            <div style="margin-top:12px;">
+              <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-bottom:6px;">ตัวอย่าง Marking</div>
+              <div class="sqc-img" id="sqc-img-marking" onclick="sqcOpenLightbox(this)" style="height:100px;">
+                <div class="sqc-img-placeholder">กำลังโหลด...</div>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -4442,9 +4449,14 @@ function loadLinkSheet(){
       var link=(row.c[1]&&row.c[1].v)?String(row.c[1].v).trim():'';
       if(key&&link) sqcLinks[key]=link;
     });
-    // หลัง link sheet โหลดเสร็จ → update sqc ถ้า viewer เปิดอยู่
+    // หลัง link sheet โหลดเสร็จ → update sqc + marking img
     if(typeof sqcUpdate==='function') sqcUpdate();
     if(typeof render3d==='function') render3d();
+    // โหลดรูป Marking
+    var markImgEl = document.getElementById('sqc-img-marking');
+    if(markImgEl && sqcLinks['Marking']){
+      sqcSetImg('sqc-img-marking', sqcLinks['Marking'], 'ตัวอย่าง Marking');
+    }
   }).catch(function(){});
 }
 loadLinkSheet();
