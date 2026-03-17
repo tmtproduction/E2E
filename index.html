@@ -2115,15 +2115,10 @@ body{
   <!-- ── SPEC FINDER SEARCH BAR ── -->
   <div class="chip-bar sfb" id="chip-bar">
     <div class="sfb-fields">
-      <!-- ความหนา + tolerance -->
+      <!-- ความหนา -->
       <div class="sfb-card" onclick="this.querySelector('input').focus()">
         <span class="sfb-lbl">ความหนา (mm)</span>
         <input class="sfb-input" id="sfb-thick" type="number" step="0.25" placeholder="เช่น 4.5">
-        <div class="sfb-tol-row">
-          <span>±</span>
-          <button class="sfb-tol-chip" id="sfb-tol-chip" onclick="event.stopPropagation();cycleTol()" title="กดเพื่อเปลี่ยน tolerance">0.50</button>
-          <span>mm tolerance</span>
-        </div>
       </div>
       <!-- ความกว้าง -->
       <div class="sfb-card" onclick="this.querySelector('input').focus()">
@@ -2136,9 +2131,9 @@ body{
         <input class="sfb-input" id="sfb-l" type="number" placeholder="เช่น 2438">
       </div>
       <!-- Grade -->
-      <div class="sfb-card" style="flex:0.7" onclick="this.querySelector('input').focus()">
+      <div class="sfb-card" onclick="this.querySelector('input').focus()">
         <span class="sfb-lbl">Grade</span>
-        <input class="sfb-input sfb-input--grade" id="sfb-grade" type="text" placeholder="SS400, SPHC…">
+        <input class="sfb-input" id="sfb-grade" type="text" placeholder="SS400, SPHC…">
       </div>
     </div>
     <!-- ปุ่มค้นหา + priority + clear -->
