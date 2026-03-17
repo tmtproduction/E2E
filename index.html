@@ -5887,12 +5887,16 @@ function render3d(){
           canvasEl2.parentElement.style.position='relative';
           canvasEl2.parentElement.appendChild(el);
         }
-        if(el.src !== url) el.src = url;
+        el.src = url;
         el.style.left   = Math.round((cx/pr2)*sx + cRect2.left - pRect2.left)+'px';
         el.style.top    = Math.round((cy/pr2)*sy + cRect2.top  - pRect2.top)+'px';
         el.style.width  = Math.round((cw/pr2)*sx)+'px';
         el.style.height = Math.round((ch/pr2)*sy)+'px';
+        el.style.objectFit = 'fill';
         el.style.display= '';
+        el.style.border = '0';
+        el.style.padding = '0';
+        el.style.margin = '0';
       }
 
       // ── Layout:
