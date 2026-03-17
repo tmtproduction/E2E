@@ -4742,7 +4742,9 @@ function calcInitOfferUI(){
   // slider range = wCurveMin → wCurveMax
   var wMin     = wCurveMin;
   var wSpec    = wCurveMax;          // slider max = THICK_MAX
-  var wTmt     = calcKgPerSheet();   // TMT actual
+  // TMT = คำนวณจาก THICKNESS_TMT_MM โดยตรง (ไม่ขึ้นกับ S.thick ที่อาจยังไม่อัพเดต)
+  var tTmt2 = parseFloat(s.THICKNESS_TMT_MM)||tSpec||0;
+  var wTmt  = tTmt2>0 ? kgOf(tTmt2) : calcKgPerSheet();
   var stock = parseInt(s.STOCK_QTY)||0;
   var bnd   = parseInt(s.BUNDLE_SIZE)||5;
   window._calcStock    = stock;
@@ -4787,14 +4789,20 @@ function calcInitOfferUI(){
   var tickWrap = document.getElementById('offer-ticks');
   if(tickWrap){
     tickWrap.innerHTML='';
-    var span = wSpec - wMin;
-    var wCurveMax2 = window._calcWCurveMax||wSpec;
-  var wCurveMax2 = window._calcWCurveMax||wSpec;
-  [{v:wMin,lbl:'−tol'},{v:wTmt,lbl:'TMT'},{v:wSpec,lbl:'target'},{v:wCurveMax,lbl:'+tol'}].forEach(function(tk){
-      var pct=span>0?((tk.v-wMin)/span*100).toFixed(1):50;
+    // slider range = wMin..wCurveMax, tmt position ภายใน range นั้น
+    var sliderMin = parseFloat(cs.min)||wMin;
+    var sliderMax = parseFloat(cs.max)||wCurveMax;
+    var sliderSpan = sliderMax - sliderMin;
+    var tmtPct = sliderSpan>0 ? Math.min(Math.max((wTmt-sliderMin)/sliderSpan*100,2),98).toFixed(1) : '50';
+    var ticks=[
+      {v:sliderMin, lbl:'-tol',  anchor:'start', left:'0%'},
+      {v:wTmt,      lbl:'TMT',   anchor:'middle', left:tmtPct+'%'},
+      {v:sliderMax, lbl:'target',anchor:'end',    left:'100%'}
+    ];
+    ticks.forEach(function(tk){
       var el=document.createElement('div');
-      el.style.cssText='position:absolute;left:'+pct+'%;transform:translateX(-50%);text-align:center;';
-      el.innerHTML='<div style="font-size:7px;color:var(--g400);font-family:var(--mono)">'+tk.lbl+'</div>'+
+      el.style.cssText='position:absolute;left:'+tk.left+';transform:translateX('+(tk.anchor==='start'?'0':tk.anchor==='end'?'-100%':'-50%')+');text-align:'+(tk.anchor==='start'?'left':tk.anchor==='end'?'right':'center')+';';
+      el.innerHTML='<div style="font-size:7px;color:var(--g400);font-family:var(--mono);letter-spacing:0.5px">'+tk.lbl+'</div>'+
         '<div style="font-size:8px;font-weight:600;font-family:var(--mono);color:var(--black)">'+tk.v.toFixed(1)+'</div>';
       tickWrap.appendChild(el);
     });
