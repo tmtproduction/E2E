@@ -6103,12 +6103,11 @@ function render3d(){
       var fH=Math.sqrt(vx*vx+vy*vy); // pixel ความยาว
       if(fW<10||fH<5) { ctx.restore(); return; }
 
-      // marking ขนานตามความยาว (v-axis)
-      // ขนาด: ยาว = 40% ของ fH, สูง (ตามความกว้าง) = อัตราส่วนตามข้อความ ~1:4
-      var mLong  = fH * 0.40;          // ความยาวของ marking = 40% ของความยาวแผ่น
-      var mShort = mLong * 0.40;       // สูงขึ้น ratio 1:2.5 อ่านง่ายขึ้น
+      // marking วิ่งตาม u-axis (ความกว้าง), ชิดขอบด้านยาว (v≈0), กึ่งกลาง u
+      // mLong = 40% ของความยาว (fH), วิ่งตาม u
+      var mLong  = fH * 0.40;
+      var mShort = mLong * 0.30;
 
-      // offscreen canvas: กว้าง = mLong, สูง = mShort
       var oc=document.createElement('canvas');
       var oW=Math.round(mLong), oH=Math.round(mShort);
       if(oW<20||oH<6){ ctx.restore(); return; }
@@ -6116,10 +6115,10 @@ function render3d(){
       var oc2=oc.getContext('2d');
       oc2.clearRect(0,0,oW,oH);
 
-      var fSzBase=Math.max(5,Math.min(13,oW*0.028));
+      var fSzBase=Math.max(9,Math.min(22,oW*0.055));
       var fSz1=Math.round(fSzBase);
-      var fSz2=Math.round(fSzBase*0.62);
-      var fSz3=Math.round(fSzBase*0.55);
+      var fSz2=Math.round(fSzBase*0.65);
+      var fSz3=Math.round(fSzBase*0.58);
       var sfSz=Math.round(fSzBase*0.9);
       var lineH1=fSz1*1.6, lineH2=fSz2*1.6;
       var padX=oW*0.01, rowY=oH*0.05;
@@ -6129,12 +6128,11 @@ function render3d(){
       // STAY FLAT logo
       var sfColW = sfSz * 2.4;
       if(_imgCache['_sf']){
-        var sfImg = new Image();
-        sfImg.src = _imgCache['_sf'];
+        var sfImg = new Image(); sfImg.src = _imgCache['_sf'];
         oc2.drawImage(sfImg, padX, rowY, sfColW, sfSz*2.4);
       } else {
         oc2.font = '900 '+sfSz+'px "Arial Narrow","Arial Black","Arial",sans-serif';
-        oc2.fillStyle = 'rgba(10,10,10,0.85)';
+        oc2.fillStyle = 'rgba(10,10,10,0.90)';
         oc2.fillText('STAY', padX, rowY);
         oc2.fillText('FLAT', padX, rowY+sfSz*1.15);
       }
@@ -6143,49 +6141,49 @@ function render3d(){
       var tisCX = padX+sfColW+oW*0.01+fSz2*0.7;
       var tisCY = rowY+lineH1+lineH2*0.4;
       if(_imgCache['_tis']){
-        var tisImg = new Image();
-        tisImg.src = _imgCache['_tis'];
+        var tisImg = new Image(); tisImg.src = _imgCache['_tis'];
         oc2.drawImage(tisImg, tisCX-fSz2*0.8, tisCY-fSz2*0.8, fSz2*1.6, fSz2*1.6);
       } else {
         oc2.beginPath(); oc2.arc(tisCX,tisCY,fSz2*0.75,0,Math.PI*2);
-        oc2.strokeStyle='rgba(10,10,10,0.82)'; oc2.lineWidth=fSz2*0.13; oc2.stroke();
+        oc2.strokeStyle='rgba(10,10,10,0.85)'; oc2.lineWidth=fSz2*0.13; oc2.stroke();
         oc2.beginPath();
         oc2.moveTo(tisCX-fSz2*0.5,tisCY); oc2.lineTo(tisCX+fSz2*0.5,tisCY);
         oc2.moveTo(tisCX,tisCY-fSz2*0.5); oc2.lineTo(tisCX,tisCY+fSz2*0.5);
         oc2.stroke();
       }
 
-      // row1: SIZE
+      // row1
       var tx1=padX+sfColW+oW*0.01;
       oc2.font='bold '+fSz1+'px "Arial Narrow","Arial",sans-serif';
-      oc2.fillStyle='rgba(8,8,8,0.9)';
+      oc2.fillStyle='rgba(10,10,10,0.92)';
       oc2.fillText(thick2M+' X '+ww2+' X '+ll2+' mm  NON SKINPASSED  TMT°', tx1, rowY, oW-tx1-padX);
 
       // row2
       var tx2=tisCX+fSz2*0.9;
       oc2.font=fSz2+'px "Arial Narrow","Arial",sans-serif';
-      oc2.fillStyle='rgba(10,10,10,0.80)';
+      oc2.fillStyle='rgba(10,10,10,0.82)';
       oc2.fillText('TIS 1479 - 2566 '+grade2+' '+surfType+'  MILL EDGE THAILAND', tx2, rowY+lineH1, oW-tx2-padX);
 
       // row3
       oc2.font=fSz3+'px "Arial Narrow","Arial",sans-serif';
-      oc2.fillStyle='rgba(60,60,60,0.65)';
+      oc2.fillStyle='rgba(50,50,50,0.70)';
       oc2.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX', tx2, rowY+lineH1+lineH2, oW-tx2-padX);
 
       // ── Map offscreen → top face ──
-      // ชิดขอบหน้าสุด (v=0.02), กึ่งกลางความกว้าง
-      var uStart = 0.5 - (mShort/fW)*0.5;
-      var vStart = 0.02;  // ชิดขอบหน้า
+      // ชิดขอบด้านยาว (v=0.02), กึ่งกลางความกว้าง (u กึ่งกลาง)
+      // marking วิ่งตาม u-axis: x-basis = u, y-basis = v
+      var uOff = 0.5 - (mLong/fW)*0.5;   // กึ่งกลาง u
+      var vOff = 0.02;                     // ชิดขอบ v=0
 
-      var dox = ox + ux*uStart + vx*vStart;
-      var doy = oy + uy*uStart + vy*vStart;
+      var dox = ox + ux*uOff + vx*vOff;
+      var doy = oy + uy*uOff + vy*vOff;
 
-      // x-basis → ตาม v (ความยาว), flip เพื่อแก้ mirror
-      var dux = vx * (mLong/fH);
-      var duy = vy * (mLong/fH);
-      // y-basis → ตาม u (ความกว้าง)
-      var dvx = ux * (mShort/fW);
-      var dvy = uy * (mShort/fW);
+      // x-basis → ตาม u (ความกว้าง), ยาว = mLong
+      var dux = ux*(mLong/fW);
+      var duy = uy*(mLong/fW);
+      // y-basis → ตาม v (ความยาว), สูง = mShort
+      var dvx = vx*(mShort/fH);
+      var dvy = vy*(mShort/fH);
 
       ctx.save();
       // clip to top face
@@ -6196,14 +6194,12 @@ function render3d(){
       ctx.lineTo(c2d[3][0],c2d[3][1]);
       ctx.closePath(); ctx.clip();
 
-      // ใช้ transform เพื่อ map offscreen → face, พร้อม flip x เพื่อแก้ mirror
-      // flip: origin เลื่อนไปที่ oW, แล้ว x-basis กลับเป็นลบ
       ctx.transform(
-        -dux/oW, -duy/oW,           // x-basis (flip)
-        dvx/oH,  dvy/oH,            // y-basis
-        dox+dux, doy+duy            // origin (เลื่อนชดเชย flip)
+        dux/oW, duy/oW,
+        dvx/oH, dvy/oH,
+        dox, doy
       );
-      ctx.globalAlpha = 0.90;
+      ctx.globalAlpha = 0.92;
       ctx.drawImage(oc, 0, 0);
       ctx.restore();
     }catch(e){}
