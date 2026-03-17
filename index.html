@@ -5426,6 +5426,7 @@ function setTag(mode,btn){
   btn.classList.add('active');
   if(typeof render3d==='function') render3d();
 }
+function setMarking(mode,btn){
   S.marking=mode;
   ['sf-logo-overlay','tis-logo-overlay'].forEach(function(id){
     var ov=document.getElementById(id);
