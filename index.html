@@ -5947,13 +5947,13 @@ function render3d(){
       // row heights — logo scale ตาม
       var lh1 = Math.round(fSz1*2.6);
       var lh2 = Math.round(fSz2*2.2);
-      var lh3 = Math.round(fSz3*2.0);
+      var lh3 = Math.round(fSz3*2.2);
       var totalTextH = lh1+lh2+lh3;
       var lh = totalTextH+pad2*2;
 
       // STAY FLAT: สูงเท่า totalTextH พอดี
-      var sfLogoH = totalTextH;
-      var sfLogoW = Math.round(sfLogoH*0.9);
+      var sfLogoH = totalTextH*1.15;
+      var sfLogoW = Math.round(sfLogoH*0.8);
       var sfX = lx+pad2, sfY = ly+pad2;
 
       if(sfUrl){
