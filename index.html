@@ -2120,6 +2120,11 @@ body{
         <span class="sfb-lbl">ความหนา (mm)</span>
         <input class="sfb-input" id="sfb-thick" type="number" step="0.25" placeholder="เช่น 4.5">
       </div>
+      <!-- tolerance -->
+      <div class="sfb-card" onclick="this.querySelector('input').focus()">
+        <span class="sfb-lbl">Tolerance ±</span>
+        <input class="sfb-input" id="sfb-tol" type="number" step="0.25" placeholder="0.5" value="0.5">
+      </div>
       <!-- ความกว้าง -->
       <div class="sfb-card" onclick="this.querySelector('input').focus()">
         <span class="sfb-lbl">ความกว้าง (mm)</span>
@@ -4599,8 +4604,7 @@ function setSfbPriority(val, btn) {
 
 function runInlineSpecFinder(){
   var thick = parseFloat(document.getElementById('sfb-thick').value)||0;
-  var tolChip = document.getElementById('sfb-tol-chip');
-  var tol = tolChip ? parseFloat(tolChip.textContent)||0.5 : 0.5;
+  var tol   = parseFloat(document.getElementById('sfb-tol').value)||0.5;
   var w     = parseInt(document.getElementById('sfb-w').value)||0;
   var l     = parseInt(document.getElementById('sfb-l').value)||0;
   var grade = (document.getElementById('sfb-grade').value||'').trim().toUpperCase();
@@ -4637,7 +4641,7 @@ function runInlineSpecFinder(){
 }
 function clearInlineFinder(){
   document.getElementById('sfb-thick').value='';
-  var tolChip2=document.getElementById('sfb-tol-chip'); if(tolChip2) tolChip2.textContent='0.50';
+  var tolEl=document.getElementById('sfb-tol'); if(tolEl) tolEl.value='0.5';
   document.getElementById('sfb-w').value='';
   document.getElementById('sfb-l').value='';
   document.getElementById('sfb-grade').value='';
@@ -4647,7 +4651,7 @@ function clearInlineFinder(){
   renderGrid();
 }
 // Enter key triggers search
-['sfb-thick','sfb-w','sfb-l','sfb-grade'].forEach(function(id){
+['sfb-thick','sfb-tol','sfb-w','sfb-l','sfb-grade'].forEach(function(id){
   var el=document.getElementById(id);
   if(el) el.addEventListener('keydown',function(e){if(e.key==='Enter')runInlineSpecFinder();});
 });
