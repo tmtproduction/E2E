@@ -4469,8 +4469,6 @@ function loadLinkSheet(){
       if(key&&link) sqcLinks[key]=link;
     });
     // หลัง link sheet โหลดเสร็จ → update sqc + marking img
-    console.log('[LinkSheet] keys:', Object.keys(sqcLinks));
-    console.log('[LinkSheet] Marking:', sqcLinks['Marking'], '| Label:', sqcLinks['Label']);
     if(typeof sqcUpdate==='function') sqcUpdate();
     if(typeof render3d==='function') render3d();
     // โหลดรูป Marking
@@ -5299,7 +5297,6 @@ function buildLSS(s) {
   var stdU = std.toUpperCase();
   var flatLim = (stdU.indexOf('STAY')!==-1&&stdU.indexOf('FLAT')!==-1)?5:12;
   var camber  = (3/(ll/1000)).toFixed(2);
-  var sq1mm   = (ww*0.007).toFixed(1);
 
   setText('lss-sku', s.SKU || '—');
 
