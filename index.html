@@ -5998,21 +5998,19 @@ function render3d(){
       var faceW = txMax - txMin;
       var faceH = tyMax - tyMin;
 
-      var pr2 = window.devicePixelRatio||1;
-      // faceW เป็น canvas px (รวม dpr) → หาร pr2 เพื่อได้ CSS px จริง
-      var faceW_css = faceW / pr2;
-      var faceH_css = faceH / pr2;
+      // W/H และ canvas coordinates ทั้งหมดเป็น CSS px อยู่แล้ว (resizeCanvas ใช้ clientWidth)
+      // faceW = CSS px โดยตรง ไม่ต้องหาร dpr
 
-      // scale ตาม CSS px ของ face — cap ไม่ให้เกิน
-      var sc = Math.max(0.28, Math.min(0.75, faceW_css / 480));
+      // scale ตาม faceW CSS px
+      var sc = Math.max(0.28, Math.min(0.72, faceW / 480));
 
-      // font sizes (canvas px — วาดบน canvas ตาม dpr)
-      var fSz1 = Math.round(13 * sc * pr2);
-      var fSz2 = Math.round(7.5* sc * pr2);
-      var fSz3 = Math.round(6.5* sc * pr2);
+      // font sizes (CSS px — วาดตรงบน canvas)
+      var fSz1 = Math.round(13 * sc);
+      var fSz2 = Math.round(7.5* sc);
+      var fSz3 = Math.round(6.5* sc);
 
-      // row heights (canvas px)
-      var pad2 = Math.round(4 * sc * pr2);
+      // row heights
+      var pad2 = Math.round(4 * sc);
       var lh1 = Math.round(fSz1*2.1);
       var lh2 = Math.round(fSz2*2.0);
       var lh3 = Math.round(fSz3*2.0);
@@ -6020,7 +6018,7 @@ function render3d(){
       var lh = totalTextH+pad2*2;
       var lw = Math.round(faceW * 0.80);
 
-      // วางมุมซ้ายบน top face (canvas px)
+      // วางมุมซ้ายบน top face
       var lx = Math.round(txMin + faceW*0.05);
       var ly = Math.round(tyMin + faceH*0.10);
 
@@ -6044,12 +6042,11 @@ function render3d(){
           canvas.parentElement.appendChild(el);
         }
         if(el.dataset.src !== url){ el.src = url; el.dataset.src = url; }
-        // cx/cy/cw/ch เป็น canvas px → หาร pr2 → CSS px
-        // canvas.offsetWidth/Height เป็น CSS px ของ element แล้ว ไม่ต้อง scale เพิ่ม
-        el.style.left   = Math.round(cx / pr2) + 'px';
-        el.style.top    = Math.round(cy / pr2) + 'px';
-        el.style.width  = Math.round(cw / pr2) + 'px';
-        el.style.height = Math.round(ch / pr2) + 'px';
+        // cx/cy/cw/ch เป็น CSS px อยู่แล้ว — set ตรงๆ
+        el.style.left   = Math.round(cx) + 'px';
+        el.style.top    = Math.round(cy) + 'px';
+        el.style.width  = Math.round(cw) + 'px';
+        el.style.height = Math.round(ch) + 'px';
         el.style.display = '';
       }
 
