@@ -3985,7 +3985,7 @@ function openViewer(idx){
   var strapRaw=String(s.STRAP_TYPE||'2').trim().toUpperCase();
   var strapCount=(strapRaw==='NO'||strapRaw==='N0'||strapRaw==='0'||strapRaw==='')?0:(parseInt(strapRaw)||2);
   strapCount=Math.min(3,Math.max(0,strapCount));
-  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:strapCount,marking:sheetMarking};
+  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:strapCount,marking:'none'};
 
   // set thickness slider limits — Sheet THICK_MIN/THICK_MAX ก่อน fallback ล็อค nominal
   var hasMin = s.THICK_MIN !== '' && s.THICK_MIN != null && !isNaN(parseFloat(s.THICK_MIN));
@@ -4047,8 +4047,8 @@ function openViewer(idx){
   document.querySelectorAll('.seg-toggle-group').forEach(function(grp){
     grp.querySelectorAll('button').forEach(function(b){
       var oc=b.getAttribute('onclick')||'';
-      var ok=oc==='setStraps('+strapCount+',this)'||oc==="setMarking('"+sheetMarking+"',this)";
-      // fallback: ถ้า sheet marking ไม่ใช่ none/show ให้ active 'show'
+      // marking ค่า default = none เสมอ, strap ตาม sheet
+      var ok=oc==='setStraps('+strapCount+',this)'||oc==="setMarking('none',this)";
       b.classList.toggle('active',ok);
     });
   });
