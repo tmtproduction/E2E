@@ -2218,7 +2218,7 @@ body{
         <button class="tab-btn active" onclick="switchTab('spec',this)">Product</button>
         <button class="tab-btn" onclick="switchTab('geo',this)">Specification</button>
         <button class="tab-btn" disabled title="สงวนสิทธิ์ Admin" style="opacity:.35;cursor:not-allowed;">แก้ไข</button>
-        <button class="tab-btn" onclick="switchTab('label',this)">Tag</button>
+        <button class="tab-btn" onclick="switchTab('label',this)">Packaging & Delivery</button>
         <button class="tab-btn" onclick="switchTab('finder',this)">Spec Finder</button>
       </div>
     </div>
@@ -2452,27 +2452,25 @@ body{
           <div class="spec-sec-divider"><span class="spec-sec-divider-txt">Packing &amp; 3D Live</span></div>
           <div class="sec">
             <div class="pack-cards">
+               <div class="pack-card">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h16M7 7v11" stroke="currentColor" stroke-width="1.2"/></svg>
+                <div class="pack-card-lbl">Packing</div>
+                <div class="pack-card-val" id="v-wrap">—</div>
+              </div>             
               <div class="pack-card">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="6" width="16" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6 6V5a4 4 0 018 0v1" stroke="currentColor" stroke-width="1.4"/><line x1="2" y1="10" x2="18" y2="10" stroke="currentColor" stroke-width="1.2"/></svg>
                 <div class="pack-card-lbl">Bundle</div>
                 <div class="pack-card-val" id="v-bnd">—</div>
-                <div class="pack-card-sub">แผ่น/Bundle</div>
               </div>
               <div class="pack-card">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4"/><line x1="10" y1="5" x2="10" y2="10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="10" y1="10.5" x2="13" y2="12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
                 <div class="pack-card-lbl">น้ำหนัก/Bundle</div>
                 <div class="pack-card-val" id="v-bwt">—</div>
-                <div class="pack-card-sub">kg</div>
               </div>
               <div class="pack-card">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="7" y1="5" x2="7" y2="15" stroke="currentColor" stroke-width="1.2"/><line x1="13" y1="5" x2="13" y2="15" stroke="currentColor" stroke-width="1.2"/></svg>
                 <div class="pack-card-lbl">สายรัด</div>
                 <div class="pack-card-val" id="v-strap">—</div>
-              </div>
-              <div class="pack-card">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h16M7 7v11" stroke="currentColor" stroke-width="1.2"/></svg>
-                <div class="pack-card-lbl">Packing</div>
-                <div class="pack-card-val" id="v-wrap">—</div>
               </div>
               <div class="pack-card">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v11M7 11l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
