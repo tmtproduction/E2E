@@ -2339,8 +2339,8 @@ body{
             <span class="seg-label">Marking</span>
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
               <div class="seg-toggle-group">
-                <button class="seg-toggle active" onclick="setMarking('none',this)">ไม่มี</button>
-                <button class="seg-toggle" onclick="setMarking('show',this)">แสดง</button>
+                <button class="seg-toggle" onclick="setMarking('none',this)">ไม่มี</button>
+                <button class="seg-toggle active" onclick="setMarking('show',this)">แสดง</button>
               </div>
               <button id="marking-sample-btn" onclick="openMarkingSample()" style="display:none;font-size:8px;letter-spacing:1px;text-transform:uppercase;font-family:var(--mono);padding:4px 10px;background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);cursor:pointer;border-radius:2px;white-space:nowrap;transition:all .15s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.6)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='rgba(255,255,255,0.6)'">ดูตัวอย่างจริง →</button>
             </div>
@@ -3370,7 +3370,7 @@ var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0L4mq9Be83pe0VMpFkE9
 // ═══════════
 
 var allSkus=[], filteredSkus=[], currentSku=null;
-var S={sheets:5,thick:2.0,w:1200,l:2400,straps:2,marking:'none',tag:'none'};
+var S={sheets:5,thick:2.0,w:1200,l:2400,straps:2,marking:'show',tag:'none'};
 var S_thickMin=1.0, S_thickMax=6.0;
 
 // ── LIMIT SPEC SUMMARY ───────────────────────────
@@ -4040,7 +4040,7 @@ function openViewer(idx){
   var strapRaw=String(s.STRAP_TYPE||'2').trim().toUpperCase();
   var strapCount=(strapRaw==='NO'||strapRaw==='N0'||strapRaw==='0'||strapRaw==='')?0:(parseInt(strapRaw)||2);
   strapCount=Math.min(3,Math.max(0,strapCount));
-  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:strapCount,marking:'none',tag:'none'};
+  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:strapCount,marking:'show',tag:'none'};
 
   // set thickness slider limits — Sheet THICK_MIN/THICK_MAX ก่อน fallback ล็อค nominal
   var hasMin = s.THICK_MIN !== '' && s.THICK_MIN != null && !isNaN(parseFloat(s.THICK_MIN));
@@ -6165,12 +6165,12 @@ function render3d(){
       oc2.fillStyle='rgba(60,60,60,0.65)';
       oc2.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX', tx2, rowY+lineH1+lineH2, oW-tx2-padX);
 
-      // ── Map offscreen → top face ด้วย affine shear (parallelogram) ──
-      // src rect: (0,0,oW,oH)
-      // dst parallelogram: origin+(u*0.05+v*0.15) เว้นขอบเล็กน้อย
-      var dox=ox+ux*0.05+vx*0.15, doy=oy+uy*0.05+vy*0.15;
-      var dux=ux*0.90, duy=uy*0.90;
-      var dvx=vx*0.70, dvy=vy*0.70;
+      // ── Map offscreen → top face: กลาง-ขวา ตามวงกลมแดง ──
+      // u=0..1 คือซ้าย→ขวา (ตามความยาว), v=0..1 คือหน้า→หลัง (ตามความกว้าง)
+      // ตำแหน่ง: เริ่มที่ u=0.30 (ค่อนไปขวา), v=0.20 (ค่อนไปกลาง)
+      var dox=ox+ux*0.30+vx*0.20, doy=oy+uy*0.30+vy*0.20;
+      var dux=ux*0.60, duy=uy*0.60;  // กินความยาว 60% ของ face
+      var dvx=vx*0.55, dvy=vy*0.55;  // กินความกว้าง 55% ของ face
 
       ctx.save();
       // clip to top face
