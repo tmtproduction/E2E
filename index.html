@@ -4430,6 +4430,9 @@ function loadLinkSheet(){
       var link=(row.c[1]&&row.c[1].v)?String(row.c[1].v).trim():'';
       if(key&&link) sqcLinks[key]=link;
     });
+    // หลัง link sheet โหลดเสร็จ → update sqc ถ้า viewer เปิดอยู่
+    if(typeof sqcUpdate==='function') sqcUpdate();
+    if(typeof render3d==='function') render3d();
   }).catch(function(){});
 }
 loadLinkSheet();
