@@ -2002,29 +2002,31 @@ body{
 .sqc-lvl-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 .sqc-advice{font-size:10px;font-family:var(--mono);color:var(--g600);line-height:1.5;}
 /* ── SPEC FINDER BAR (inline catalog) ───────────────────────── */
-.sfb{display:flex;align-items:stretch;padding:8px 16px;gap:8px;border-bottom:1px solid var(--g200);background:var(--white);}
+.sfb{display:flex;align-items:stretch;padding:10px 20px;gap:10px;border-bottom:1px solid var(--g200);background:var(--white);}
 .sfb-fields{display:flex;align-items:stretch;gap:8px;flex:1;}
-.sfb-card{display:flex;flex-direction:column;gap:3px;padding:8px 14px;border:0.5px solid var(--g200);border-radius:8px;flex:1;min-width:0;cursor:text;background:var(--white);transition:border-color .15s;}
-.sfb-card:hover{border-color:var(--g400);}
-.sfb-card:focus-within{border-color:var(--black);}
-.sfb-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);white-space:nowrap;font-weight:500;}
-.sfb-input{border:none;outline:none;background:transparent;font-size:14px;font-family:var(--mono);font-weight:600;color:var(--black);width:100%;padding:0;}
-.sfb-input::placeholder{color:var(--g300);font-weight:400;font-size:13px;}
-.sfb-tol-row{display:flex;align-items:center;gap:4px;margin-top:1px;}
-.sfb-tol-row span{font-size:9px;color:var(--g400);font-family:var(--mono);}
-.sfb-tol-chip{font-size:11px;color:var(--g600);background:var(--g100);padding:1px 7px;border-radius:4px;font-family:var(--mono);font-weight:500;cursor:pointer;border:none;}
-.sfb-tol-chip:hover{background:var(--g200);}
-.sfb-right{display:flex;flex-direction:column;justify-content:center;gap:6px;flex-shrink:0;}
-.sfb-btn{background:var(--black);color:var(--white);border:none;border-radius:8px;font-size:10px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;padding:9px 20px;cursor:pointer;white-space:nowrap;}
-.sfb-btn:hover{opacity:.8;}
+.sfb-card{display:flex;flex-direction:column;gap:4px;padding:10px 16px;border:1px solid var(--g200);border-radius:10px;flex:1;min-width:0;cursor:text;background:var(--g50);transition:border-color .15s,background .15s;}
+.sfb-card:hover{border-color:var(--g300);background:var(--white);}
+.sfb-card:focus-within{border-color:var(--black);background:var(--white);box-shadow:0 0 0 3px rgba(14,14,14,0.06);}
+.sfb-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);white-space:nowrap;font-weight:500;}
+.sfb-input{border:none;outline:none;background:transparent;font-size:16px;font-family:var(--mono);font-weight:700;color:var(--black);width:100%;padding:0;line-height:1.2;}
+.sfb-input::placeholder{color:var(--g300);font-weight:400;font-size:14px;}
+.sfb-tol-row{display:flex;align-items:center;gap:5px;margin-top:2px;}
+.sfb-tol-row span{font-size:10px;color:var(--g400);font-family:var(--mono);}
+.sfb-tol-chip{font-size:11px;color:var(--g600);background:var(--g200);padding:2px 8px;border-radius:5px;font-family:var(--mono);font-weight:600;cursor:pointer;border:none;transition:background .1s;}
+.sfb-tol-chip:hover{background:var(--g300);color:var(--black);}
+.sfb-unit{font-size:10px;color:var(--g300);font-family:var(--mono);margin-top:2px;}
+.sfb-right{display:flex;flex-direction:column;justify-content:center;gap:7px;flex-shrink:0;}
+.sfb-btn{background:var(--black);color:var(--white);border:none;border-radius:10px;font-size:11px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;padding:11px 24px;cursor:pointer;white-space:nowrap;transition:opacity .15s;}
+.sfb-btn:hover{opacity:.75;}
 .sfb-pills{display:flex;gap:4px;justify-content:flex-end;}
-.sfb-priority-chip{font-size:9px;padding:3px 10px;border:0.5px solid var(--g300);border-radius:20px;background:transparent;color:var(--g500);cursor:pointer;font-family:var(--mono);white-space:nowrap;}
+.sfb-priority-chip{font-size:9px;padding:4px 12px;border:1px solid var(--g200);border-radius:20px;background:var(--white);color:var(--g500);cursor:pointer;font-family:var(--mono);white-space:nowrap;transition:all .15s;}
+.sfb-priority-chip:hover{border-color:var(--g400);color:var(--black);}
 .sfb-priority-chip.active{background:var(--black);color:var(--white);border-color:var(--black);}
-.sfb-clear{padding:4px 10px;background:transparent;color:var(--g400);border:0.5px solid var(--g200);border-radius:20px;font-size:10px;font-family:var(--mono);cursor:pointer;white-space:nowrap;align-self:center;}
+.sfb-clear{padding:6px 12px;background:transparent;color:var(--g400);border:1px solid var(--g200);border-radius:20px;font-size:10px;font-family:var(--mono);cursor:pointer;white-space:nowrap;align-self:center;transition:all .15s;}
 .sfb-clear:hover{color:var(--black);border-color:var(--black);}
-.sfb-result-badge{font-size:9px;font-family:var(--mono);background:#fff5f0;color:#f36f22;border:1px solid rgba(243,111,34,.25);border-radius:20px;padding:2px 10px;margin-left:8px;white-space:nowrap;align-self:center;}
+.sfb-result-badge{font-size:9px;font-family:var(--mono);background:#fff5f0;color:#f36f22;border:1px solid rgba(243,111,34,.25);border-radius:20px;padding:3px 12px;margin-left:8px;white-space:nowrap;align-self:center;font-weight:600;}
 @media(max-width:767px){
-  .sfb{padding:8px 12px;flex-wrap:wrap;}
+  .sfb{padding:10px 14px;flex-wrap:wrap;}
   .sfb-fields{flex-wrap:wrap;}
   .sfb-card{min-width:calc(50% - 4px);}
   .sfb-right{flex-direction:row;align-items:center;width:100%;}
@@ -2115,39 +2117,38 @@ body{
     <div class="sfb-fields">
       <!-- ความหนา + tolerance -->
       <div class="sfb-card" onclick="this.querySelector('input').focus()">
-        <span class="sfb-lbl">ความหนา</span>
-        <input class="sfb-input" id="sfb-thick" type="number" step="0.25" placeholder="4.5">
+        <span class="sfb-lbl">ความหนา (mm)</span>
+        <input class="sfb-input" id="sfb-thick" type="number" step="0.25" placeholder="เช่น 4.5">
         <div class="sfb-tol-row">
           <span>±</span>
-          <button class="sfb-tol-chip" id="sfb-tol-chip" onclick="event.stopPropagation();cycleTol()">0.50</button>
-          <span style="font-size:9px;color:var(--g300);font-family:var(--mono);">mm</span>
+          <button class="sfb-tol-chip" id="sfb-tol-chip" onclick="event.stopPropagation();cycleTol()" title="กดเพื่อเปลี่ยน tolerance">0.50</button>
+          <span>mm tolerance</span>
         </div>
       </div>
       <!-- ความกว้าง -->
       <div class="sfb-card" onclick="this.querySelector('input').focus()">
-        <span class="sfb-lbl">ความกว้าง</span>
-        <input class="sfb-input" id="sfb-w" type="number" placeholder="1219">
-        <span style="font-size:9px;color:var(--g300);font-family:var(--mono);margin-top:1px;">mm</span>
+        <span class="sfb-lbl">ความกว้าง (mm)</span>
+        <input class="sfb-input" id="sfb-w" type="number" placeholder="เช่น 1219">
       </div>
       <!-- ความยาว -->
       <div class="sfb-card" onclick="this.querySelector('input').focus()">
-        <span class="sfb-lbl">ความยาว</span>
-        <input class="sfb-input" id="sfb-l" type="number" placeholder="2438">
-        <span style="font-size:9px;color:var(--g300);font-family:var(--mono);margin-top:1px;">mm</span>
+        <span class="sfb-lbl">ความยาว (mm)</span>
+        <input class="sfb-input" id="sfb-l" type="number" placeholder="เช่น 2438">
       </div>
       <!-- Grade -->
       <div class="sfb-card" style="flex:0.7" onclick="this.querySelector('input').focus()">
         <span class="sfb-lbl">Grade</span>
-        <input class="sfb-input sfb-input--grade" id="sfb-grade" type="text" placeholder="SS400">
+        <input class="sfb-input sfb-input--grade" id="sfb-grade" type="text" placeholder="SS400, SPHC…">
       </div>
     </div>
     <!-- ปุ่มค้นหา + priority + clear -->
     <div class="sfb-right">
       <div style="display:flex;align-items:center;gap:6px;">
-        <button class="sfb-btn" onclick="runInlineSpecFinder()">ค้นหา</button>
+        <button class="sfb-btn" onclick="runInlineSpecFinder()">ค้นหา SKU</button>
         <button class="sfb-clear" id="sfb-clear-btn" onclick="clearInlineFinder()" style="display:none">✕ ล้าง</button>
       </div>
       <div class="sfb-pills">
+        <span style="font-size:9px;color:var(--g400);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;align-self:center;margin-right:4px;">เรียงตาม</span>
         <button class="sfb-priority-chip active" data-val="price" onclick="setSfbPriority('price',this)">฿ ราคา</button>
         <button class="sfb-priority-chip" data-val="stock" onclick="setSfbPriority('stock',this)">สต็อก</button>
         <button class="sfb-priority-chip" data-val="thick" onclick="setSfbPriority('thick',this)">หนา</button>
