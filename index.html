@@ -5355,6 +5355,10 @@ function toggle3dPanel(){
 }
 function setMarking(mode,btn){
   S.marking=mode;
+  ['sf-logo-overlay','tis-logo-overlay'].forEach(function(id){
+    var ov=document.getElementById(id);
+    if(ov) ov.style.display = mode==='show' ? '' : 'none';
+  });
   var group=btn.parentElement;
   group.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
@@ -5994,34 +5998,32 @@ function render3d(){
 
       var logoW = Math.round(62*sc);
 
-      // ── โลโก้วาดบน canvas โดยตรง (ไม่ใช้ HTML overlay — position ตรงเสมอ) ──
+      // ── โลโก้ overlay — STAY FLAT + TIS ────────────────────────────
+      // ใช้ HTML <img> overlay (ไม่ใช้ canvas drawImage เพราะ Drive CORS block)
+      // position คำนวณ relative to canvas เอง — ไม่ใช้ offsetLeft ที่อาจ double-count
       var pr2 = window.devicePixelRatio||1;
 
-      // image cache: { url -> HTMLImageElement }
-      if(!window._markImgCache) window._markImgCache = {};
-
-      function drawLogoOnCanvas(url, cx, cy, cw, ch){
+      function placeLogoOverlay(id, url, cx, cy, cw, ch){
         if(!url) return;
-        var cached = window._markImgCache[url];
-        if(cached && cached.complete && cached.naturalWidth>0){
-          // วาดตรงบน canvas — cx/cy เป็น canvas pixel coordinates
-          ctx.drawImage(cached, cx, cy, cw, ch);
-        } else if(!cached){
-          // โหลดรูปครั้งแรก
-          var img = new Image();
-          img.crossOrigin = 'anonymous';
-          window._markImgCache[url] = img;
-          img.onload = function(){ if(typeof render3d==='function') render3d(); };
-          img.onerror = function(){ window._markImgCache[url] = null; };
-          img.src = url;
+        var el = document.getElementById(id);
+        if(!el){
+          el = document.createElement('img');
+          el.id = id;
+          el.style.cssText = 'position:absolute;object-fit:fill;pointer-events:none;z-index:2;border:0;padding:0;margin:0;';
+          canvas.parentElement.style.position = 'relative';
+          canvas.parentElement.appendChild(el);
         }
+        if(el.dataset.src !== url){ el.src = url; el.dataset.src = url; }
+        // canvas pixel → CSS pixel → position relative to canvas.parentElement
+        // canvas อยู่ที่ top:0 left:0 ใน parentElement เสมอ (ไม่มี offset)
+        var scaleX = canvas.offsetWidth  / canvas.width;
+        var scaleY = canvas.offsetHeight / canvas.height;
+        el.style.left   = Math.round((cx / pr2) * scaleX) + 'px';
+        el.style.top    = Math.round((cy / pr2) * scaleY) + 'px';
+        el.style.width  = Math.round((cw / pr2) * scaleX) + 'px';
+        el.style.height = Math.round((ch / pr2) * scaleY) + 'px';
+        el.style.display = '';
       }
-
-      // ซ่อน HTML overlay เก่า (ถ้ามี) ไม่ใช้แล้ว
-      ['sf-logo-overlay','tis-logo-overlay'].forEach(function(id){
-        var old = document.getElementById(id);
-        if(old) old.style.display = 'none';
-      });
 
       // ── Layout:
       // col A: STAY FLAT logo — สูง 3 rows
@@ -6046,7 +6048,7 @@ function render3d(){
       var sfX = lx+pad2, sfY = ly+pad2;
 
       if(sfUrl){
-        drawLogoOnCanvas(sfUrl, sfX, sfY, sfLogoW, sfLogoH);
+        placeLogoOverlay('sf-logo-overlay', sfUrl, sfX, sfY, sfLogoW, sfLogoH);
       } else {
         var sfSz = Math.round(fSz1*1.1);
         ctx.font='900 '+sfSz+'px "Arial Narrow","Arial",sans-serif';
@@ -6060,7 +6062,7 @@ function render3d(){
       var tisX    = sfX+sfLogoW+Math.round(10*sc);
       var tisY    = sfY+lh1+Math.round((lh2+lh3-tisSize)/2);
       if(tisUrl){
-        drawLogoOnCanvas(tisUrl, tisX, tisY, tisSize, tisSize);
+        placeLogoOverlay('tis-logo-overlay', tisUrl, tisX, tisY, tisSize, tisSize);
       } else {
         var ciX3=tisX+Math.round(tisSize/2), ciY3=tisY+Math.round(tisSize/2);
         var ciR3=Math.round(tisSize*0.42);
