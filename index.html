@@ -5882,10 +5882,7 @@ function render3d(){
       ctx.closePath(); ctx.fill();
 
       var logoW = Math.round(62*sc);
-      // textX = หลัง STAY FLAT + TIS + gap
-      var textX2 = lx+sfLogoW+Math.round(6*sc)+tisLogoW+Math.round(10*sc);
-      var textX = textX2;
-      var textW = lw-(textX-lx)-Math.round(8*sc);
+      // textX คำนวณหลัง logos
       var ty3   = ly+Math.round(5*sc);
       var lh1   = Math.round(fSz1*1.55), lh2=Math.round(fSz2*1.5);
 
@@ -5933,6 +5930,9 @@ function render3d(){
       // TIS ⊕ สูง ~60% ของ STAY FLAT, วางกลาง vertical
       var tisLogoW = Math.round(sfLogoH*0.6);
       var tisLogoX = lx+sfLogoW+Math.round(6*sc);
+      // คำนวณ textX หลัง logos ทั้งคู่
+      var textX = tisLogoX+tisLogoW+Math.round(10*sc);
+      var textW = lx+lw-textX-Math.round(8*sc);
       if(tisUrl){
         var tisOffY = Math.round((lh-tisLogoW)/2);
         placeLogoOverlay('tis-logo-overlay', tisUrl, tisLogoX, ly+tisOffY, tisLogoW, tisLogoW);
