@@ -2277,9 +2277,9 @@ body{
         </button>
         <div class="ctrl3d-panel collapsed" id="ctrl3d-panel">
           <div class="ctrl3d-panel-header">Live Controls → 3D Updates</div>
-          <!-- แผ่น/มัด -->
+          <!-- แผ่น/Bundle -->
           <div class="seg-row">
-            <span class="seg-label">แผ่น / มัด</span>
+            <span class="seg-label">แผ่น / Bundle</span>
             <div class="seg-field-group">
               <div class="seg-slider-wrap">
                 <input type="range" id="a-sheets" min="1" max="50" value="5" oninput="liveUpdate()" class="seg-slider">
@@ -2470,26 +2470,24 @@ body{
           <div class="sec">
             <div class="pack-cards">
               <div class="pack-card">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h16M7 7v11" stroke="currentColor" stroke-width="1.2"/></svg>
+                <div class="pack-card-lbl">Packing</div>
+                <div class="pack-card-val" id="v-wrap">—</div>
+              </div>              
+              <div class="pack-card">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="6" width="16" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6 6V5a4 4 0 018 0v1" stroke="currentColor" stroke-width="1.4"/><line x1="2" y1="10" x2="18" y2="10" stroke="currentColor" stroke-width="1.2"/></svg>
                 <div class="pack-card-lbl">Bundle</div>
                 <div class="pack-card-val" id="v-bnd">—</div>
-                <div class="pack-card-sub">แผ่น/มัด</div>
               </div>
               <div class="pack-card">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4"/><line x1="10" y1="5" x2="10" y2="10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="10" y1="10.5" x2="13" y2="12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-                <div class="pack-card-lbl">น้ำหนัก/มัด</div>
+                <div class="pack-card-lbl">น้ำหนัก/Bundle</div>
                 <div class="pack-card-val" id="v-bwt">—</div>
-                <div class="pack-card-sub">kg</div>
               </div>
               <div class="pack-card">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="7" y1="5" x2="7" y2="15" stroke="currentColor" stroke-width="1.2"/><line x1="13" y1="5" x2="13" y2="15" stroke="currentColor" stroke-width="1.2"/></svg>
                 <div class="pack-card-lbl">สายรัด</div>
                 <div class="pack-card-val" id="v-strap">—</div>
-              </div>
-              <div class="pack-card">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 7h16M7 7v11" stroke="currentColor" stroke-width="1.2"/></svg>
-                <div class="pack-card-lbl">ห่อ</div>
-                <div class="pack-card-val" id="v-wrap">—</div>
               </div>
               <div class="pack-card">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v11M7 11l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
@@ -2515,7 +2513,7 @@ body{
                 </div>
               </div>
               <div style="display:flex;gap:5px;flex-wrap:wrap;padding-bottom:10px;" id="qty-quick-btns"></div>
-              <!-- results: น้ำหนัก / ราคา / มัด -->
+              <!-- results: น้ำหนัก / ราคา / Bundle -->
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--g200);padding-top:10px;margin-bottom:0;">
                 <div class="calc-seg-result">
                   <span class="calc-seg-lbl">น้ำหนัก</span>
@@ -2526,7 +2524,7 @@ body{
                   <span class="calc-seg-val" id="r-p">—</span>
                 </div>
                 <div class="calc-seg-result">
-                  <span class="calc-seg-lbl">มัด</span>
+                  <span class="calc-seg-lbl">Bundle</span>
                   <span class="calc-seg-val" id="r-b">—</span>
                 </div>
               </div>
@@ -3131,13 +3129,13 @@ body{
                 <div class="qc-item-dot qc-ok"></div>
                 <div class="qc-item-body">
                   <div class="qc-item-title">ฟิล์มกันสนิมครบ ไม่ฉีก</div>
-                  <div class="qc-item-desc">ห่อคลุมทุกด้าน · กระดาษกันสนิมด้านใน</div>
+                  <div class="qc-item-desc">Packingคลุมทุกด้าน · กระดาษกันสนิมด้านใน</div>
                 </div>
               </div>
               <div class="qc-item">
                 <div class="qc-item-dot qc-ok"></div>
                 <div class="qc-item-body">
-                  <div class="qc-item-title">Tag ทุกมัด · QR Scan ได้</div>
+                  <div class="qc-item-title">Tag ทุกBundle · QR Scan ได้</div>
                   <div class="qc-item-desc">SKU · Heat No. · วันผลิต ครบ · Tab แลบออกด้านข้าง</div>
                 </div>
               </div>
@@ -3998,7 +3996,7 @@ function openViewer(idx){
   // Packing
   var bnd=parseInt(s.BUNDLE_SIZE)||5;
   var bwt=(bnd*(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)).toLocaleString();
-  setText('v-bnd', bnd+' แผ่น/มัด');
+  setText('v-bnd', bnd+' แผ่น/Bundle');
   setText('v-bwt', bwt+' kg');
   setText('v-strap', s.STRAP_TYPE||'เหล็กรัด 2 เส้น');
   setText('v-wrap',  s.WRAP_TYPE||'ฟิล์ม+กระดาษกันสนิม');
@@ -4247,7 +4245,7 @@ function openViewer(idx){
   setText('qc-sq2','u = |X−Y|  ≤ 3 mm');
 
   // ── Packing ───
-  setText('qc-bnd',(parseInt(s.BUNDLE_SIZE)||5)+' แผ่น/มัด');
+  setText('qc-bnd',(parseInt(s.BUNDLE_SIZE)||5)+' แผ่น/Bundle');
   var qcStrap=String(s.STRAP_TYPE||'2').trim().toUpperCase();
   var qcSN=(qcStrap==='NO'||qcStrap==='N0'||qcStrap==='0'||qcStrap==='')?0:Math.min(3,parseInt(qcStrap)||2);
   setText('qc-strap', qcSN===0?'ไม่มีสายรัด':qcSN+' เส้น');
@@ -4853,7 +4851,7 @@ function calcInitOfferUI(){
   var qb = document.getElementById('qty-quick-btns');
   if(qb){
     qb.innerHTML='';
-    [{lbl:'1 มัด',v:bnd},{lbl:'ครึ่งสต็อก',v:Math.floor(stock/2)},{lbl:'ทั้งหมด',v:stock}].forEach(function(p){
+    [{lbl:'1 Bundle',v:bnd},{lbl:'ครึ่งสต็อก',v:Math.floor(stock/2)},{lbl:'ทั้งหมด',v:stock}].forEach(function(p){
       if(p.v<=0) return;
       var btn=document.createElement('button');
       btn.textContent=p.lbl+' ('+p.v+')';
@@ -4928,7 +4926,7 @@ function renderOfferSlider(wMin, wSpec, wTmt){
   if(gMin) gMin.textContent = '+'+gMinKg+' kg';
   if(gMax) gMax.textContent = gMaxKg+' kg';
   if(rsk){
-    rsk.innerHTML = qty2>0 ? qty2+' แผ่น · '+bundles2+' มัด' : '—';
+    rsk.innerHTML = qty2>0 ? qty2+' แผ่น · '+bundles2+' Bundle' : '—';
     rsk.style.color = 'var(--black)';
   }
   // gap bar + vs spec target
@@ -5103,7 +5101,7 @@ function calcUpdate(){
   setText('r-p', totalP>0 ? '฿ '+totalP.toLocaleString() : '—');
   var fullBundles = Math.floor(q/b);
   var remainder   = q % b;
-  var bundleText  = fullBundles > 0 ? fullBundles+' มัด' : '';
+  var bundleText  = fullBundles > 0 ? fullBundles+' Bundle' : '';
   if(remainder > 0) bundleText += (bundleText ? ' + ' : '') + remainder+' แผ่น';
   if(!bundleText) bundleText = q+' แผ่น';
   setText('r-b', bundleText);
@@ -5150,7 +5148,7 @@ function syncSheetsFromNum(){
   S.sheets=v;
   if(currentSku){
     var kg=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0;
-    var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=v+' แผ่น/มัด';
+    var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=v+' แผ่น/Bundle';
     var vBwt=document.getElementById('v-bwt'); if(vBwt) vBwt.textContent=(v*kg).toFixed(0)+' kg';
   }
   if(typeof render3d==='function') render3d();
@@ -5166,7 +5164,7 @@ function openCustomChecker(){
   document.getElementById('cc-std-size').textContent =
     'Standard: '+(s.WIDTH_MM||'—')+' × '+(s.LENGTH_MM||'—')+' mm';
   document.getElementById('cc-std-bundle').textContent =
-    'Standard: '+(s.BUNDLE_SIZE||5)+' แผ่น/มัด';
+    'Standard: '+(s.BUNDLE_SIZE||5)+' แผ่น/Bundle';
   // clear inputs
   ['cc-w','cc-l','cc-bundle','cc-note'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.value='';
@@ -5214,10 +5212,10 @@ function runCustomCheck(){
   var stdB=parseInt(s.BUNDLE_SIZE)||5;
   if(reqB>0){
     if(reqB===stdB){
-      rows.push({status:'ok', label:'จำนวนแผ่น/มัด', detail:'ตรง standard ('+stdB+' แผ่น/มัด)'});
+      rows.push({status:'ok', label:'จำนวนแผ่น/Bundle', detail:'ตรง standard ('+stdB+' แผ่น/Bundle)'});
     } else {
-      rows.push({status:'warn', label:'จำนวนแผ่น/มัด Custom',
-        detail: reqB+' แผ่น/มัด (standard '+stdB+') — ต้องยืนยันกับ Warehouse'});
+      rows.push({status:'warn', label:'จำนวนแผ่น/Bundle Custom',
+        detail: reqB+' แผ่น/Bundle (standard '+stdB+') — ต้องยืนยันกับ Warehouse'});
     }
   }
 
@@ -5227,9 +5225,9 @@ function runCustomCheck(){
   if(document.getElementById('cc-export').checked)
     rows.push({status:'warn', label:'Export Packing', detail:'เสริมไม้กั้น + ฟิล์ม PE กันน้ำ — ต้องยืนยัน cost และ lead time'});
   if(document.getElementById('cc-smallbundle').checked)
-    rows.push({status:'warn', label:'แยกมัดเล็ก', detail:'ต่างจาก standard ('+stdStrap+') — แจ้ง Warehouse ล่วงหน้า'});
+    rows.push({status:'warn', label:'แยกBundleเล็ก', detail:'ต่างจาก standard ('+stdStrap+') — แจ้ง Warehouse ล่วงหน้า'});
   if(document.getElementById('cc-individual').checked)
-    rows.push({status:'warn', label:'ห่อแยกแผ่น', detail:'เพิ่มเวลา packing — ต้องเพิ่ม lead time 1–2 วัน'});
+    rows.push({status:'warn', label:'Packingแยกแผ่น', detail:'เพิ่มเวลา packing — ต้องเพิ่ม lead time 1–2 วัน'});
   if(document.getElementById('cc-pallet').checked)
     rows.push({status:'warn', label:'วางบน Pallet', detail:'ระบุจำนวน Pallet และ weight limit ให้ชัดเจน'});
 
@@ -5300,7 +5298,7 @@ function syncSheetsNum(el){
   if(currentSku){
     var kg=parseFloat(currentSku.WEIGHT_PER_SHEET_KG)||0;
     var vBwt=document.getElementById('v-bwt'); if(vBwt) vBwt.textContent=(v*kg).toFixed(0)+' kg';
-    var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=v+' แผ่น/มัด';
+    var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=v+' แผ่น/Bundle';
   }
 }
 // ── LIMIT SPEC SUMMARY ───────────────────────────
@@ -5444,7 +5442,7 @@ function liveUpdate(){
     var density = 0.00785; // kg/cm³
     var calcKg = (S.thick/10) * (S.w/10) * (S.l/10) * density;
     var calcKgRound = calcKg.toFixed(1);
-    var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=S.sheets+' แผ่น/มัด';
+    var vBnd=document.getElementById('v-bnd'); if(vBnd) vBnd.textContent=S.sheets+' แผ่น/Bundle';
     var vBwt=document.getElementById('v-bwt'); if(vBwt) vBwt.textContent=(S.sheets*calcKg).toFixed(0)+' kg';
     var vKg=document.getElementById('tc-kg'); if(vKg) vKg.textContent=calcKgRound+' kg';
   }
@@ -5632,7 +5630,7 @@ function buildOrderForm(){
       '<div class="order-live-sum">'+
         '<div class="ols-item"><label>น้ำหนัก</label><div class="ov" id="ols-w">—</div></div>'+
         '<div class="ols-item"><label>ราคารวม</label><div class="ov" id="ols-p" style="color:var(--black)">—</div></div>'+
-        '<div class="ols-item"><label>มัด</label><div class="ov" id="ols-b">—</div></div>'+
+        '<div class="ols-item"><label>Bundle</label><div class="ov" id="ols-b">—</div></div>'+
       '</div>'+
     '</div>'+
     '<button class="btn-submit" onclick="goToOrderStep2()" style="margin:14px 0 4px;">ยืนยันจำนวน →</button>';
@@ -5656,7 +5654,7 @@ function updateQtyDisplay(){
   var q=_orderQty, p=_orderPrice;
   var olsW=document.getElementById('ols-w'); if(olsW) olsW.textContent=(q*w).toLocaleString()+' kg';
   var olsP=document.getElementById('ols-p'); if(olsP) olsP.textContent='฿ '+(q*p).toLocaleString();
-  var olsB=document.getElementById('ols-b'); if(olsB) olsB.textContent=Math.ceil(q/b)+' มัด';
+  var olsB=document.getElementById('ols-b'); if(olsB) olsB.textContent=Math.ceil(q/b)+' Bundle';
 }
 function goToOrderStep2(){
   if(!_orderQty){alert('กรุณาเลือกจำนวนแผ่นครับ');return;}
@@ -5676,7 +5674,7 @@ function goToOrderStep2(){
     '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--g200);margin-bottom:14px;">'+
       '<div style="padding:8px 12px;border-right:1px solid var(--g200);"><div style="font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);">จำนวน</div><div style="font-size:14px;font-weight:700;">'+_orderQty+' แผ่น</div></div>'+
       '<div style="padding:8px 12px;border-right:1px solid var(--g200);"><div style="font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);">ราคารวม</div><div style="font-size:14px;font-weight:700;">฿ '+totalP+'</div></div>'+
-      '<div style="padding:8px 12px;"><div style="font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);">มัด</div><div style="font-size:14px;font-weight:700;">'+bundles+' มัด</div></div>'+
+      '<div style="padding:8px 12px;"><div style="font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);">Bundle</div><div style="font-size:14px;font-weight:700;">'+bundles+' Bundle</div></div>'+
     '</div>'+
     // customer form
     '<div class="seg-order-pair">'+
@@ -5716,7 +5714,7 @@ function goToPreview(){
       '<div class="op-row"><span class="op-label">เกรด / มาตรฐาน</span><span class="op-val">'+(s.GRADE||'—')+' · '+(s.STANDARD||'—')+'</span></div>'+
       '<div class="op-row"><span class="op-label">ชื่อลูกค้า</span><span class="op-val">'+name+'</span></div>'+
       (phone?'<div class="op-row"><span class="op-label">โทร</span><span class="op-val">'+phone+'</span></div>':'')+
-      '<div class="op-row"><span class="op-label">จำนวน</span><span class="op-val">'+qty.toLocaleString()+' แผ่น · '+bundles+' มัด</span></div>'+
+      '<div class="op-row"><span class="op-label">จำนวน</span><span class="op-val">'+qty.toLocaleString()+' แผ่น · '+bundles+' Bundle</span></div>'+
       '<div class="op-row"><span class="op-label">น้ำหนักรวม</span><span class="op-val">'+totalW+' kg</span></div>'+
       '<div class="op-row"><span class="op-label">ราคา/แผ่น</span><span class="op-val">฿ '+p.toLocaleString()+'</span></div>'+
       (note?'<div class="op-row"><span class="op-label">หมายเหตุ</span><span class="op-val" style="font-family:inherit;font-size:11px;">'+note+'</span></div>':'')+
@@ -5924,7 +5922,7 @@ function render3d(){
   sp.forEach(function(p,i){i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);});
   ctx.closePath();ctx.fillStyle='rgba(0,0,0,0.08)';ctx.fill();ctx.restore();
 
-  // sheets — ปรับ scale อัตโนมัติตามจำนวน ให้มัดพอดี canvas เสมอ
+  // sheets — ปรับ scale อัตโนมัติตามจำนวน ให้Bundleพอดี canvas เสมอ
   // คำนวณ totalH จาก target height ไม่ให้เกิน 70% ของ canvas
   var maxBundleH = 2.8; // หน่วย scene units (ปรับได้)
   var rawH = N*(thick+gap)-gap;
@@ -5963,15 +5961,15 @@ function render3d(){
     else strapPositions=[-bl*0.34,0,bl*0.34];
 
     strapPositions.forEach(function(sz){
-      var sH=totalH+0.04;          // แนบมัดใกล้ขึ้น
-      var sw=0.032;                 // กว้าง ~32mm พอดีขอบมัด
+      var sH=totalH+0.04;          // แนบBundleใกล้ขึ้น
+      var sw=0.032;                 // กว้าง ~32mm พอดีขอบBundle
       var st=0.009;                 // บางมาก ~1mm
 
       // วาดเฉพาะส่วนที่มองเห็นได้จริง (ไม่วาดส่วนที่เหล็กบัง)
       // บน+ล่าง: เต็มแถบ
       drawStrap3d(0,          yOff+totalH+st*0.5, sz, bw+st*2, st, sw); // top band
       drawStrap3d(0,          yOff-st*0.5,         sz, bw+st*2, st, sw); // bottom band
-      // ด้านข้าง: เฉพาะขอบซ้ายขวา ไม่เข้าไปใต้มัด
+      // ด้านข้าง: เฉพาะขอบซ้ายขวา ไม่เข้าไปใต้Bundle
       drawStrap3d(-bw/2-st*0.5, yOff+totalH/2, sz, st, sH, sw);          // left edge
       drawStrap3d( bw/2+st*0.5, yOff+totalH/2, sz, st, sH, sw);          // right edge
     });
@@ -6831,20 +6829,20 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.ge
 
       <!-- 2. Bundle Size -->
       <div class="fsec">
-        <div class="fsec-ttl">จำนวนแผ่น / มัด</div>
-        <div class="frow-m"><label>ต้องการกี่แผ่น/มัด</label>
+        <div class="fsec-ttl">จำนวนแผ่น / Bundle</div>
+        <div class="frow-m"><label>ต้องการกี่แผ่น/Bundle</label>
           <input type="number" id="cc-bundle" placeholder="เช่น 3">
         </div>
-        <div style="font-size:9px;color:var(--g400);margin-top:6px;" id="cc-std-bundle">Standard: — แผ่น/มัด</div>
+        <div style="font-size:9px;color:var(--g400);margin-top:6px;" id="cc-std-bundle">Standard: — แผ่น/Bundle</div>
       </div>
 
       <!-- 3. Packing -->
       <div class="fsec">
         <div class="fsec-ttl">Packing พิเศษ</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
-          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-export"> Export Packing (เสริมไม้ / ห่อกันน้ำ)</label>
-          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-smallbundle"> แยกมัดเล็ก (น้อยกว่า standard)</label>
-          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-individual"> ห่อแยกแผ่น</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-export"> Export Packing (เสริมไม้ / Packingกันน้ำ)</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-smallbundle"> แยกBundleเล็ก (น้อยกว่า standard)</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-individual"> Packingแยกแผ่น</label>
           <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;"><input type="checkbox" id="cc-pallet"> วางบน Pallet / ห้ามวาง Flat</label>
         </div>
       </div>
