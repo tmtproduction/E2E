@@ -2421,16 +2421,7 @@ body{
                     </div>
                   </div>
                 </div>
-                <!-- Bell curve -->
-                <div class="sh-bell-wrap" id="sh-dist-wrap" style="display:none">
-                  <svg id="sh-bell-svg" width="100%" viewBox="0 0 320 80" style="display:block;overflow:visible;margin:6px 0 2px;"></svg>
-                  <div class="sh-bell-labels">
-                    <span id="sh-wt-min">—</span>
-                    <span id="sh-wt-tmt-lbl" style="color:#f36f22;font-weight:500;">—</span>
-                    <span id="sh-wt-max">—</span>
-                  </div>
-            
-                </div>
+
                 <div id="sh-wt-range" style="display:none">
                   <span id="sh-wt-min-hidden" style="display:none">—</span>
                   <span id="sh-wt-max-hidden" style="display:none">—</span>
@@ -2556,6 +2547,16 @@ body{
                   <div id="r-bar" style="height:100%;background:var(--green);border-radius:2px;width:0%;transition:width .3s;"></div>
                 </div>
                 <div id="r-overstock" style="display:none;font-size:9px;color:var(--red);font-family:var(--mono);padding:3px 0;"></div>
+              </div>
+
+              <!-- Bell curve -->
+              <div class="sh-bell-wrap" id="sh-dist-wrap" style="display:none;padding:8px 0 4px;border-top:1px solid var(--g200);">
+                <svg id="sh-bell-svg" width="100%" viewBox="0 0 320 80" style="display:block;overflow:visible;margin:4px 0 2px;"></svg>
+                <div class="sh-bell-labels">
+                  <span id="sh-wt-min">—</span>
+                  <span id="sh-wt-tmt-lbl" style="color:#f36f22;font-weight:500;">—</span>
+                  <span id="sh-wt-max">—</span>
+                </div>
               </div>
 
               <!-- ── SECTION 2: วางแผน Weight Offer ── -->
@@ -5905,11 +5906,11 @@ function render3d(){
       var sfUrl  = sqcLinks&&sqcLinks['stay flat'] ? sqcDriveUrl(sqcLinks['stay flat']) : null;
       var tisUrl = sqcLinks&&sqcLinks['TIS'] ? sqcDriveUrl(sqcLinks['TIS']) : null;
 
-      var pad2   = Math.round(6*sc);
-      // row heights — ให้ใหญ่พอ
-      var lh1 = Math.round(fSz1*2.0);
-      var lh2 = Math.round(fSz2*1.8);
-      var lh3 = Math.round(fSz3*1.7);
+      var pad2   = Math.round(5*sc);
+      // row heights
+      var lh1 = Math.round(fSz1*2.2);
+      var lh2 = Math.round(fSz2*2.0);
+      var lh3 = Math.round(fSz3*1.8);
       var totalTextH = lh1+lh2+lh3;
       var lh = totalTextH+pad2*2;
 
