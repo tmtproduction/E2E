@@ -6201,6 +6201,9 @@ function render3d(){
         dox, doy
       );
       ctx.globalAlpha=0.92;
+      // flip บน y-axis: translate ลงมา oH แล้ว scale y = -1
+      ctx.translate(0, oH);
+      ctx.scale(1, -1);
       ctx.drawImage(oc,0,0);
       ctx.restore();
     }catch(e){}
