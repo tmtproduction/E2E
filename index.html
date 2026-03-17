@@ -6094,17 +6094,23 @@ function render3d(){
       ];
       var c2d = topCorners3d.map(function(p){ return pr(tp(p)); });
 
-      // u-axis = [0]→[1] (ตามความยาว), v-axis = [0]→[3] (ตามความกว้าง)
+      // u-axis = [0]→[1] = ตามความกว้าง (W), v-axis = [0]→[3] = ตามความยาว (L)
       var ox=c2d[0][0], oy=c2d[0][1];
-      var ux=c2d[1][0]-ox, uy=c2d[1][1]-oy;
-      var vx=c2d[3][0]-ox, vy=c2d[3][1]-oy;
-      var fW=Math.sqrt(ux*ux+uy*uy); // pixel width ของ face
-      var fH=Math.sqrt(vx*vx+vy*vy); // pixel height ของ face
+      var ux=c2d[1][0]-ox, uy=c2d[1][1]-oy;  // u = ตามความกว้าง
+      var vx=c2d[3][0]-ox, vy=c2d[3][1]-oy;  // v = ตามความยาว
+      var fW=Math.sqrt(ux*ux+uy*uy); // pixel ความกว้าง
+      var fH=Math.sqrt(vx*vx+vy*vy); // pixel ความยาว
       if(fW<10||fH<5) { ctx.restore(); return; }
 
-      // ── วาดลง offscreen canvas (ตั้งตรง) ──
+      // marking ขนานตามความยาว (v-axis)
+      // ขนาด: ยาว = 40% ของ fH, สูง (ตามความกว้าง) = อัตราส่วนตามข้อความ ~1:4
+      var mLong  = fH * 0.40;          // ความยาวของ marking = 40% ของความยาวแผ่น
+      var mShort = mLong * 0.28;       // ความสูง = ~1:3.6 ratio (inkjet marking จริง)
+
+      // offscreen canvas: กว้าง = mLong, สูง = mShort
       var oc=document.createElement('canvas');
-      var oW=Math.round(fW*0.9), oH=Math.round(fH*0.7);
+      var oW=Math.round(mLong), oH=Math.round(mShort);
+      if(oW<20||oH<6){ ctx.restore(); return; }
       oc.width=oW; oc.height=oH;
       var oc2=oc.getContext('2d');
       oc2.clearRect(0,0,oW,oH);
@@ -6165,12 +6171,22 @@ function render3d(){
       oc2.fillStyle='rgba(60,60,60,0.65)';
       oc2.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX', tx2, rowY+lineH1+lineH2, oW-tx2-padX);
 
-      // ── Map offscreen → top face: กลาง-ขวา ตามวงกลมแดง ──
-      // u=0..1 คือซ้าย→ขวา (ตามความยาว), v=0..1 คือหน้า→หลัง (ตามความกว้าง)
-      // ตำแหน่ง: เริ่มที่ u=0.30 (ค่อนไปขวา), v=0.20 (ค่อนไปกลาง)
-      var dox=ox+ux*0.30+vx*0.20, doy=oy+uy*0.30+vy*0.20;
-      var dux=ux*0.60, duy=uy*0.60;  // กินความยาว 60% ของ face
-      var dvx=vx*0.55, dvy=vy*0.55;  // กินความกว้าง 55% ของ face
+      // ── Map offscreen → top face ──
+      // วาง marking ขนานตาม v-axis (ความยาว) กึ่งกลางความกว้าง
+      // ตำแหน่งเริ่ม: u = กึ่งกลาง ± mShort/2, v = 30% ของความยาว
+      var uStart = 0.5 - (mShort/fW)*0.5;  // กึ่งกลางในแกนความกว้าง
+      var vStart = 0.30;                    // เริ่มที่ 30% ของความยาว
+
+      // origin ของ marking บน face
+      var dox = ox + ux*uStart + vx*vStart;
+      var doy = oy + uy*uStart + vy*vStart;
+
+      // x-basis ของ drawImage → ขนานตาม v (ความยาว), ยาว = mLong
+      var dux = vx * (mLong/fH);
+      var duy = vy * (mLong/fH);
+      // y-basis ของ drawImage → ตาม u (ความกว้าง), สูง = mShort
+      var dvx = ux * (mShort/fW);
+      var dvy = uy * (mShort/fW);
 
       ctx.save();
       // clip to top face
