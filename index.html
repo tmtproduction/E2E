@@ -6018,110 +6018,66 @@ function render3d(){
 
       var logoW = 30;  // hardcap logo width
 
-      // ── โลโก้ overlay — STAY FLAT + TIS ────────────────────────────
-      // ใช้ HTML <img> overlay (ไม่ใช้ canvas drawImage เพราะ Drive CORS block)
-      // position คำนวณ relative to canvas เอง — ไม่ใช้ offsetLeft ที่อาจ double-count
-      var pr2 = window.devicePixelRatio||1;
 
-      function placeLogoOverlay(id, url, cx, cy, cw, ch){
-        if(!url) return;
-        var el = document.getElementById(id);
-        if(!el){
-          el = document.createElement('img');
-          el.id = id;
-          el.style.cssText = 'position:absolute;object-fit:fill;pointer-events:none;z-index:2;border:0;padding:0;margin:0;';
-          canvas.parentElement.style.position = 'relative';
-          canvas.parentElement.appendChild(el);
-        }
-        if(el.dataset.src !== url){ el.src = url; el.dataset.src = url; }
-        // cx/cy/cw/ch เป็น CSS px อยู่แล้ว — set ตรงๆ
-        el.style.left   = Math.round(cx) + 'px';
-        el.style.top    = Math.round(cy) + 'px';
-        el.style.width  = Math.round(cw) + 'px';
-        el.style.height = Math.round(ch) + 'px';
-        el.style.display = '';
-      }
+      // ── ซ่อน HTML overlay เก่าทุกครั้ง ──
+      ['sf-logo-overlay','tis-logo-overlay'].forEach(function(id){
+        var el=document.getElementById(id); if(el) el.style.display='none';
+      });
 
-      // ── Layout:
-      // col A: STAY FLAT logo — สูง 3 rows
-      // col B: row1 = size text (ใหญ่)
-      //        row2 = [TIS logo] std text
-      //        row3 = [TIS logo] heat no
+      // ── Layout fixed columns ──
+      var sfX  = lx + pad2;
+      var sfY  = ly + pad2;
+      var sfW  = 22;   // STAY FLAT col
+      var gap1 = 5;
+      var tisW = 14;   // TIS circle col
+      var gap2 = 4;
 
-      var sfUrl  = sqcLinks&&sqcLinks['stay flat'] ? sqcDriveUrl(sqcLinks['stay flat']) : null;
-      var tisUrl = sqcLinks&&sqcLinks['TIS'] ? sqcDriveUrl(sqcLinks['TIS']) : null;
+      var col1X = sfX + sfW + gap1;                   // row1 text
+      var col2X = sfX + sfW + gap1 + tisW + gap2;     // row2-3 text
+      var col1W = Math.max(10, lx + lw - col1X - pad2);
+      var col2W = Math.max(10, lx + lw - col2X - pad2);
 
-      // STAY FLAT: hardcap ขนาด logo
-      var sfLogoH = Math.min(totalTextH, 44);
-      var sfLogoW = Math.round(sfLogoH*0.72);
-      var sfX = lx+pad2, sfY = ly+pad2;
-
-      if(sfUrl){
-        placeLogoOverlay('sf-logo-overlay', sfUrl, sfX, sfY, sfLogoW, sfLogoH);
-      } else {
-        ctx.font='900 12px "Arial Narrow","Arial",sans-serif';
-        ctx.fillStyle='#0a0a0a'; ctx.textAlign='left'; ctx.textBaseline='top';
-        ctx.fillText('STAY', sfX, sfY);
-        ctx.fillText('FLAT', sfX, sfY+14);
-      }
-
-      // TIS logo: hardcap
-      var tisSize = Math.min(lh2+lh3, 26);
-      var tisX    = sfX+sfLogoW+8;
-      var tisY    = sfY+lh1+Math.round((lh2+lh3-tisSize)/2);
-      if(tisUrl){
-        placeLogoOverlay('tis-logo-overlay', tisUrl, tisX, tisY, tisSize, tisSize);
-      } else {
-        var ciX3=tisX+Math.round(tisSize/2), ciY3=tisY+Math.round(tisSize/2);
-        var ciR3=Math.round(tisSize*0.42);
-        ctx.beginPath(); ctx.arc(ciX3,ciY3,ciR3,0,Math.PI*2);
-        ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=1; ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(ciX3-ciR3*0.65,ciY3); ctx.lineTo(ciX3+ciR3*0.65,ciY3);
-        ctx.moveTo(ciX3,ciY3-ciR3*0.65); ctx.lineTo(ciX3,ciY3+ciR3*0.65);
-        ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=0.8; ctx.stroke();
-      }
-
-      // TEXT positions
-      var col1X = sfX+sfLogoW+8;
-      var col2X = tisX+tisSize+6;
-      var col1W = lx+lw-col1X-pad2;
-      var col2W = lx+lw-col2X-pad2;
       var row1Y = sfY + Math.round((lh1-fSz1)/2);
-      var row2Y = sfY+lh1 + Math.round((lh2-fSz2)/2);
-      var row3Y = sfY+lh1+lh2 + Math.round((lh3-fSz3)/2);
+      var row2Y = sfY + lh1 + Math.round((lh2-fSz2)/2);
+      var row3Y = sfY + lh1 + lh2 + Math.round((lh3-fSz3)/2);
 
-      // bg — ไม่มี background box (inkjet พิมพ์บนผิวเหล็กโดยตรง)
-      // ใช้แค่ semi-transparent bg บางมากเพื่อให้อ่านง่ายขึ้นเล็กน้อย
+      // bg
       ctx.save();
-      ctx.fillStyle='rgba(200,195,188,0.22)';
-      var rx3=Math.round(3*sc);
-      ctx.beginPath();
-      ctx.moveTo(lx+rx3,ly);ctx.lineTo(lx+lw-rx3,ly);
-      ctx.quadraticCurveTo(lx+lw,ly,lx+lw,ly+rx3);
-      ctx.lineTo(lx+lw,ly+lh-rx3);
-      ctx.quadraticCurveTo(lx+lw,ly+lh,lx+lw-rx3,ly+lh);
-      ctx.lineTo(lx+rx3,ly+lh);
-      ctx.quadraticCurveTo(lx,ly+lh,lx,ly+lh-rx3);
-      ctx.lineTo(lx,ly+rx3);
-      ctx.quadraticCurveTo(lx,ly,lx+rx3,ly);
-      ctx.closePath(); ctx.fill();
+      ctx.fillStyle='rgba(190,185,178,0.18)';
+      ctx.fillRect(lx, ly, lw, lh);
       ctx.restore();
 
-      // row1: SIZE (bold ใหญ่) — สีเข้มพิมพ์บนผิวเหล็ก
       ctx.textAlign='left'; ctx.textBaseline='top';
+
+      // STAY FLAT text
+      ctx.font='900 7px "Arial Narrow","Arial Black","Arial",sans-serif';
+      ctx.fillStyle='#0a0a0a';
+      ctx.fillText('STAY', sfX, sfY + 2);
+      ctx.fillText('FLAT', sfX, sfY + lh1*0.5 + 2);
+
+      // TIS circle (rows 2-3 영역 중앙)
+      var tisCX = sfX + sfW + gap1 + 7;
+      var tisCY = sfY + lh1 + Math.round((lh2+lh3)/2);
+      ctx.beginPath(); ctx.arc(tisCX, tisCY, 6, 0, Math.PI*2);
+      ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=0.8; ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(tisCX-4, tisCY); ctx.lineTo(tisCX+4, tisCY);
+      ctx.moveTo(tisCX, tisCY-4); ctx.lineTo(tisCX, tisCY+4);
+      ctx.lineWidth=0.6; ctx.stroke();
+
+      // row1: SIZE
       ctx.font='bold '+fSz1+'px "Arial Narrow","Arial",sans-serif';
       ctx.fillStyle='#0d0d0b';
       ctx.fillText(thick2M+' X '+ww2+' X '+ll2+' mm  NON SKINPASSED  TMT°', col1X, row1Y, col1W);
 
-      // row2: TIS std + grade + surface type — ดึงจาก sheet จริง
+      // row2: TIS std
       ctx.font=fSz2+'px "Arial Narrow","Arial",sans-serif';
-      ctx.fillStyle='#1a1a1a';
+      ctx.fillStyle='#222';
       ctx.fillText('TIS 1479 - 2566 '+grade2+' '+surfType+'  MILL EDGE THAILAND', col2X, row2Y, col2W);
 
       // row3: heat no
       ctx.font=fSz3+'px "Arial Narrow","Arial",sans-serif';
-      ctx.fillStyle='#444';
+      ctx.fillStyle='#555';
       ctx.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX', col2X, row3Y, col2W);
 
       ctx.restore();
