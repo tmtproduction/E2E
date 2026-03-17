@@ -2320,9 +2320,12 @@ body{
           <!-- Marking -->
           <div class="seg-row" style="border-bottom:none;">
             <span class="seg-label">Marking</span>
-            <div class="seg-toggle-group">
-              <button class="seg-toggle active" onclick="setMarking('none',this)">ไม่มี</button>
-              <button class="seg-toggle" onclick="setMarking('show',this)">แสดง</button>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div class="seg-toggle-group">
+                <button class="seg-toggle active" onclick="setMarking('none',this)">ไม่มี</button>
+                <button class="seg-toggle" onclick="setMarking('show',this)">แสดง</button>
+              </div>
+              <button id="marking-sample-btn" onclick="openMarkingSample()" style="display:none;font-size:8px;letter-spacing:1px;text-transform:uppercase;font-family:var(--mono);padding:4px 10px;background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);cursor:pointer;border-radius:2px;white-space:nowrap;transition:all .15s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.6)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='rgba(255,255,255,0.6)'">ดูตัวอย่างจริง →</button>
             </div>
           </div>
         </div>
@@ -3114,8 +3117,16 @@ body{
           <div class="label-preview">
             <div class="label-preview-title">Label Preview — TMT Style</div>
 
-            <!-- ══ TMT LABEL ══ -->
-            <div class="tmt-label" id="sticker">
+            <!-- ── รูปตัวอย่าง Label จาก Drive (แสดงเมื่อยังไม่ได้ modify) ── -->
+            <div id="label-sample-wrap" style="position:relative;margin-bottom:10px;">
+              <div id="label-sample-img" style="display:none;border:1px solid var(--g200);overflow:hidden;cursor:zoom-in;" onclick="sqcOpenLightbox(this)">
+                <img id="label-sample-src" src="" alt="ตัวอย่าง Label" style="width:100%;display:block;">
+              </div>
+              <div id="label-sample-badge" style="display:none;position:absolute;top:6px;left:6px;background:rgba(14,14,14,0.75);color:#fff;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;font-family:var(--mono);padding:3px 8px;pointer-events:none;">ตัวอย่าง</div>
+            </div>
+
+            <!-- ══ TMT LABEL (แสดงเมื่อมีการ modify form) ══ -->
+            <div class="tmt-label" id="sticker" style="display:none;">
 
               <!-- HEADER: logo + QR zone -->
               <div class="tl-header">
@@ -4452,6 +4463,16 @@ function loadLinkSheet(){
     if(markImgEl && sqcLinks['Marking']){
       sqcSetImg('sqc-img-marking', sqcLinks['Marking'], 'ตัวอย่าง Marking');
     }
+    // แสดงปุ่ม "ดูตัวอย่างจริง" ใน 3D Marking row
+    var markBtn = document.getElementById('marking-sample-btn');
+    if(markBtn && sqcLinks['Marking']) markBtn.style.display = '';
+    // โหลดรูป Label sample
+    var labelSrc = document.getElementById('label-sample-src');
+    if(labelSrc && sqcLinks['Label']){
+      labelSrc.src = sqcDriveUrl(sqcLinks['Label']);
+    }
+    // อัพเดต label view (sample vs form)
+    if(typeof _updateLabelView==='function') _updateLabelView();
   }).catch(function(){});
 }
 loadLinkSheet();
@@ -5334,6 +5355,20 @@ function setMarking(mode,btn){
   btn.classList.add('active');
   if(typeof render3d==='function') render3d();
 }
+
+function openMarkingSample(){
+  if(!sqcLinks||!sqcLinks['Marking']) return;
+  // สร้าง temp element สำหรับ lightbox
+  var tempDiv = document.getElementById('_marking-lb-tmp');
+  if(!tempDiv){
+    tempDiv = document.createElement('div');
+    tempDiv.id = '_marking-lb-tmp';
+    tempDiv.style.display = 'none';
+    document.body.appendChild(tempDiv);
+  }
+  tempDiv.innerHTML = '<img src="'+sqcDriveUrl(sqcLinks['Marking'])+'" alt="ตัวอย่าง Marking">';
+  sqcOpenLightbox(tempDiv);
+}
 function liveUpdate(){
   var sheetsEl=document.getElementById('a-sheets');
   var thickEl =document.getElementById('a-thick');
@@ -5391,6 +5426,41 @@ function applyAdmin(){
 }
 
 // ── LABEL ─────────────────────────────────────────
+var _labelModified = false;
+
+function _checkLabelModified(){
+  var fields = ['l-customer','l-pcs','l-machine','l-heat','l-bundle','l-batchno','l-tmtno','l-pono'];
+  var dateEl = document.getElementById('l-date');
+  if(dateEl && dateEl.value) return true;
+  for(var fi=0;fi<fields.length;fi++){
+    var el2 = document.getElementById(fields[fi]);
+    if(el2 && el2.value.trim()) return true;
+  }
+  // remark: ถ้าเปลี่ยนจาก default ถือว่า modified
+  var rem2 = document.getElementById('l-remark');
+  if(rem2 && rem2.value.trim() && rem2.value.trim() !== 'Made in Thailand') return true;
+  return false;
+}
+
+function _updateLabelView(){
+  var modified = _checkLabelModified();
+  var sampleWrap  = document.getElementById('label-sample-img');
+  var sampleBadge = document.getElementById('label-sample-badge');
+  var sticker     = document.getElementById('sticker');
+  var hasSample   = sqcLinks && sqcLinks['Label'];
+  if(modified || !hasSample){
+    // แสดง TMT label form
+    if(sticker) sticker.style.display = '';
+    if(sampleWrap) sampleWrap.style.display = 'none';
+    if(sampleBadge) sampleBadge.style.display = 'none';
+  } else {
+    // แสดงรูปตัวอย่างจาก Drive
+    if(sticker) sticker.style.display = 'none';
+    if(sampleWrap) sampleWrap.style.display = '';
+    if(sampleBadge) sampleBadge.style.display = '';
+  }
+}
+
 function syncLabel(){
   if(!currentSku) return;
   var s = currentSku;
@@ -5433,6 +5503,7 @@ function syncLabel(){
   setText('s-pono',   pono||'—');
   setText('s-tis',    std);
   setText('s-remark', rem);
+  _updateLabelView();
 }
 
 function printLabel(){
