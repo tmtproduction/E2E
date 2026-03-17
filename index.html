@@ -6106,7 +6106,7 @@ function render3d(){
       // marking ขนานตามความยาว (v-axis)
       // ขนาด: ยาว = 40% ของ fH, สูง (ตามความกว้าง) = อัตราส่วนตามข้อความ ~1:4
       var mLong  = fH * 0.40;          // ความยาวของ marking = 40% ของความยาวแผ่น
-      var mShort = mLong * 0.28;       // ความสูง = ~1:3.6 ratio (inkjet marking จริง)
+      var mShort = mLong * 0.40;       // สูงขึ้น ratio 1:2.5 อ่านง่ายขึ้น
 
       // offscreen canvas: กว้าง = mLong, สูง = mShort
       var oc=document.createElement('canvas');
@@ -6173,19 +6173,17 @@ function render3d(){
       oc2.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX', tx2, rowY+lineH1+lineH2, oW-tx2-padX);
 
       // ── Map offscreen → top face ──
-      // ชิดขอบหน้า (v=0.04), กึ่งกลางความกว้าง
+      // ชิดขอบหน้าสุด (v=0.02), กึ่งกลางความกว้าง
       var uStart = 0.5 - (mShort/fW)*0.5;
-      var vStart = 0.04;  // ชิดขอบหน้า
+      var vStart = 0.02;  // ชิดขอบหน้า
 
       var dox = ox + ux*uStart + vx*vStart;
       var doy = oy + uy*uStart + vy*vStart;
 
-      // x-basis → ตาม v (ความยาว), ยาว = mLong
-      // ต้อง flip: วาด from vStart→vStart+mLong/fH แต่ข้อความต้องอ่านจากขอบหน้า→ใน
-      // flip offscreen: วาด oW→0 บน u-axis แทน 0→oW
+      // x-basis → ตาม v (ความยาว), flip เพื่อแก้ mirror
       var dux = vx * (mLong/fH);
       var duy = vy * (mLong/fH);
-      // y-basis → ตาม u (ความกว้าง), สูง = mShort
+      // y-basis → ตาม u (ความกว้าง)
       var dvx = ux * (mShort/fW);
       var dvy = uy * (mShort/fW);
 
