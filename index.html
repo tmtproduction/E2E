@@ -2335,7 +2335,7 @@ body{
             </div>
           </div>
           <!-- Marking -->
-          <div class="seg-row" style="border-bottom:none;">
+          <div class="seg-row">
             <span class="seg-label">Marking</span>
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
               <div class="seg-toggle-group">
@@ -2343,6 +2343,14 @@ body{
                 <button class="seg-toggle" onclick="setMarking('show',this)">แสดง</button>
               </div>
               <button id="marking-sample-btn" onclick="openMarkingSample()" style="display:none;font-size:8px;letter-spacing:1px;text-transform:uppercase;font-family:var(--mono);padding:4px 10px;background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);cursor:pointer;border-radius:2px;white-space:nowrap;transition:all .15s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.6)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='rgba(255,255,255,0.6)'">ดูตัวอย่างจริง →</button>
+            </div>
+          </div>
+          <!-- Tag สติ๊กเกอร์ -->
+          <div class="seg-row" style="border-bottom:none;">
+            <span class="seg-label">Tag</span>
+            <div class="seg-toggle-group">
+              <button class="seg-toggle active" onclick="setTag('none',this)">ปิด</button>
+              <button class="seg-toggle" onclick="setTag('show',this)">แสดง</button>
             </div>
           </div>
         </div>
@@ -3094,7 +3102,7 @@ body{
         <div class="panel-scroll">
           <!-- Packing & Tag info -->
           <div class="pt-section">
-            <div class="lf-title">Packing</div>
+            <div class="lf-title">Packing &amp; Tag</div>
             <div class="qc-pack-row">
               <div class="qc-pack-card">
                 <div class="qc-pack-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="6" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6 6V5a4 4 0 018 0v1" stroke="currentColor" stroke-width="1.4"/></svg></div>
@@ -3163,7 +3171,7 @@ body{
           </div>
 
           <div class="label-preview">
-            <div class="label-preview-title">Label Sticker</div>
+            <div class="label-preview-title">Label Preview — TMT Style</div>
 
             <!-- ── รูปตัวอย่าง Label จาก Drive (แสดงเมื่อยังไม่ได้ modify) ── -->
             <div id="label-sample-wrap" style="position:relative;margin-bottom:10px;">
@@ -3362,7 +3370,7 @@ var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0L4mq9Be83pe0VMpFkE9
 // ═══════════
 
 var allSkus=[], filteredSkus=[], currentSku=null;
-var S={sheets:5,thick:2.0,w:1200,l:2400,straps:2,marking:'none'};
+var S={sheets:5,thick:2.0,w:1200,l:2400,straps:2,marking:'none',tag:'none'};
 var S_thickMin=1.0, S_thickMax=6.0;
 
 // ── LIMIT SPEC SUMMARY ───────────────────────────
@@ -4032,7 +4040,7 @@ function openViewer(idx){
   var strapRaw=String(s.STRAP_TYPE||'2').trim().toUpperCase();
   var strapCount=(strapRaw==='NO'||strapRaw==='N0'||strapRaw==='0'||strapRaw==='')?0:(parseInt(strapRaw)||2);
   strapCount=Math.min(3,Math.max(0,strapCount));
-  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:strapCount,marking:'none'};
+  S={sheets:bnd,thick:th,w:parseInt(s.WIDTH_MM)||1200,l:parseInt(s.LENGTH_MM)||2400,straps:strapCount,marking:'none',tag:'none'};
 
   // set thickness slider limits — Sheet THICK_MIN/THICK_MAX ก่อน fallback ล็อค nominal
   var hasMin = s.THICK_MIN !== '' && s.THICK_MIN != null && !isNaN(parseFloat(s.THICK_MIN));
@@ -5411,7 +5419,13 @@ function toggle3dPanel(){
   var collapsed = panel.classList.toggle('collapsed');
   btn.querySelector('span:last-child').textContent = collapsed ? '3D Controls' : 'ปิด';
 }
-function setMarking(mode,btn){
+function setTag(mode,btn){
+  S.tag=mode;
+  var group=btn.parentElement;
+  group.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  if(typeof render3d==='function') render3d();
+}
   S.marking=mode;
   ['sf-logo-overlay','tis-logo-overlay'].forEach(function(id){
     var ov=document.getElementById(id);
@@ -5934,7 +5948,7 @@ function render3d(){
   var bl = Math.max(1.8, S.l/360);           // depth (ความยาว)
   var bw = bl * (S.w / Math.max(1, S.l));    // width — ตรง ratio จริง 1219:2438 = 0.5
   bw = Math.max(0.8, bw);                    // ไม่บางเกินไป
-  var thick = Math.max(0.028, S.thick * 0.028);  // สมจริง — 4mm บาง, 10mm หนา
+  var thick = Math.max(0.016, S.thick * 0.016);  // สมจริงขึ้น —얇ลง
   var gap = 0.012;
   var totalH=N*(thick+gap)-gap,yOff=-totalH/2;
   var fl=Math.sin(animT*0.6)*0.04;
@@ -6000,15 +6014,16 @@ function render3d(){
     });
   }
 
-  // ── TAG — top face มุมซ้าย-หน้า ──
-  var tagThick = 0.009;
-  var tagW2    = 0.28;
-  var tagL2    = 0.38;
-  // ชิดขอบซ้ายสุด และขอบหน้าสุด
-  var tagX2    = bw/2 - tagW2*0.5;
-  var tagY2    = yOff + totalH + tagThick*0.5;
-  var tagZ2    = bl/2 - tagL2*0.5;
-  drawBox3d(tagX2, tagY2, tagZ2, tagW2, tagThick, tagL2, '#f5f0e8','#ede8dc',fl);
+  // ── TAG — top face มุมขวา-หน้า (แสดงเมื่อ S.tag==='show') ──
+  if(S.tag==='show'){
+    var tagThick = 0.009;
+    var tagW2    = 0.28;
+    var tagL2    = 0.38;
+    var tagX2    = bw/2 - tagW2*0.5;
+    var tagY2    = yOff + totalH + tagThick*0.5;
+    var tagZ2    = bl/2 - tagL2*0.5;
+    drawBox3d(tagX2, tagY2, tagZ2, tagW2, tagThick, tagL2, '#f5f0e8','#ede8dc',fl);
+  }
 
   // ── MARKING — floating info label ──────────────────────────────
   if(S.marking==='show' && N>0 && W>10 && H>10){
@@ -6072,7 +6087,14 @@ function render3d(){
 
       ctx.save();
 
-      var logoW = 30;  // hardcap logo width
+      // ── Clip marking ให้อยู่บน top face เท่านั้น ──
+      ctx.beginPath();
+      ctx.moveTo(topCorners2d[0][0], topCorners2d[0][1]);
+      ctx.lineTo(topCorners2d[1][0], topCorners2d[1][1]);
+      ctx.lineTo(topCorners2d[2][0], topCorners2d[2][1]);
+      ctx.lineTo(topCorners2d[3][0], topCorners2d[3][1]);
+      ctx.closePath();
+      ctx.clip();
 
 
       // ── ซ่อน HTML overlay เก่าทุกครั้ง ──
