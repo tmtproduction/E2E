@@ -5979,11 +5979,9 @@ function render3d(){
       }
 
       // ── คำนวณ top face ของแผ่นบนสุด → หา screen bounding box จริง ──
+      var flLocal = isNaN(fl) ? 0 : fl;   // ป้องกัน fl=NaN ถ้า animT ยังไม่พร้อม
       var topSheetCy = yOff + totalH - thick2/2;
-      var topY3d = topSheetCy + thick2/2 + fl;
-      console.log('[dbg] yOff='+yOff+' totalH='+totalH+' thick2='+thick2+' bw='+bw+' bl='+bl+' fl='+fl+' topY3d='+topY3d);
-      var c0 = pr(tp([-bw/2, topY3d, bl/2]));
-      console.log('[dbg] corner0='+JSON.stringify(c0));
+      var topY3d = topSheetCy + thick2/2 + flLocal;
       var topCorners3d = [
         [-bw/2, topY3d,  bl/2],
         [ bw/2, topY3d,  bl/2],
@@ -5998,7 +5996,6 @@ function render3d(){
       var tyMax = Math.max.apply(null, topCorners2d.map(function(p){return p[1];}));
       var faceW = txMax - txMin;
       var faceH = tyMax - tyMin;
-      console.log('[marking] faceW='+faceW.toFixed(1)+' faceH='+faceH.toFixed(1)+' W='+W+' H='+H);
 
       // hardcap ทุก size — ไม่ scale ตาม faceW เพื่อป้องกันใหญ่เกิน
       var fSz1 = 11;
