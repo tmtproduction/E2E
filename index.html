@@ -2856,25 +2856,27 @@ body{
               <div class="qc-meas-top">
                 <div class="qc-meas-diag">
                   <svg width="140" height="88" viewBox="0 0 140 88" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Sheet wider, flatter curve — เหล็กดูกว้างและแบนขึ้น -->
-                    <path d="M4 66 Q70 48 136 66" stroke="#0a0a0a" stroke-width="2" fill="none"/>
-                    <path d="M4 72 Q70 54 136 72" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
-                    <path d="M4 66 Q70 48 136 66 L136 72 Q70 54 4 72Z" fill="#e8e8e4" opacity="0.85"/>
-                    <!-- String line -->
-                    <line x1="4" y1="66" x2="136" y2="66" stroke="#f36f22" stroke-width="1.4" stroke-dasharray="5,3"/>
-                    <text x="70" y="18" font-size="7" fill="#f36f22" font-family="Courier New" text-anchor="middle">เชือกตึง</text>
-                    <!-- Camber arrow -->
-                    <line x1="70" y1="66" x2="70" y2="48" stroke="#f36f22" stroke-width="1.4"/>
-                    <polygon points="70,48 67,54 73,54" fill="#f36f22"/>
-                    <text x="76" y="58" font-size="7" fill="#f36f22" font-family="Courier New" font-weight="700">C</text>
-                    <!-- Length arrow -->
-                    <line x1="4" y1="82" x2="136" y2="82" stroke="#aaa" stroke-width="1"/>
-                    <polygon points="4,82 10,79 10,85" fill="#aaa"/>
-                    <polygon points="136,82 130,79 130,85" fill="#aaa"/>
-                    <text x="70" y="80" font-size="7" fill="#aaa" font-family="Courier New" text-anchor="middle">L</text>
-                    <!-- Limit label -->
-                    <rect x="84" y="8" width="46" height="14" rx="2" fill="#0a0a0a"/>
-                    <text x="107" y="18" font-size="8" fill="#fff" font-family="Courier New" text-anchor="middle" font-weight="700" id="qc-camber-svg">—</text>
+                    <!-- แผ่นเหล็กแบน top view โค้งเล็กน้อยตามความยาว -->
+                    <!-- top edge โค้ง (camber), bottom edge ตรง -->
+                    <path d="M6 38 Q70 28 134 38 L134 52 Q70 42 6 52 Z" fill="#e8e8e4" stroke="#0a0a0a" stroke-width="1.5" stroke-linejoin="round"/>
+                    <!-- เส้นกลางแผ่น (neutral axis) -->
+                    <line x1="6" y1="45" x2="134" y2="45" stroke="#0a0a0a" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.3"/>
+                    <!-- เส้นขึง (reference line ตรง) -->
+                    <line x1="6" y1="38" x2="134" y2="38" stroke="#f36f22" stroke-width="1.2" stroke-dasharray="5,3"/>
+                    <!-- ลูกศร C วัดจาก ref line ลงมา top edge -->
+                    <line x1="70" y1="38" x2="70" y2="28" stroke="#f36f22" stroke-width="1.2"/>
+                    <polygon points="70,28 67.5,33 72.5,33" fill="#f36f22"/>
+                    <text x="76" y="35" font-size="7" fill="#f36f22" font-family="Courier New" font-weight="700">C</text>
+                    <!-- label เชือกตึง -->
+                    <text x="70" y="18" font-size="6.5" fill="#f36f22" font-family="Courier New" text-anchor="middle">เชือกตึง</text>
+                    <!-- ลูกศร L -->
+                    <line x1="6" y1="62" x2="134" y2="62" stroke="#aaa" stroke-width="0.8"/>
+                    <polygon points="6,62 11,59.5 11,64.5" fill="#aaa"/>
+                    <polygon points="134,62 129,59.5 129,64.5" fill="#aaa"/>
+                    <text x="70" y="60" font-size="6.5" fill="#aaa" font-family="Courier New" text-anchor="middle">L</text>
+                    <!-- badge ค่า limit -->
+                    <rect x="88" y="68" width="44" height="14" rx="2" fill="#0a0a0a"/>
+                    <text x="110" y="78" font-size="7.5" fill="#fff" font-family="Courier New" text-anchor="middle" font-weight="700" id="qc-camber-svg">—</text>
                   </svg>
                 </div>
                 <div class="qc-meas-vals">
