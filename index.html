@@ -6103,10 +6103,10 @@ function render3d(){
       var fH=Math.sqrt(vx*vx+vy*vy); // pixel ความยาว
       if(fW<10||fH<5) { ctx.restore(); return; }
 
-      // marking วิ่งตาม u-axis (ความกว้าง), ชิดขอบด้านยาว (v≈0), กึ่งกลาง u
-      // mLong = 40% ของความยาว (fH), วิ่งตาม u
-      var mLong  = fH * 0.40;
-      var mShort = mLong * 0.30;
+      // u = ตามกว้าง [0]→[1], v = ตามยาว [0]→[3]
+      // marking วิ่งตาม v (ความยาว), ชิดขอบซ้าย (u≈0), กึ่งกลาง v
+      var mLong  = fH * 0.40;   // 40% ของความยาว (fH = pixel ของ v-axis)
+      var mShort = mLong * 0.30; // ความสูง ratio ~1:3.3
 
       var oc=document.createElement('canvas');
       var oW=Math.round(mLong), oH=Math.round(mShort);
@@ -6125,24 +6125,24 @@ function render3d(){
 
       oc2.textBaseline='top'; oc2.textAlign='left';
 
-      // STAY FLAT logo
-      var sfColW = sfSz * 2.4;
+      // STAY FLAT
+      var sfColW=sfSz*2.4;
       if(_imgCache['_sf']){
-        var sfImg = new Image(); sfImg.src = _imgCache['_sf'];
-        oc2.drawImage(sfImg, padX, rowY, sfColW, sfSz*2.4);
+        var sfImg=new Image(); sfImg.src=_imgCache['_sf'];
+        oc2.drawImage(sfImg,padX,rowY,sfColW,sfSz*2.4);
       } else {
-        oc2.font = '900 '+sfSz+'px "Arial Narrow","Arial Black","Arial",sans-serif';
-        oc2.fillStyle = 'rgba(10,10,10,0.90)';
-        oc2.fillText('STAY', padX, rowY);
-        oc2.fillText('FLAT', padX, rowY+sfSz*1.15);
+        oc2.font='900 '+sfSz+'px "Arial Narrow","Arial Black","Arial",sans-serif';
+        oc2.fillStyle='rgba(10,10,10,0.90)';
+        oc2.fillText('STAY',padX,rowY);
+        oc2.fillText('FLAT',padX,rowY+sfSz*1.15);
       }
 
-      // TIS logo
-      var tisCX = padX+sfColW+oW*0.01+fSz2*0.7;
-      var tisCY = rowY+lineH1+lineH2*0.4;
+      // TIS circle
+      var tisCX=padX+sfColW+oW*0.01+fSz2*0.7;
+      var tisCY=rowY+lineH1+lineH2*0.4;
       if(_imgCache['_tis']){
-        var tisImg = new Image(); tisImg.src = _imgCache['_tis'];
-        oc2.drawImage(tisImg, tisCX-fSz2*0.8, tisCY-fSz2*0.8, fSz2*1.6, fSz2*1.6);
+        var tisImg=new Image(); tisImg.src=_imgCache['_tis'];
+        oc2.drawImage(tisImg,tisCX-fSz2*0.8,tisCY-fSz2*0.8,fSz2*1.6,fSz2*1.6);
       } else {
         oc2.beginPath(); oc2.arc(tisCX,tisCY,fSz2*0.75,0,Math.PI*2);
         oc2.strokeStyle='rgba(10,10,10,0.85)'; oc2.lineWidth=fSz2*0.13; oc2.stroke();
@@ -6156,34 +6156,35 @@ function render3d(){
       var tx1=padX+sfColW+oW*0.01;
       oc2.font='bold '+fSz1+'px "Arial Narrow","Arial",sans-serif';
       oc2.fillStyle='rgba(10,10,10,0.92)';
-      oc2.fillText(thick2M+' X '+ww2+' X '+ll2+' mm  NON SKINPASSED  TMT°', tx1, rowY, oW-tx1-padX);
+      oc2.fillText(thick2M+' X '+ww2+' X '+ll2+' mm  NON SKINPASSED  TMT°',tx1,rowY,oW-tx1-padX);
 
       // row2
       var tx2=tisCX+fSz2*0.9;
       oc2.font=fSz2+'px "Arial Narrow","Arial",sans-serif';
       oc2.fillStyle='rgba(10,10,10,0.82)';
-      oc2.fillText('TIS 1479 - 2566 '+grade2+' '+surfType+'  MILL EDGE THAILAND', tx2, rowY+lineH1, oW-tx2-padX);
+      oc2.fillText('TIS 1479 - 2566 '+grade2+' '+surfType+'  MILL EDGE THAILAND',tx2,rowY+lineH1,oW-tx2-padX);
 
       // row3
       oc2.font=fSz3+'px "Arial Narrow","Arial",sans-serif';
       oc2.fillStyle='rgba(50,50,50,0.70)';
-      oc2.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX', tx2, rowY+lineH1+lineH2, oW-tx2-padX);
+      oc2.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX',tx2,rowY+lineH1+lineH2,oW-tx2-padX);
 
-      // ── Map offscreen → top face ──
-      // ชิดขอบด้านยาว (v=0.02), กึ่งกลางความกว้าง (u กึ่งกลาง)
-      // marking วิ่งตาม u-axis: x-basis = u, y-basis = v
-      var uOff = 0.5 - (mLong/fW)*0.5;   // กึ่งกลาง u
-      var vOff = 0.02;                     // ชิดขอบ v=0
+      // ── Map: offscreen (oW=mLong, oH=mShort) → face ──
+      // x-axis ของ offscreen → ตาม v (ความยาว)
+      // y-axis ของ offscreen → ตาม u (ความกว้าง)
+      // ตำแหน่ง: ชิดขอบซ้าย (u=0.02), กึ่งกลาง v (v=0.30)
+      var uOff = 0.02;                      // ชิดขอบด้านยาว (ซ้าย)
+      var vOff = 0.5 - (mLong/fH)*0.5;     // กึ่งกลาง v
 
       var dox = ox + ux*uOff + vx*vOff;
       var doy = oy + uy*uOff + vy*vOff;
 
-      // x-basis → ตาม u (ความกว้าง), ยาว = mLong
-      var dux = ux*(mLong/fW);
-      var duy = uy*(mLong/fW);
-      // y-basis → ตาม v (ความยาว), สูง = mShort
-      var dvx = vx*(mShort/fH);
-      var dvy = vy*(mShort/fH);
+      // x-basis = ตาม v-axis (ความยาว), กว้าง = mLong
+      var dux = vx*(mLong/fH);
+      var duy = vy*(mLong/fH);
+      // y-basis = ตาม u-axis (ความกว้าง), สูง = mShort
+      var dvx = ux*(mShort/fW);
+      var dvy = uy*(mShort/fW);
 
       ctx.save();
       // clip to top face
@@ -6199,8 +6200,8 @@ function render3d(){
         dvx/oH, dvy/oH,
         dox, doy
       );
-      ctx.globalAlpha = 0.92;
-      ctx.drawImage(oc, 0, 0);
+      ctx.globalAlpha=0.92;
+      ctx.drawImage(oc,0,0);
       ctx.restore();
     }catch(e){}
     ctx.restore();
