@@ -4534,22 +4534,52 @@ function loadLinkSheet(){
     }
     // อัพเดต label view (sample vs form)
     if(typeof _updateLabelView==='function') _updateLabelView();
+    // preload โลโก้สำหรับ 3D marking ผ่าน GAS proxy
+    if(sqcLinks['stay flat']) sqcLoadImgViaGas(sqcLinks['stay flat'], function(d){ if(d){_imgCache['_sf']=d; if(typeof render3d==='function') render3d();}});
+    if(sqcLinks['TIS'])       sqcLoadImgViaGas(sqcLinks['TIS'],       function(d){ if(d){_imgCache['_tis']=d; if(typeof render3d==='function') render3d();}});
   }).catch(function(){});
 }
 loadLinkSheet();
 
 function sqcDriveUrl(fileUrl){
+  // fallback thumbnail — ใช้เฉพาะถ้า GAS proxy ยังไม่โหลด
   var m = fileUrl.match(/\/d\/([^\/\?]+)/);
   if(!m) return fileUrl;
   return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w600';
+}
+
+// ── GAS Image Proxy — โหลดรูปผ่าน GAS เพื่อ bypass CORS ──
+var _imgCache = {};
+function sqcLoadImgViaGas(fileUrl, callback){
+  var m = fileUrl.match(/\/d\/([^\/\?]+)/);
+  if(!m){ callback(null); return; }
+  var fileId = m[1];
+  if(_imgCache[fileId]){ callback(_imgCache[fileId]); return; }
+  var url = SCRIPT_URL + '?action=img&id=' + fileId;
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.ok){
+        var dataUrl = 'data:'+d.mime+';base64,'+d.data;
+        _imgCache[fileId] = dataUrl;
+        callback(dataUrl);
+      } else { callback(null); }
+    })
+    .catch(function(){ callback(null); });
 }
 
 function sqcSetImg(boxId, url, label){
   var box = document.getElementById(boxId);
   if(!box) return;
   if(url){
+    // แสดง thumbnail ก่อน (fast) แล้วค่อย replace ด้วย GAS proxy (no CORS)
     box.innerHTML = '<img src="'+sqcDriveUrl(url)+'" alt="'+label+'" loading="lazy">';
     box.style.cursor = 'zoom-in';
+    sqcLoadImgViaGas(url, function(dataUrl){
+      if(!dataUrl) return;
+      var img = box.querySelector('img');
+      if(img) img.src = dataUrl;
+    });
   } else {
     box.innerHTML = '<div class="sqc-img-placeholder">'+label+'</div>';
     box.style.cursor = 'default';
@@ -6053,112 +6083,112 @@ function render3d(){
       }
 
       // ── คำนวณ top face ของแผ่นบนสุด → หา screen bounding box จริง ──
-      var flLocal = isNaN(fl) ? 0 : fl;   // ป้องกัน fl=NaN ถ้า animT ยังไม่พร้อม
+      var flLocal = isNaN(fl) ? 0 : fl;
       var topSheetCy = yOff + totalH - thick2/2;
       var topY3d = topSheetCy + thick2/2 + flLocal;
       var topCorners3d = [
-        [-bw/2, topY3d,  bl/2],
-        [ bw/2, topY3d,  bl/2],
-        [ bw/2, topY3d, -bl/2],
-        [-bw/2, topY3d, -bl/2],
+        [-bw/2, topY3d,  bl/2],  // [0] front-left
+        [ bw/2, topY3d,  bl/2],  // [1] front-right
+        [ bw/2, topY3d, -bl/2],  // [2] back-right
+        [-bw/2, topY3d, -bl/2],  // [3] back-left
       ];
-      var topCorners2d = topCorners3d.map(function(p){ return pr(tp(p)); });
-      // หา bounding box ของ top face บน screen
-      var txMin = Math.min.apply(null, topCorners2d.map(function(p){return p[0];}));
-      var txMax = Math.max.apply(null, topCorners2d.map(function(p){return p[0];}));
-      var tyMin = Math.min.apply(null, topCorners2d.map(function(p){return p[1];}));
-      var tyMax = Math.max.apply(null, topCorners2d.map(function(p){return p[1];}));
-      var faceW = txMax - txMin;
-      var faceH = tyMax - tyMin;
+      var c2d = topCorners3d.map(function(p){ return pr(tp(p)); });
 
-      // hardcap ทุก size — ไม่ scale ตาม faceW เพื่อป้องกันใหญ่เกิน
-      var fSz1 = 11;
-      var fSz2 = 7;
-      var fSz3 = 6;
-      var pad2 = 4;
-      var lh1 = Math.round(fSz1*2.0);
-      var lh2 = Math.round(fSz2*2.0);
-      var lh3 = Math.round(fSz3*2.0);
-      var totalTextH = lh1+lh2+lh3;
-      var lh = totalTextH+pad2*2;
-      var lw = Math.min(Math.round(faceW*0.85), 400);
+      // u-axis = [0]→[1] (ตามความยาว), v-axis = [0]→[3] (ตามความกว้าง)
+      var ox=c2d[0][0], oy=c2d[0][1];
+      var ux=c2d[1][0]-ox, uy=c2d[1][1]-oy;
+      var vx=c2d[3][0]-ox, vy=c2d[3][1]-oy;
+      var fW=Math.sqrt(ux*ux+uy*uy); // pixel width ของ face
+      var fH=Math.sqrt(vx*vx+vy*vy); // pixel height ของ face
+      if(fW<10||fH<5) { ctx.restore(); return; }
 
-      var lx = Math.round(txMin + faceW*0.04);
-      var ly = Math.round(tyMin + faceH*0.12);
+      // ── วาดลง offscreen canvas (ตั้งตรง) ──
+      var oc=document.createElement('canvas');
+      var oW=Math.round(fW*0.9), oH=Math.round(fH*0.7);
+      oc.width=oW; oc.height=oH;
+      var oc2=oc.getContext('2d');
+      oc2.clearRect(0,0,oW,oH);
 
-      ctx.save();
+      var fSzBase=Math.max(5,Math.min(13,oW*0.028));
+      var fSz1=Math.round(fSzBase);
+      var fSz2=Math.round(fSzBase*0.62);
+      var fSz3=Math.round(fSzBase*0.55);
+      var sfSz=Math.round(fSzBase*0.9);
+      var lineH1=fSz1*1.6, lineH2=fSz2*1.6;
+      var padX=oW*0.01, rowY=oH*0.05;
 
-      // ── Clip marking ให้อยู่บน top face เท่านั้น ──
-      ctx.beginPath();
-      ctx.moveTo(topCorners2d[0][0], topCorners2d[0][1]);
-      ctx.lineTo(topCorners2d[1][0], topCorners2d[1][1]);
-      ctx.lineTo(topCorners2d[2][0], topCorners2d[2][1]);
-      ctx.lineTo(topCorners2d[3][0], topCorners2d[3][1]);
-      ctx.closePath();
-      ctx.clip();
+      oc2.textBaseline='top'; oc2.textAlign='left';
 
+      // STAY FLAT logo
+      var sfColW = sfSz * 2.4;
+      if(_imgCache['_sf']){
+        var sfImg = new Image();
+        sfImg.src = _imgCache['_sf'];
+        oc2.drawImage(sfImg, padX, rowY, sfColW, sfSz*2.4);
+      } else {
+        oc2.font = '900 '+sfSz+'px "Arial Narrow","Arial Black","Arial",sans-serif';
+        oc2.fillStyle = 'rgba(10,10,10,0.85)';
+        oc2.fillText('STAY', padX, rowY);
+        oc2.fillText('FLAT', padX, rowY+sfSz*1.15);
+      }
 
-      // ── ซ่อน HTML overlay เก่าทุกครั้ง ──
-      ['sf-logo-overlay','tis-logo-overlay'].forEach(function(id){
-        var el=document.getElementById(id); if(el) el.style.display='none';
-      });
-
-      // ── Layout fixed columns ──
-      var sfX  = lx + pad2;
-      var sfY  = ly + pad2;
-      var sfW  = 22;   // STAY FLAT col
-      var gap1 = 5;
-      var tisW = 14;   // TIS circle col
-      var gap2 = 4;
-
-      var col1X = sfX + sfW + gap1;                   // row1 text
-      var col2X = sfX + sfW + gap1 + tisW + gap2;     // row2-3 text
-      var col1W = Math.max(10, lx + lw - col1X - pad2);
-      var col2W = Math.max(10, lx + lw - col2X - pad2);
-
-      var row1Y = sfY + Math.round((lh1-fSz1)/2);
-      var row2Y = sfY + lh1 + Math.round((lh2-fSz2)/2);
-      var row3Y = sfY + lh1 + lh2 + Math.round((lh3-fSz3)/2);
-
-      // bg
-      ctx.save();
-      ctx.fillStyle='rgba(190,185,178,0.18)';
-      ctx.fillRect(lx, ly, lw, lh);
-      ctx.restore();
-
-      ctx.textAlign='left'; ctx.textBaseline='top';
-
-      // STAY FLAT text
-      ctx.font='900 7px "Arial Narrow","Arial Black","Arial",sans-serif';
-      ctx.fillStyle='#0a0a0a';
-      ctx.fillText('STAY', sfX, sfY + 2);
-      ctx.fillText('FLAT', sfX, sfY + lh1*0.5 + 2);
-
-      // TIS circle (rows 2-3 영역 중앙)
-      var tisCX = sfX + sfW + gap1 + 7;
-      var tisCY = sfY + lh1 + Math.round((lh2+lh3)/2);
-      ctx.beginPath(); ctx.arc(tisCX, tisCY, 6, 0, Math.PI*2);
-      ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=0.8; ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(tisCX-4, tisCY); ctx.lineTo(tisCX+4, tisCY);
-      ctx.moveTo(tisCX, tisCY-4); ctx.lineTo(tisCX, tisCY+4);
-      ctx.lineWidth=0.6; ctx.stroke();
+      // TIS logo
+      var tisCX = padX+sfColW+oW*0.01+fSz2*0.7;
+      var tisCY = rowY+lineH1+lineH2*0.4;
+      if(_imgCache['_tis']){
+        var tisImg = new Image();
+        tisImg.src = _imgCache['_tis'];
+        oc2.drawImage(tisImg, tisCX-fSz2*0.8, tisCY-fSz2*0.8, fSz2*1.6, fSz2*1.6);
+      } else {
+        oc2.beginPath(); oc2.arc(tisCX,tisCY,fSz2*0.75,0,Math.PI*2);
+        oc2.strokeStyle='rgba(10,10,10,0.82)'; oc2.lineWidth=fSz2*0.13; oc2.stroke();
+        oc2.beginPath();
+        oc2.moveTo(tisCX-fSz2*0.5,tisCY); oc2.lineTo(tisCX+fSz2*0.5,tisCY);
+        oc2.moveTo(tisCX,tisCY-fSz2*0.5); oc2.lineTo(tisCX,tisCY+fSz2*0.5);
+        oc2.stroke();
+      }
 
       // row1: SIZE
-      ctx.font='bold '+fSz1+'px "Arial Narrow","Arial",sans-serif';
-      ctx.fillStyle='#0d0d0b';
-      ctx.fillText(thick2M+' X '+ww2+' X '+ll2+' mm  NON SKINPASSED  TMT°', col1X, row1Y, col1W);
+      var tx1=padX+sfColW+oW*0.01;
+      oc2.font='bold '+fSz1+'px "Arial Narrow","Arial",sans-serif';
+      oc2.fillStyle='rgba(8,8,8,0.9)';
+      oc2.fillText(thick2M+' X '+ww2+' X '+ll2+' mm  NON SKINPASSED  TMT°', tx1, rowY, oW-tx1-padX);
 
-      // row2: TIS std
-      ctx.font=fSz2+'px "Arial Narrow","Arial",sans-serif';
-      ctx.fillStyle='#222';
-      ctx.fillText('TIS 1479 - 2566 '+grade2+' '+surfType+'  MILL EDGE THAILAND', col2X, row2Y, col2W);
+      // row2
+      var tx2=tisCX+fSz2*0.9;
+      oc2.font=fSz2+'px "Arial Narrow","Arial",sans-serif';
+      oc2.fillStyle='rgba(10,10,10,0.80)';
+      oc2.fillText('TIS 1479 - 2566 '+grade2+' '+surfType+'  MILL EDGE THAILAND', tx2, rowY+lineH1, oW-tx2-padX);
 
-      // row3: heat no
-      ctx.font=fSz3+'px "Arial Narrow","Arial",sans-serif';
-      ctx.fillStyle='#555';
-      ctx.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX', col2X, row3Y, col2W);
+      // row3
+      oc2.font=fSz3+'px "Arial Narrow","Arial",sans-serif';
+      oc2.fillStyle='rgba(60,60,60,0.65)';
+      oc2.fillText('XXXXXXXXXX  HEAT NO. XXXXXXX', tx2, rowY+lineH1+lineH2, oW-tx2-padX);
 
+      // ── Map offscreen → top face ด้วย affine shear (parallelogram) ──
+      // src rect: (0,0,oW,oH)
+      // dst parallelogram: origin+(u*0.05+v*0.15) เว้นขอบเล็กน้อย
+      var dox=ox+ux*0.05+vx*0.15, doy=oy+uy*0.05+vy*0.15;
+      var dux=ux*0.90, duy=uy*0.90;
+      var dvx=vx*0.70, dvy=vy*0.70;
+
+      ctx.save();
+      // clip to top face
+      ctx.beginPath();
+      ctx.moveTo(c2d[0][0],c2d[0][1]);
+      ctx.lineTo(c2d[1][0],c2d[1][1]);
+      ctx.lineTo(c2d[2][0],c2d[2][1]);
+      ctx.lineTo(c2d[3][0],c2d[3][1]);
+      ctx.closePath(); ctx.clip();
+
+      // ใช้ transform เพื่อ map (0,0)→dst_origin, (oW,0)→dst+u, (0,oH)→dst+v
+      ctx.transform(
+        dux/oW, duy/oW,   // x-basis
+        dvx/oH, dvy/oH,   // y-basis
+        dox, doy           // origin
+      );
+      ctx.globalAlpha = 0.90;
+      ctx.drawImage(oc, 0, 0);
       ctx.restore();
     }catch(e){}
     ctx.restore();
