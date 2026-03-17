@@ -5011,7 +5011,12 @@ function calcUpdate(){
   var totalP = q*p;
   setText('r-w', totalW+' kg');
   setText('r-p', totalP>0 ? '฿ '+totalP.toLocaleString() : '—');
-  setText('r-b', q+' แผ่น · '+Math.ceil(q/b)+' มัด');
+  var fullBundles = Math.floor(q/b);
+  var remainder   = q % b;
+  var bundleText  = fullBundles > 0 ? fullBundles+' มัด' : '';
+  if(remainder > 0) bundleText += (bundleText ? ' + ' : '') + remainder+' แผ่น';
+  if(!bundleText) bundleText = q+' แผ่น';
+  setText('r-b', bundleText);
   // VAT
   setText('r-excl', totalP>0 ? '฿ '+totalP.toLocaleString() : '—');
   setText('r-vat',  totalP>0 ? '+ ฿ '+Math.round(totalP*0.07).toLocaleString() : '—');
@@ -5907,10 +5912,10 @@ function render3d(){
       var tisUrl = sqcLinks&&sqcLinks['TIS'] ? sqcDriveUrl(sqcLinks['TIS']) : null;
 
       var pad2   = Math.round(5*sc);
-      // row heights
-      var lh1 = Math.round(fSz1*2.2);
-      var lh2 = Math.round(fSz2*2.0);
-      var lh3 = Math.round(fSz3*1.8);
+      // row heights — logo scale ตาม
+      var lh1 = Math.round(fSz1*2.6);
+      var lh2 = Math.round(fSz2*2.2);
+      var lh3 = Math.round(fSz3*2.0);
       var totalTextH = lh1+lh2+lh3;
       var lh = totalTextH+pad2*2;
 
