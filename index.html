@@ -2666,32 +2666,32 @@ body{
             <div class="qc-meas-card">
               <div class="qc-meas-top">
                 <div class="qc-meas-diag">
-                  <!-- Cross-section: sheet edge with micrometer measurement points -->
-                  <svg width="140" height="88" viewBox="0 0 140 88" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Sheet cross section -->
-                    <rect x="10" y="34" width="120" height="20" fill="#e8e8e4" stroke="#0a0a0a" stroke-width="1.8"/>
-                    <!-- Thickness arrow -->
-                    <line x1="136" y1="34" x2="136" y2="54" stroke="#f36f22" stroke-width="1.4"/>
-                    <polygon points="136,34 133,40 139,40" fill="#f36f22"/>
-                    <polygon points="136,54 133,48 139,48" fill="#f36f22"/>
-                    <text x="137" y="47" font-size="7" fill="#f36f22" font-family="Courier New" font-weight="700" transform="rotate(90,137,47)" text-anchor="middle">t</text>
-                    <!-- Micrometer icon top -->
-                    <rect x="56" y="18" width="28" height="14" rx="2" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1"/>
-                    <line x1="70" y1="32" x2="70" y2="34" stroke="#0a0a0a" stroke-width="2"/>
+                  <!-- Cross-section: sheet with single center measurement + crown -->
+                  <svg width="140" height="92" viewBox="0 0 140 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Sheet cross section — slight crown curve on top -->
+                    <path d="M10,42 Q70,34 130,42 L130,56 Q70,56 10,56 Z" fill="#e8e8e4" stroke="#0a0a0a" stroke-width="1.8"/>
+                    <!-- Crown annotation: center peak vs edge -->
+                    <line x1="10" y1="42" x2="130" y2="42" stroke="#aaa" stroke-width="0.7" stroke-dasharray="3,2"/>
+                    <!-- Crown arrow: from ref line down to curve peak -->
+                    <line x1="70" y1="34" x2="70" y2="42" stroke="#3b82f6" stroke-width="1.2"/>
+                    <polygon points="70,34 67,39 73,39" fill="#3b82f6"/>
+                    <text x="75" y="39" font-size="6.5" fill="#3b82f6" font-family="Courier New" font-weight="700">crown</text>
+                    <!-- Thickness arrow (right side) -->
+                    <line x1="136" y1="42" x2="136" y2="56" stroke="#f36f22" stroke-width="1.4"/>
+                    <polygon points="136,42 133,47 139,47" fill="#f36f22"/>
+                    <polygon points="136,56 133,51 139,51" fill="#f36f22"/>
+                    <text x="137" y="51" font-size="7" fill="#f36f22" font-family="Courier New" font-weight="700" transform="rotate(90,137,51)" text-anchor="middle">t</text>
+                    <!-- Micrometer icon — positioned at center -->
+                    <rect x="56" y="18" width="28" height="13" rx="2" fill="#0a0a0a"/>
+                    <line x1="70" y1="31" x2="70" y2="34" stroke="#0a0a0a" stroke-width="2"/>
                     <text x="70" y="14" font-size="7" fill="#555" font-family="Courier New" text-anchor="middle">MICROMETER</text>
-                    <!-- 4 measurement points dots -->
-                    <circle cx="26" cy="44" r="3.5" fill="#f36f22"/>
-                    <circle cx="56" cy="44" r="3.5" fill="#f36f22"/>
-                    <circle cx="84" cy="44" r="3.5" fill="#f36f22"/>
-                    <circle cx="114" cy="44" r="3.5" fill="#f36f22"/>
-                    <!-- point labels -->
-                    <text x="26" y="64" font-size="7" fill="#888" font-family="Courier New" text-anchor="middle">P1</text>
-                    <text x="56" y="64" font-size="7" fill="#888" font-family="Courier New" text-anchor="middle">P2</text>
-                    <text x="84" y="64" font-size="7" fill="#888" font-family="Courier New" text-anchor="middle">P3</text>
-                    <text x="114" y="64" font-size="7" fill="#888" font-family="Courier New" text-anchor="middle">P4</text>
+                    <!-- Single center measurement point -->
+                    <circle cx="70" cy="46" r="4" fill="#f36f22"/>
+                    <!-- Center label -->
+                    <text x="70" y="70" font-size="7" fill="#888" font-family="Courier New" text-anchor="middle">CENTER</text>
                     <!-- legend -->
-                    <circle cx="10" cy="80" r="3" fill="#f36f22"/>
-                    <text x="16" y="83" font-size="7" fill="#555" font-family="Courier New">4 จุดวัด (มุม + กลาง)</text>
+                    <circle cx="10" cy="84" r="3" fill="#f36f22"/>
+                    <text x="16" y="87" font-size="7" fill="#555" font-family="Courier New">วัดจุดกลาง 1 จุด</text>
                   </svg>
                 </div>
                 <div class="qc-meas-vals">
@@ -3950,9 +3950,8 @@ function openViewer(idx){
   setText('tc-camber','≤ '+cLim+' mm/'+camberRef);
 
   // 5. Squareness
-  var sq1mm = (wNom * 0.007).toFixed(1);
-  setText('tc-sq1','≤ '+sq1mm+' mm');
-  setText('tc-sq2','Δ diagonal ≤ 3 mm');
+  setText('tc-sq1','≤ 3 mm');
+  setText('tc-sq2','u = |X−Y|/2 ≤ 3 mm');
 
   // ── vp badge ──
   var vpBadge=document.getElementById('vp-surface-badge');
@@ -4225,11 +4224,10 @@ function openViewer(idx){
   if(camberSvg) camberSvg.textContent='≤'+camberLim+'mm';
 
   // ── Squareness (W-SD-QA-01 §6) ≤0.7%W diagonal method ───
-  var sq1Val=qcW>0?'≤ '+(qcW*0.007).toFixed(1)+' mm':'—';
-  setText('qc-sq1', sq1Val);
+  setText('qc-sq1', '≤ 3 mm');
   var sq1Svg=document.getElementById('qc-sq1-svg');
-  if(sq1Svg) sq1Svg.textContent=qcW>0?'≤'+(qcW*0.007).toFixed(1)+'':'—';
-  setText('qc-sq2','u = |X−Y|/2  ≤ 0.7%W');
+  if(sq1Svg) sq1Svg.textContent='≤3mm';
+  setText('qc-sq2','u = |X−Y|/2  ≤ 3 mm');
 
   // ── Packing ───
   setText('qc-bnd',(parseInt(s.BUNDLE_SIZE)||5)+' แผ่น/มัด');
@@ -5328,7 +5326,7 @@ function buildLSS(s) {
     {name:'Form Tolerances', rows:[
       {lbl:'Flatness',val:'≤ '+flatLim+' mm / 1m'},
       {lbl:'Camber',  val:'≤ '+camber+' mm'},
-      {lbl:'Squareness',val:'≤ '+sq1mm+' mm  |  Δdiag ≤ 3 mm'}
+      {lbl:'Squareness',val:'≤ 3 mm'}
     ]},
     {name:'Mechanical', rows:[
       {lbl:'Tensile',val:ts+tag(s.TENSILE_STRENGTH)},
