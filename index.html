@@ -5855,14 +5855,14 @@ function render3d(){
       // mobile ~360px → sc≈0.55 | tablet ~768px → sc≈0.82 | desktop ~1100px → sc≈1.0
       var sc = Math.max(0.50, Math.min(1.0, W / 1100)) * 1.25;
 
-      var fSz1 = Math.round(13 * sc);   // หัวข้อหลัก
-      var fSz2 = Math.round(10 * sc);   // รอง
-      var fSz3 = Math.round(9  * sc);   // รายละเอียด
+      var fSz1 = Math.round(14 * sc);   // row1: size ใหญ่
+      var fSz2 = Math.round(8.5*sc);   // row2: std เล็ก
+      var fSz3 = Math.round(7.5*sc);   // row3: heat no เล็กสุด
       var fSz4 = Math.round(8  * sc);   // footer
 
       // ── STAY FLAT marking — ใช้รูปจาก Drive + text ─────────────────
       var lw  = Math.min(Math.round(400*sc), W-Math.round(16*sc));
-      var lh  = Math.round(68*sc);
+      var lh  = Math.round(65*sc);
       var lx  = Math.round(W*0.02);
       var ly  = Math.round(H*0.06);
 
@@ -5882,10 +5882,12 @@ function render3d(){
       ctx.closePath(); ctx.fill();
 
       var logoW = Math.round(62*sc);
-      var textX = lx+Math.round(130*sc);
-      var textW = lw-Math.round(140*sc);
-      var ty3   = ly+Math.round(6*sc);
-      var lh1   = Math.round(fSz1*1.6), lh2=Math.round(fSz2*1.5);
+      // textX = หลัง STAY FLAT + TIS + gap
+      var textX2 = lx+sfLogoW+Math.round(6*sc)+tisLogoW+Math.round(10*sc);
+      var textX = textX2;
+      var textW = lw-(textX-lx)-Math.round(8*sc);
+      var ty3   = ly+Math.round(5*sc);
+      var lh1   = Math.round(fSz1*1.55), lh2=Math.round(fSz2*1.5);
 
       // ── โลโก้ overlay — STAY FLAT + TIS (ไม่มี CORS) ────────────
       var pr2 = window.devicePixelRatio||1;
@@ -5914,8 +5916,9 @@ function render3d(){
 
       // STAY FLAT logo — scale ตาม lh จริง (สี่เหลี่ยมใกล้เคียง)
       var sfUrl = sqcLinks&&sqcLinks['stay flat'] ? sqcDriveUrl(sqcLinks['stay flat']) : null;
-      var sfLogoH = lh-Math.round(6*sc);
-      var sfLogoW = Math.round(sfLogoH*0.7); // aspect ratio STAY FLAT ~ 0.7
+      // STAY FLAT สูงเท่า lh เต็ม, กว้าง aspect ratio จากรูปจริง ~0.75
+      var sfLogoH = lh-Math.round(4*sc);
+      var sfLogoW = Math.round(sfLogoH*0.75);
       if(sfUrl){
         placeLogoOverlay('sf-logo-overlay', sfUrl, lx+Math.round(3*sc), ly+Math.round(3*sc), sfLogoW, sfLogoH);
       } else {
@@ -5927,10 +5930,12 @@ function render3d(){
 
       // TIS logo — สูงเท่า STAY FLAT วางข้างขวา
       var tisUrl = sqcLinks&&sqcLinks['TIS'] ? sqcDriveUrl(sqcLinks['TIS']) : null;
-      var tisLogoW = sfLogoH; // สี่เหลี่ยมจัตุรัส
-      var tisLogoX = lx+sfLogoW+Math.round(8*sc);
+      // TIS ⊕ สูง ~60% ของ STAY FLAT, วางกลาง vertical
+      var tisLogoW = Math.round(sfLogoH*0.6);
+      var tisLogoX = lx+sfLogoW+Math.round(6*sc);
       if(tisUrl){
-        placeLogoOverlay('tis-logo-overlay', tisUrl, tisLogoX, ly+Math.round(3*sc), tisLogoW, sfLogoH);
+        var tisOffY = Math.round((lh-tisLogoW)/2);
+        placeLogoOverlay('tis-logo-overlay', tisUrl, tisLogoX, ly+tisOffY, tisLogoW, tisLogoW);
       } else {
         // fallback: วาด วงกลม มอก
         var ciX3=tisLogoX+Math.round(tisLogoW*0.5), ciY3=ly+Math.round(lh*0.5);
