@@ -5354,10 +5354,6 @@ function toggle3dPanel(){
   btn.querySelector('span:last-child').textContent = collapsed ? '3D Controls' : 'ปิด';
 }
 function setMarking(mode,btn){
-  ['sf-logo-overlay','tis-logo-overlay'].forEach(function(id){
-    var ov=document.getElementById(id);
-    if(ov) ov.style.display = mode==='show' ? '' : 'none';
-  });
   S.marking=mode;
   var group=btn.parentElement;
   group.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
@@ -5998,34 +5994,34 @@ function render3d(){
 
       var logoW = Math.round(62*sc);
 
-      // ── โลโก้ overlay — STAY FLAT + TIS (ไม่มี CORS) ────────────
+      // ── โลโก้วาดบน canvas โดยตรง (ไม่ใช้ HTML overlay — position ตรงเสมอ) ──
       var pr2 = window.devicePixelRatio||1;
-      function placeLogoOverlay(id, url, cx, cy, cw, ch){
-        var canvasEl2 = canvas;
-        if(!url||!canvasEl2) return;
-        // ใช้ canvas.offsetLeft/offsetTop relative to parent — ไม่ขึ้นกับ scroll
-        var sx = canvasEl2.offsetWidth / canvasEl2.width;
-        var sy = canvasEl2.offsetHeight / canvasEl2.height;
-        var canvasOffX = canvasEl2.offsetLeft;
-        var canvasOffY = canvasEl2.offsetTop;
-        var el = document.getElementById(id);
-        if(!el){
-          el = document.createElement('img');
-          el.id = id;
-          el.style.cssText='position:absolute;object-fit:fill;pointer-events:none;z-index:2;border:0;padding:0;margin:0;';
-          canvasEl2.parentElement.style.position='relative';
-          canvasEl2.parentElement.appendChild(el);
+
+      // image cache: { url -> HTMLImageElement }
+      if(!window._markImgCache) window._markImgCache = {};
+
+      function drawLogoOnCanvas(url, cx, cy, cw, ch){
+        if(!url) return;
+        var cached = window._markImgCache[url];
+        if(cached && cached.complete && cached.naturalWidth>0){
+          // วาดตรงบน canvas — cx/cy เป็น canvas pixel coordinates
+          ctx.drawImage(cached, cx, cy, cw, ch);
+        } else if(!cached){
+          // โหลดรูปครั้งแรก
+          var img = new Image();
+          img.crossOrigin = 'anonymous';
+          window._markImgCache[url] = img;
+          img.onload = function(){ if(typeof render3d==='function') render3d(); };
+          img.onerror = function(){ window._markImgCache[url] = null; };
+          img.src = url;
         }
-        el.src = url;
-        // position relative to canvas element (not parent scroll container)
-        var canvasL = canvasEl2.offsetLeft;
-        var canvasT = canvasEl2.offsetTop;
-        el.style.left   = Math.round(canvasL + (cx/pr2)*sx)+'px';
-        el.style.top    = Math.round(canvasT + (cy/pr2)*sy)+'px';
-        el.style.width  = Math.round((cw/pr2)*sx)+'px';
-        el.style.height = Math.round((ch/pr2)*sy)+'px';
-        el.style.display= '';
       }
+
+      // ซ่อน HTML overlay เก่า (ถ้ามี) ไม่ใช้แล้ว
+      ['sf-logo-overlay','tis-logo-overlay'].forEach(function(id){
+        var old = document.getElementById(id);
+        if(old) old.style.display = 'none';
+      });
 
       // ── Layout:
       // col A: STAY FLAT logo — สูง 3 rows
@@ -6050,7 +6046,7 @@ function render3d(){
       var sfX = lx+pad2, sfY = ly+pad2;
 
       if(sfUrl){
-        placeLogoOverlay('sf-logo-overlay', sfUrl, sfX, sfY, sfLogoW, sfLogoH);
+        drawLogoOnCanvas(sfUrl, sfX, sfY, sfLogoW, sfLogoH);
       } else {
         var sfSz = Math.round(fSz1*1.1);
         ctx.font='900 '+sfSz+'px "Arial Narrow","Arial",sans-serif';
@@ -6064,7 +6060,7 @@ function render3d(){
       var tisX    = sfX+sfLogoW+Math.round(10*sc);
       var tisY    = sfY+lh1+Math.round((lh2+lh3-tisSize)/2);
       if(tisUrl){
-        placeLogoOverlay('tis-logo-overlay', tisUrl, tisX, tisY, tisSize, tisSize);
+        drawLogoOnCanvas(tisUrl, tisX, tisY, tisSize, tisSize);
       } else {
         var ciX3=tisX+Math.round(tisSize/2), ciY3=tisY+Math.round(tisSize/2);
         var ciR3=Math.round(tisSize*0.42);
