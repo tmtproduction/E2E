@@ -4456,6 +4456,8 @@ function loadLinkSheet(){
       if(key&&link) sqcLinks[key]=link;
     });
     // หลัง link sheet โหลดเสร็จ → update sqc + marking img
+    console.log('[LinkSheet] keys:', Object.keys(sqcLinks));
+    console.log('[LinkSheet] Marking:', sqcLinks['Marking'], '| Label:', sqcLinks['Label']);
     if(typeof sqcUpdate==='function') sqcUpdate();
     if(typeof render3d==='function') render3d();
     // โหลดรูป Marking
@@ -5448,6 +5450,11 @@ function _updateLabelView(){
   var sampleBadge = document.getElementById('label-sample-badge');
   var sticker     = document.getElementById('sticker');
   var hasSample   = sqcLinks && sqcLinks['Label'];
+  // อัพเดต src ทุกครั้งที่เรียก (กรณี link โหลดมาทีหลัง)
+  if(hasSample){
+    var labelSrc = document.getElementById('label-sample-src');
+    if(labelSrc && !labelSrc.src.includes('thumbnail')) labelSrc.src = sqcDriveUrl(sqcLinks['Label']);
+  }
   if(modified || !hasSample){
     // แสดง TMT label form
     if(sticker) sticker.style.display = '';
