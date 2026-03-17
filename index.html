@@ -5875,28 +5875,25 @@ function render3d(){
       function placeLogoOverlay(id, url, cx, cy, cw, ch){
         var canvasEl2 = canvas;
         if(!url||!canvasEl2) return;
-        var cRect2 = canvasEl2.getBoundingClientRect();
-        var pRect2 = canvasEl2.parentElement.getBoundingClientRect();
-        var sx = cRect2.width / canvasEl2.width;
-        var sy = cRect2.height / canvasEl2.height;
+        // ใช้ canvas.offsetLeft/offsetTop relative to parent — ไม่ขึ้นกับ scroll
+        var sx = canvasEl2.offsetWidth / canvasEl2.width;
+        var sy = canvasEl2.offsetHeight / canvasEl2.height;
+        var canvasOffX = canvasEl2.offsetLeft;
+        var canvasOffY = canvasEl2.offsetTop;
         var el = document.getElementById(id);
         if(!el){
           el = document.createElement('img');
           el.id = id;
-          el.style.cssText='position:absolute;object-fit:fill;pointer-events:none;z-index:2;';
+          el.style.cssText='position:absolute;object-fit:fill;pointer-events:none;z-index:2;border:0;padding:0;margin:0;';
           canvasEl2.parentElement.style.position='relative';
           canvasEl2.parentElement.appendChild(el);
         }
         el.src = url;
-        el.style.left   = Math.round((cx/pr2)*sx + cRect2.left - pRect2.left)+'px';
-        el.style.top    = Math.round((cy/pr2)*sy + cRect2.top  - pRect2.top)+'px';
+        el.style.left   = Math.round(canvasOffX + (cx/pr2)*sx)+'px';
+        el.style.top    = Math.round(canvasOffY + (cy/pr2)*sy)+'px';
         el.style.width  = Math.round((cw/pr2)*sx)+'px';
         el.style.height = Math.round((ch/pr2)*sy)+'px';
-        el.style.objectFit = 'fill';
         el.style.display= '';
-        el.style.border = '0';
-        el.style.padding = '0';
-        el.style.margin = '0';
       }
 
       // ── Layout:
