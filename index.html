@@ -5979,15 +5979,16 @@ function render3d(){
       }
 
       // ── คำนวณ top face ของแผ่นบนสุด → หา screen bounding box จริง ──
-      // แผ่นบนสุด: cy = yOff + totalH - thick2/2  (เหมือนใน loop i=drawN-1)
       var topSheetCy = yOff + totalH - thick2/2;
-      // 4 corners ของ top face (y = topSheetCy + thick2/2 = yOff + totalH)
       var topY3d = topSheetCy + thick2/2 + fl;
+      console.log('[dbg] yOff='+yOff+' totalH='+totalH+' thick2='+thick2+' bw='+bw+' bl='+bl+' fl='+fl+' topY3d='+topY3d);
+      var c0 = pr(tp([-bw/2, topY3d, bl/2]));
+      console.log('[dbg] corner0='+JSON.stringify(c0));
       var topCorners3d = [
-        [-bw/2, topY3d,  bl/2],   // front-left
-        [ bw/2, topY3d,  bl/2],   // front-right
-        [ bw/2, topY3d, -bl/2],   // back-right
-        [-bw/2, topY3d, -bl/2],   // back-left
+        [-bw/2, topY3d,  bl/2],
+        [ bw/2, topY3d,  bl/2],
+        [ bw/2, topY3d, -bl/2],
+        [-bw/2, topY3d, -bl/2],
       ];
       var topCorners2d = topCorners3d.map(function(p){ return pr(tp(p)); });
       // หา bounding box ของ top face บน screen
