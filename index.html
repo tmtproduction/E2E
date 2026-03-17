@@ -5997,34 +5997,26 @@ function render3d(){
       var tyMax = Math.max.apply(null, topCorners2d.map(function(p){return p[1];}));
       var faceW = txMax - txMin;
       var faceH = tyMax - tyMin;
+      console.log('[marking] faceW='+faceW.toFixed(1)+' faceH='+faceH.toFixed(1)+' W='+W+' H='+H);
 
-      // W/H และ canvas coordinates ทั้งหมดเป็น CSS px อยู่แล้ว (resizeCanvas ใช้ clientWidth)
-      // faceW = CSS px โดยตรง ไม่ต้องหาร dpr
-
-      // scale ตาม faceW CSS px
-      var sc = Math.max(0.28, Math.min(0.72, faceW / 480));
-
-      // font sizes (CSS px — วาดตรงบน canvas)
-      var fSz1 = Math.round(13 * sc);
-      var fSz2 = Math.round(7.5* sc);
-      var fSz3 = Math.round(6.5* sc);
-
-      // row heights
-      var pad2 = Math.round(4 * sc);
-      var lh1 = Math.round(fSz1*2.1);
+      // hardcap ทุก size — ไม่ scale ตาม faceW เพื่อป้องกันใหญ่เกิน
+      var fSz1 = 11;
+      var fSz2 = 7;
+      var fSz3 = 6;
+      var pad2 = 4;
+      var lh1 = Math.round(fSz1*2.0);
       var lh2 = Math.round(fSz2*2.0);
       var lh3 = Math.round(fSz3*2.0);
       var totalTextH = lh1+lh2+lh3;
       var lh = totalTextH+pad2*2;
-      var lw = Math.round(faceW * 0.80);
+      var lw = Math.min(Math.round(faceW*0.85), 400);
 
-      // วางมุมซ้ายบน top face
-      var lx = Math.round(txMin + faceW*0.05);
-      var ly = Math.round(tyMin + faceH*0.10);
+      var lx = Math.round(txMin + faceW*0.04);
+      var ly = Math.round(tyMin + faceH*0.12);
 
       ctx.save();
 
-      var logoW = Math.round(62*sc);
+      var logoW = 30;  // hardcap logo width
 
       // ── โลโก้ overlay — STAY FLAT + TIS ────────────────────────────
       // ใช้ HTML <img> overlay (ไม่ใช้ canvas drawImage เพราะ Drive CORS block)
@@ -6059,24 +6051,23 @@ function render3d(){
       var sfUrl  = sqcLinks&&sqcLinks['stay flat'] ? sqcDriveUrl(sqcLinks['stay flat']) : null;
       var tisUrl = sqcLinks&&sqcLinks['TIS'] ? sqcDriveUrl(sqcLinks['TIS']) : null;
 
-      // STAY FLAT: สูงเท่า totalTextH พอดี
-      var sfLogoH = totalTextH;
+      // STAY FLAT: hardcap ขนาด logo
+      var sfLogoH = Math.min(totalTextH, 44);
       var sfLogoW = Math.round(sfLogoH*0.72);
       var sfX = lx+pad2, sfY = ly+pad2;
 
       if(sfUrl){
         placeLogoOverlay('sf-logo-overlay', sfUrl, sfX, sfY, sfLogoW, sfLogoH);
       } else {
-        var sfSz = Math.round(fSz1*1.1);
-        ctx.font='900 '+sfSz+'px "Arial Narrow","Arial",sans-serif';
+        ctx.font='900 12px "Arial Narrow","Arial",sans-serif';
         ctx.fillStyle='#0a0a0a'; ctx.textAlign='left'; ctx.textBaseline='top';
         ctx.fillText('STAY', sfX, sfY);
-        ctx.fillText('FLAT', sfX, sfY+Math.round(sfSz*1.25));
+        ctx.fillText('FLAT', sfX, sfY+14);
       }
 
-      // TIS logo: วาง col B ซ้ายสุด rows 2-3
-      var tisSize = Math.round((lh2+lh3)*0.85);
-      var tisX    = sfX+sfLogoW+Math.round(10*sc);
+      // TIS logo: hardcap
+      var tisSize = Math.min(lh2+lh3, 26);
+      var tisX    = sfX+sfLogoW+8;
       var tisY    = sfY+lh1+Math.round((lh2+lh3-tisSize)/2);
       if(tisUrl){
         placeLogoOverlay('tis-logo-overlay', tisUrl, tisX, tisY, tisSize, tisSize);
@@ -6084,22 +6075,21 @@ function render3d(){
         var ciX3=tisX+Math.round(tisSize/2), ciY3=tisY+Math.round(tisSize/2);
         var ciR3=Math.round(tisSize*0.42);
         ctx.beginPath(); ctx.arc(ciX3,ciY3,ciR3,0,Math.PI*2);
-        ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=Math.max(1,1.5*sc); ctx.stroke();
+        ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=1; ctx.stroke();
         ctx.beginPath();
         ctx.moveTo(ciX3-ciR3*0.65,ciY3); ctx.lineTo(ciX3+ciR3*0.65,ciY3);
         ctx.moveTo(ciX3,ciY3-ciR3*0.65); ctx.lineTo(ciX3,ciY3+ciR3*0.65);
-        ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=Math.max(0.8,sc); ctx.stroke();
+        ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=0.8; ctx.stroke();
       }
 
       // TEXT positions
-      var col1X = sfX+sfLogoW+Math.round(10*sc); // row1: ชิดขวา STAY FLAT
-      var col2X = tisX+tisSize+Math.round(8*sc);  // row2-3: ชิดขวา TIS
+      var col1X = sfX+sfLogoW+8;
+      var col2X = tisX+tisSize+6;
       var col1W = lx+lw-col1X-pad2;
       var col2W = lx+lw-col2X-pad2;
-      // center text vertically ใน แต่ละ row
-      var row1Y = sfY + Math.round((lh1 - fSz1) / 2);
-      var row2Y = sfY+lh1 + Math.round((lh2 - fSz2) / 2);
-      var row3Y = sfY+lh1+lh2 + Math.round((lh3 - fSz3) / 2);
+      var row1Y = sfY + Math.round((lh1-fSz1)/2);
+      var row2Y = sfY+lh1 + Math.round((lh2-fSz2)/2);
+      var row3Y = sfY+lh1+lh2 + Math.round((lh3-fSz3)/2);
 
       // bg — ไม่มี background box (inkjet พิมพ์บนผิวเหล็กโดยตรง)
       // ใช้แค่ semi-transparent bg บางมากเพื่อให้อ่านง่ายขึ้นเล็กน้อย
