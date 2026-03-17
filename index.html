@@ -5883,7 +5883,7 @@ function render3d(){
         if(!el){
           el = document.createElement('img');
           el.id = id;
-          el.style.cssText='position:absolute;object-fit:contain;pointer-events:none;z-index:2;';
+          el.style.cssText='position:absolute;object-fit:fill;pointer-events:none;z-index:2;';
           canvasEl2.parentElement.style.position='relative';
           canvasEl2.parentElement.appendChild(el);
         }
