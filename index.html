@@ -3761,11 +3761,15 @@ function openViewer(idx){
       if(!svg) return;
       var W=320, H=72, PAD=10, base=H-10;
 
-      // พิกัด
-      var wCrvMin = window._calcWCurveMin||kgMin;
-      var wCrvMax = window._calcWCurveMax||kgMax;
-      var wAxisMin2 = window._calcWAxisMin||wCrvMin;
-      var wAxisMax2 = window._calcWAxisMax||wCrvMax;
+      // พิกัด — คำนวณตรงจาก SKU ปัจจุบัน (ไม่ใช้ window._calcW* ที่อาจค้างจาก SKU เก่า)
+      var wCrvMin = kgMin;
+      var wCrvMax = kgMax;
+      // axis: TARGET-TOL → TARGET (kg) — ใช้ส่วน spec ของ SKU ปัจจุบัน
+      var _bellTgt = parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
+      var _bellTol = parseFloat(s.TOLERANCE_THICKNESS||0);
+      function _bellKg(t){ return w>0&&l>0 ? t*w*l*7.85/1000000 : 0; }
+      var wAxisMin2 = _bellTgt>0&&_bellTol>0 ? _bellKg(_bellTgt-_bellTol) : wCrvMin;
+      var wAxisMax2 = _bellTgt>0 ? _bellKg(_bellTgt) : wCrvMax;
       var mu      = kgTmt;
       var sigma   = (wCrvMax-wCrvMin)/6;
       if(sigma<0.05) sigma=0.05;
