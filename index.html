@@ -6153,7 +6153,7 @@ function render3d(){
   }
 
   // ── cap: stack สูงสุด ~67% ของ canvas height (≈200px สำหรับ H=300) ──
-  var maxBundleH = H * 0.67 / fovUnit;
+  var maxBundleH = H * 0.67 / refFovUnit;
   var rawH=N*(thick+gap)-gap;
   var scaleY=rawH>maxBundleH?maxBundleH/rawH:1.0;
   var thick2=thick*scaleY, gap2=gap*scaleY;
