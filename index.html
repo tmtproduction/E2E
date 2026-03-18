@@ -6068,6 +6068,8 @@ function drawStrap3d(cx,cy,cz,bW,bH,bL,floatY){
 }
 
 function render3d(){
+  // Guard: canvas ยังไม่ได้ measure — W/H เป็น 0 หรือ NaN → ออกก่อน
+  if(!W||!H||!isFinite(W)||!isFinite(H)||W<10||H<10) return;
   ctx.clearRect(0,0,W,H);
   var N=S.sheets;
   var bl = Math.max(1.8, S.l/360);
@@ -6100,19 +6102,23 @@ function render3d(){
 
   // ── เงาพื้น: radial gradient สมจริงขึ้น ──────────────────────
   var shadowBase=pr(tp([0,yOff+fl-0.08,0]));
-  ctx.save();
-  var shGrad=ctx.createRadialGradient(
-    W/2, shadowBase[1]+H*0.03, 0,
-    W/2, shadowBase[1]+H*0.03, Math.min(W,H)*0.45
-  );
-  shGrad.addColorStop(0,   'rgba(0,0,0,0.22)');
-  shGrad.addColorStop(0.4, 'rgba(0,0,0,0.09)');
-  shGrad.addColorStop(1,   'rgba(0,0,0,0)');
-  ctx.fillStyle=shGrad;
-  ctx.beginPath();
-  ctx.ellipse(W/2, shadowBase[1]+H*0.03, Math.min(W,H)*0.45, Math.min(W,H)*0.10, 0, 0, Math.PI*2);
-  ctx.fill();
-  ctx.restore();
+  if(isFinite(shadowBase[0])&&isFinite(shadowBase[1])){
+    try{
+      ctx.save();
+      var shGrad=ctx.createRadialGradient(
+        W/2, shadowBase[1]+H*0.03, 0,
+        W/2, shadowBase[1]+H*0.03, Math.min(W,H)*0.45
+      );
+      shGrad.addColorStop(0,   'rgba(0,0,0,0.22)');
+      shGrad.addColorStop(0.4, 'rgba(0,0,0,0.09)');
+      shGrad.addColorStop(1,   'rgba(0,0,0,0)');
+      ctx.fillStyle=shGrad;
+      ctx.beginPath();
+      ctx.ellipse(W/2, shadowBase[1]+H*0.03, Math.min(W,H)*0.45, Math.min(W,H)*0.10, 0, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }catch(e){ ctx.restore(); }
+  }
 
   // ── scale Y ให้ bundle ไม่ล้น canvas ─────────────────────────
   var maxBundleH=2.8;
