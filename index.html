@@ -6605,7 +6605,15 @@ function drawBundleCard(cvId,s,mode){
 canvas.addEventListener('mousedown',function(e){drag=true;lastX=e.clientX;lastY=e.clientY;autoRot=false;document.getElementById('cv-sw').classList.remove('on');document.getElementById('cv-hint').style.opacity='0';});
 window.addEventListener('mousemove',function(e){if(!drag)return;camTargetY+=(e.clientX-lastX)*0.008;camTargetX+=(e.clientY-lastY)*0.005;camTargetX=Math.max(-1.2,Math.min(1.2,camTargetX));lastX=e.clientX;lastY=e.clientY;});
 window.addEventListener('mouseup',function(){drag=false;});
-canvas.addEventListener('wheel',function(e){e.preventDefault();camZ=Math.max(4,Math.min(40,camZ+e.deltaY*0.02));},{passive:false});
+function onCanvasWheel(e){
+  e.preventDefault(); e.stopPropagation();
+  // normalise delta: trackpad=small, mouse wheel=large
+  var delta = e.deltaMode===1 ? e.deltaY*20 : e.deltaMode===2 ? e.deltaY*300 : e.deltaY;
+  camZ = Math.max(3, Math.min(50, camZ + delta * 0.025));
+}
+canvas.addEventListener('wheel', onCanvasWheel, {passive:false});
+var canvasWrap = document.querySelector('.canvas-wrap');
+if(canvasWrap) canvasWrap.addEventListener('wheel', onCanvasWheel, {passive:false});
 canvas.addEventListener('touchstart',function(e){drag=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;autoRot=false;},{passive:true});
 canvas.addEventListener('touchmove',function(e){if(!drag)return;camTargetY+=(e.touches[0].clientX-lastX)*0.008;camTargetX+=(e.touches[0].clientY-lastY)*0.005;camTargetX=Math.max(-1.2,Math.min(1.2,camTargetX));lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;},{passive:true});
 canvas.addEventListener('touchend',function(){drag=false;});
