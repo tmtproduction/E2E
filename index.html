@@ -4347,6 +4347,10 @@ function closePage(){
   document.getElementById('catalog-view').style.display='';
   document.getElementById('cat-hdr').style.display='';
   autoRot=false;
+  // Bug #4 fix: reset offer weight ทุกครั้งที่ออกจาก viewer
+  // ป้องกันค่าเก่าจาก SKU ก่อนหน้า flash ขึ้นมาสักวูบก่อน calcInitOfferUI() รัน
+  offerCustomW = 0;
+  _pendingOrder = null;
 }
 
 // ── MOBILE SWIPE-DOWN TO CLOSE VIEWER ──────────────
@@ -5070,10 +5074,17 @@ function drawBellOnly(){
   function kg2(t){ return ww2>0&&ll2>0?t*ww2*ll2*D/1000000:0; }
   var mu=kg2(parseFloat(s.THICKNESS_TMT_MM)||parseFloat(s.THICKNESS_TARGET_MM)||0);
   var svg=document.getElementById('sh-bell-svg');
-  if(!svg||!window._calcWCurveMin||!window._calcWCurveMax) return;
+  if(!svg) return;
   var W=320, H=72, PAD=10, base=H-10;
-  var crvMin=window._calcWCurveMin, crvMax=window._calcWCurveMax;
-  var axL=window._calcWAxisMin||crvMin, axR=window._calcWAxisMax||crvMax;
+  // Bug #1 fix: คำนวณ crvMin/Max สดจาก SKU ปัจจุบัน — ไม่ใช้ window._calcW* ที่อาจค้างจาก SKU เก่า
+  var _tMin2=parseFloat(s.THICK_MIN||'')||0, _tMax2=parseFloat(s.THICK_MAX||'')||0;
+  var _tSpec2=parseFloat(s.THICKNESS_TARGET_MM)||parseFloat(s.THICKNESS_TMT_MM)||0;
+  var crvMin=_tMin2>0?kg2(_tMin2):(mu>0?mu*0.97:0.01);
+  var crvMax=_tMax2>0?kg2(_tMax2):(mu>0?mu*1.03:0.02);
+  if(crvMax<=crvMin) crvMax=crvMin+0.01;
+  var _tTol2=parseFloat(s.TOLERANCE_THICKNESS||0);
+  var axL=_tSpec2>0&&_tTol2>0?kg2(_tSpec2-_tTol2):crvMin;
+  var axR=_tSpec2>0?kg2(_tSpec2):crvMax;
   var sigma=(crvMax-crvMin)/6; if(sigma<0.01) sigma=0.01;
   var offer=offerCustomW>0?offerCustomW:mu;
   var outOfRange=offer>crvMax;
@@ -5606,10 +5617,26 @@ function syncLabel(){
   // format date dd.mm.yyyy
   var dtFmt = dt ? (function(d){var p=d.split('-');return p[2]+'.'+p[1]+'.'+p[0];})(dt) : '—';
 
-  var sizeStr = 'เหล็กแผ่นดำ '+t.toFixed(2)+' X '+w+' X '+l+'mm';
+  // Bug #2 fix: map SURFACE → ชื่อประเภทสินค้าที่ถูกต้อง แทน hardcode รีดร้อน
+  var surfaceRaw = String(s.SURFACE||'').toLowerCase();
+  var prodType;
+  if(surfaceRaw.indexOf('galvanized')>-1||surfaceRaw.indexOf('สังกะสี')>-1){
+    prodType='เหล็กแผ่นชุบสังกะสี';
+  } else if(surfaceRaw.indexOf('cold')>-1){
+    prodType='เหล็กกล้าแผ่นบางรีดเย็น';
+  } else if(surfaceRaw.indexOf('สเตน')>-1||surfaceRaw.indexOf('stainless')>-1){
+    prodType='เหล็กแผ่นสเตนเลส';
+  } else {
+    prodType='เหล็กกล้าแผ่นบางรีดร้อนขอบรีด'; // Hot Rolled (default)
+  }
+  var sizeStr = (surfaceRaw.indexOf('galvanized')>-1||surfaceRaw.indexOf('สังกะสี')>-1
+    ? 'เหล็กแผ่นชุบสังกะสี '
+    : surfaceRaw.indexOf('cold')>-1
+      ? 'เหล็กแผ่นรีดเย็น '
+      : 'เหล็กแผ่นดำ ')+t.toFixed(2)+' X '+w+' X '+l+'mm';
   var std = s.STANDARD||'TIS 528-2566';
 
-  setText('s-prodtype', 'เหล็กกล้าแผ่นบางรีดร้อนขอบรีด');
+  setText('s-prodtype', prodType);
   setText('s-customer', cust||'—');
   setText('s-size-full', sizeStr);
   setText('s-pcs',    pcs);
@@ -5779,6 +5806,10 @@ function goToPreview(){
   var totalP=(qty*p).toLocaleString();
   var bundles=Math.ceil(qty/b);
 
+  // Bug #3 fix: เก็บข้อมูลใน closure vars แทนการ inject string ลงใน onclick attribute
+  // ป้องกัน JS error เมื่อ note มี \, ", newline หรืออักขระพิเศษ
+  _pendingOrder = { name:name, phone:phone, qty:qty, price:p, note:note };
+
   document.getElementById('modal-body').innerHTML=
     '<div class="order-steps-new">'+
       '<div class="osn-step done">✓ จำนวน</div>'+
@@ -5788,19 +5819,37 @@ function goToPreview(){
       '<div class="op-title">สรุปรายการสั่งซื้อ</div>'+
       '<div class="op-row"><span class="op-label">สินค้า</span><span class="op-val">'+makeName(s)+'</span></div>'+
       '<div class="op-row"><span class="op-label">เกรด / มาตรฐาน</span><span class="op-val">'+(s.GRADE||'—')+' · '+(s.STANDARD||'—')+'</span></div>'+
-      '<div class="op-row"><span class="op-label">ชื่อลูกค้า</span><span class="op-val">'+name+'</span></div>'+
-      (phone?'<div class="op-row"><span class="op-label">โทร</span><span class="op-val">'+phone+'</span></div>':'')+
+      '<div class="op-row"><span class="op-label">ชื่อลูกค้า</span><span class="op-val">'+escHtml(name)+'</span></div>'+
+      (phone?'<div class="op-row"><span class="op-label">โทร</span><span class="op-val">'+escHtml(phone)+'</span></div>':'')+
       '<div class="op-row"><span class="op-label">จำนวน</span><span class="op-val">'+qty.toLocaleString()+' แผ่น · '+bundles+' Bundle</span></div>'+
       '<div class="op-row"><span class="op-label">น้ำหนักรวม</span><span class="op-val">'+totalW+' kg</span></div>'+
       '<div class="op-row"><span class="op-label">ราคา/แผ่น</span><span class="op-val">฿ '+p.toLocaleString()+'</span></div>'+
-      (note?'<div class="op-row"><span class="op-label">หมายเหตุ</span><span class="op-val" style="font-family:inherit;font-size:11px;">'+note+'</span></div>':'')+
+      (note?'<div class="op-row"><span class="op-label">หมายเหตุ</span><span class="op-val" style="font-family:inherit;font-size:11px;">'+escHtml(note)+'</span></div>':'')+
     '</div>'+
     '<div class="op-total"><span class="op-total-label">ราคารวมทั้งหมด</span><span class="op-total-val">฿ '+totalP+'</span></div>'+
     '<div style="display:flex;gap:8px;">'+
       '<button onclick="goToOrderStep2()" style="flex:1;border:1px solid var(--g200);background:var(--white);padding:12px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:inherit;">← แก้ไข</button>'+
-      '<button class="btn-submit" onclick="submitOrder(\''+name.replace(/'/g,"\\'")+"','"+phone.replace(/'/g,"\\'")+'\','+qty+','+p+",'"+note.replace(/'/g,"\\'")+'\')'+'" style="flex:2;">✓ ยืนยัน Order</button>'+
+      '<button class="btn-submit" id="btn-confirm-order" style="flex:2;">✓ ยืนยัน Order</button>'+
     '</div>';
+
+  // ผูก handler หลัง inject HTML เสร็จ — ปลอดภัย ไม่ต้อง escape string
+  var confirmBtn = document.getElementById('btn-confirm-order');
+  if(confirmBtn){
+    confirmBtn.addEventListener('click', function(){
+      var o = _pendingOrder;
+      if(o) submitOrder(o.name, o.phone, o.qty, o.price, o.note);
+    });
+  }
 }
+
+// ตัวช่วย escape HTML สำหรับแสดงข้อความใน innerHTML อย่างปลอดภัย
+function escHtml(str){
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+var _pendingOrder = null;
 
 function updOrd(){
   // legacy compat - no-op now
