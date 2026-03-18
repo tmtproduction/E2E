@@ -6104,12 +6104,14 @@ function render3d(){
   var fovUnit = Math.min(W,H) * 1.45 / camZ;
   // scale3d: fit L to ~65% canvas width at camRotY angle
   var scale3d = (W * 0.65) / (Math.max(1, S.l) * Math.cos(0.55) * fovUnit);
-  var bl = S.l * scale3d;  // scene length — full mm:scene ratio
-  var bw = S.w * scale3d;  // scene width  — W:L ratio ถูกต้อง 100%
-  // thick: boost ×10 ให้ 4.5mm×45แผ่น ≈ 200px, ขั้นต่ำ 2mm visual
-  var thickBoost = 10;
-  var thick = Math.max(2 * scale3d, S.thick * scale3d * thickBoost);
-  var gap   = 0.4 * scale3d * thickBoost; // gap ≈ 0.4mm boosted
+  var bl = S.l * scale3d;  // scene length
+  var bw = S.w * scale3d;  // scene width — W:L:H ratio ถูกต้อง 100%
+  // thick: true scale — ไม่มี boost → สัดส่วนสมจริง
+  // min = 0.9px/แผ่น เพื่อให้มองเห็น แม้แผ่นบางมาก
+  // min 0.22px/sheet — kick in เฉพาะแผ่นบางมาก (<1.5mm) เพื่อให้มองเห็น
+  var minThick = 0.22 / (Math.min(W,H) * 1.45 / camZ);
+  var thick = Math.max(minThick, S.thick * scale3d);
+  var gap   = Math.max(0.18 * scale3d, thick * 0.06); // gap ≈ 6% thick
 
   // ── สีตาม material type จาก currentSku ─────────────────────────
   var skuSurf = currentSku ? String(currentSku.SURFACE||'').toLowerCase() : '';
