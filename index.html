@@ -413,10 +413,10 @@ body{
   font-family:var(--mono);transition:background .2s,color .2s;
 }
 .stock-badge--avail{background:#EAF3DE;color:#27500A;}
-.stock-badge--wait{background:#FCEBEB;color:#791F1F;}
+.stock-badge--wait{background:#FAEEDA;color:#633806;}
 .stock-badge .sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 .stock-badge--avail .sb-dot{background:#3B6D11;}
-.stock-badge--wait .sb-dot{background:#A32D2D;}
+.stock-badge--wait .sb-dot{background:#854F0B;}
 /* calc panel status row */
 .calc-status-row{
   display:flex;justify-content:space-between;align-items:center;
@@ -6101,9 +6101,11 @@ function render3d(){
   var bw = bl * (S.w / Math.max(1, S.l));
   bw = Math.max(0.8, bw);
 
-  // ── ความหนาสมจริง: ×2.5 จากเดิม + ขั้นต่ำ 0.06 ให้มองเห็นชัด ──
-  var thick = Math.max(0.06, S.thick * 0.040);
-  var gap = 0.014;
+  // ── scale จริงตาม mm: 1mm → screen ≈ 1px ──────────────────────
+  // projection: screenPx = sceneUnit × fov/camZ  →  1mm = camZ/(min(W,H)×1.45) scene units
+  var mm2s = camZ / (Math.min(W,H) * 1.45);
+  var thick = Math.max(2.0 * mm2s, S.thick * mm2s); // ขั้นต่ำ 2mm ให้มองเห็น
+  var gap   = 0.35 * mm2s; // ช่องว่างระหว่างแผ่น ≈ 0.35mm
 
   // ── สีตาม material type จาก currentSku ─────────────────────────
   var skuSurf = currentSku ? String(currentSku.SURFACE||'').toLowerCase() : '';
@@ -6145,10 +6147,10 @@ function render3d(){
     }catch(e){ ctx.restore(); }
   }
 
-  // ── scale Y ให้ bundle ไม่ล้น canvas ─────────────────────────
-  var maxBundleH=2.8;
+  // ── cap: stack สูงสุด 82% ของ canvas ─────────────────────────
+  var maxSceneH = H * 0.82 * mm2s;
   var rawH=N*(thick+gap)-gap;
-  var scaleY=rawH>maxBundleH?maxBundleH/rawH:1.0;
+  var scaleY=rawH>maxSceneH?maxSceneH/rawH:1.0;
   var thick2=thick*scaleY, gap2=gap*scaleY;
   totalH=N*(thick2+gap2)-gap2;
   yOff=-totalH/2;
