@@ -3882,11 +3882,13 @@ function openViewer(idx){
   setText('sh-w', w||'—');
   setText('sh-l', l||'—');
   // Mill: แสดงชื่อ MILL_NAME (จัดการโดย block ด้านบนแล้ว)
-  setText('sh-price', price?'฿ '+price.toLocaleString():'฿ —');
-  setText('sh-price2', price?'฿ '+price.toLocaleString():'฿ —');
   var pricekgViewer = parseFloat(s.PRICE_PER_KG_THB)||0;
+  // sh-price2: ใช้ PRICE_PER_SHEET_THB ถ้ามี, ถ้าไม่มีให้ avgPrice จาก kg block อยู่
+  if(price){ setText('sh-price2','฿ '+price.toLocaleString()); }
+  else if(!pricekgViewer){ setText('sh-price2','฿ —'); }
+  // else: avgPrice ถูก set ใน PRICE_PER_KG_THB block ด้านบนแล้ว
   setText('sh-prickg', pricekgViewer ? pricekgViewer.toFixed(1)+' ฿/kg' : '—');
-  setText('sh-prickg2', pricekgViewer ? pricekgViewer.toFixed(1)+' ฿/kg' : '—');
+  if(!price && !pricekgViewer){ setText('sh-prickg2','—'); }
   var stockTxt=stock+' แผ่น '+(stock===0?'หมดสต็อก':stock<10?'(เหลือน้อย)':'พร้อมส่ง');
   var stockCol=stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)';
   setText('sh-stock', stockTxt);
@@ -6097,15 +6099,17 @@ function render3d(){
   if(!W||!H||!isFinite(W)||!isFinite(H)||W<10||H<10) return;
   ctx.clearRect(0,0,W,H);
   var N=S.sheets;
-  var bl = Math.max(1.8, S.l/360);
-  var bw = bl * (S.w / Math.max(1, S.l));
-  bw = Math.max(0.8, bw);
-
-  // ── scale จริงตาม mm: 1mm → screen ≈ 1px ──────────────────────
-  // projection: screenPx = sceneUnit × fov/camZ  →  1mm = camZ/(min(W,H)×1.45) scene units
-  var mm2s = camZ / (Math.min(W,H) * 1.45);
-  var thick = Math.max(2.0 * mm2s, S.thick * mm2s); // ขั้นต่ำ 2mm ให้มองเห็น
-  var gap   = 0.35 * mm2s; // ช่องว่างระหว่างแผ่น ≈ 0.35mm
+  // ── scale สม่ำเสมอ: W:L ratio ถูกต้อง + height สเกลตาม mm จริง ──
+  // fovUnit: px per scene-unit in projection
+  var fovUnit = Math.min(W,H) * 1.45 / camZ;
+  // scale3d: fit L to ~65% canvas width at camRotY angle
+  var scale3d = (W * 0.65) / (Math.max(1, S.l) * Math.cos(0.55) * fovUnit);
+  var bl = S.l * scale3d;  // scene length — full mm:scene ratio
+  var bw = S.w * scale3d;  // scene width  — W:L ratio ถูกต้อง 100%
+  // thick: boost ×10 ให้ 4.5mm×45แผ่น ≈ 200px, ขั้นต่ำ 2mm visual
+  var thickBoost = 10;
+  var thick = Math.max(2 * scale3d, S.thick * scale3d * thickBoost);
+  var gap   = 0.4 * scale3d * thickBoost; // gap ≈ 0.4mm boosted
 
   // ── สีตาม material type จาก currentSku ─────────────────────────
   var skuSurf = currentSku ? String(currentSku.SURFACE||'').toLowerCase() : '';
@@ -6147,10 +6151,10 @@ function render3d(){
     }catch(e){ ctx.restore(); }
   }
 
-  // ── cap: stack สูงสุด 82% ของ canvas ─────────────────────────
-  var maxSceneH = H * 0.82 * mm2s;
+  // ── cap: stack สูงสุด ~67% ของ canvas height (≈200px สำหรับ H=300) ──
+  var maxBundleH = H * 0.67 / fovUnit;
   var rawH=N*(thick+gap)-gap;
-  var scaleY=rawH>maxSceneH?maxSceneH/rawH:1.0;
+  var scaleY=rawH>maxBundleH?maxBundleH/rawH:1.0;
   var thick2=thick*scaleY, gap2=gap*scaleY;
   totalH=N*(thick2+gap2)-gap2;
   yOff=-totalH/2;
