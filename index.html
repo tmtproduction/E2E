@@ -405,6 +405,24 @@ body{
 .spec-stock-pill{display:inline-flex;align-items:center;gap:7px;}
 .spec-stock-dot{width:6px;height:6px;border-radius:50%;}
 .spec-stock-txt{font-size:11px;font-weight:500;color:var(--g300);font-family:var(--mono);}
+/* ── Stock status badge ── */
+.stock-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 11px;border-radius:20px;
+  font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;
+  font-family:var(--mono);transition:background .2s,color .2s;
+}
+.stock-badge--avail{background:#EAF3DE;color:#27500A;}
+.stock-badge--wait{background:#FCEBEB;color:#791F1F;}
+.stock-badge .sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.stock-badge--avail .sb-dot{background:#3B6D11;}
+.stock-badge--wait .sb-dot{background:#A32D2D;}
+/* calc panel status row */
+.calc-status-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0 4px;border-top:1px solid var(--g200);margin-top:2px;
+}
+.calc-status-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
 
 /* ════════════════════════════════════════
    TECH DETAIL COLLAPSE  (Phase 4)
@@ -2379,8 +2397,9 @@ body{
                   <span id="sh-prickg2" class="spec-price-box-kg">—</span>
                 </div>
                 <div class="spec-stock-pill" style="margin-top:8px;">
-                  <div class="spec-stock-dot" id="sh-dot2" style="background:var(--green)"></div>
-                  <span class="spec-stock-txt" id="sh-stock2">—</span>
+                  <span class="stock-badge stock-badge--avail" id="sh-stock-badge">
+                    <span class="sb-dot"></span>Available
+                  </span>
                 </div>
               </div>
             </div>
@@ -2558,16 +2577,12 @@ body{
                   </div>
                 </div>
               </div>
-              <!-- stock bar -->
-              <div id="r-stock-wrap" style="padding:4px 0 8px;border-top:1px solid var(--g200);">
-                <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--g400);margin-bottom:3px;">
-                  <span>ต้องการ <strong id="r-need" style="color:var(--black)">—</strong> แผ่น</span>
-                  <span>สต็อก <strong id="r-stock-lbl" style="color:var(--green)">—</strong> แผ่น</span>
-                </div>
-                <div style="height:4px;background:var(--g100);border-radius:2px;overflow:hidden;">
-                  <div id="r-bar" style="height:100%;background:var(--green);border-radius:2px;width:0%;transition:width .3s;"></div>
-                </div>
-                <div id="r-overstock" style="display:none;font-size:9px;color:var(--red);font-family:var(--mono);padding:3px 0;"></div>
+              <!-- stock status badge -->
+              <div class="calc-status-row" id="r-stock-wrap">
+                <span class="calc-status-lbl">สถานะ</span>
+                <span class="stock-badge stock-badge--avail" id="r-stock-badge">
+                  <span class="sb-dot"></span>Available
+                </span>
               </div>
 
               <!-- Bell curve -->
@@ -3878,6 +3893,8 @@ function openViewer(idx){
   setText('sh-stock2', stockTxt);
   ['sh-dot','sh-dot2'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.background=stockCol; });
   ['sh-stock','sh-stock2'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.color=stockCol; });
+  // spec viewer badge
+  setStockBadge('sh-stock-badge', stock===0);
 
   // ── Dimension & Standard panel ──────────────────────────────────
   setText('tc-grade', s.GRADE||'—');
@@ -5189,15 +5206,23 @@ function calcUpdate(){
   setText('r-excl', totalP>0 ? '฿ '+totalP.toLocaleString() : '—');
   setText('r-vat',  totalP>0 ? '+ ฿ '+Math.round(totalP*0.07).toLocaleString() : '—');
   setText('r-incl', totalP>0 ? '฿ '+Math.round(totalP*1.07).toLocaleString() : '—');
-  // stock bar
-  var needEl=document.getElementById('r-need'); if(needEl) needEl.textContent=q;
-  var stLbl=document.getElementById('r-stock-lbl'); if(stLbl) stLbl.textContent=stock;
-  var bar=document.getElementById('r-bar');
-  if(bar){ var pct=stock>0?Math.min(q/stock*100,100):0; bar.style.width=pct+'%'; bar.style.background=q>stock?'var(--red)':'var(--green)'; }
-  var ov=document.getElementById('r-overstock');
-  if(ov) ov.style.display=q>stock?'':(ov.style.display='none','none');
-  if(ov&&q>stock) ov.textContent='⚠ เกินสต็อก — เหลือเพียง '+stock+' แผ่น';
+  // stock status badge in calc panel
+  var isWaiting = (stock===0)||(q>stock);
+  setStockBadge('r-stock-badge', isWaiting);
 
+}
+
+// ── STOCK BADGE HELPER ────────────────────────────────
+function setStockBadge(id, isWaiting){
+  var el=document.getElementById(id);
+  if(!el) return;
+  if(isWaiting){
+    el.className='stock-badge stock-badge--wait';
+    el.innerHTML='<span class="sb-dot"></span>Waiting';
+  } else {
+    el.className='stock-badge stock-badge--avail';
+    el.innerHTML='<span class="sb-dot"></span>Available';
+  }
 }
 
 // ── ADMIN SYNC ────────────────────────────────────
