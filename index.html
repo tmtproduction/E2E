@@ -8105,7 +8105,7 @@ function _tpUpdateSummary(){
       var sel=cat.subs.find(function(x){return x.id===_tp.st[cat.id];});
       if(!sel) return;
       if(!_tpIsDef(cat)){
-        var a=_tpSubAmtQty(sub, qty); addons+=a;
+        var a=_tpSubAmtQty(sel, qty); addons+=a;
         lines.push({n:cat.label+': '+sel.label, v:'+฿'+Math.round(a).toLocaleString()});
       }
       if(sel&&!sel.wh){pdReq=true;pdRsn=pdRsn||sel.label;}
