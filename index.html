@@ -7508,14 +7508,15 @@ function fetchPatterns(username) {
     });
 }
 function renderPatternList(patterns) {
+  window._patternCache = patterns;
   var listEl = document.getElementById('load-pattern-list');
   if (!patterns || patterns.length === 0) {
     listEl.innerHTML = '<div class="pattern-empty">ยังไม่มี Pattern ที่บันทึกไว้</div>'; return;
   }
   var html = '';
-  patterns.forEach(function(pt) {
+  patterns.forEach(function(pt, idx) {
     var tags = [];
-    if (pt.cut_w && pt.cut_l) tags.push(pt.cut_w + '×' + pt.cut_l + ' mm');
+    if (pt.cut_w && pt.cut_l) tags.push(pt.cut_w + 'x' + pt.cut_l + ' mm');
     if (pt.bundle)             tags.push('Bundle ' + pt.bundle);
     if (pt.export_pack)        tags.push('Export Pack');
     if (pt.smallbundle)        tags.push('Bundle เล็ก');
@@ -7523,7 +7524,7 @@ function renderPatternList(patterns) {
     if (pt.pallet)             tags.push('Pallet');
     if (pt.millcert)           tags.push('Mill Cert');
     if (pt.surface)            tags.push('Surface');
-    var tagLine = tags.length ? tags.join(' · ') : 'ไม่มีการกำหนดค่าพิเศษ';
+    var tagLine = tags.length ? tags.join(' / ') : 'ไม่มีการกำหนดค่าพิเศษ';
     html +=
       '<div class="pattern-item">' +
         '<div class="pattern-item-info">' +
@@ -7535,16 +7536,15 @@ function renderPatternList(patterns) {
           '</div>' +
         '</div>' +
         '<div class="pattern-item-actions">' +
-          '<button class="btn-apply" onclick="applyPattern('' + pt.id + '')">โหลด</button>' +
-          '<button class="btn-del"   onclick="deletePattern('' + pt.id + '')">ลบ</button>' +
+          '<button class="btn-apply" onclick="applyPattern(' + idx + ')">โหลด</button>' +
+          '<button class="btn-del"   onclick="confirmDeletePattern(' + idx + ')">ลบ</button>' +
         '</div>' +
       '</div>';
   });
   listEl.innerHTML = html;
-  window._patternCache = patterns;
 }
-function applyPattern(id) {
-  var pt = (window._patternCache || []).find(function(p){ return p.id === id; });
+function applyPattern(idx) {
+  var pt = (window._patternCache || [])[idx];
   if (!pt) return;
   document.getElementById('cc-w').value              = pt.cut_w       || '';
   document.getElementById('cc-l').value              = pt.cut_l       || '';
@@ -7558,10 +7558,12 @@ function applyPattern(id) {
   document.getElementById('cc-note').value           = pt.note        || '';
   closeLoadPatternModal();
 }
-function deletePattern(id) {
+function confirmDeletePattern(idx) {
+  var pt = (window._patternCache || [])[idx];
+  if (!pt) return;
   var s = getSession(); if (!s) return;
-  if (!confirm('ลบ Pattern นี้?')) return;
-  gasCall('deletePattern', { id: id, username: s.username })
+  if (!confirm('ลบ Pattern "' + pt.patternName + '"?')) return;
+  gasCall('deletePattern', { id: pt.id, username: s.username })
     .then(function(res) {
       if (res.success) fetchPatterns(s.username);
       else alert(res.message || 'ลบไม่สำเร็จ');
