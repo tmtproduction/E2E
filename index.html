@@ -2086,6 +2086,88 @@ body{
 .sf-empty{font-size:11px;font-family:var(--mono);color:var(--g400);text-align:center;padding:24px 0;}
 .sf-open-btn{display:block;width:100%;margin-top:8px;padding:6px;background:transparent;border:0.5px solid var(--g200);border-radius:6px;font-size:10px;font-family:var(--mono);color:var(--g600);cursor:pointer;text-align:center;}
 .sf-open-btn:hover{border-color:var(--black);color:var(--black);}
+
+/* ── AUTH NAV ── */
+.nav-auth{display:flex;align-items:center;gap:10px;font-family:var(--mono);}
+.btn-login{
+  background:var(--black);color:var(--white);border:none;
+  padding:7px 16px;cursor:pointer;font-family:var(--mono);
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  transition:opacity .15s;white-space:nowrap;
+}
+.btn-login:hover{opacity:.75;}
+.nav-user-name{
+  font-size:11px;letter-spacing:1px;color:var(--g600);
+  white-space:nowrap;max-width:130px;overflow:hidden;text-overflow:ellipsis;
+}
+.btn-logout{
+  background:none;border:1px solid var(--g200);color:var(--g400);
+  padding:5px 12px;cursor:pointer;font-family:var(--mono);
+  font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  transition:all .15s;
+}
+.btn-logout:hover{border-color:var(--black);color:var(--black);}
+
+/* ── LOGIN MODAL ── */
+.login-error{
+  display:none;font-size:11px;color:var(--red);font-family:var(--mono);
+  letter-spacing:.5px;margin:-4px 0 12px;padding:8px 12px;
+  background:#fdf2f1;border-left:2px solid var(--red);
+}
+.login-loading{
+  display:none;text-align:center;font-size:11px;
+  color:var(--g400);font-family:var(--mono);letter-spacing:1px;margin:8px 0;
+}
+
+/* ── PATTERN BUTTONS ── */
+.pattern-actions{display:flex;gap:8px;margin-bottom:12px;}
+.btn-pattern{
+  flex:1;background:none;border:1px solid var(--g200);
+  color:var(--g600);font-family:var(--mono);font-size:10px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  padding:9px 12px;cursor:pointer;transition:all .15s;
+}
+.btn-pattern:hover{border-color:var(--black);color:var(--black);}
+.pattern-login-hint{
+  display:none;font-size:10px;color:var(--g400);font-family:var(--mono);
+  letter-spacing:.5px;text-align:center;padding:8px;
+  border:1px dashed var(--g200);margin-bottom:12px;
+}
+
+/* ── LOAD PATTERN MODAL ── */
+.pattern-list{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;}
+.pattern-item{
+  border:1px solid var(--g200);padding:12px 14px;
+  display:flex;align-items:flex-start;gap:10px;transition:background .15s;
+}
+.pattern-item:hover{background:var(--g50);}
+.pattern-item-info{flex:1;min-width:0;}
+.pattern-item-name{
+  font-size:13px;font-weight:500;margin-bottom:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.pattern-item-meta{font-size:10px;color:var(--g400);font-family:var(--mono);letter-spacing:.5px;line-height:1.7;}
+.pattern-item-actions{display:flex;gap:6px;flex-shrink:0;}
+.btn-apply{
+  background:var(--black);color:var(--white);border:none;
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:5px 10px;cursor:pointer;font-family:var(--mono);transition:opacity .15s;
+}
+.btn-apply:hover{opacity:.75;}
+.btn-del{
+  background:none;border:1px solid var(--g200);font-size:9px;
+  letter-spacing:1px;text-transform:uppercase;color:var(--g400);
+  padding:5px 8px;cursor:pointer;font-family:var(--mono);transition:all .15s;
+}
+.btn-del:hover{border-color:var(--red);color:var(--red);}
+.pattern-empty,.pattern-loading{
+  text-align:center;padding:28px 0;font-size:11px;
+  color:var(--g400);font-family:var(--mono);letter-spacing:1px;
+}
+.save-pattern-msg{
+  display:none;font-size:11px;font-family:var(--mono);
+  letter-spacing:.5px;margin-top:6px;padding:8px 12px;
+}
 </style>
   <link rel="icon" href="data:,">
 </head>
@@ -2100,6 +2182,9 @@ body{
     </div>
     <div class="nav-right">
       <div class="hdr-stat" id="hdr-stat"></div>
+      <div class="nav-auth" id="nav-auth">
+        <button class="btn-login" onclick="openLoginModal()">เข้าสู่ระบบ</button>
+      </div>
     </div>
   </div>
 
@@ -7138,6 +7223,14 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.ge
         <div class="frow-m" style="margin-top:10px;"><label>หมายเหตุเพิ่มเติม</label><textarea id="cc-note" rows="2" placeholder="เช่น ลูกค้าต้องการ edge deburr"></textarea></div>
       </div>
 
+      <!-- pattern actions: แสดงเมื่อ login แล้ว -->
+      <div class="pattern-actions" id="cc-pattern-actions" style="display:none;">
+        <button class="btn-pattern" onclick="openSavePatternModal()">&#128190; บันทึก Pattern</button>
+        <button class="btn-pattern" onclick="openLoadPatternModal()">&#128194; โหลด Pattern</button>
+      </div>
+      <!-- hint เมื่อยังไม่ได้ login -->
+      <div class="pattern-login-hint" id="cc-pattern-hint">เข้าสู่ระบบเพื่อบันทึก / โหลด Pattern</div>
+
       <button class="btn-submit" onclick="runCustomCheck()">ดูสรุป Custom →</button>
     </div>
   </div>
@@ -7166,5 +7259,328 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.ge
   <span class="sqc-lightbox-close">&#x2715;</span>
   <img id="sqc-lightbox-img" src="" alt="">
 </div>
+
+<!-- ══ LOGIN MODAL ══ -->
+<div class="overlay" id="login-overlay" onclick="if(event.target===this)closeLoginModal()">
+  <div class="order-modal" style="max-width:380px;" onclick="event.stopPropagation()">
+    <div class="modal-hdr" style="background:var(--black);">
+      <h2>เข้าสู่ระบบ</h2>
+      <button class="modal-close" onclick="closeLoginModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="login-error" class="login-error"></div>
+      <div class="fsec">
+        <div class="frow-m">
+          <label>ชื่อผู้ใช้</label>
+          <input type="text" id="login-username" placeholder="เช่น sales01" autocomplete="username">
+        </div>
+        <div class="frow-m" style="margin-top:10px;">
+          <label>รหัสผ่าน</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+      </div>
+      <div class="login-loading" id="login-loading">กำลังตรวจสอบ...</div>
+      <button class="btn-submit" id="btn-do-login" onclick="doLogin()">เข้าสู่ระบบ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SAVE PATTERN MODAL ══ -->
+<div class="overlay" id="save-pattern-overlay" onclick="if(event.target===this)closeSavePatternModal()">
+  <div class="order-modal" style="max-width:360px;" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <h2>บันทึก Pattern</h2>
+      <button class="modal-close" onclick="closeSavePatternModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="save-pattern-sku" style="background:var(--g100);padding:8px 12px;margin-bottom:16px;font-size:10px;letter-spacing:1px;font-family:'Courier New',monospace;font-weight:700;"></div>
+      <div class="fsec">
+        <div class="frow-m">
+          <label>ชื่อ Pattern</label>
+          <input type="text" id="save-pattern-name" placeholder="เช่น ลูกค้า ABC — ตัดพิเศษ 900×2000">
+        </div>
+      </div>
+      <div id="save-pattern-msg" class="save-pattern-msg"></div>
+      <button class="btn-submit" onclick="doSavePattern()">บันทึก →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOAD PATTERN MODAL ══ -->
+<div class="overlay" id="load-pattern-overlay" onclick="if(event.target===this)closeLoadPatternModal()">
+  <div class="order-modal" style="max-width:460px;" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <h2>โหลด Pattern</h2>
+      <button class="modal-close" onclick="closeLoadPatternModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="load-pattern-list" class="pattern-list">
+        <div class="pattern-loading">กำลังโหลด...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  AUTH + PATTERN SYSTEM
+// ════════════════════════════════════════════════════════════════
+
+// ← ใส่ URL ของ GAS Web App ที่ deploy แล้วตรงนี้
+var GAS_AUTH_URL = 'YOUR_GAS_WEBAPP_URL_HERE';
+
+// ── GAS API call ───────────────────────────────────────────────
+function gasCall(action, params) {
+  var body = Object.assign({ action: action }, params || {});
+  return fetch(GAS_AUTH_URL, {
+    method : 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body   : JSON.stringify(body)
+  }).then(function(r){ return r.json(); });
+}
+
+// ── Session ────────────────────────────────────────────────────
+function getSession() {
+  var u = sessionStorage.getItem('auth_username');
+  if (!u) return null;
+  return {
+    username : u,
+    name     : sessionStorage.getItem('auth_name') || u,
+    role     : sessionStorage.getItem('auth_role') || 'sales'
+  };
+}
+function setSession(d) {
+  sessionStorage.setItem('auth_username', d.username);
+  sessionStorage.setItem('auth_name',     d.name);
+  sessionStorage.setItem('auth_role',     d.role);
+}
+function clearSession() {
+  ['auth_username','auth_name','auth_role'].forEach(function(k){
+    sessionStorage.removeItem(k);
+  });
+}
+
+// ── Update nav + custom checker UI ────────────────────────────
+function updateAuthUI() {
+  var s         = getSession();
+  var navAuth   = document.getElementById('nav-auth');
+  var ccActions = document.getElementById('cc-pattern-actions');
+  var ccHint    = document.getElementById('cc-pattern-hint');
+
+  if (s) {
+    navAuth.innerHTML =
+      '<span class="nav-user-name">&#128100; ' + s.name + '</span>' +
+      '<button class="btn-logout" onclick="doLogout()">ออกจากระบบ</button>';
+    if (ccActions) ccActions.style.display = 'flex';
+    if (ccHint)    ccHint.style.display    = 'none';
+  } else {
+    navAuth.innerHTML =
+      '<button class="btn-login" onclick="openLoginModal()">เข้าสู่ระบบ</button>';
+    if (ccActions) ccActions.style.display = 'none';
+    if (ccHint)    ccHint.style.display    = 'block';
+  }
+}
+
+// ── Login ──────────────────────────────────────────────────────
+function openLoginModal() {
+  document.getElementById('login-username').value    = '';
+  document.getElementById('login-password').value    = '';
+  document.getElementById('login-error').style.display   = 'none';
+  document.getElementById('login-loading').style.display = 'none';
+  document.getElementById('btn-do-login').disabled   = false;
+  document.getElementById('login-overlay').classList.add('open');
+  setTimeout(function(){ document.getElementById('login-username').focus(); }, 150);
+}
+function closeLoginModal() {
+  document.getElementById('login-overlay').classList.remove('open');
+}
+function doLogin() {
+  var username = document.getElementById('login-username').value.trim();
+  var password = document.getElementById('login-password').value.trim();
+  var errEl    = document.getElementById('login-error');
+  var loadEl   = document.getElementById('login-loading');
+  var btnEl    = document.getElementById('btn-do-login');
+  if (!username || !password) {
+    errEl.textContent = 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน';
+    errEl.style.display = 'block'; return;
+  }
+  errEl.style.display  = 'none';
+  loadEl.style.display = 'block';
+  btnEl.disabled       = true;
+  gasCall('login', { username: username, password: password })
+    .then(function(res) {
+      loadEl.style.display = 'none'; btnEl.disabled = false;
+      if (res.success) {
+        setSession(res); updateAuthUI(); closeLoginModal();
+      } else {
+        errEl.textContent   = res.message || 'เข้าสู่ระบบไม่สำเร็จ';
+        errEl.style.display = 'block';
+      }
+    })
+    .catch(function() {
+      loadEl.style.display = 'none'; btnEl.disabled = false;
+      errEl.textContent    = 'เชื่อมต่อ server ไม่ได้ กรุณาลองใหม่';
+      errEl.style.display  = 'block';
+    });
+}
+function doLogout() { clearSession(); updateAuthUI(); }
+
+// ── Save Pattern ───────────────────────────────────────────────
+function openSavePatternModal() {
+  var s = getSession(); if (!s) { openLoginModal(); return; }
+  var skuText = document.getElementById('cc-sku-pill').textContent || '-';
+  document.getElementById('save-pattern-sku').textContent  = skuText;
+  document.getElementById('save-pattern-name').value       = '';
+  document.getElementById('save-pattern-msg').style.display = 'none';
+  document.getElementById('save-pattern-overlay').classList.add('open');
+  setTimeout(function(){ document.getElementById('save-pattern-name').focus(); }, 150);
+}
+function closeSavePatternModal() {
+  document.getElementById('save-pattern-overlay').classList.remove('open');
+}
+function doSavePattern() {
+  var s           = getSession(); if (!s) return;
+  var patternName = document.getElementById('save-pattern-name').value.trim();
+  var msgEl       = document.getElementById('save-pattern-msg');
+  if (!patternName) {
+    msgEl.textContent    = 'กรุณาตั้งชื่อ Pattern';
+    msgEl.style.display  = 'block';
+    msgEl.style.color    = 'var(--red)';
+    msgEl.style.background = '#fdf2f1';
+    msgEl.style.borderLeft = '2px solid var(--red)';
+    msgEl.style.padding  = '8px 12px'; return;
+  }
+  msgEl.textContent     = 'กำลังบันทึก...';
+  msgEl.style.display   = 'block';
+  msgEl.style.color     = 'var(--g400)';
+  msgEl.style.background = 'transparent';
+  msgEl.style.borderLeft = 'none';
+  gasCall('savePattern', {
+    username    : s.username,
+    patternName : patternName,
+    sku         : document.getElementById('cc-sku-pill').textContent || '',
+    cut_w       : document.getElementById('cc-w').value,
+    cut_l       : document.getElementById('cc-l').value,
+    bundle      : document.getElementById('cc-bundle').value,
+    export_pack : document.getElementById('cc-export').checked,
+    smallbundle : document.getElementById('cc-smallbundle').checked,
+    individual  : document.getElementById('cc-individual').checked,
+    pallet      : document.getElementById('cc-pallet').checked,
+    millcert    : document.getElementById('cc-millcert').checked,
+    surface     : document.getElementById('cc-surface').checked,
+    note        : document.getElementById('cc-note').value
+  }).then(function(res) {
+    if (res.success) {
+      msgEl.textContent   = '✓ บันทึก Pattern สำเร็จ';
+      msgEl.style.color   = 'var(--green)';
+      setTimeout(closeSavePatternModal, 1200);
+    } else {
+      msgEl.textContent    = res.error || 'บันทึกไม่สำเร็จ';
+      msgEl.style.color    = 'var(--red)';
+      msgEl.style.background = '#fdf2f1';
+      msgEl.style.borderLeft = '2px solid var(--red)';
+    }
+  }).catch(function() {
+    msgEl.textContent = 'เชื่อมต่อ server ไม่ได้';
+    msgEl.style.color = 'var(--red)';
+  });
+}
+
+// ── Load Pattern ───────────────────────────────────────────────
+function openLoadPatternModal() {
+  var s = getSession(); if (!s) { openLoginModal(); return; }
+  document.getElementById('load-pattern-overlay').classList.add('open');
+  fetchPatterns(s.username);
+}
+function closeLoadPatternModal() {
+  document.getElementById('load-pattern-overlay').classList.remove('open');
+}
+function fetchPatterns(username) {
+  var listEl = document.getElementById('load-pattern-list');
+  listEl.innerHTML = '<div class="pattern-loading">กำลังโหลด Pattern...</div>';
+  gasCall('getPatterns', { username: username })
+    .then(function(res) {
+      if (!res.success) { listEl.innerHTML = '<div class="pattern-empty">โหลดไม่สำเร็จ</div>'; return; }
+      renderPatternList(res.patterns);
+    })
+    .catch(function() {
+      listEl.innerHTML = '<div class="pattern-empty">เชื่อมต่อ server ไม่ได้</div>';
+    });
+}
+function renderPatternList(patterns) {
+  var listEl = document.getElementById('load-pattern-list');
+  if (!patterns || patterns.length === 0) {
+    listEl.innerHTML = '<div class="pattern-empty">ยังไม่มี Pattern ที่บันทึกไว้</div>'; return;
+  }
+  var html = '';
+  patterns.forEach(function(pt) {
+    var tags = [];
+    if (pt.cut_w && pt.cut_l) tags.push(pt.cut_w + '×' + pt.cut_l + ' mm');
+    if (pt.bundle)             tags.push('Bundle ' + pt.bundle);
+    if (pt.export_pack)        tags.push('Export Pack');
+    if (pt.smallbundle)        tags.push('Bundle เล็ก');
+    if (pt.individual)         tags.push('แยกแผ่น');
+    if (pt.pallet)             tags.push('Pallet');
+    if (pt.millcert)           tags.push('Mill Cert');
+    if (pt.surface)            tags.push('Surface');
+    var tagLine = tags.length ? tags.join(' · ') : 'ไม่มีการกำหนดค่าพิเศษ';
+    html +=
+      '<div class="pattern-item">' +
+        '<div class="pattern-item-info">' +
+          '<div class="pattern-item-name">' + escHtml(pt.patternName) + '</div>' +
+          '<div class="pattern-item-meta">' +
+            escHtml(tagLine) +
+            (pt.sku ? '<br>' + escHtml(pt.sku) : '') +
+            '<br>' + (pt.timestamp || '') +
+          '</div>' +
+        '</div>' +
+        '<div class="pattern-item-actions">' +
+          '<button class="btn-apply" onclick="applyPattern('' + pt.id + '')">โหลด</button>' +
+          '<button class="btn-del"   onclick="deletePattern('' + pt.id + '')">ลบ</button>' +
+        '</div>' +
+      '</div>';
+  });
+  listEl.innerHTML = html;
+  window._patternCache = patterns;
+}
+function applyPattern(id) {
+  var pt = (window._patternCache || []).find(function(p){ return p.id === id; });
+  if (!pt) return;
+  document.getElementById('cc-w').value              = pt.cut_w       || '';
+  document.getElementById('cc-l').value              = pt.cut_l       || '';
+  document.getElementById('cc-bundle').value         = pt.bundle      || '';
+  document.getElementById('cc-export').checked       = !!pt.export_pack;
+  document.getElementById('cc-smallbundle').checked  = !!pt.smallbundle;
+  document.getElementById('cc-individual').checked   = !!pt.individual;
+  document.getElementById('cc-pallet').checked       = !!pt.pallet;
+  document.getElementById('cc-millcert').checked     = !!pt.millcert;
+  document.getElementById('cc-surface').checked      = !!pt.surface;
+  document.getElementById('cc-note').value           = pt.note        || '';
+  closeLoadPatternModal();
+}
+function deletePattern(id) {
+  var s = getSession(); if (!s) return;
+  if (!confirm('ลบ Pattern นี้?')) return;
+  gasCall('deletePattern', { id: id, username: s.username })
+    .then(function(res) {
+      if (res.success) fetchPatterns(s.username);
+      else alert(res.message || 'ลบไม่สำเร็จ');
+    });
+}
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ───────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  ['login-username','login-password'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+  });
+  updateAuthUI();
+});
+</script>
+
 </body>
 </html>
