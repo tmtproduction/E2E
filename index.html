@@ -2086,75 +2086,223 @@ body{
 .sf-empty{font-size:11px;font-family:var(--mono);color:var(--g400);text-align:center;padding:24px 0;}
 .sf-open-btn{display:block;width:100%;margin-top:8px;padding:6px;background:transparent;border:0.5px solid var(--g200);border-radius:6px;font-size:10px;font-family:var(--mono);color:var(--g600);cursor:pointer;text-align:center;}
 .sf-open-btn:hover{border-color:var(--black);color:var(--black);}
-/* ── TOPPING SYSTEM ── */
-.tp-modal{max-width:520px !important;display:flex !important;flex-direction:column;height:85vh;max-height:640px;}
-@media(max-width:767px){.tp-modal{height:88vh;max-height:none;}}
-.tp-banner{padding:7px 18px;background:var(--g50);border-bottom:1px solid var(--g200);display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;}
-.tp-chip{font-size:9px;padding:2px 8px;border-radius:10px;background:#EAF3DE;color:#27500A;font-family:var(--mono);}
-.tp-base{padding:10px 18px;border-bottom:1px solid var(--g200);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.tp-base-name{font-size:13px;font-weight:500;color:var(--black);}
-.tp-base-meta{font-size:10px;color:var(--g400);font-family:var(--mono);margin-top:2px;}
-.tp-base-price{font-size:16px;font-weight:500;font-family:var(--mono);}
-.tp-cats{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
-.tp-cat{border-bottom:1px solid var(--g200);}
-.tp-cat-hdr{padding:11px 18px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .12s;user-select:none;}
-.tp-cat-hdr:hover{background:var(--g50);}
-.tp-cat-dot{width:6px;height:6px;border-radius:50%;background:var(--g200);flex-shrink:0;transition:background .15s;}
-.tp-cat-dot.on{background:var(--black);}
-.tp-cat-name{font-size:13px;font-weight:500;flex:1;color:var(--black);}
-.tp-cat-price{font-size:11px;font-family:var(--mono);color:var(--g600);}
-.tp-arr{font-size:10px;color:var(--g400);transition:transform .2s;display:inline-block;}
-.tp-cat-body{display:none;padding:0 18px 12px;}
-.tp-cat-body.open{display:block;}
-.tp-badge{font-size:9px;padding:1px 6px;border-radius:10px;font-family:var(--mono);}
-.tp-badge-def{background:#EAF3DE;color:#27500A;}
-.tp-badge-chg{background:#FAEEDA;color:#633806;}
-.tp-badge-pd{background:#FAECE7;color:#712B13;}
-.tp-subs{display:flex;flex-direction:column;gap:4px;margin-top:4px;}
-.tp-sub{border:1px solid var(--g200);border-radius:8px;padding:9px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .12s;}
-.tp-sub:hover{border-color:var(--g400);background:var(--g50);}
-.tp-sub.sel{border-color:var(--black);background:var(--black);}
-.tp-sub.tp-pd.sel{border-color:#b03a2e;background:#fff5f4;}
-.tp-sub.sel .tp-sub-name,.tp-sub.sel .tp-sub-price{color:#fafaf8;}
-.tp-sub.sel .tp-sub-desc{color:#9a9a95;}
-.tp-sub.tp-pd.sel .tp-sub-name,.tp-sub.tp-pd.sel .tp-sub-price{color:#b03a2e;}
-.tp-sub.tp-pd.sel .tp-sub-desc{color:#993c1d;}
-.tp-radio{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--g200);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.tp-sub.sel .tp-radio{border-color:#fafaf8;background:#fafaf8;}
-.tp-sub.tp-pd.sel .tp-radio{border-color:#b03a2e;}
-.tp-rdot{width:6px;height:6px;border-radius:50%;background:var(--black);display:none;}
-.tp-sub.sel .tp-rdot{display:block;}
-.tp-check{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--g200);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;}
-.tp-sub.sel .tp-check{border-color:#fafaf8;background:#fafaf8;color:var(--black);}
-.tp-sub-info{flex:1;min-width:0;}
-.tp-sub-name{font-size:12px;font-weight:500;color:var(--black);}
-.tp-sub-desc{font-size:10px;color:var(--g400);margin-top:1px;}
-.tp-sub-price{font-size:11px;font-family:var(--mono);color:var(--g400);flex-shrink:0;white-space:nowrap;}
-.tp-pd-tag{font-size:8px;padding:1px 5px;border-radius:8px;background:#FAECE7;color:#712B13;margin-left:4px;vertical-align:middle;}
-.tp-field label{display:block;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-bottom:4px;}
-.tp-field input{border:1px solid var(--g200);background:var(--white);padding:7px 10px;font-size:13px;font-family:var(--mono);border-radius:6px;outline:none;width:100%;color:var(--black);}
-.tp-hint{font-size:10px;color:var(--g400);font-family:var(--mono);margin-top:4px;}
-.tp-textarea{width:100%;border:1px solid var(--g200);background:var(--white);padding:8px 10px;font-size:13px;border-radius:6px;outline:none;resize:none;font-family:var(--sans);margin-top:4px;color:var(--black);}
-.tp-price-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
-.tp-price-card{padding:8px 10px;background:var(--g50);border-radius:8px;text-align:center;}
-.tp-price-lbl{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-bottom:2px;}
-.tp-price-val{font-size:15px;font-weight:500;font-family:var(--mono);}
-.tp-dec{border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;margin-bottom:10px;transition:all .2s;}
+/* ══════════════════════════════════════
+   TOPPING SYSTEM — Step-Based Modal v2
+══════════════════════════════════════ */
+/* ── Modal shell ── */
+.tp-modal{
+  max-width:760px !important;width:100%;
+  display:grid !important;
+  grid-template-rows:auto 1fr;
+  height:82vh;max-height:660px;
+  overflow:hidden;
+}
+@media(max-width:767px){
+  .tp-modal{grid-template-columns:1fr;height:92vh;max-height:none;grid-template-rows:auto 1fr;}
+}
+
+/* ── Modal header ── */
+.tp-modal-hdr{
+  background:#0e0e0e;padding:11px 16px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+  grid-column:1/-1;
+}
+.tp-modal-hdr-title{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#fafaf8;font-weight:500;}
+.tp-sku-tag{font-size:9px;font-family:var(--mono);color:#9a9a95;background:rgba(255,255,255,.08);padding:2px 7px;border-radius:6px;}
+
+/* ── Body: 2-column layout ── */
+.tp-body{display:grid;grid-template-columns:1fr 220px;min-height:0;overflow:hidden;}
+@media(max-width:767px){.tp-body{grid-template-columns:1fr;}}
+
+/* ── Left column ── */
+.tp-left{display:flex;flex-direction:column;min-height:0;overflow:hidden;border-right:0.5px solid var(--g200);}
+
+/* ── Step bar ── */
+.tp-step-bar{display:flex;flex-shrink:0;border-bottom:0.5px solid var(--g200);}
+.tp-step-item{
+  flex:1;padding:8px 10px;display:flex;align-items:center;gap:6px;
+  cursor:pointer;transition:background .12s;
+  border-right:0.5px solid var(--g200);user-select:none;
+}
+.tp-step-item:last-child{border-right:none;}
+.tp-step-item:hover{background:var(--g50);}
+.tp-step-item.active{background:var(--g50);}
+.tp-step-num{
+  width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--g300);font-size:11px;font-family:var(--mono);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--g400);flex-shrink:0;transition:all .15s;
+}
+.tp-step-item.active .tp-step-num{background:#0e0e0e;border-color:#0e0e0e;color:#fff;}
+.tp-step-item.done .tp-step-num{background:#EAF3DE;border-color:#97C459;color:#27500A;}
+.tp-step-label{font-size:11px;color:var(--g400);white-space:nowrap;}
+.tp-step-item.active .tp-step-label{color:var(--black);font-weight:500;}
+@media(max-width:480px){.tp-step-label{display:none;}}
+
+/* ── Step scroll body ── */
+.tp-step-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+
+/* ── Section within step ── */
+.tp-section{padding:14px 16px;border-bottom:0.5px solid var(--g200);}
+.tp-sec-hdr{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--g400);font-family:var(--mono);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.tp-sec-hdr::after{content:'';flex:1;height:0.5px;background:var(--g200);}
+
+/* ── dim grid ── */
+.tp-dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tp-field{display:flex;flex-direction:column;gap:4px;}
+.tp-field label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
+.tp-field input{
+  border:0.5px solid var(--g200);background:var(--white);
+  padding:7px 10px;font-size:13px;font-family:var(--mono);
+  color:var(--black);border-radius:6px;outline:none;width:100%;
+}
+.tp-field input:focus{border-color:var(--black);}
+.tp-hint{font-size:10px;color:var(--g400);font-family:var(--mono);}
+
+/* ── chip row (for qty quick) ── */
+.tp-chip-row{display:flex;gap:6px;flex-wrap:wrap;}
+.tp-chip-opt{
+  border:0.5px solid var(--g200);border-radius:20px;
+  padding:5px 12px;font-size:12px;cursor:pointer;
+  transition:all .12s;color:var(--g400);background:var(--white);
+  white-space:nowrap;display:flex;align-items:center;gap:5px;
+}
+.tp-chip-opt:hover{border-color:var(--g400);color:var(--black);}
+.tp-chip-opt.sel{background:#0e0e0e;border-color:#0e0e0e;color:#fafaf8;}
+.tp-chip-opt.pd-chip.sel{background:#fff5f4;border-color:#b03a2e;color:#b03a2e;}
+.tp-chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+/* ── card options (radio/checkbox) ── */
+.tp-card-opts{display:flex;flex-direction:column;gap:6px;}
+.tp-card-opt{
+  border:0.5px solid var(--g200);border-radius:8px;
+  padding:10px 12px;cursor:pointer;
+  display:flex;align-items:center;gap:10px;transition:all .12s;
+}
+.tp-card-opt:hover{border-color:var(--g400);background:var(--g50);}
+.tp-card-opt.sel{border-color:#0e0e0e;background:#0e0e0e;}
+.tp-card-opt.sel .tp-co-name{color:#fafaf8;}
+.tp-card-opt.sel .tp-co-desc,.tp-card-opt.sel .tp-co-price{color:#9a9a95;}
+.tp-card-opt.pd-card.sel{border-color:#b03a2e;background:#fff5f4;}
+.tp-card-opt.pd-card.sel .tp-co-name{color:#b03a2e;}
+.tp-card-opt.pd-card.sel .tp-co-desc,.tp-card-opt.pd-card.sel .tp-co-price{color:#993c1d;}
+.tp-radio-circle{
+  width:14px;height:14px;border-radius:50%;
+  border:1.5px solid var(--g200);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:all .12s;
+}
+.tp-card-opt.sel .tp-radio-circle{border-color:#fafaf8;background:#fafaf8;}
+.tp-card-opt.pd-card.sel .tp-radio-circle{border-color:#b03a2e;}
+.tp-rdot{width:6px;height:6px;border-radius:50%;background:#0e0e0e;display:none;}
+.tp-card-opt.sel .tp-rdot{display:block;}
+.tp-check-box{
+  width:14px;height:14px;border-radius:3px;
+  border:1.5px solid var(--g200);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:transparent;transition:all .12s;
+}
+.tp-card-opt.sel .tp-check-box{border-color:#fafaf8;background:#fafaf8;color:#0e0e0e;}
+.tp-co-info{flex:1;min-width:0;}
+.tp-co-name{font-size:12px;font-weight:500;color:var(--black);}
+.tp-co-desc{font-size:10px;color:var(--g400);margin-top:1px;}
+.tp-co-price{font-size:11px;font-family:var(--mono);color:var(--g400);flex-shrink:0;white-space:nowrap;}
+.tp-pd-badge{font-size:8px;padding:1px 5px;border-radius:6px;background:#FAECE7;color:#712B13;margin-left:4px;vertical-align:middle;}
+
+/* ── qty row ── */
+.tp-qty-row{display:flex;align-items:center;gap:10px;}
+.tp-qty-row label{font-size:12px;color:var(--g400);min-width:64px;}
+.tp-qty-input{
+  width:80px;border:0.5px solid var(--g200);background:var(--white);
+  padding:6px 10px;font-size:13px;font-family:var(--mono);
+  color:var(--black);border-radius:6px;outline:none;
+}
+.tp-qty-bnd{font-size:11px;color:var(--g400);font-family:var(--mono);}
+
+/* ── Step footer nav ── */
+.tp-step-footer{
+  padding:10px 16px;border-top:0.5px solid var(--g200);
+  display:flex;gap:8px;flex-shrink:0;
+}
+.tp-btn-next{
+  flex:1;background:#0e0e0e;color:#fafaf8;border:none;
+  padding:10px;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;border-radius:6px;font-weight:500;transition:opacity .15s;
+}
+.tp-btn-next:hover{opacity:.82;}
+.tp-btn-back{
+  background:none;border:0.5px solid var(--g200);color:var(--g400);
+  padding:10px 16px;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;border-radius:6px;transition:all .15s;
+}
+.tp-btn-back:hover{border-color:var(--black);color:var(--black);}
+
+/* ── Right column: Summary ── */
+.tp-right{display:flex;flex-direction:column;background:var(--g50);}
+@media(max-width:767px){.tp-right{display:none;}}
+.tp-sum-hdr{padding:11px 14px;background:#0e0e0e;flex-shrink:0;}
+.tp-sum-hdr-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#9a9a95;font-family:var(--mono);}
+.tp-sum-base{padding:10px 14px;border-bottom:0.5px solid var(--g200);flex-shrink:0;}
+.tp-sum-base-name{font-size:12px;font-weight:500;color:var(--black);}
+.tp-sum-base-meta{font-size:10px;color:var(--g400);font-family:var(--mono);margin-top:2px;}
+.tp-sum-items{flex:1;overflow-y:auto;padding:10px 14px;}
+.tp-sum-empty{font-size:11px;color:var(--g400);font-family:var(--mono);text-align:center;padding:20px 0;}
+.tp-sum-line{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:4px 0;border-bottom:0.5px solid var(--g200);gap:6px;
+}
+.tp-sum-line:last-child{border-bottom:none;}
+.tp-sum-name{font-size:11px;color:var(--black);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tp-sum-val{font-size:11px;font-family:var(--mono);color:var(--g400);flex-shrink:0;}
+.tp-total-bar{padding:10px 14px;border-top:0.5px solid var(--g200);flex-shrink:0;}
+.tp-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.tp-total-lbl{font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);}
+.tp-total-val{font-size:18px;font-weight:500;font-family:var(--mono);color:var(--black);}
+.tp-total-sub{font-size:10px;color:var(--g400);font-family:var(--mono);}
+.tp-decision-bar{padding:8px 14px;border-top:0.5px solid var(--g200);flex-shrink:0;}
+.tp-dec{border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px;transition:all .2s;}
 .tp-dec.wh{background:#EAF3DE;border:0.5px solid #97C459;}
 .tp-dec.pd{background:#FAECE7;border:0.5px solid #F0997B;}
 .tp-dec-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .tp-dec.wh .tp-dec-dot{background:#3B6D11;}
 .tp-dec.pd .tp-dec-dot{background:#993C1D;}
 .tp-dec-info{flex:1;}
-.tp-dec-title{font-size:12px;font-weight:500;}
+.tp-dec-title{font-size:11px;font-weight:500;}
 .tp-dec.wh .tp-dec-title{color:#27500A;}
 .tp-dec.pd .tp-dec-title{color:#4A1B0C;}
-.tp-dec-sub{font-size:10px;margin-top:1px;}
-.tp-dec.wh .tp-dec-sub{color:#3B6D11;}
-.tp-dec.pd .tp-dec-sub{color:#712B13;}
-.tp-dec-lead{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:10px;flex-shrink:0;}
+.tp-dec-lead{font-size:9px;font-family:var(--mono);padding:2px 6px;border-radius:8px;flex-shrink:0;}
 .tp-dec.wh .tp-dec-lead{background:#C0DD97;color:#27500A;}
 .tp-dec.pd .tp-dec-lead{background:#F5C4B3;color:#4A1B0C;}
+.tp-confirm-btn{
+  margin:10px 14px 14px;background:#0e0e0e;color:#fafaf8;border:none;
+  padding:11px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;
+  cursor:pointer;border-radius:6px;font-weight:500;
+  width:calc(100% - 28px);transition:opacity .15s;display:none;
+}
+.tp-confirm-btn:hover{opacity:.82;}
+.tp-confirm-btn.show{display:block;}
+
+/* ── textarea ── */
+.tp-textarea{
+  width:100%;border:0.5px solid var(--g200);background:var(--white);
+  padding:8px 10px;font-size:12px;border-radius:6px;outline:none;
+  resize:none;font-family:var(--sans);color:var(--black);
+}
+
+/* keep old compat selectors alive for _tpSync hidden fields */
+.tp-chip{font-size:9px;padding:2px 8px;border-radius:10px;background:#EAF3DE;color:#27500A;font-family:var(--mono);}
+.tp-badge{font-size:9px;padding:1px 6px;border-radius:10px;font-family:var(--mono);}
+.tp-badge-def{background:#EAF3DE;color:#27500A;}
+.tp-badge-chg{background:#FAEEDA;color:#633806;}
+.tp-badge-pd{background:#FAECE7;color:#712B13;}
+/* price row kept for _tpFooter compat */
+.tp-price-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
+.tp-price-card{padding:8px 10px;background:var(--g50);border-radius:8px;text-align:center;}
+.tp-price-lbl{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-bottom:2px;}
+.tp-price-val{font-size:15px;font-weight:500;font-family:var(--mono);}
 
 
 /* ── AUTH NAV ── */
@@ -5423,18 +5571,19 @@ function openCustomChecker(){
   document.getElementById('cc-sku-pill').textContent = currentSku.SKU||'—';
   document.getElementById('custom-overlay').classList.add('open');
   updateAuthUI();
-  if(_tp.cfg){ _tpInit(); _tpRender(); return; }
+  _tpCurStep = 0;
+  if(_tp.cfg){ _tpInit(); _tpRenderStep(); _tpUpdateSummary(); return; }
+  document.getElementById('tp-step-body').innerHTML='<div style="text-align:center;padding:32px 0;font-size:11px;color:var(--g400);font-family:var(--mono);">กำลังโหลด options...</div>';
   var loadUrl = SCRIPT_URL+'?action=getCustomOptions&nocache='+Date.now();
-  document.getElementById('tp-cats').innerHTML='<div style="text-align:center;padding:32px 0;font-size:11px;color:var(--g400);font-family:var(--mono);">กำลังโหลด options...</div>';
   fetch(loadUrl)
     .then(function(r){return r.json();})
     .then(function(res){
       _tp.cfg=_tpParse((res.options&&res.options.length>0)?res.options:_tpFallback());
-      _tpInit(); _tpRender();
+      _tpInit(); _tpRenderStep(); _tpUpdateSummary();
     })
     .catch(function(){
       _tp.cfg=_tpParse(_tpFallback());
-      _tpInit(); _tpRender();
+      _tpInit(); _tpRenderStep(); _tpUpdateSummary();
     });
 }
 function closeCustomChecker(){
@@ -7207,15 +7356,94 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.ge
 </script>
 <div id="tooltip-box" class="tooltip-box"></div>
 
-<!-- ══ CUSTOM CHECKER OVERLAY ══ -->
+<!-- ══ CUSTOM CHECKER OVERLAY — Step-Based v2 ══ -->
 <div class="overlay" id="custom-overlay" onclick="if(event.target===this)closeCustomChecker()">
   <div class="order-modal tp-modal" onclick="event.stopPropagation()">
-    <div class="modal-hdr" style="background:var(--black);flex-shrink:0;">
-      <h2>Custom Order</h2>
-      <button class="modal-close" onclick="closeCustomChecker()">×</button>
+
+    <!-- Header -->
+    <div class="tp-modal-hdr">
+      <span class="tp-modal-hdr-title">Custom Order</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="tp-sku-tag" id="cc-sku-pill">—</span>
+        <button class="modal-close" onclick="closeCustomChecker()">×</button>
+      </div>
     </div>
+
+    <!-- 2-Column body -->
+    <div class="tp-body">
+
+      <!-- LEFT: step bar + content + footer -->
+      <div class="tp-left">
+
+        <!-- Step bar -->
+        <div class="tp-step-bar" id="tp-step-bar">
+          <div class="tp-step-item active" data-step="0" onclick="_tpGoStep(0)">
+            <div class="tp-step-num">1</div>
+            <span class="tp-step-label">ขนาด + จำนวน</span>
+          </div>
+          <div class="tp-step-item" data-step="1" onclick="_tpGoStep(1)">
+            <div class="tp-step-num">2</div>
+            <span class="tp-step-label">Packing</span>
+          </div>
+          <div class="tp-step-item" data-step="2" onclick="_tpGoStep(2)">
+            <div class="tp-step-num">3</div>
+            <span class="tp-step-label">Surface</span>
+          </div>
+          <div class="tp-step-item" data-step="3" onclick="_tpGoStep(3)">
+            <div class="tp-step-num">4</div>
+            <span class="tp-step-label">อื่นๆ</span>
+          </div>
+        </div>
+
+        <!-- Step body (rendered by JS) -->
+        <div class="tp-step-body" id="tp-step-body"></div>
+
+        <!-- Footer nav -->
+        <div class="tp-step-footer" id="tp-step-footer">
+          <button class="tp-btn-back" id="tp-btn-back" style="display:none" onclick="_tpPrevStep()">← ย้อนกลับ</button>
+          <button class="tp-btn-next" id="tp-btn-next" onclick="_tpNextStep()">ถัดไป →</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: live summary -->
+      <div class="tp-right">
+        <div class="tp-sum-hdr">
+          <div class="tp-sum-hdr-label">สรุป Custom</div>
+        </div>
+        <div class="tp-sum-base" id="tp-sum-base">
+          <div class="tp-sum-base-name" id="tp-sum-name">—</div>
+          <div class="tp-sum-base-meta" id="tp-sum-meta">—</div>
+        </div>
+        <div class="tp-sum-items" id="tp-sum-items">
+          <div class="tp-sum-empty">ทุกอย่าง standard</div>
+        </div>
+        <div class="tp-total-bar">
+          <div class="tp-total-row">
+            <span class="tp-total-lbl">ราคารวม</span>
+            <span class="tp-total-val" id="tp-total-val">—</span>
+          </div>
+          <div class="tp-total-sub" id="tp-total-sub">—</div>
+        </div>
+        <div class="tp-decision-bar">
+          <div class="tp-dec wh" id="tp-dec">
+            <div class="tp-dec-dot"></div>
+            <div class="tp-dec-info">
+              <div class="tp-dec-title">WH — หยิบจาก Warehouse</div>
+            </div>
+            <span class="tp-dec-lead">1–2 วัน</span>
+          </div>
+        </div>
+        <button class="tp-confirm-btn" id="tp-confirm-btn" onclick="runCustomCheck()">ยืนยัน Custom →</button>
+        <div class="pattern-actions" id="cc-pattern-actions" style="display:none;padding:7px 14px 14px;">
+          <button class="btn-pattern" onclick="openSavePatternModal()">&#128190; บันทึก Pattern</button>
+          <button class="btn-pattern" onclick="openLoadPatternModal()">&#128194; โหลด Pattern</button>
+        </div>
+        <div class="pattern-login-hint" id="cc-pattern-hint" style="display:none;padding:6px 14px 10px;"></div>
+      </div>
+    </div><!-- /tp-body -->
+
+    <!-- hidden compat fields for _tpSync / save-pattern -->
     <div style="display:none">
-      <div id="cc-sku-pill"></div>
       <input id="cc-w" type="number"><input id="cc-l" type="number">
       <input id="cc-bundle" type="number">
       <input type="checkbox" id="cc-export">
@@ -7226,36 +7454,15 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.ge
       <input type="checkbox" id="cc-surface">
       <textarea id="cc-note"></textarea>
       <div id="cc-std-size"></div><div id="cc-std-bundle"></div>
+      <!-- compat IDs that _tpFooter still writes to -->
+      <div id="tp-banner"></div>
+      <div id="tp-base"></div>
+      <input type="number" id="tp-qty" value="10" min="1">
+      <span id="tp-qty-bnd"></span>
+      <div id="tp-cats"></div>
+      <div id="tp-p-base"></div><div id="tp-p-addon"></div><div id="tp-p-grand"></div>
     </div>
-    <div id="tp-banner" style="padding:7px 18px;background:var(--g50);border-bottom:1px solid var(--g200);display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;min-height:36px;"></div>
-    <div id="tp-base" style="padding:10px 18px;border-bottom:1px solid var(--g200);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;"></div>
-    <div style="padding:8px 18px;border-bottom:1px solid var(--g200);display:flex;align-items:center;gap:10px;flex-shrink:0;">
-      <label style="font-size:11px;color:var(--g400);font-family:var(--mono);white-space:nowrap;">จำนวนแผ่น</label>
-      <input type="number" id="tp-qty" value="10" min="1" style="width:80px;border:1px solid var(--g200);background:var(--white);padding:5px 8px;font-size:13px;font-family:var(--mono);border-radius:6px;outline:none;color:var(--black);" oninput="_tpCalcFooter()">
-      <span id="tp-qty-bnd" style="font-size:11px;color:var(--g400);font-family:var(--mono);">= 2 Bundle</span>
-    </div>
-    <div class="pattern-actions" id="cc-pattern-actions" style="display:none;padding:7px 18px;border-bottom:1px solid var(--g200);flex-shrink:0;">
-      <button class="btn-pattern" onclick="openSavePatternModal()">&#128190; บันทึก Pattern</button>
-      <button class="btn-pattern" onclick="openLoadPatternModal()">&#128194; โหลด Pattern</button>
-    </div>
-    <div class="pattern-login-hint" id="cc-pattern-hint" style="display:none;padding:6px 18px;border-bottom:1px solid var(--g200);flex-shrink:0;"></div>
-    <div id="tp-cats" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;"></div>
-    <div style="flex-shrink:0;border-top:1px solid var(--g200);padding:12px 18px;">
-      <div class="tp-price-row">
-        <div class="tp-price-card"><div class="tp-price-lbl">สินค้า</div><div class="tp-price-val" id="tp-p-base">—</div></div>
-        <div class="tp-price-card"><div class="tp-price-lbl">Add-ons</div><div class="tp-price-val" id="tp-p-addon">+฿0</div></div>
-        <div class="tp-price-card"><div class="tp-price-lbl">รวม</div><div class="tp-price-val" id="tp-p-grand">—</div></div>
-      </div>
-      <div class="tp-dec wh" id="tp-dec">
-        <div class="tp-dec-dot"></div>
-        <div class="tp-dec-info">
-          <div class="tp-dec-title">WH — หยิบจาก Warehouse</div>
-          <div class="tp-dec-sub">ทุก option ทำได้จาก stock ปัจจุบัน</div>
-        </div>
-        <span class="tp-dec-lead">1–2 วัน</span>
-      </div>
-      <button class="btn-submit" onclick="runCustomCheck()">ดูสรุป Custom →</button>
-    </div>
+
   </div>
 </div>
 <!-- ══ CUSTOM SUMMARY POPUP ══ -->
@@ -7711,141 +7918,264 @@ function _tpIsDef(cat){
   return true;
 }
 
+// ================================================================
+//  STEP-BASED RENDER (UI v2) — replaces _tpRender accordion
+// ================================================================
+var _tpCurStep = 0;
+var _TP_STEPS = [
+  { label: 'ขนาด + จำนวน', cats: ['DIM','BUNDLE','STRAP'] },
+  { label: 'Packing',       cats: ['PACK'] },
+  { label: 'Surface',       cats: ['SURF'] },
+  { label: 'อื่นๆ',         cats: ['CERT','NOTE'] }
+];
+
+// เรียกแทน _tpRender() เดิม — render แค่ step ปัจจุบัน
 function _tpRender(){
+  // compat: redirect เดิมมาที่ step render
+  _tpRenderStep();
+  _tpUpdateSummary();
+}
+
+function _tpGoStep(n){
+  _tpCurStep = n;
+  _tpRenderStep();
+  _tpUpdateSummary();
+}
+function _tpNextStep(){
+  if(_tpCurStep < _TP_STEPS.length - 1){ _tpCurStep++; _tpRenderStep(); _tpUpdateSummary(); }
+}
+function _tpPrevStep(){
+  if(_tpCurStep > 0){ _tpCurStep--; _tpRenderStep(); _tpUpdateSummary(); }
+}
+
+function _tpRenderStep(){
   if(!currentSku||!_tp.cfg) return;
-  var s=currentSku;
-  var qty=parseInt((document.getElementById('tp-qty')||{value:10}).value)||10;
-  var bnd=parseInt(s.BUNDLE_SIZE)||5;
+  var s = currentSku;
+  var step = _TP_STEPS[_tpCurStep];
+  var html = '';
 
-  // Banner
-  var chips=[];
-  if(s.WIDTH_MM&&s.LENGTH_MM) chips.push('W='+s.WIDTH_MM+' L='+s.LENGTH_MM);
-  if(s.BUNDLE_SIZE) chips.push('Bundle='+s.BUNDLE_SIZE);
-  if(s.STRAP_TYPE) chips.push('Strap='+s.STRAP_TYPE);
-  var banner=document.getElementById('tp-banner');
-  if(banner) banner.innerHTML='<span style="font-size:10px;color:var(--g400);font-family:var(--mono);white-space:nowrap;">Defaults จาก SKU:</span> '+
-    chips.map(function(c){return '<span class="tp-chip">'+c+'</span>';}).join('');
-
-  // Base
-  var base=document.getElementById('tp-base');
-  var bp=parseInt(s.PRICE_PER_SHEET_THB)||0;
-  if(base) base.innerHTML='<div class="tp-base-info"><div class="tp-base-name">'+makeName(s)+'</div><div class="tp-base-meta">'+s.GRADE+' · Stock '+(parseInt(s.STOCK_QTY)||0)+' แผ่น · '+(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+' kg/แผ่น</div></div><div class="tp-base-price">฿'+(bp?bp.toLocaleString():'—')+'</div>';
-
-  var qtyBnd=document.getElementById('tp-qty-bnd');
-  if(qtyBnd) qtyBnd.textContent='= '+Math.ceil(qty/bnd)+' Bundle';
-
-  // Categories
-  var con=document.getElementById('tp-cats');
-  if(!con) return;
-  var html='';
-  var totalAddon=0, pdReq=false, pdRsn='';
-
+  // -- วนทุก category ที่อยู่ใน step นี้ --
   _tp.cfg.forEach(function(cat){
-    var isOpen=!!_tp.open[cat.id];
-    var catAddon=0;
-    var isDef=_tpIsDef(cat);
-    var badgeHtml='';
+    if(step.cats.indexOf(cat.id) < 0) return;
 
-    if(cat.type==='radio'){
-      var sel=cat.subs.find(function(x){return x.id===_tp.st[cat.id];});
-      if(sel&&sel.price>0){catAddon=_tpSubAmt(sel);totalAddon+=catAddon;}
-      if(sel&&!sel.wh){pdReq=true;pdRsn=pdRsn||sel.label;}
-      if(!cat.defKey) badgeHtml='';
-      else badgeHtml=isDef?'<span class="tp-badge tp-badge-def">จาก SKU</span>':'<span class="tp-badge tp-badge-chg">แก้ไขแล้ว</span>';
-      if(sel&&!sel.wh) badgeHtml='<span class="tp-badge tp-badge-pd">ต้องผลิตใหม่</span>';
-    } else if(cat.type==='checkbox'){
-      var any=Object.values(_tp.st[cat.id]||{}).some(Boolean);
-      cat.subs.forEach(function(sub){if(!(_tp.st[cat.id]||{})[sub.id])return;var a=_tpSubAmt(sub);catAddon+=a;totalAddon+=a;});
-      if(any) badgeHtml='<span class="tp-badge tp-badge-chg">เลือกแล้ว</span>';
-    } else if(cat.type==='dim'){
-      var sw=parseInt(s.WIDTH_MM)||1200,sl=parseInt(s.LENGTH_MM)||2400;
-      var vw=(_tp.st[cat.id]||{}).w||0,vl=(_tp.st[cat.id]||{}).l||0;
-      if(vw&&vw!==sw){catAddon+=15*qty;totalAddon+=15*qty;}
-      if(vl&&vl!==sl){catAddon+=12*qty;totalAddon+=12*qty;}
-      if(vw&&vw<sw*0.85){pdReq=true;pdRsn=pdRsn||'ขนาดตัดเล็กเกิน';}
-      var dimChg=(vw&&vw!==sw)||(vl&&vl!==sl);
-      badgeHtml=dimChg?'<span class="tp-badge tp-badge-chg">แก้ไขแล้ว</span>':'<span class="tp-badge tp-badge-def">จาก SKU</span>';
-    } else if(cat.type==='number'){
-      var nDef=cat.defKey?parseInt(s[cat.defKey]||5):5;
-      var nVal=parseInt(_tp.st[cat.id]||nDef);
-      badgeHtml=nVal!==nDef?'<span class="tp-badge tp-badge-chg">แก้ไขแล้ว</span>':'<span class="tp-badge tp-badge-def">จาก SKU</span>';
-    } else if(cat.type==='text'){
-      if(_tp.st[cat.id]) badgeHtml='<span class="tp-badge tp-badge-chg">มีหมายเหตุ</span>';
+    // Step 1: qty + bundle อยู่บน section พิเศษ
+    if(cat.id === 'DIM'){
+      var stdW = parseInt(s.WIDTH_MM)||1200, stdL = parseInt(s.LENGTH_MM)||2400;
+      var cw = (_tp.st['DIM']||{}).w || stdW;
+      var cl = (_tp.st['DIM']||{}).l || stdL;
+      html += '<div class="tp-section">';
+      html += '<div class="tp-sec-hdr">ขนาดตัด (mm)</div>';
+      html += '<div class="tp-dim-grid">';
+      html += '<div class="tp-field"><label>กว้าง</label><input type="number" value="'+cw+'" oninput="_tpDim(\'DIM\',\'w\',this.value)" placeholder="'+stdW+'"></div>';
+      html += '<div class="tp-field"><label>ยาว</label><input type="number" value="'+cl+'" oninput="_tpDim(\'DIM\',\'l\',this.value)" placeholder="'+stdL+'"></div>';
+      html += '</div>';
+      html += '<div class="tp-hint" style="margin-top:6px;">Standard: '+stdW+' × '+stdL+' mm · ค่าตัด W=+฿15/แผ่น, L=+฿12/แผ่น</div>';
+      html += '</div>';
+      return;
     }
 
-    html+='<div class="tp-cat">';
-    html+='<div class="tp-cat-hdr" onclick="_tpToggle(' + "'" + cat.id + "'" + ')">';
-    html+='<span class="tp-cat-dot'+(catAddon>0?' on':'')+'"></span>';
-    html+='<span class="tp-cat-name">'+cat.label+'</span>';
-    html+='<div style="display:flex;align-items:center;gap:6px;">';
-    html+=badgeHtml;
-    if(catAddon>0) html+='<span class="tp-cat-price">+฿'+Math.round(catAddon).toLocaleString()+'</span>';
-    html+='<span class="tp-arr"'+(isOpen?' style="transform:rotate(180deg)"':'')+'>▾</span>';
-    html+='</div></div>';
-    html+='<div class="tp-cat-body'+(isOpen?' open':'')+'">';
-
-    if(cat.type==='dim'){
-      var stdW=parseInt(s.WIDTH_MM)||1200,stdL=parseInt(s.LENGTH_MM)||2400;
-      var cw=(_tp.st[cat.id]||{}).w||stdW,cl=(_tp.st[cat.id]||{}).l||stdL;
-      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;">';
-      html+='<div class="tp-field"><label>กว้าง (mm)</label><input type="number" value="'+cw+'" data-cat="'+cat.id+'" data-key="w" oninput="_tpDimEvt(this)"></div>';
-      html+='<div class="tp-field"><label>ยาว (mm)</label><input type="number" value="'+cl+'" data-cat="'+cat.id+'" data-key="l" oninput="_tpDimEvt(this)"></div>';
-      html+='</div><div class="tp-hint">Standard: '+stdW+' × '+stdL+' mm · ค่าตัด W=+฿15/แผ่น, L=+฿12/แผ่น</div>';
-    } else if(cat.type==='number'){
-      var nd=cat.defKey?parseInt(s[cat.defKey]||5):5;
-      var nv=parseInt(_tp.st[cat.id]||nd);
-      html+='<div style="display:flex;align-items:center;gap:10px;">';
-      html+='<div style="display:flex;align-items:center;gap:10px;"><div class="tp-field"><label>แผ่น / Bundle</label><input type="number" value="'+nv+'" style="width:90px" min="1" data-cat="'+cat.id+'" oninput="_tpNumEvt(this)"></div><span class="tp-hint" style="margin:0;">Standard: '+nd+' แผ่น</span></div>';
-      html+='<span class="tp-hint" style="margin:0;">Standard: '+nd+' แผ่น</span></div>';
-    } else if(cat.type==='radio'){
-      html+='<div class="tp-subs">';
-      cat.subs.forEach(function(sub){
-        var sel=_tp.st[cat.id]===sub.id;
-        var pdCls=sub.wh?'':' tp-pd';
-        html+='<div class="tp-sub'+pdCls+(sel?' sel':'')+'" onclick="_tpRadio(' + "'" + cat.id + "','" + sub.id + "'" + ')">';
-        html+='<div class="tp-radio"><div class="tp-rdot"></div></div>';
-        html+='<div class="tp-sub-info"><div class="tp-sub-name">'+sub.label+(sub.wh?'':'<span class="tp-pd-tag">PD</span>')+'</div><div class="tp-sub-desc">'+sub.desc+'</div></div>';
-        html+='<span class="tp-sub-price">'+_tpPriceLbl(sub)+'</span></div>';
-      });
-      html+='</div>';
-    } else if(cat.type==='checkbox'){
-      html+='<div class="tp-subs">';
-      cat.subs.forEach(function(sub){
-        var sel=!!(_tp.st[cat.id]||{})[sub.id];
-        html+='<div class="tp-sub'+(sel?' sel':'')+'" onclick="_tpCheck(' + "'" + cat.id + "','" + sub.id + "'" + ')">';
-        html+='<div class="tp-check">'+(sel?'✓':'')+'</div>';
-        html+='<div class="tp-sub-info"><div class="tp-sub-name">'+sub.label+'</div><div class="tp-sub-desc">'+sub.desc+'</div></div>';
-        html+='<span class="tp-sub-price">'+_tpPriceLbl(sub)+'</span></div>';
-      });
-      html+='</div>';
-    } else if(cat.type==='text'){
-      html+='<textarea class="tp-textarea" rows="2" placeholder="ระบุความต้องการพิเศษ..." data-cat="'+cat.id+'" oninput="_tpTxtEvt(this)">'+escHtml(_tp.st[cat.id]||'')+'</textarea>';
+    if(cat.id === 'BUNDLE'){
+      var nd = cat.defKey ? parseInt(s[cat.defKey]||5) : 5;
+      var nv = parseInt(_tp.st['BUNDLE']||nd);
+      // qty row อยู่ใน section เดียวกันกับ bundle
+      var qty = parseInt((document.getElementById('tp-qty')||{value:10}).value)||10;
+      var bnd = nv||nd;
+      html += '<div class="tp-section">';
+      html += '<div class="tp-sec-hdr">จำนวน + Bundle</div>';
+      html += '<div class="tp-qty-row">';
+      html += '<label>จำนวนแผ่น</label>';
+      html += '<input class="tp-qty-input" type="number" id="tp-qty-live" value="'+qty+'" min="1" oninput="_tpQtyChange(this.value)">';
+      html += '<span class="tp-qty-bnd" id="tp-qty-bnd-live">= '+Math.ceil(qty/bnd)+' Bundle</span>';
+      html += '</div>';
+      html += '<div style="margin-top:10px;">';
+      html += '<div class="tp-field"><label>แผ่น / Bundle</label><input type="number" value="'+nv+'" style="width:90px" min="1" oninput="_tpNum(\'BUNDLE\',this.value)"></div>';
+      html += '<div class="tp-hint" style="margin-top:4px;">Standard: '+nd+' แผ่น</div>';
+      html += '</div>';
+      html += '</div>';
+      return;
     }
-    html+='</div></div>';
+
+    if(cat.type === 'radio'){
+      html += '<div class="tp-section">';
+      html += '<div class="tp-sec-hdr">'+cat.label+'</div>';
+      html += '<div class="tp-card-opts">';
+      cat.subs.forEach(function(sub){
+        var sel = _tp.st[cat.id] === sub.id;
+        var pdCls = sub.wh ? '' : ' pd-card';
+        html += '<div class="tp-card-opt'+pdCls+(sel?' sel':'')+'" onclick="_tpRadio(\''+cat.id+'\',\''+sub.id+'\')">';
+        html += '<div class="tp-radio-circle"><div class="tp-rdot"></div></div>';
+        html += '<div class="tp-co-info">';
+        html += '<div class="tp-co-name">'+sub.label+(sub.wh?'':'<span class="tp-pd-badge">PD</span>')+'</div>';
+        if(sub.desc) html += '<div class="tp-co-desc">'+sub.desc+'</div>';
+        html += '</div>';
+        html += '<span class="tp-co-price">'+_tpPriceLbl(sub)+'</span>';
+        html += '</div>';
+      });
+      html += '</div></div>';
+      return;
+    }
+
+    if(cat.type === 'checkbox'){
+      html += '<div class="tp-section">';
+      html += '<div class="tp-sec-hdr">'+cat.label+'</div>';
+      html += '<div class="tp-card-opts">';
+      cat.subs.forEach(function(sub){
+        var sel = !!(_tp.st[cat.id]||{})[sub.id];
+        html += '<div class="tp-card-opt'+(sel?' sel':'')+'" onclick="_tpCheck(\''+cat.id+'\',\''+sub.id+'\')">';
+        html += '<div class="tp-check-box">'+(sel?'✓':'')+'</div>';
+        html += '<div class="tp-co-info">';
+        html += '<div class="tp-co-name">'+sub.label+'</div>';
+        if(sub.desc) html += '<div class="tp-co-desc">'+sub.desc+'</div>';
+        html += '</div>';
+        html += '<span class="tp-co-price">'+_tpPriceLbl(sub)+'</span>';
+        html += '</div>';
+      });
+      html += '</div></div>';
+      return;
+    }
+
+    if(cat.type === 'text'){
+      var noteVal = _tp.st[cat.id]||'';
+      html += '<div class="tp-section">';
+      html += '<div class="tp-sec-hdr">'+cat.label+'</div>';
+      html += '<textarea class="tp-textarea" rows="3" placeholder="ความต้องการพิเศษ เช่น edge deburr, เร่งด่วน..." oninput="_tpTxt(\''+cat.id+'\',this.value)">'+noteVal+'</textarea>';
+      html += '</div>';
+      return;
+    }
   });
-  con.innerHTML=html;
-  _tpFooter(totalAddon,pdReq,pdRsn);
+
+  document.getElementById('tp-step-body').innerHTML = html;
+
+  // update step bar state
+  var items = document.querySelectorAll('.tp-step-item');
+  items.forEach(function(item, i){
+    item.classList.remove('active','done');
+    if(i === _tpCurStep) item.classList.add('active');
+    else if(i < _tpCurStep) item.classList.add('done');
+    var num = item.querySelector('.tp-step-num');
+    if(i < _tpCurStep) num.textContent = '✓';
+    else num.textContent = i+1;
+  });
+
+  // update footer buttons
+  var back = document.getElementById('tp-btn-back');
+  var next = document.getElementById('tp-btn-next');
+  var confirmBtn = document.getElementById('tp-confirm-btn');
+  if(back) back.style.display = _tpCurStep > 0 ? '' : 'none';
+  if(_tpCurStep === _TP_STEPS.length - 1){
+    if(next) next.style.display = 'none';
+    if(confirmBtn) confirmBtn.classList.add('show');
+  } else {
+    if(next){ next.style.display=''; next.textContent='ถัดไป →'; }
+    if(confirmBtn) confirmBtn.classList.remove('show');
+  }
+
   _tpSync();
 }
 
-function _tpFooter(totalAddon,pdReq,pdRsn){
-  var s=currentSku||{};
-  var qty=parseInt((document.getElementById('tp-qty')||{value:10}).value)||10;
-  var bp=parseInt(s.PRICE_PER_SHEET_THB)||0;
-  var base=qty*bp;
-  var grand=base+Math.round(totalAddon);
-  var pb=document.getElementById('tp-p-base');if(pb)pb.textContent='฿'+base.toLocaleString();
-  var pa=document.getElementById('tp-p-addon');if(pa)pa.textContent=totalAddon>0?'+฿'+Math.round(totalAddon).toLocaleString():'+฿0';
-  var pg=document.getElementById('tp-p-grand');if(pg)pg.textContent='฿'+grand.toLocaleString();
-  var dec=document.getElementById('tp-dec');
-  if(!dec) return;
-  if(pdReq){
-    dec.className='tp-dec pd';
-    dec.innerHTML='<div class="tp-dec-dot"></div><div class="tp-dec-info"><div class="tp-dec-title">PD — ต้องผลิตใหม่</div><div class="tp-dec-sub">'+(pdRsn||'มี option ที่ต้องผลิตเฉพาะ')+'</div></div><span class="tp-dec-lead">5–10 วัน</span>';
-  } else {
-    dec.className='tp-dec wh';
-    dec.innerHTML='<div class="tp-dec-dot"></div><div class="tp-dec-info"><div class="tp-dec-title">WH — หยิบจาก Warehouse</div><div class="tp-dec-sub">'+(totalAddon>0?'ทำได้จาก stock · เพิ่ม prep เล็กน้อย':'ทุก option ทำได้จาก stock ปัจจุบัน')+'</div></div><span class="tp-dec-lead">'+(totalAddon>0?'2–3 วัน':'1–2 วัน')+'</span>';
+function _tpQtyChange(val){
+  // sync hidden tp-qty compat field
+  var hidden = document.getElementById('tp-qty');
+  if(hidden) hidden.value = val;
+  var qty = parseInt(val)||10;
+  var bnd = parseInt(_tp.st['BUNDLE']||5)||5;
+  var bndLive = document.getElementById('tp-qty-bnd-live');
+  if(bndLive) bndLive.textContent = '= '+Math.ceil(qty/bnd)+' Bundle';
+  _tpUpdateSummary();
+}
+
+// -- Live summary panel (right column) --
+function _tpUpdateSummary(){
+  if(!currentSku||!_tp.cfg) return;
+  var s = currentSku;
+  var qty = parseInt((document.getElementById('tp-qty-live')||document.getElementById('tp-qty')||{value:10}).value)||10;
+  var hidden = document.getElementById('tp-qty');
+  if(hidden && document.getElementById('tp-qty-live')) hidden.value = document.getElementById('tp-qty-live').value;
+
+  var bp = parseInt(s.PRICE_PER_SHEET_THB)||0;
+  var bnd = parseInt(s.BUNDLE_SIZE)||5;
+  var bundles = Math.ceil(qty/bnd);
+  var kg = (parseFloat(s.WEIGHT_PER_SHEET_KG)||0)*qty;
+  var addons = 0;
+  var lines = [];
+  var pdReq = false, pdRsn = '';
+
+  _tp.cfg.forEach(function(cat){
+    if(cat.type==='radio'){
+      var sel=cat.subs.find(function(x){return x.id===_tp.st[cat.id];});
+      if(!sel) return;
+      if(!_tpIsDef(cat)){
+        var a=_tpSubAmtQty(sub, qty); addons+=a;
+        lines.push({n:cat.label+': '+sel.label, v:'+฿'+Math.round(a).toLocaleString()});
+      }
+      if(sel&&!sel.wh){pdReq=true;pdRsn=pdRsn||sel.label;}
+    } else if(cat.type==='checkbox'){
+      cat.subs.forEach(function(sub){
+        if(!(_tp.st[cat.id]||{})[sub.id]) return;
+        var a=_tpSubAmtQty(sub,qty); addons+=a;
+        lines.push({n:sub.label, v:'+฿'+Math.round(a).toLocaleString()});
+      });
+    } else if(cat.type==='dim'){
+      var sw=parseInt(s.WIDTH_MM)||1200, sl=parseInt(s.LENGTH_MM)||2400;
+      var vw=(_tp.st['DIM']||{}).w||0, vl=(_tp.st['DIM']||{}).l||0;
+      if(vw&&vw!==sw){var ca=15*qty;addons+=ca;lines.push({n:'ตัด W='+vw,v:'+฿'+Math.round(ca).toLocaleString()});}
+      if(vl&&vl!==sl){var cb=12*qty;addons+=cb;lines.push({n:'ตัด L='+vl,v:'+฿'+Math.round(cb).toLocaleString()});}
+      if(vw&&vw<sw*0.85){pdReq=true;pdRsn=pdRsn||'ขนาดตัดเล็กเกิน';}
+    } else if(cat.type==='number'){
+      var nd=cat.defKey?parseInt(s[cat.defKey]||5):5;
+      var nv=parseInt(_tp.st[cat.id]||nd);
+      if(nv!==nd) lines.push({n:'Bundle '+nv+' แผ่น', v:'ปรับ'});
+    }
+  });
+
+  // Update sum panel
+  var sumBase = document.getElementById('tp-sum-name');
+  var sumMeta = document.getElementById('tp-sum-meta');
+  if(sumBase) sumBase.textContent = (parseFloat(s.THICKNESS_TARGET_MM)||0)+'mm · '+parseInt(s.WIDTH_MM)+'×'+parseInt(s.LENGTH_MM)+' mm';
+  if(sumMeta) sumMeta.textContent = (s.GRADE||'')+(s.GRADE&&s.SURFACE?' · ':'')+surfaceBadgeLabel(s.SURFACE);
+
+  var grand = qty*bp + Math.round(addons);
+  var tVal = document.getElementById('tp-total-val');
+  var tSub = document.getElementById('tp-total-sub');
+  if(tVal) tVal.textContent = '฿'+grand.toLocaleString();
+  if(tSub) tSub.textContent = qty+' แผ่น × ฿'+bp+(addons>0?' + add-ons':'');
+
+  var si = document.getElementById('tp-sum-items');
+  if(si){
+    si.innerHTML = lines.length
+      ? lines.map(function(l){return '<div class="tp-sum-line"><span class="tp-sum-name">'+l.n+'</span><span class="tp-sum-val">'+l.v+'</span></div>';}).join('')
+      : '<div class="tp-sum-empty">ทุกอย่าง standard</div>';
   }
+
+  var dec = document.getElementById('tp-dec');
+  if(dec){
+    dec.className = 'tp-dec '+(pdReq?'pd':'wh');
+    dec.innerHTML = '<div class="tp-dec-dot"></div><div class="tp-dec-info"><div class="tp-dec-title">'+(pdReq?'PD — ต้องผลิตใหม่':(addons>0?'WH — หยิบ + เพิ่ม prep':'WH — หยิบจาก Warehouse'))+'</div></div><span class="tp-dec-lead">'+(pdReq?'5–10 วัน':(addons>0?'2–3 วัน':'1–2 วัน'))+'</span>';
+  }
+
+  // also update compat fields for _tpFooter
+  var pb=document.getElementById('tp-p-base');if(pb)pb.textContent='฿'+(qty*bp).toLocaleString();
+  var pa=document.getElementById('tp-p-addon');if(pa)pa.textContent=addons>0?'+฿'+Math.round(addons).toLocaleString():'+฿0';
+  var pg=document.getElementById('tp-p-grand');if(pg)pg.textContent='฿'+grand.toLocaleString();
+}
+
+// helper: calc sub amount with explicit qty (not rely on DOM)
+function _tpSubAmtQty(sub, qty){
+  var s=currentSku||{};
+  var kg=(parseFloat(s.WEIGHT_PER_SHEET_KG)||0)*qty;
+  var bnd=parseInt(s.BUNDLE_SIZE)||5;
+  var bundles=Math.ceil(qty/bnd);
+  if(sub.ptype==='fixed') return sub.price;
+  if(sub.ptype==='per_sheet') return sub.price*qty;
+  if(sub.ptype==='per_bundle') return sub.price*bundles;
+  if(sub.ptype==='per_kg') return Math.round(sub.price*kg);
+  if(sub.ptype==='per_pallet') return sub.price*Math.ceil(qty/50);
+  return 0;
+}
+
+function _tpFooter(totalAddon,pdReq,pdRsn){
+  // compat: redirect to new summary update
+  _tpUpdateSummary();
 }
 
 function _tpSync(){
@@ -7869,38 +8199,36 @@ function _tpSync(){
 }
 
 function _tpDimEvt(el){
-  var catId=el.getAttribute('data-cat');
-  var key=el.getAttribute('data-key');
-  _tpDim(catId,key,el.value);
+  _tpDim(el.getAttribute('data-cat'),el.getAttribute('data-key'),el.value);
 }
 function _tpNumEvt(el){ _tpNum(el.getAttribute('data-cat'),el.value); }
 function _tpTxtEvt(el){ _tpTxt(el.getAttribute('data-cat'),el.value); }
-function _tpToggle(id){_tp.open[id]=!_tp.open[id];_tpRender();}
+function _tpToggle(id){ /* no-op: accordion replaced by step nav */ }
 
 function _tpRadio(catId,subId){
   _tp.st[catId]=subId;
-  _tp.open[catId]=true;
-  _tpRender();
+  _tpRenderStep();
+  _tpUpdateSummary();
 }
 
 function _tpCheck(catId,subId){
   _tp.st[catId]=_tp.st[catId]||{};
   _tp.st[catId][subId]=!_tp.st[catId][subId];
-  _tp.open[catId]=true;
-  _tpRender();
+  _tpRenderStep();
+  _tpUpdateSummary();
 }
 
 function _tpDim(catId,key,val){
   _tp.st[catId]=_tp.st[catId]||{};
   _tp.st[catId][key]=parseInt(val)||0;
   _tpSync();
-  _tpCalcFooter();
+  _tpUpdateSummary();
 }
 
 function _tpNum(catId,val){
   _tp.st[catId]=parseInt(val)||0;
   _tpSync();
-  _tpCalcFooter();
+  _tpUpdateSummary();
 }
 
 function _tpTxt(catId,val){
@@ -7909,28 +8237,7 @@ function _tpTxt(catId,val){
 }
 
 function _tpCalcFooter(){
-  if(!_tp.cfg) return;
-  var s=currentSku||{};
-  var qty=parseInt((document.getElementById('tp-qty')||{value:10}).value)||10;
-  var bnd=parseInt(s.BUNDLE_SIZE)||5;
-  var qb=document.getElementById('tp-qty-bnd');if(qb)qb.textContent='= '+Math.ceil(qty/bnd)+' Bundle';
-  var total=0,pdReq=false,pdRsn='';
-  _tp.cfg.forEach(function(cat){
-    if(cat.type==='radio'){
-      var sub=cat.subs.find(function(x){return x.id===_tp.st[cat.id];});
-      if(sub&&sub.price>0) total+=_tpSubAmt(sub);
-      if(sub&&!sub.wh){pdReq=true;pdRsn=pdRsn||sub.label;}
-    } else if(cat.type==='checkbox'){
-      cat.subs.forEach(function(sub){if((_tp.st[cat.id]||{})[sub.id]) total+=_tpSubAmt(sub);});
-    } else if(cat.type==='dim'){
-      var sw=parseInt(s.WIDTH_MM)||1200,sl=parseInt(s.LENGTH_MM)||2400;
-      var vw=(_tp.st[cat.id]||{}).w||0,vl=(_tp.st[cat.id]||{}).l||0;
-      if(vw&&vw!==sw) total+=15*qty;
-      if(vl&&vl!==sl) total+=12*qty;
-      if(vw&&vw<sw*0.85){pdReq=true;pdRsn=pdRsn||'ขนาดตัดเล็กเกิน';}
-    }
-  });
-  _tpFooter(total,pdReq,pdRsn);
+  _tpUpdateSummary();
 }
 
 </script>
