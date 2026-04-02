@@ -7334,7 +7334,6 @@ function gasCall(action, params) {
   var body = Object.assign({ action: action }, params || {});
   return fetch(GAS_AUTH_URL, {
     method : 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body   : JSON.stringify(body)
   }).then(function(r){ return r.json(); });
 }
