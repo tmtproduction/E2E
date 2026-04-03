@@ -382,7 +382,7 @@ body{
 }
 .spec-dim-val{
   font-size:24px;font-weight:300;letter-spacing:-.5px;line-height:1;
-  color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--black);
 }
 .spec-dim-unit{
   font-size:10px;color:var(--g300);font-family:var(--mono);
@@ -565,6 +565,25 @@ body{
 .osn-step:last-child{border-right:none;}
 .osn-step.active{background:var(--black);color:var(--white);}
 .osn-step.done{color:var(--green);border-bottom:2px solid var(--green);}
+
+/* ════════════════════════════════════════
+   QUOTE HISTORY — หน้าแรก
+════════════════════════════════════════ */
+.qh-section{padding:24px 48px 0;flex-shrink:0;}
+.qh-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.qh-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);font-weight:500;display:flex;align-items:center;gap:8px;}
+.qh-title::after{content:'';flex:1;height:1px;background:var(--g200);}
+.qh-clear{font-size:9px;color:var(--g400);background:none;border:none;cursor:pointer;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;padding:0;transition:color .15s;flex-shrink:0;}
+.qh-clear:hover{color:var(--red);}
+.qh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1px;background:var(--g200);border:1px solid var(--g200);margin-bottom:24px;}
+.qh-card{background:var(--white);padding:12px 14px;cursor:pointer;transition:background .15s;position:relative;}
+.qh-card:hover{background:var(--g50);}
+.qh-card-dot{width:6px;height:6px;border-radius:50%;position:absolute;top:14px;right:14px;}
+.qh-card-surface{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-bottom:3px;}
+.qh-card-name{font-size:13px;font-weight:500;color:var(--black);font-family:var(--mono);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:16px;}
+.qh-card-meta{font-size:10px;color:var(--g400);font-family:var(--mono);}
+.qh-card-price{font-size:11px;color:var(--black);font-family:var(--mono);margin-top:4px;font-weight:500;}
+@media(max-width:767px){.qh-section{padding:16px 14px 0;}.qh-grid{grid-template-columns:1fr 1fr;}}
 
 /* ════════════════════════════════════════
    CATALOG GRID
@@ -2477,7 +2496,7 @@ body{
       </div>
     </div>
     <button class="hdr-toggle-btn" id="hdr-toggle-btn" onclick="toggleHero()" title="ซ่อน/แสดง header">
-      <span id="hdr-toggle-txt">ซ่อน</span>
+      <span id="hdr-toggle-txt">แสดง</span>
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
         <path d="M2 6.5L5 3.5L8 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -2705,6 +2724,7 @@ body{
                     <span class="sb-dot"></span>Available
                   </span>
                 </div>
+                <div id="sh-price-ts" style="font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono);margin-top:6px;letter-spacing:.5px;"></div>
               </div>
             </div>
             <!-- dims -->
@@ -2784,13 +2804,13 @@ body{
                 <div class="spec-dim-val" id="sh-l">—</div>
                 <div class="spec-dim-unit">mm</div>
               </div>
-              <div class="spec-dim-item" style="display:flex;flex-direction:column;justify-content:center;">
+              <div class="spec-dim-item" style="display:flex;flex-direction:column;justify-content:flex-start;">
                 <label style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:6px;font-family:var(--mono);font-weight:500;">Mill</label>
-                <div id="sh-millcert" style="font-size:13px;font-weight:600;font-family:var(--mono);letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+                <div id="sh-millcert" style="font-size:11px;font-weight:600;font-family:var(--mono);letter-spacing:.3px;line-height:1.4;word-break:break-word;white-space:normal;">—</div>
               </div>
               <div class="spec-dim-item">
                 <label>เกรด</label>
-                <div class="spec-dim-val" id="sh-grade">—</div>
+                <div id="sh-grade" style="font-size:18px;font-weight:400;letter-spacing:-.3px;line-height:1.2;word-break:break-word;white-space:normal;color:var(--black);">—</div>
                 <div class="spec-dim-unit">grade</div>
               </div>
             </div>
@@ -2971,12 +2991,24 @@ body{
             </div>
           </div>
         </div>
-        <div class="cta-row" style="position:sticky;bottom:0;background:var(--white);border-top:1px solid var(--g200);z-index:10;margin:0 -1px;">
-          <button class="btn-cta" id="btn-cta" onclick="openOrderModal()">เลือกรายการนี้</button>
-          <button class="btn-custom" onclick="openCustomChecker()">
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 6.5h4M6.5 4.5v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-            เช็ค Custom
-          </button>
+        <div style="position:sticky;bottom:0;z-index:10;margin:0 -1px;background:var(--white);">
+          <div class="cta-row" style="border-top:1px solid var(--g200);">
+            <button class="btn-cta" id="btn-cta" onclick="openOrderModal()">สั่งซื้อ</button>
+            <button class="btn-custom" onclick="openQuickQuote()" title="Quick Quote — ตัดขนาด+ราคาทันที" style="border-left:1px solid var(--g200);">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 10L6 2l4 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 7.5h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              Quick
+            </button>
+            <button class="btn-custom" onclick="openCustomChecker()" title="Custom Order — ปรับ Packing/Surface/Certificate" style="border-left:1px solid var(--g200);">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 6.5h4M6.5 4.5v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              Custom
+            </button>
+          </div>
+          <div style="padding:6px 14px;border-top:0.5px solid var(--g200);display:flex;gap:8px;">
+            <button onclick="copySkuSummary()" style="flex:1;background:none;border:0.5px solid var(--g200);padding:6px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:var(--mono);color:var(--g600);border-radius:4px;transition:all .15s;" onmouseover="this.style.borderColor='var(--black)';this.style.color='var(--black)'" onmouseout="this.style.borderColor='var(--g200)';this.style.color='var(--g600)'">
+              Copy สรุป
+            </button>
+            <span id="sku-copied-msg" style="display:none;font-size:10px;color:var(--green);font-family:var(--mono);align-self:center;">✓ copied</span>
+          </div>
         </div>
       </div>
 
@@ -3917,7 +3949,10 @@ function renderGrid(){
   var stat=document.getElementById('hdr-stat');
   stat.textContent=filteredSkus.length+' รายการ';
   if(!filteredSkus.length){el.innerHTML='<div class="state-msg"><div class="icon">🔍</div><p>ไม่พบ Spec ที่ตรงกัน</p></div>';return;}
-  var h='<div class="grid-wrap">'+
+  // ── history section ──
+  var histHtml = qhBuildSection();
+  var h=(histHtml ? histHtml : '')+
+    '<div class="grid-wrap">'+
     '<div class="grid-section-title">สินค้าทั้งหมด</div>'+
     '<div class="grid-section-sub">เหล็กแผ่นทุกประเภท <span>'+filteredSkus.length+' รายการ · พร้อมส่ง</span></div>'+
     '<div class="grid">';
@@ -3977,12 +4012,13 @@ function renderGrid(){
       '</div>'+
       '<div class="card-foot">'+
         '<button class="btn-spec" onclick="openViewer('+i+')">ดู Spec Sheet</button>'+
-        '<button class="btn-order-card" '+(stock===0?'disabled':'')+' onclick="currentSku=filteredSkus['+i+'];buildOrderForm()">เลือกรายการ</button>'+
+        '<button class="btn-order-card" '+(stock===0?'disabled':'')+' onclick="openViewer('+i+');setTimeout(openCustomChecker,120)">Custom →</button>'+
       '</div>'+
     '</div>';
   });
   h+='</div></div>';
   el.innerHTML=h;
+  qhBindCards();
 
   // -- Scroll Reveal with IntersectionObserver --
   var cards=el.querySelectorAll('.card');
@@ -4340,6 +4376,9 @@ function openViewer(idx){
   // -- new spec-identity strip --
   setText('v-eyebrow2', surfaceBadgeLabel(s.SURFACE));
   setText('v-sku2', makeName(s));
+  setSkuTimestamp(s);
+  qhSave(s);
+  setTimeout(qhRender, 100);
   setText('v-std-meta', s.STANDARD||'—');
   setText('v-kg-meta', (parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+' kg/แผ่น');
   setStyle('v-dot','background', stock===0?'var(--red)':stock<10?'var(--yellow)':'var(--green)');
@@ -5573,6 +5612,7 @@ function openCustomChecker(){
   document.getElementById('custom-overlay').classList.add('open');
   updateAuthUI();
   _tpCurStep = 0;
+  _tpSkippedSteps = {};
   if(_tp.cfg){ _tpInit(); _tpRenderStep(); _tpUpdateSummary(); return; }
   document.getElementById('tp-step-body').innerHTML='<div style="text-align:center;padding:32px 0;font-size:11px;color:var(--g400);font-family:var(--mono);">กำลังโหลด options...</div>';
   var loadUrl = SCRIPT_URL+'?action=getCustomOptions&nocache='+Date.now();
@@ -5984,9 +6024,9 @@ function printLabel(){
     .tl-remark{font-size:10px;font-weight:700;color:#111;}
     @media print{body{margin:0;padding:0;background:#fff;display:block;} .tmt-label{box-shadow:none;border:1px solid #333;width:100%;}}
   `;
-  win.document.write('<html><head><title>TMT Tag</title><style>'+css+'</style></head><body>');
+  win.document.write('<html><head><title>TMT Tag<\/title><style>'+css+'<\/style><\/head><body>');
   win.document.write(el.outerHTML);
-  win.document.write('</body></html>');
+  win.document.write('<\/body><\/html>');
   win.document.close();
   setTimeout(function(){ win.print(); }, 600);
 }
@@ -6937,43 +6977,7 @@ function toggleHero(forceState){
   }
 }
 
-// auto-hide on scroll down, show on scroll up
-(function(){
-  var lastY=0,ticking=false,threshold=40;
-  var lastToggleTime=0,toggleCooldown=600; // ms ห้าม toggle ถี่เกิน
-  function onCatalogScroll(){
-    var cv=document.getElementById('catalog-view');
-    if(!cv)return;
-    var y=cv.scrollTop;
-    if(!ticking){
-      requestAnimationFrame(function(){
-        var now=Date.now();
-        // dead zone — ถ้าใกล้ปลาย scroll ไม่ทำอะไร
-        var maxScroll=cv.scrollHeight-cv.clientHeight;
-        var nearBottom=(maxScroll-y)<60;
-        if(!nearBottom && now-lastToggleTime>toggleCooldown){
-          if(y>lastY+8 && y>threshold && !_heroCollapsed){
-            toggleHero(true);lastToggleTime=now;
-          }else if(y<lastY-8 && _heroCollapsed){
-            toggleHero(false);lastToggleTime=now;
-          }
-        }
-        lastY=y;
-        ticking=false;
-      });
-      ticking=true;
-    }
-  }
-  function attachScroll(){
-    var cv=document.getElementById('catalog-view');
-    if(cv){cv.addEventListener('scroll',onCatalogScroll,{passive:true});}
-  }
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',attachScroll);
-  }else{
-    attachScroll();
-  }
-})();
+// scroll-auto-hide removed — hero opens only on button press
 
 // ==============================================================
 // HERO CANVAS — looping 3D steel bundle animation
@@ -6983,19 +6987,12 @@ function toggleHero(forceState){
   var cvs = document.getElementById('hero-canvas');
   if(!cvs) return;
 
-  // -- ถ้าเคยดูแล้วใน session นี้ → ข้ามเลย ------------------
+  // -- collapse ตั้งแต่แรก เสมอ — เปิดเมื่อผู้ใช้กดปุ่ม "แสดง" ──
   var SEEN_KEY = 'tmt_hero_seen';
-  var skipAnim = sessionStorage.getItem(SEEN_KEY) === '1';
-
-  if(skipAnim){
-    // เคยดูแล้ว → start loop เบื้องหลังก่อน แล้วค่อย collapse
-    // (canvas จะพร้อมทันทีเมื่อกดปุ่ม "แสดง")
-    setTimeout(function(){
-      toggleHero(true);
-      requestAnimationFrame(initResize); // เริ่ม loop แม้ collapsed
-    }, 0);
-    // *** อย่า return — ให้โค้ดที่เหลือทำงานต่อ ***
-  }
+  setTimeout(function(){
+    toggleHero(true);
+    requestAnimationFrame(initResize);
+  }, 0);
 
   // -- ปุ่ม Skip ------------------------------------------------
   var skipBtn = document.createElement('button');
@@ -7018,8 +7015,7 @@ function toggleHero(forceState){
   }
 
   function dismissHero(){
-    sessionStorage.setItem(SEEN_KEY,'1');
-    toggleHero(true); // collapse แทน hide
+    toggleHero(true);
   }
   skipBtn.addEventListener('click', dismissHero);
 
@@ -7093,269 +7089,125 @@ function toggleHero(forceState){
     ctx.globalAlpha = 1;
   }
 
-  // ===============================================
-  // LOOP 30s  — 7 phases
-  // 1. ASSEMBLE  0.00–0.12
-  // 2. ROTATE    0.12–0.24
-  // 3. SPREAD    0.24–0.38
-  // 4. FLATTEN   0.38–0.52
-  // 5. GATHER    0.52–0.67
-  // 6. TILTBACK  0.67–0.80  → fade out canvas
-  // 7. TEXTHOLD  0.80–1.00  → TMT STEEL text centred, 10s hold → loop
-  // ===============================================
-  var LOOP = 26000;
-  var PH = {
-    assemble: [0,    0.12],
-    rotate:   [0.12, 0.24],
-    spread:   [0.24, 0.38],
-    flatten:  [0.38, 0.52],
-    gather:   [0.52, 0.67],
-    tiltback: [0.67, 0.70],
-    texthold: [0.70, 1.00]
-  };
-  function pf(t,ph){ return clamp((t-ph[0])/(ph[1]-ph[0]),0,1); }
-
-  var ISO_RX = BASE_RX;
-  var ISO_RY = BASE_RY;
-  var FACE_RY = 0;
-  var FLAT_RX = -(Math.PI*0.46);
-
-  var t0=null;
+  // ── Simple auto-rotate loop ───────────────────
+  var rY = Math.PI / 5;
+  var t0 = null;
   function draw(ts){
-    if(!t0) t0=ts;
-    var t=((ts-t0)%LOOP)/LOOP;
+    if(!t0) t0 = ts;
+    var elapsed = ts - t0;
+
+    rY += 0.003;  // หมุนช้าๆ ต่อเนื่อง
 
     ctx.setTransform(DPR,0,0,DPR,0,0);
-    ctx.fillStyle='#f5f4f0'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = '#f5f4f0';
+    ctx.fillRect(0, 0, W, H);
 
-    var N=12, NCOLS=4, NROWS=3;
-    var bw=W*0.26, bd=W*0.17, bh=W*0.009;
-    var gap=bh*0.28;
-    var stackH=N*(bh+gap)-gap;
+    var N = 5;
+    var bw = W * 0.55, bd = W * 0.38, bh = W * 0.008;
+    var gap = bh * 0.4;
+    var stackH = N * (bh + gap) - gap;
+    var rX = 0.38;
+    _fov = 1.05;
 
-    var gSX=bw*1.08, gSZ=bd*1.06;
-    var gOX=-(NCOLS-1)/2*gSX, gOZ=-(NROWS-1)/2*gSZ;
-
-    var fA  = easeOut(   pf(t, PH.assemble));
-    var fRO = easeInOut( pf(t, PH.rotate));
-    var fSP = easeInOut( pf(t, PH.spread));
-    var fFL = easeInOut( pf(t, PH.flatten));
-    var fGA = easeInOut( pf(t, PH.gather));
-    var fTB = easeInOut( pf(t, PH.tiltback));
-    var fTX = pf(t, PH.texthold);
-
-    // rX — คงค่า flat ตลอดหลัง flatten
-    var rX = ISO_RX;
-    if(fFL>0) rX = lerp(ISO_RX, FLAT_RX, easeInOut(fFL));
-    if(fGA>0) rX = FLAT_RX;
-
-    // rY — คงค่า face ตลอดหลัง rotate
-    var rY = ISO_RY;
-    if(fRO>0) rY = lerp(ISO_RY, FACE_RY, easeInOut(fRO));
-    if(fSP>0) rY = FACE_RY;
-    if(fFL>0) rY = FACE_RY;
-    if(fGA>0) rY = FACE_RY;
-
-    // FOV — zoom เข้าตอน spread/flatten ให้ล้นจอ, zoom ออกตอน gather
-    _fov = 1.2;
-    if(fSP>0) _fov = lerp(1.2, 0.72, easeInOut(fSP));
-    if(fFL>0) _fov = 0.72;
-    if(fGA>0) _fov = lerp(0.72, 1.2, easeInOut(fGA));
-
-    // fade out ท้าย gather → ยุบแล้วจางหายเลย
-    var canvasAlpha = 1;
-    if(fGA > 0.70) canvasAlpha = lerp(1, 0, (fGA-0.70)/0.30);
-    if(fTX > 0)    canvasAlpha = 0;
-
-    if(canvasAlpha > 0){
-      var calls=[];
-      for(var i=0;i<N;i++){
-        var byY = (i*(bh+gap)) - stackH/2 + bh/2;
-        var gi=i%NCOLS, gj=Math.floor(i/NCOLS);
-        var gx=gOX+gi*gSX, gz=gOZ+gj*gSZ;
-
-        var dropP = clamp(easeOut(fA*N - i*0.25), 0, 1);
-        var dropY = lerp(-H*0.55, 0, dropP);
-
-        var cx=0, cy=byY+dropY, cz=0;
-        if(fRO>0){ cx=0; cy=byY; cz=0; }
-        if(fSP>0){ cx=lerp(0,gx,fSP); cy=lerp(byY,0,fSP); cz=lerp(0,gz,fSP); }
-        if(fFL>0){ cx=gx; cy=0; cz=gz; }
-        if(fGA>0){ cx=lerp(gx,0,fGA); cy=0; cz=lerp(gz,0,fGA); }
-
-        var alpha = dropP * canvasAlpha;
-        var q = rotX(rotY([cx,cy,cz], rY), rX);
-        calls.push({cx,cy,cz,bw,bh,bd,alpha,depth:q[2]});
-      }
-      calls.sort(function(a,b){ return a.depth-b.depth; });
-      calls.forEach(function(d,idx){
-        var f   = (idx+1)/calls.length;
-        var lw  = 0.3 + f*1.2;
-        var lgt = Math.round(145 + f*75);
-        var col = 'rgb('+lgt+','+lgt+','+(lgt-5)+')';
-        drawSheet(d.cx,d.cy,d.cz,d.bw,d.bh,d.bd,rX,rY,col,lw,d.alpha);
-      });
+    var calls = [];
+    for(var i = 0; i < N; i++){
+      var cy2 = (i * (bh + gap)) - stackH / 2 + bh / 2;
+      calls.push({ cx:0, cy:cy2, cz:0 });
     }
+    // sort by depth
+    calls.forEach(function(d){
+      var q = rotX(rotY([d.cx, d.cy, d.cz], rY), rX);
+      d.depth = q[2];
+    });
+    calls.sort(function(a,b){ return a.depth - b.depth; });
+    calls.forEach(function(d, idx){
+      var f = (idx + 1) / calls.length;
+      var lgt = Math.round(148 + f * 72);
+      var col = 'rgb('+lgt+','+lgt+','+(lgt-4)+')';
+      var lw  = 0.4 + f * 1.0;
+      drawSheet(d.cx, d.cy, d.cz, bw, bh, bd, rX, rY, col, lw, 1);
+    });
 
-    // -- TEXT HOLD: centred overlay ------------------
-    if(fTX > 0){
-      var fs1  = Math.round(W*0.055);
-      var fs2  = Math.round(W*0.018);
-      var cy0  = H*0.50;
-      var fadeOut = fTX > 0.95 ? lerp(1, 0, (fTX-0.95)/0.05) : 1;
+    // Label TMT STEEL คงที่ บน canvas
+    ctx.save();
+    ctx.scale(DPR, DPR);
+    ctx.font = '500 11px "DM Mono","Courier New",monospace';
+    ctx.fillStyle = 'rgba(80,80,76,0.55)';
+    ctx.textAlign = 'left';
+    ctx.fillText('TMT STEEL', 14, H/DPR - 12);
+    ctx.textAlign = 'right';
+    ctx.font = '400 10px "DM Mono","Courier New",monospace';
+    ctx.fillText('HOT ROLLED', W/DPR - 14, H/DPR - 12);
+    ctx.restore();
 
-      // elapsed ms ใน texthold phase (texthold = 30% ของ LOOP)
-      var txMs = fTX * 0.30 * LOOP;
+    // ไม่ auto-collapse — ผู้ใช้ปิดเองด้วยปุ่ม SKIP หรือปุ่ม "ซ่อน"
 
-      ctx.textAlign = 'center';
-
-      // ==============================================
-      // GLOSSY LIQUID DROP
-      // ==============================================
-      function glossyDrop(start, x, y, r, hexColor, hexDark){
-        var p  = clamp((fTX - start) / 0.22, 0, 1);
-        if(p <= 0) return;
-        var ea = 1 - Math.pow(1-p, 4); // easeOut quartic — เหมือน spring settle
-
-        // -- top-view: หยดตกลงไป ใหญ่→เล็ก (คนดูอยู่บน มองลงไป)
-        var sc = ea < 0.85
-          ? lerp(2.5, 1.08, ea/0.85)
-          : lerp(1.08, 1.0, (ea-0.85)/0.15);
-
-        var dA = clamp(p/0.12, 0, 1) * fadeOut;
-
-        ctx.save();
-        ctx.globalAlpha = dA;
-        ctx.translate(x, y);
-        ctx.scale(sc, sc);
-
-        // -- body: radial gradient แสงจาก top-left
-        var grd = ctx.createRadialGradient(-r*0.28, -r*0.32, r*0.05, 0, 0, r);
-        grd.addColorStop(0.00, hexColor+'ee');   // สี bright กลาง
-        grd.addColorStop(0.55, hexColor+'cc');
-        grd.addColorStop(1.00, hexDark+'aa');    // ขอบมืดลง
-        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2);
-        ctx.fillStyle = grd; ctx.fill();
-
-        // -- primary specular: จุดแสงใหญ่
-        var sp1 = ctx.createRadialGradient(-r*0.28, -r*0.30, 0, -r*0.18, -r*0.22, r*0.42);
-        sp1.addColorStop(0, 'rgba(255,255,255,0.72)');
-        sp1.addColorStop(1, 'rgba(255,255,255,0.00)');
-        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2);
-        ctx.fillStyle = sp1; ctx.fill();
-
-        // -- secondary specular: จุดเล็กแหลม ขวาล่าง (แสงสะท้อน)
-        ctx.beginPath();
-        ctx.arc(r*0.30, r*0.30, r*0.10, 0, Math.PI*2);
-        ctx.fillStyle = 'rgba(255,255,255,0.28)'; ctx.fill();
-
-        ctx.restore();
-
-        // -- elliptical ripple — บีบแนวนอน เหมือนน้ำกระทบจริง
-        var p2  = clamp((fTX - start - 0.06) / 0.30, 0, 1);
-        var ea2 = easeOut(p2);
-        if(p2 > 0){
-          var rW = r * lerp(0.3, 2.8, ea2);
-          var rH = r * lerp(0.15, 0.55, ea2);
-          var rA = clamp(p2/0.10,0,1) * lerp(1,0, easeIn(clamp((p2-0.2)/0.8,0,1))) * 0.55 * fadeOut;
-          ctx.save();
-          ctx.globalAlpha = rA;
-          ctx.strokeStyle = hexColor;
-          ctx.lineWidth   = lerp(r*0.10, r*0.02, ea2);
-          ctx.beginPath();
-          ctx.arc(x, y, rW, 0, Math.PI*2);
-          ctx.stroke();
-          ctx.restore();
-        }
-
-        // -- ripple 2
-        var p3  = clamp((fTX - start - 0.14) / 0.30, 0, 1);
-        var ea3 = easeOut(p3);
-        if(p3 > 0){
-          var rW3 = r * lerp(0.3, 2.2, ea3);
-          var rH3 = r * lerp(0.12, 0.38, ea3);
-          var rA3 = clamp(p3/0.10,0,1) * lerp(1,0,easeIn(clamp((p3-0.2)/0.8,0,1))) * 0.35 * fadeOut;
-          ctx.save();
-          ctx.globalAlpha = rA3;
-          ctx.strokeStyle = hexColor;
-          ctx.lineWidth   = lerp(r*0.06, r*0.01, ea3);
-          ctx.beginPath();
-          ctx.arc(x, y, rW3, 0, Math.PI*2);
-          ctx.stroke();
-          ctx.restore();
-        }
-      }
-
-      // -- วาด drops ก่อน (หลัง text) --------------------------
-      var bx = W/2;
-      glossyDrop(0.04, bx - fs1*3.4, cy0 + fs1*0.55, fs1*0.52, '#F5B800', '#b8860b');
-      glossyDrop(0.18, bx + fs1*3.6, cy0 - fs1*0.55, fs1*0.38, '#1B4F6B', '#0e2f40');
-      glossyDrop(0.32, bx + fs1*0.6, cy0 + fs1*1.70, fs1*0.44, '#E8641A', '#b03a0a');
-      glossyDrop(0.46, bx - fs1*1.2, cy0 - fs1*0.85, fs1*0.34, '#A8C8D8', '#6898a8');
-
-      // ==============================================
-      // TYPEWRITER TEXT (วาดทับ drops)
-      // ==============================================
-      var FULL    = 'TMT STEEL';
-      var CHAR_MS = 90;   // ms ต่อตัวอักษร
-      var nChars  = Math.min(FULL.length, Math.floor(Math.max(txMs - 200, 0) / CHAR_MS));
-      var typed   = FULL.slice(0, nChars);
-      var done    = nChars >= FULL.length;
-
-      // cursor กระพริบ 530ms cycle
-      var cursorOn = !done || (Math.floor(txMs / 530) % 2 === 0);
-      var showCursor = !done || (fTX < 0.85); // หยุดกระพริบก่อน fade out
-
-      ctx.font = 'bold '+fs1+'px "DM Sans","Inter",sans-serif';
-      ctx.globalAlpha = fadeOut;
-
-      // วาด typed text
-      ctx.fillStyle = '#1a1a18';
-      ctx.fillText(typed, W/2, cy0);
-
-      // วาด cursor แยกสี — offset ไปทางขวาของ text ที่พิมพ์ไปแล้ว
-      if(showCursor){
-        var typedW = ctx.measureText(typed).width;
-        var cursorX = W/2 + typedW/2 + fs1*0.06;
-        ctx.fillStyle = cursorOn ? '#E8641A' : 'transparent';
-        ctx.fillText('|', cursorX, cy0);
-      }
-
-      // subtitle — fade in หลังพิมพ์จบ
-      if(done){
-        var subDelay = (FULL.length * CHAR_MS + 300); // รอ 300ms หลังพิมพ์จบ
-        var subP = clamp((txMs - 200 - subDelay) / 600, 0, 1);
-        ctx.globalAlpha = easeOut(subP) * fadeOut * 0.72;
-        ctx.fillStyle = '#3a3a36';
-        ctx.font = '500 '+fs2+'px "DM Sans","Inter",sans-serif';
-        ctx.letterSpacing = '0.18em';
-        ctx.fillText('PROVIDING STRUCTURE OF YOUR IMAGINATION', W/2, cy0 + fs1*0.90);
-        ctx.letterSpacing = '0';
-      }
-
-      ctx.globalAlpha = 1;
-    }
-
-    // -- loop แรกจบ → collapse ทันที (canvas ยังรัน loop ต่อ เบื้องหลัง)
-    if(!_firstLoopDone && (ts - t0) >= LOOP){
-      _firstLoopDone = true;
-      sessionStorage.setItem(SEEN_KEY, '1');
-      toggleHero(true);
-    }
 
     requestAnimationFrame(draw);
   }
 
-  var _firstLoopDone = false;
 })();
 
 window.addEventListener('load',function(){
   if(SHEET_ID==='YOUR_GOOGLE_SHEET_ID_HERE'){showError('กรุณาแก้ไข SHEET_ID ในโค้ด JS ก่อนใช้งาน');return;}
   loadCatalog();
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('orderOverlay').classList.remove('open');}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('orderOverlay').classList.remove('open');closeQuickQuote();}});
 </script>
 <div id="tooltip-box" class="tooltip-box"></div>
+
+<!-- ══ QUICK QUOTE OVERLAY ══ -->
+<div class="overlay" id="qq-overlay" onclick="if(event.target===this)closeQuickQuote()">
+  <div class="order-modal" style="max-width:400px;" onclick="event.stopPropagation()">
+    <div class="modal-hdr" style="background:var(--black);">
+      <h2>Quick Quote</h2>
+      <button class="modal-close" onclick="closeQuickQuote()">×</button>
+    </div>
+    <div class="modal-body" id="qq-body" style="padding:0;">
+      <div id="qq-sku-bar" style="padding:9px 16px;background:var(--g50);border-bottom:1px solid var(--g200);font-size:11px;font-family:var(--mono);color:var(--g600);"></div>
+      <div style="padding:14px 16px;border-bottom:1px solid var(--g200);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div>
+            <label style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);display:block;margin-bottom:4px;">กว้าง (mm)</label>
+            <input type="number" id="qq-w" style="width:100%;border:0.5px solid var(--g200);background:var(--white);padding:7px 10px;font-size:14px;font-family:var(--mono);border-radius:6px;outline:none;color:var(--black);" oninput="qqCalc()" placeholder="1200">
+          </div>
+          <div>
+            <label style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);display:block;margin-bottom:4px;">ยาว (mm)</label>
+            <input type="number" id="qq-l" style="width:100%;border:0.5px solid var(--g200);background:var(--white);padding:7px 10px;font-size:14px;font-family:var(--mono);border-radius:6px;outline:none;color:var(--black);" oninput="qqCalc()" placeholder="2400">
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <label style="font-size:12px;color:var(--g400);min-width:56px;">จำนวน</label>
+          <input type="number" id="qq-qty" value="10" min="1" style="width:80px;border:0.5px solid var(--g200);background:var(--white);padding:7px 10px;font-size:14px;font-family:var(--mono);border-radius:6px;outline:none;color:var(--black);" oninput="qqCalc()">
+          <span style="font-size:12px;color:var(--g400);">แผ่น</span>
+        </div>
+      </div>
+      <div style="padding:14px 16px;border-bottom:1px solid var(--g200);">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:0.5px solid var(--g200);border-radius:6px;overflow:hidden;">
+          <div style="padding:10px 12px;border-right:0.5px solid var(--g200);">
+            <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-bottom:3px;">น้ำหนัก</div>
+            <div style="font-size:15px;font-weight:500;font-family:var(--mono);" id="qq-r-w">—</div>
+          </div>
+          <div style="padding:10px 12px;border-right:0.5px solid var(--g200);">
+            <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-bottom:3px;">ราคารวม</div>
+            <div style="font-size:15px;font-weight:500;font-family:var(--mono);color:var(--black);" id="qq-r-p">—</div>
+          </div>
+          <div style="padding:10px 12px;">
+            <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);margin-bottom:3px;">Bundle</div>
+            <div style="font-size:15px;font-weight:500;font-family:var(--mono);" id="qq-r-b">—</div>
+          </div>
+        </div>
+        <div id="qq-dec" style="margin-top:8px;border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px;"></div>
+        <div style="font-size:10px;color:var(--g400);font-family:var(--mono);margin-top:6px;" id="qq-cut-note"></div>
+      </div>
+      <div style="padding:10px 16px;display:flex;gap:8px;">
+        <button onclick="qqCopyResult()" style="flex:1;background:var(--black);color:var(--white);border:none;padding:10px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--mono);border-radius:6px;font-weight:500;transition:opacity .15s;" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">Copy ราคานี้</button>
+        <button onclick="qqToCustom()" style="background:none;border:0.5px solid var(--g200);color:var(--g600);padding:10px 14px;font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:var(--mono);border-radius:6px;transition:all .15s;" onmouseover="this.style.borderColor='var(--black)';this.style.color='var(--black)'" onmouseout="this.style.borderColor='var(--g200)';this.style.color='var(--g600)'">Custom เพิ่ม →</button>
+      </div>
+      <div id="qq-copied" style="display:none;text-align:center;font-size:10px;color:var(--green);font-family:var(--mono);padding:0 16px 10px;letter-spacing:1px;">✓ Copied!</div>
+    </div>
+  </div>
+</div>
 
 <!-- ══ CUSTOM CHECKER OVERLAY — Step-Based v2 ══ -->
 <div class="overlay" id="custom-overlay" onclick="if(event.target===this)closeCustomChecker()">
@@ -7400,9 +7252,15 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.ge
         <div class="tp-step-body" id="tp-step-body"></div>
 
         <!-- Footer nav -->
-        <div class="tp-step-footer" id="tp-step-footer">
-          <button class="tp-btn-back" id="tp-btn-back" style="display:none" onclick="_tpPrevStep()">← ย้อนกลับ</button>
-          <button class="tp-btn-next" id="tp-btn-next" onclick="_tpNextStep()">ถัดไป →</button>
+        <div class="tp-step-footer" id="tp-step-footer" style="flex-wrap:wrap;gap:6px;">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;order:0;flex:0 0 auto;">
+            <input type="checkbox" id="tp-skip-step" onchange="_tpToggleSkip(this.checked)" style="width:14px;height:14px;cursor:pointer;accent-color:var(--black);">
+            <span style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);">ข้าม step นี้ (ใช้ค่า SKU)</span>
+          </label>
+          <div style="display:flex;gap:8px;flex:1;order:1;">
+            <button class="tp-btn-back" id="tp-btn-back" style="display:none" onclick="_tpPrevStep()">← ย้อนกลับ</button>
+            <button class="tp-btn-next" id="tp-btn-next" onclick="_tpNextStep()">ถัดไป →</button>
+          </div>
         </div>
       </div>
 
@@ -7922,6 +7780,284 @@ function _tpIsDef(cat){
 // ================================================================
 //  STEP-BASED RENDER (UI v2) — replaces _tpRender accordion
 // ================================================================
+// ================================================================
+//  FEATURE 1 — Timestamp + Copy สรุป
+// ================================================================
+function setSkuTimestamp(s){
+  var el = document.getElementById('sh-price-ts');
+  if(!el) return;
+  var raw = s.PRICE_UPDATED || s.price_updated || '';
+  if(raw){
+    el.textContent = 'ราคา ณ ' + String(raw).trim();
+  } else {
+    el.textContent = '';
+  }
+}
+
+function copySkuSummary(){
+  var s = currentSku; if(!s) return;
+  var t = parseFloat(s.THICKNESS_TARGET_MM)||0;
+  var w = parseInt(s.WIDTH_MM)||0;
+  var l = parseInt(s.LENGTH_MM)||0;
+  var price = parseInt(s.PRICE_PER_SHEET_THB)||0;
+  var stock = parseInt(s.STOCK_QTY)||0;
+  var ts = s.PRICE_UPDATED ? '\nราคา ณ '+String(s.PRICE_UPDATED).trim() : '';
+  var surfLabel = surfaceBadgeLabel ? surfaceBadgeLabel(s.SURFACE) : (s.SURFACE||'');
+  var line = [
+    surfLabel + ' ' + t + 'mm · ' + w + '×' + l + ' mm',
+    (s.GRADE?s.GRADE+' · ':'') + (s.STANDARD||''),
+    price ? '฿' + price.toLocaleString() + '/แผ่น' : '',
+    stock > 0 ? 'สต็อก ' + stock.toLocaleString() + ' แผ่น' : 'หมดสต็อก',
+    ts
+  ].filter(Boolean).join('\n');
+  navigator.clipboard && navigator.clipboard.writeText(line).then(function(){
+    var msg = document.getElementById('sku-copied-msg');
+    if(msg){ msg.style.display='inline'; setTimeout(function(){ msg.style.display='none'; }, 2000); }
+  });
+}
+
+// ================================================================
+//  FEATURE 2 — Quick Quote
+// ================================================================
+function openQuickQuote(){
+  var s = currentSku; if(!s) return;
+  document.getElementById('qq-overlay').classList.add('open');
+  document.getElementById('qq-sku-bar').textContent = (s.SKU||'—') + ' · ' + (parseFloat(s.THICKNESS_TARGET_MM)||0) + 'mm';
+  var wEl = document.getElementById('qq-w'); var lEl = document.getElementById('qq-l');
+  if(wEl) wEl.value = parseInt(s.WIDTH_MM)||'';
+  if(lEl) lEl.value = parseInt(s.LENGTH_MM)||'';
+  document.getElementById('qq-qty').value = 10;
+  document.getElementById('qq-copied').style.display = 'none';
+  qqCalc();
+}
+function closeQuickQuote(){
+  document.getElementById('qq-overlay').classList.remove('open');
+}
+function qqCalc(){
+  var s = currentSku; if(!s) return;
+  var w = parseInt(document.getElementById('qq-w').value)||0;
+  var l = parseInt(document.getElementById('qq-l').value)||0;
+  var qty = parseInt(document.getElementById('qq-qty').value)||1;
+  var bnd = parseInt(s.BUNDLE_SIZE)||5;
+  var kg = parseFloat(s.WEIGHT_PER_SHEET_KG)||0;
+  var bp = parseInt(s.PRICE_PER_SHEET_THB)||0;
+  var stdW = parseInt(s.WIDTH_MM)||1200;
+  var stdL = parseInt(s.LENGTH_MM)||2400;
+  var addon = 0;
+  var notes = [];
+  var pdReq = false;
+  if(w && w !== stdW){ addon += 15*qty; notes.push('ตัด W +฿15/แผ่น'); if(w < stdW*0.85) pdReq=true; }
+  if(l && l !== stdL){ addon += 12*qty; notes.push('ตัด L +฿12/แผ่น'); }
+  var total = qty*bp + addon;
+  var bundles = Math.ceil(qty/bnd);
+  var rW = document.getElementById('qq-r-w'); if(rW) rW.textContent = (qty*kg).toFixed(0)+' kg';
+  var rP = document.getElementById('qq-r-p'); if(rP) rP.textContent = '฿'+total.toLocaleString();
+  var rB = document.getElementById('qq-r-b'); if(rB) rB.textContent = bundles+' Bundle';
+  var dec = document.getElementById('qq-dec');
+  if(dec){
+    dec.className = '';
+    dec.style.cssText = 'margin-top:8px;border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px;'+(pdReq?'background:#FAECE7;border:0.5px solid #F0997B':'background:#EAF3DE;border:0.5px solid #97C459');
+    dec.innerHTML = '<div style="width:7px;height:7px;border-radius:50%;background:'+(pdReq?'#993C1D':'#3B6D11')+';flex-shrink:0;"></div>'
+      +'<div style="flex:1;font-size:11px;font-weight:500;color:'+(pdReq?'#4A1B0C':'#27500A')+'">'+(pdReq?'PD — ต้องผลิตใหม่':'WH — หยิบจากคลัง')+'</div>'
+      +'<span style="font-size:9px;font-family:var(--mono);padding:2px 6px;border-radius:8px;background:'+(pdReq?'#F5C4B3':'#C0DD97')+';color:'+(pdReq?'#4A1B0C':'#27500A')+'">'+(pdReq?'5–10 วัน':'1–2 วัน')+'</span>';
+  }
+  var note = document.getElementById('qq-cut-note');
+  if(note) note.textContent = notes.length ? notes.join(' · ') : (w&&l&&(w!==stdW||l!==stdL)?'':'ขนาด standard');
+}
+function qqCopyResult(){
+  var s = currentSku; if(!s) return;
+  var w = document.getElementById('qq-w').value||'std';
+  var l = document.getElementById('qq-l').value||'std';
+  var qty = document.getElementById('qq-qty').value||'10';
+  var rP = document.getElementById('qq-r-p'); 
+  var rW = document.getElementById('qq-r-w');
+  var ts = s.PRICE_UPDATED ? '\nราคา ณ '+String(s.PRICE_UPDATED).trim() : '';
+  var surfLabel = surfaceBadgeLabel ? surfaceBadgeLabel(s.SURFACE) : '';
+  var line = [
+    surfLabel+' '+(parseFloat(s.THICKNESS_TARGET_MM)||0)+'mm · '+w+'×'+l+' mm',
+    (s.GRADE||''),
+    qty+' แผ่น · '+(rW?rW.textContent:''),
+    rP ? rP.textContent : '',
+    ts
+  ].filter(Boolean).join('\n');
+  navigator.clipboard && navigator.clipboard.writeText(line).then(function(){
+    var el = document.getElementById('qq-copied');
+    if(el){ el.style.display='block'; setTimeout(function(){ el.style.display='none'; },2000); }
+  });
+}
+function qqToCustom(){
+  var w = parseInt(document.getElementById('qq-w').value)||0;
+  var l = parseInt(document.getElementById('qq-l').value)||0;
+  var qty = parseInt(document.getElementById('qq-qty').value)||10;
+  closeQuickQuote();
+  openCustomChecker();
+  setTimeout(function(){
+    if(_tp.cfg && _tp.st){
+      if(w) _tpDim('DIM','w',w);
+      if(l) _tpDim('DIM','l',l);
+      var qEl = document.getElementById('tp-qty-live'); if(qEl){ qEl.value=qty; _tpQtyChange(qty); }
+      _tpGoStep(0); _tpUpdateSummary();
+    }
+  }, 300);
+}
+
+// ================================================================
+//  FEATURE 3 — Quote History (localStorage)
+// ================================================================
+var QH_KEY = 'tmt_quote_history';
+var QH_MAX = 5;
+
+function qhSave(s){
+  if(!s||!s.SKU) return;
+  try {
+    var list = JSON.parse(localStorage.getItem(QH_KEY)||'[]');
+    list = list.filter(function(x){ return x.sku !== s.SKU; });
+    list.unshift({
+      sku: s.SKU,
+      label: (parseFloat(s.THICKNESS_TARGET_MM)||0)+'mm · '+(parseInt(s.WIDTH_MM)||0)+'×'+(parseInt(s.LENGTH_MM)||0)+' mm',
+      surface: surfaceBadgeLabel ? surfaceBadgeLabel(s.SURFACE) : (s.SURFACE||''),
+      price: parseInt(s.PRICE_PER_SHEET_THB)||0,
+      stock: parseInt(s.STOCK_QTY)||0,
+      ts: Date.now()
+    });
+    list = list.slice(0, QH_MAX);
+    localStorage.setItem(QH_KEY, JSON.stringify(list));
+  } catch(e){}
+  // history panel อยู่หน้าแรก จะ refresh เมื่อกลับมา
+}
+
+function qhBuildSection(){
+  try {
+    var list = JSON.parse(localStorage.getItem(QH_KEY)||'[]');
+    if(!list.length) return '';
+    var now = Date.now();
+    var cards = list.map(function(item){
+      var age = now - item.ts;
+      var ageStr = age < 3600000 ? Math.round(age/60000)+'m ที่แล้ว'
+                 : age < 86400000 ? Math.round(age/3600000)+'h ที่แล้ว'
+                 : Math.round(age/86400000)+'d ที่แล้ว';
+      var stockColor = item.stock===0?'var(--red)':item.stock<10?'var(--yellow)':'var(--green)';
+      return '<div class="qh-card" data-sku="'+item.sku+'">'+
+        '<div class="qh-card-dot" style="background:'+stockColor+';"></div>'+
+        '<div class="qh-card-surface">'+item.surface+'</div>'+
+        '<div class="qh-card-name">'+item.sku+'</div>'+
+        '<div class="qh-card-meta">'+item.label+'</div>'+
+        '<div class="qh-card-meta">'+ageStr+'</div>'+
+        (item.price?'<div class="qh-card-price">฿'+item.price.toLocaleString()+'/แผ่น</div>':'')+
+        '</div>';
+    }).join('');
+    return '<div class="qh-section">'+
+      '<div class="qh-hdr">'+
+        '<div class="qh-title">ดูล่าสุด</div>'+
+        '<button class="qh-clear" onclick="clearQuoteHistoryAndRefresh()">ล้าง</button>'+
+      '</div>'+
+      '<div class="qh-grid" id="qh-grid-main">'+cards+'</div>'+
+      '</div>';
+  } catch(e){ return ''; }
+}
+
+function clearQuoteHistoryAndRefresh(){
+  localStorage.removeItem(QH_KEY);
+  renderGrid();
+}
+
+function qhBindCards(){
+  var grid = document.getElementById('qh-grid-main');
+  if(!grid) return;
+  grid.querySelectorAll('.qh-card').forEach(function(card){
+    card.addEventListener('click', function(){ qhLoad(card.getAttribute('data-sku')); });
+  });
+}
+
+function qhRender(){
+  // compat: re-render grid (which now includes history)
+  renderGrid();
+}
+
+function _qhRenderOld(){
+  var panel = document.getElementById('quote-history-panel');
+  var list_el = document.getElementById('quote-history-list');
+  if(!panel||!list_el) return;
+  try {
+    var list = JSON.parse(localStorage.getItem(QH_KEY)||'[]');
+    if(!list.length){ panel.style.display='none'; return; }
+    panel.style.display='';
+    var now = Date.now();
+    list_el.innerHTML = list.map(function(item){
+      var age = now - item.ts;
+      var ageStr = age < 3600000 ? Math.round(age/60000)+'m ที่แล้ว'
+                 : age < 86400000 ? Math.round(age/3600000)+'h ที่แล้ว'
+                 : Math.round(age/86400000)+'d ที่แล้ว';
+      var stockColor = item.stock===0?'#b03a2e':item.stock<10?'#b8860b':'#1a7a4a';
+      return '<div class="qh-item" data-sku="'+item.sku+'" style="display:flex;align-items:flex-start;gap:8px;padding:7px 14px;border-bottom:0.5px solid var(--g100);cursor:pointer;">'+
+        '<div style="width:6px;height:6px;border-radius:50%;background:'+stockColor+';margin-top:5px;flex-shrink:0;"></div>'+
+        '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:11px;font-weight:500;font-family:var(--mono);color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.sku+'</div>'+
+        '<div style="font-size:10px;color:var(--g400);font-family:var(--mono);">'+item.surface+' · '+item.label+'</div>'+
+        '<div style="font-size:9px;color:var(--g300);font-family:var(--mono);">'+ageStr+(item.price?' · ฿'+item.price.toLocaleString():'')+'</div>'+
+        '</div>'+
+        '<div style="font-size:9px;padding:2px 7px;border:0.5px solid var(--g200);border-radius:3px;color:var(--g600);font-family:var(--mono);white-space:nowrap;flex-shrink:0;">โหลดซ้ำ</div>'+
+        '</div>';
+    }).join('');
+  } catch(e){ panel.style.display='none'; return; }
+  // bind clicks via event delegation (avoid inline onclick quote issues)
+  list_el.querySelectorAll('.qh-item').forEach(function(el){
+    el.addEventListener('mouseover', function(){ el.style.background='var(--g50)'; });
+    el.addEventListener('mouseout',  function(){ el.style.background=''; });
+    el.addEventListener('click', function(){ qhLoad(el.getAttribute('data-sku')); });
+  });
+}
+
+function qhLoad(sku){
+  var idx = filteredSkus.findIndex(function(s){ return s.SKU===sku; });
+  if(idx < 0) idx = allSkus.findIndex(function(s){ return s.SKU===sku; });
+  if(idx < 0){ alert('SKU นี้ไม่อยู่ใน catalog ปัจจุบัน'); return; }
+  // reload with filteredSkus if found there, else use allSkus
+  var skuList = filteredSkus.findIndex(function(s){ return s.SKU===sku; }) >= 0 ? filteredSkus : allSkus;
+  var realIdx = skuList.findIndex(function(s){ return s.SKU===sku; });
+  openViewer(realIdx);
+}
+
+function clearQuoteHistory(){
+  localStorage.removeItem(QH_KEY);
+  qhRender();
+}
+
+// ================================================================
+//  FEATURE 4 — Skip Step
+// ================================================================
+var _tpSkippedSteps = {};
+
+function _tpToggleSkip(checked){
+  var step = _TP_STEPS[_tpCurStep];
+  if(!step) return;
+  _tpSkippedSteps[_tpCurStep] = checked;
+  // ถ้าข้าม → reset ค่าทุก cat ใน step นี้ กลับ default
+  if(checked && _tp.cfg && currentSku){
+    var s = currentSku;
+    step.cats.forEach(function(catId){
+      var cat = _tp.cfg.find(function(c){ return c.id===catId; });
+      if(!cat) return;
+      if(cat.type==='radio'){
+        var def = cat.defKey&&s[cat.defKey] ? cat.id+'-'+String(s[cat.defKey]).trim().split(/\s/)[0] : (cat.subs[0]||{}).id||'';
+        _tp.st[catId] = def;
+      } else if(cat.type==='checkbox'){
+        _tp.st[catId] = {};
+        cat.subs.forEach(function(sub){ _tp.st[catId][sub.id]=false; });
+      } else if(cat.type==='dim'){
+        _tp.st[catId] = { w:parseInt(s.WIDTH_MM)||0, l:parseInt(s.LENGTH_MM)||0 };
+      } else if(cat.type==='number'){
+        _tp.st[catId] = cat.defKey ? parseInt(s[cat.defKey]||0) : 0;
+      } else if(cat.type==='text'){
+        _tp.st[catId] = '';
+      }
+    });
+    _tpSync();
+    _tpUpdateSummary();
+  }
+  _tpRenderStep();
+}
+
 var _tpCurStep = 0;
 var _TP_STEPS = [
   { label: 'ขนาด + จำนวน', cats: ['DIM','BUNDLE','STRAP'] },
@@ -8046,6 +8182,13 @@ function _tpRenderStep(){
   });
 
   document.getElementById('tp-step-body').innerHTML = html;
+  // restore skip checkbox state
+  var skipCb = document.getElementById('tp-skip-step');
+  if(skipCb) skipCb.checked = !!_tpSkippedSteps[_tpCurStep];
+  // dim step body if skipped
+  var stepBody = document.getElementById('tp-step-body');
+  if(stepBody) stepBody.style.opacity = _tpSkippedSteps[_tpCurStep] ? '0.35' : '1';
+  if(stepBody) stepBody.style.pointerEvents = _tpSkippedSteps[_tpCurStep] ? 'none' : '';
 
   // update step bar state
   var items = document.querySelectorAll('.tp-step-item');
