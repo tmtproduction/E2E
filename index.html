@@ -5816,6 +5816,9 @@ function openCustomChecker(){
   updateAuthUI();
   _tpCurStep = 0;
   _tpSkippedSteps = {};
+  // reset custom tolerance และ strap
+  Object.keys(_tolCustom).forEach(function(k){ _tolCustom[k].on=false; });
+  _strapCustom.mode='none'; _strapCustom.n=3;
   if(_tp.cfg){ _tpInit(); _tpUpdateStepBar(); _tpRenderStep(); _tpUpdateSummary(); return; }
   document.getElementById('tp-step-body').innerHTML='<div style="text-align:center;padding:32px 0;font-size:11px;color:var(--g400);font-family:var(--mono);">กำลังโหลด options...</div>';
   var loadUrl = SCRIPT_URL+'?action=getCustomOptions&nocache='+Date.now();
@@ -8601,6 +8604,148 @@ function _tpToggleSkip(checked){
 }
 
 // ================================================================
+//  TOL_CUSTOM — Tolerance พิเศษ (อยู่ใน step มิติ+จำนวน)
+// ================================================================
+var _tolCustom = {
+  squareness: { on:false, val:1.0,  adjPerSheet:3  },
+  thickness:  { on:false, val:0.06, adjPerSheet:8  },
+  diagonal:   { on:false, val:1.5,  adjPerSheet:5  }
+};
+
+// ================================================================
+//  STRAP_CUSTOM — สายรัด (อยู่ใน step Packing & ส่ง)
+// ================================================================
+var _strapCustom = {
+  mode: 'none', // 'none' | '2' | 'custom'
+  n: 3          // จำนวนเส้น ถ้า mode='custom'
+};
+var STRAP_PRICE_PER_LINE = 100; // ฿/เส้น/Bundle — แก้ได้ใน CUSTOM_PRICING sheet
+
+function _tpRenderTolCustom(){
+  var s = currentSku||{};
+  var stdSq   = parseFloat(s.SQUARENESS||2).toFixed(1);
+  var stdTh   = parseFloat(s.TOLERANCE_THICKNESS||0.10).toFixed(2);
+  var tols = [
+    { key:'squareness', name:'ความได้ฉาก',  std:'≤'+stdSq+' mm/m', unit:'mm/m', step:'0.1', min:'0.1' },
+    { key:'thickness',  name:'ความหนา',      std:'±'+stdTh+' mm',   unit:'mm',   step:'0.01', min:'0.01' },
+    { key:'diagonal',   name:'เส้นทแยงมุม', std:'≤3.0 mm',          unit:'mm',   step:'0.5', min:'0.5' }
+  ];
+  var parts = ['<div class="tp-section"><div class="tp-sec-hdr">Tolerance พิเศษ</div><div style="display:flex;flex-direction:column;gap:5px;">'];
+  tols.forEach(function(t){
+    var st = _tolCustom[t.key];
+    var on = st.on;
+    parts.push(
+      '<div style="border:0.5px solid var(--g200);border-radius:6px;overflow:hidden;">'+
+        '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--g50);cursor:pointer;" data-tolkey="'+t.key+'" onclick="_tolToggle(this.dataset.tolkey)">'+
+          '<div id="tolck-'+t.key+'" style="width:13px;height:13px;border-radius:3px;border:1.5px solid '+(on?'#0e0e0e':'var(--g200)')+';display:flex;align-items:center;justify-content:center;font-size:8px;color:'+(on?'#fff':'transparent')+';background:'+(on?'#0e0e0e':'transparent')+';flex-shrink:0;">✓</div>'+
+          '<span style="flex:1;font-size:10px;font-weight:500;font-family:var(--mono);color:var(--black);">'+t.name+'</span>'+
+          '<span style="font-size:9px;color:var(--g400);font-family:var(--mono);">'+t.std+'</span>'+
+          '<span id="tolbadge-'+t.key+'" style="font-size:8px;font-family:var(--mono);padding:1px 5px;border-radius:3px;'+(on?'background:#FCEBEB;color:#A32D2D':'background:var(--g50);color:var(--g400);border:0.5px solid var(--g200)')+'">'+(on?'+฿'+st.adjPerSheet:'ค่า SKU')+'</span>'+
+        '</div>'+
+        '<div id="tolbody-'+t.key+'" style="display:'+(on?'flex':'none')+';align-items:center;gap:8px;padding:7px 10px;border-top:0.5px solid var(--g100);">'+
+          '<label style="font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);white-space:nowrap;">tolerance</label>'+
+          '<input type="number" value="'+st.val+'" step="'+t.step+'" min="'+t.min+'" data-tolkey="'+t.key+'" style="width:64px;border:0.5px solid var(--g200);background:var(--white);padding:5px 7px;font-size:11px;font-family:var(--mono);border-radius:4px;outline:none;" oninput="_tolVal(this.dataset.tolkey,+this.value)">'+
+          '<span style="font-size:9px;color:var(--g400);font-family:var(--mono);flex:1;">'+t.unit+' · standard: '+t.std+'</span>'+
+          '<span style="font-size:8px;font-family:var(--mono);padding:1px 5px;border-radius:3px;background:#FCEBEB;color:#A32D2D;">+฿'+st.adjPerSheet+'</span>'+
+        '</div>'+
+      '</div>'
+    );
+  });
+  parts.push('</div></div>');
+  return parts.join('');
+}
+
+function _tolToggle(key){
+  _tolCustom[key].on = !_tolCustom[key].on;
+  // อัปเดต DOM ตรงๆ
+  var ck = document.getElementById('tolck-'+key);
+  var badge = document.getElementById('tolbadge-'+key);
+  var body  = document.getElementById('tolbody-'+key);
+  var on = _tolCustom[key].on;
+  if(ck){ ck.style.color=on?'#fff':'transparent'; ck.style.background=on?'#0e0e0e':'transparent'; ck.style.borderColor=on?'#0e0e0e':'var(--g200)'; }
+  if(badge){ badge.textContent=on?'+฿'+_tolCustom[key].adjPerSheet:'ค่า SKU'; badge.style.cssText='font-size:8px;font-family:var(--mono);padding:1px 5px;border-radius:3px;'+(on?'background:#FCEBEB;color:#A32D2D':'background:var(--g50);color:var(--g400);border:0.5px solid var(--g200)'); }
+  if(body) body.style.display=on?'flex':'none';
+  _tpUpdateSummary();
+}
+function _tolVal(key, v){ _tolCustom[key].val=v; _tpUpdateSummary(); }
+
+function _tpGetTolAdj(){
+  var total=0;
+  Object.keys(_tolCustom).forEach(function(k){ if(_tolCustom[k].on) total+=_tolCustom[k].adjPerSheet; });
+  return total;
+}
+
+// ── STRAP_CUSTOM render ──
+function _tpRenderStrapCustom(){
+  var p = _strapCustom;
+  var html = '<div class="tp-section"><div class="tp-sec-hdr">สายรัด</div>';
+  var opts = [
+    { mode:'none',   lbl:'ไม่มีสายรัด',       sub:'งานน้ำหนักเบา',            priceHtml:'<span style="font-size:8px;font-family:var(--mono);padding:1px 5px;border-radius:3px;background:#EAF3DE;color:#27500A;">ฟรี</span>' },
+    { mode:'2',      lbl:'2 เส้น (standard)', sub:'standard ทั่วไป ตาม SKU', priceHtml:'<span style="font-size:8px;font-family:var(--mono);padding:1px 5px;border-radius:3px;background:var(--g50);color:var(--g400);border:0.5px solid var(--g200);">base</span>' },
+    { mode:'custom', lbl:'ระบุจำนวนเส้น',      sub:'คิดเส้นละ ฿'+STRAP_PRICE_PER_LINE+'/Bundle', priceHtml:'<span id="strap-badge" style="font-size:8px;font-family:var(--mono);padding:1px 5px;border-radius:3px;background:#FCEBEB;color:#A32D2D;">+฿'+(p.n*STRAP_PRICE_PER_LINE)+'</span>' }
+  ];
+  html += '<div style="display:flex;flex-direction:column;gap:4px;">';
+  opts.forEach(function(opt){
+    var sel = p.mode === opt.mode;
+    html +=
+      '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:0.5px solid '+(sel?'#0e0e0e':'var(--g200)')+';border-radius:5px;cursor:pointer;background:'+(sel?'#0e0e0e':'var(--white)')+';transition:all .12s;" data-smode="'+opt.mode+'" onclick="_strapSel(this.dataset.smode)">' +
+        '<div style="width:13px;height:13px;border-radius:50%;border:1.5px solid '+(sel?'#fafaf8':'var(--g200)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+          (sel?'<div style="width:5px;height:5px;border-radius:50%;background:#fafaf8;"></div>':'') +
+        '</div>' +
+        '<div style="flex:1;">' +
+          '<div style="font-size:10px;font-weight:500;font-family:var(--mono);color:'+(sel?'#fafaf8':'var(--black)')+';">'+opt.lbl+'</div>' +
+          '<div style="font-size:9px;color:'+(sel?'rgba(255,255,255,.5)':'var(--g400)')+';font-family:var(--mono);">'+opt.sub+'</div>' +
+        '</div>' +
+        opt.priceHtml +
+      '</div>';
+  });
+  html += '</div>';
+  // custom row
+  html +=
+    '<div id="strap-custom-row" style="display:'+(p.mode==='custom'?'flex':'none')+';align-items:center;gap:8px;margin-top:6px;padding:7px 10px;background:var(--g50);border-radius:5px;border:0.5px solid var(--g200);">' +
+      '<label style="font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);white-space:nowrap;">จำนวนเส้น</label>' +
+      '<input type="number" id="strap-n-input" value="'+p.n+'" min="1" max="10" style="width:52px;border:0.5px solid var(--g200);background:var(--white);padding:4px 7px;font-size:12px;font-family:var(--mono);border-radius:4px;outline:none;text-align:center;" oninput="_strapN(+this.value)">' +
+      '<span style="font-size:9px;color:var(--g400);font-family:var(--mono);flex:1;" id="strap-calc-txt">'+p.n+' เส้น × ฿'+STRAP_PRICE_PER_LINE+' =</span>' +
+      '<span style="font-size:10px;font-weight:500;font-family:var(--mono);" id="strap-total-txt">฿'+(p.n*STRAP_PRICE_PER_LINE)+'/Bundle</span>' +
+    '</div>' +
+  '</div>';
+  return html;
+}
+
+function _strapSel(mode){
+  _strapCustom.mode = mode;
+  // re-render section สายรัดเพื่อ update สีและ label ให้ถูกต้อง
+  var container = document.querySelector('[data-smode]');
+  if(container){
+    var section = container.closest('.tp-section');
+    if(section){
+      var tmp = document.createElement('div');
+      tmp.innerHTML = _tpRenderStrapCustom();
+      var newSection = tmp.querySelector('.tp-section');
+      if(newSection) section.replaceWith(newSection);
+    }
+  }
+  _tpUpdateSummary();
+}
+function _strapN(n){
+  _strapCustom.n = Math.max(1,n);
+  var tot = _strapCustom.n * STRAP_PRICE_PER_LINE;
+  var badge = document.getElementById('strap-badge');
+  var calc  = document.getElementById('strap-calc-txt');
+  var total = document.getElementById('strap-total-txt');
+  if(badge) badge.textContent = '+฿'+tot;
+  if(calc)  calc.textContent  = _strapCustom.n+' เส้น × ฿'+STRAP_PRICE_PER_LINE+' =';
+  if(total) total.textContent = '฿'+tot+'/Bundle';
+  _tpUpdateSummary();
+}
+function _tpGetStrapAdj(qty, bnd){
+  if(_strapCustom.mode==='none') return 0;
+  if(_strapCustom.mode==='2')    return 0;
+  var bundles = Math.ceil(qty/bnd);
+  return _strapCustom.n * STRAP_PRICE_PER_LINE * bundles / qty;
+}
+
+// ================================================================
 //  PRODUCTION QC STEP — Surface + Marking pricing
 // ================================================================
 
@@ -8707,23 +8852,6 @@ function _tpRenderProdQC(){
   });
   parts.push('</div></div>');
 
-  // QC & เครื่องจักร
-  var machines = ['Line 1','Line 2','Line 3','ระบุเอง'];
-  var machOpts = machines.map(function(m){
-    return '<option'+(m===_prodQC.machine?' selected':'')+'>'+m+'</option>';
-  }).join('');
-  parts.push(
-    '<div class="tp-section">'+
-    '<div class="tp-sec-hdr">QC & เครื่องจักร</div>'+
-    '<div class="tp-dim-grid">'+
-    '<div class="tp-field"><label>วัดตรุดิบ (จุด)</label>'+
-    '<input type="number" value="'+_prodQC.qc_points+'" min="1" max="20"'+
-    ' oninput="_prodQC.qc_points=parseInt(this.value)||3;_tpUpdateSummary()"></div>'+
-    '<div class="tp-field"><label>เครื่องจักร</label>'+
-    '<select onchange="_prodQC.machine=this.value;_tpUpdateSummary()">'+machOpts+'</select>'+
-    '</div></div></div>'
-  );
-
   return parts.join('');
 }
 
@@ -8761,9 +8889,9 @@ function _tpGetProdQCAdj(){
 
 var _tpCurStep = 0;
 var _TP_STEPS = [
-  { label: 'มิติ + จำนวน',   cats: ['DIM','BUNDLE','STRAP'] },
+  { label: 'มิติ + จำนวน',   cats: ['DIM','BUNDLE','TOL_CUSTOM'] },
   { label: 'การผลิต & QC',   cats: ['PROD_QC'] },
-  { label: 'Packing & ส่ง',  cats: ['PACK'] },
+  { label: 'Packing & ส่ง',  cats: ['STRAP_CUSTOM','PACK'] },
   { label: 'อื่นๆ',           cats: ['CERT','NOTE'] }
 ];
 
@@ -8829,6 +8957,17 @@ function _tpRenderStep(){
   var step = _TP_STEPS[_tpCurStep];
   var html = '';
 
+  // -- TOL_CUSTOM step: ต่อท้าย DIM+BUNDLE ──
+  if(step.cats.indexOf('TOL_CUSTOM') >= 0){
+    // render DIM + BUNDLE ปกติก่อน แล้วต่อด้วย TOL_CUSTOM
+    // (handled ผ่าน html build loop + append ด้านล่าง)
+  }
+
+  // -- STRAP_CUSTOM: render ก่อน PACK ──
+  if(step.cats.indexOf('STRAP_CUSTOM') >= 0){
+    html += _tpRenderStrapCustom();
+  }
+
   // -- PROD_QC step: render แบบพิเศษ --
   if(step.cats.indexOf('PROD_QC') >= 0){
     html = _tpRenderProdQC();
@@ -8880,6 +9019,10 @@ function _tpRenderStep(){
       html += '<div class="tp-hint" style="margin-top:4px;">Standard: '+nd+' แผ่น</div>';
       html += '</div>';
       html += '</div>';
+      // append TOL_CUSTOM ถ้าอยู่ใน step นี้
+      if(step.cats.indexOf('TOL_CUSTOM') >= 0){
+        html += _tpRenderTolCustom();
+      }
       return;
     }
 
@@ -9032,19 +9175,24 @@ function _tpUpdateSummary(){
   // รวม PROD_QC adj (สภาพผิว + รูปแบบการพ่น)
   var prodAdj = _tpGetProdQCAdj();
   var prodAdjTotal = prodAdj.total * qty;
-  var grand = qty*bp + Math.round(addons) + prodAdjTotal;
+  // รวม TOL_CUSTOM adj
+  var tolAdj = _tpGetTolAdj();
+  var tolAdjTotal = tolAdj * qty;
+  // รวม STRAP_CUSTOM adj
+  var bndSize = parseInt((currentSku||{}).BUNDLE_SIZE)||5;
+  var strapAdjPerSheet = _tpGetStrapAdj(qty, bndSize);
+  var strapAdjTotal = Math.round(strapAdjPerSheet * qty);
+  var grand = qty*bp + Math.round(addons) + prodAdjTotal + tolAdjTotal + strapAdjTotal;
 
   var tVal = document.getElementById('tp-total-val');
   var tSub = document.getElementById('tp-total-sub');
   if(tVal) tVal.textContent = '฿'+grand.toLocaleString();
 
-  // sub line: แสดงราคา/แผ่น หลังปรับ
-  var adjPerSheet = prodAdj.total;
-  var unitPrice = bp + adjPerSheet;
-  var subParts = [qty+' แผ่น × ฿'+unitPrice.toLocaleString()];
-  if(prodAdj.surf !== 0) subParts.push('ผิว '+(prodAdj.surf>0?'+':'')+prodAdj.surf+'฿');
-  if(prodAdj.mark !== 0) subParts.push('พ่น '+(prodAdj.mark>0?'+':'')+prodAdj.mark+'฿');
-  if(tSub) tSub.textContent = subParts.join(' · ')+(addons>0?' + add-ons':'');
+  // sub line: แสดงราคา/แผ่น หลังปรับทุกรายการ
+  var allAdjPerSheet = prodAdj.total + tolAdj + Math.round(strapAdjPerSheet);
+  var unitPrice = bp + allAdjPerSheet;
+  var subParts = [qty+' แผ่น × ฿'+unitPrice.toLocaleString()+'/แผ่น'];
+  if(tSub) tSub.textContent = subParts.join('') + (addons>0?' + add-ons':'');
 
   // inject adj rows into summary panel
   var adjEl = document.getElementById('tp-prod-adj');
@@ -9060,8 +9208,24 @@ function _tpUpdateSummary(){
   }
   if(adjEl){
     var adjRows = '';
-    if(prodAdj.surf !== 0) adjRows += '<div class="tp-adj-row"><span>สภาพผิว</span>'+_ppHtml(prodAdj.surf)+'</div>';
-    if(prodAdj.mark !== 0) adjRows += '<div class="tp-adj-row"><span>การพ่น</span>'+_ppHtml(prodAdj.mark)+'</div>';
+    if(prodAdj.surf !== 0) adjRows += '<div class="tp-adj-row"><span>สภาพผิว</span>'+_ppHtml(prodAdj.surf)+' <span style="font-size:8px;color:var(--g400);">/แผ่น</span></div>';
+    if(prodAdj.mark !== 0) adjRows += '<div class="tp-adj-row"><span>การพ่น</span>'+_ppHtml(prodAdj.mark)+' <span style="font-size:8px;color:var(--g400);">/แผ่น</span></div>';
+    // Tolerance — แสดง per แผ่น พร้อม breakdown
+    if(tolAdj !== 0){
+      var tolParts = [];
+      if(_tolCustom.squareness.on) tolParts.push('ฉาก +฿'+_tolCustom.squareness.adjPerSheet);
+      if(_tolCustom.thickness.on)  tolParts.push('หนา +฿'+_tolCustom.thickness.adjPerSheet);
+      if(_tolCustom.diagonal.on)   tolParts.push('ทแยง +฿'+_tolCustom.diagonal.adjPerSheet);
+      adjRows += '<div class="tp-adj-row"><span>Tolerance</span><div style="display:flex;align-items:center;gap:4px;">'+_ppHtml(tolAdj)+' <span style="font-size:8px;color:var(--g400);">/แผ่น</span></div></div>';
+      if(tolParts.length > 1) adjRows += '<div style="font-size:8px;color:var(--g400);font-family:var(--mono);padding:1px 0 3px 8px;">'+tolParts.join(' · ')+'</div>';
+    }
+    // สายรัด — แสดง per Bundle ชัดเจน
+    if(strapAdjTotal !== 0){
+      var strapPerBundle = _strapCustom.n * STRAP_PRICE_PER_LINE;
+      var bundles = Math.ceil(qty/bndSize);
+      adjRows += '<div class="tp-adj-row"><span>สายรัด</span><div style="display:flex;align-items:center;gap:4px;">'+_ppHtml(strapPerBundle)+' <span style="font-size:8px;color:var(--g400);">/Bundle</span></div></div>';
+      adjRows += '<div style="font-size:8px;color:var(--g400);font-family:var(--mono);padding:1px 0 3px 8px;">'+_strapCustom.n+' เส้น × ฿'+STRAP_PRICE_PER_LINE+' × '+bundles+' Bundle = ฿'+strapAdjTotal.toLocaleString()+'</div>';
+    }
     adjEl.innerHTML = adjRows;
   }
 
