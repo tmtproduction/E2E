@@ -701,6 +701,21 @@ body{
 .status-badge.in-stock{background:rgba(26,122,74,.12);color:var(--green);}
 .status-badge.low-stock{background:rgba(184,134,11,.12);color:var(--yellow);}
 .status-badge.out-stock{background:rgba(176,58,46,.1);color:var(--red);}
+.status-badge.mto{background:rgba(184,134,11,.15);color:var(--yellow);}
+.btn-mto-card{
+  background:#FAEEDA;color:#633806;
+  border:1px solid #FAC775;
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:7px 14px;cursor:pointer;font-family:var(--mono);
+  font-weight:500;transition:all .15s;border-radius:0;white-space:nowrap;
+}
+.btn-mto-card:hover{background:#FAC775;border-color:#b8860b;}
+.cart-mto-warn{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:3px;margin-top:5px;
+  background:#FAEEDA;border-left:2px solid #b8860b;
+  font-size:9px;color:#633806;font-family:var(--mono);
+}
 
 .card-body{padding:20px 22px 12px;flex:1;}
 
@@ -762,6 +777,15 @@ body{
 }
 .btn-order-card:hover{opacity:.7;}
 .btn-order-card:disabled{background:var(--g200);color:var(--g300);cursor:not-allowed;opacity:1;}
+.btn-custom-card{
+  background:none;border:1px solid var(--g200);color:var(--g600);
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:7px 12px;cursor:pointer;font-family:var(--mono);
+  font-weight:500;transition:all .15s;border-radius:0;white-space:nowrap;
+  display:flex;align-items:center;gap:5px;
+}
+.btn-custom-card:hover{border-color:var(--black);color:var(--black);}
+.card-foot-actions{display:flex;gap:6px;align-items:center;}
 
 /* ── SCROLL REVEAL animation ── */
 @keyframes cardReveal{
@@ -1016,6 +1040,40 @@ body{
 .lf-title::after{content:'';flex:1;height:1px;background:var(--g200);}
 .btn-print{width:100%;border:1px solid var(--black);background:var(--white);font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:10px;cursor:pointer;margin-top:10px;font-family:var(--mono);}
 .btn-print:hover{background:var(--black);color:var(--white);}
+
+/* ── PRODUCTION QC STEP ── */
+.tp-surf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:2px;}
+.tp-surf-card{border:0.5px solid var(--g200);border-radius:6px;overflow:hidden;}
+.tp-surf-card-ttl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;font-family:var(--mono);font-weight:500;color:var(--black);padding:5px 8px;border-bottom:0.5px solid var(--g200);background:var(--g50);}
+.tp-lvl-btn{display:flex;align-items:center;gap:6px;width:100%;padding:5px 8px;border:none;background:transparent;cursor:pointer;border-bottom:0.5px solid var(--g100);transition:background .12s;text-align:left;}
+.tp-lvl-btn:last-child{border-bottom:none;}
+.tp-lvl-btn:hover,.tp-lvl-btn.tp-lvl-sel{background:var(--g50);}
+.tp-lvl-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.tp-lvl-txt{font-size:9px;font-family:var(--mono);color:var(--g400);flex:1;text-align:left;}
+.tp-lvl-btn.tp-lvl-sel .tp-lvl-txt{color:var(--black);font-weight:500;}
+.tp-lvl-ck{font-size:9px;color:var(--black);opacity:0;flex-shrink:0;}
+.tp-lvl-btn.tp-lvl-sel .tp-lvl-ck{opacity:1;}
+/* price pill */
+.tp-pp{font-size:8px;font-family:var(--mono);font-weight:600;padding:1px 5px;border-radius:3px;flex-shrink:0;white-space:nowrap;}
+.tp-pp-plus{background:#FCEBEB;color:#A32D2D;}
+.tp-pp-minus{background:#EAF3DE;color:#27500A;}
+.tp-pp-base{background:var(--g50);color:var(--g400);border:0.5px solid var(--g200);}
+/* marking buttons */
+.tp-mark-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.tp-mark-btn{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;border:0.5px solid var(--g200);border-radius:5px;cursor:pointer;transition:all .12s;background:var(--white);gap:8px;}
+.tp-mark-btn:hover{border-color:var(--g400);}
+.tp-mark-btn.tp-mark-sel{background:var(--black);border-color:var(--black);}
+.tp-mark-btn-left{display:flex;align-items:center;gap:6px;min-width:0;flex:1;}
+.tp-mark-dot{width:5px;height:5px;border-radius:50%;background:var(--g200);flex-shrink:0;transition:background .12s;}
+.tp-mark-btn.tp-mark-sel .tp-mark-dot{background:#fafaf8;}
+.tp-mark-lbl{font-size:10px;font-family:var(--mono);color:var(--g400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tp-mark-btn.tp-mark-sel .tp-mark-lbl{color:#fafaf8;}
+.tp-mark-btn.tp-mark-sel .tp-pp-plus{background:rgba(255,80,80,.2);color:#ffaaaa;}
+.tp-mark-btn.tp-mark-sel .tp-pp-minus{background:rgba(80,220,120,.15);color:#a8f0b0;}
+.tp-mark-btn.tp-mark-sel .tp-pp-base{background:rgba(255,255,255,.1);color:#9a9a95;border-color:transparent;}
+/* price adjustment in right panel */
+.tp-adj-row{display:flex;justify-content:space-between;align-items:center;font-size:9px;font-family:var(--mono);padding:2px 0;color:var(--g400);}
+.tp-adj-row .tp-pp{font-size:9px;}
 
 /* ── PACKING 3D CONTROLS ── */
 .ctrl-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
@@ -2259,6 +2317,12 @@ body{
   cursor:pointer;border-radius:6px;transition:all .15s;
 }
 .tp-btn-back:hover{border-color:var(--black);color:var(--black);}
+.tp-btn-summary{
+  background:none;border:0.5px solid var(--black);color:var(--black);
+  padding:10px 14px;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;border-radius:6px;transition:all .15s;white-space:nowrap;
+}
+.tp-btn-summary:hover{background:var(--black);color:var(--white);}
 
 /* ── Right column: Summary ── */
 .tp-right{display:flex;flex-direction:column;background:var(--g50);}
@@ -2325,6 +2389,100 @@ body{
 .tp-price-val{font-size:15px;font-weight:500;font-family:var(--mono);}
 
 
+/* ── CART NAV BUTTON ── */
+.cart-nav-btn{
+  display:none;align-items:center;gap:8px;
+  background:var(--black);color:var(--white);border:none;
+  padding:6px 14px;cursor:pointer;font-family:var(--mono);
+  font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  border-radius:2px;transition:opacity .15s;white-space:nowrap;
+}
+.cart-nav-btn:hover{opacity:.82;}
+.cart-nav-btn.has-items{display:flex;}
+.cart-nav-badge{
+  background:var(--red);color:var(--white);
+  font-size:9px;font-weight:700;
+  min-width:16px;height:16px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;font-family:var(--mono);
+}
+.cart-nav-price{font-size:9px;color:rgba(255,255,255,.6);font-family:var(--mono);}
+
+/* ── CART MODAL ── */
+.cart-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(10,10,10,.65);z-index:300;
+  align-items:flex-end;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.cart-overlay.open{display:flex;}
+.cart-modal{
+  background:var(--white);width:100%;max-width:560px;
+  border-radius:12px 12px 0 0;
+  max-height:85vh;display:flex;flex-direction:column;
+  animation:slideUp .22s ease;
+}
+.cart-modal-hdr{
+  background:var(--black);padding:12px 18px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+  border-radius:12px 12px 0 0;
+}
+.cart-modal-title{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--white);font-family:var(--mono);font-weight:500;}
+.cart-modal-close{background:none;border:none;color:var(--g400);font-size:20px;cursor:pointer;line-height:1;}
+.cart-modal-close:hover{color:var(--white);}
+.cart-modal-empty{padding:40px 20px;text-align:center;color:var(--g400);font-size:12px;font-family:var(--mono);line-height:2;}
+.cart-modal-items{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.cart-modal-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px 18px;border-bottom:0.5px solid var(--g100);
+}
+.cmi-badge{
+  font-size:7px;padding:2px 6px;background:var(--black);color:var(--white);
+  border-radius:2px;font-family:var(--mono);letter-spacing:1px;flex-shrink:0;margin-top:2px;
+}
+.cmi-badge.custom{background:#E6F1FB;color:#0C447C;border:0.5px solid #85B7EB;}
+.cart-custom-spec{font-size:9px;color:#185FA5;font-family:var(--mono);margin-top:2px;line-height:1.4;}
+.cmi-info{flex:1;min-width:0;}
+.cmi-name{font-size:11px;font-weight:500;font-family:var(--mono);color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cmi-sub{font-size:9px;color:var(--g400);font-family:var(--mono);margin-top:1px;}
+.cmi-qty-row{display:flex;align-items:center;gap:7px;margin-top:7px;}
+.cmi-qty-lbl{font-size:9px;color:var(--g400);font-family:var(--mono);}
+.cmi-stepper{display:flex;align-items:center;border:0.5px solid var(--g200);border-radius:3px;overflow:hidden;}
+.cmi-sp{background:var(--g50);border:none;width:22px;height:22px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--black);font-weight:300;transition:background .12s;}
+.cmi-sp:hover{background:var(--g100);}
+.cmi-spnum{width:32px;text-align:center;font-size:11px;font-family:var(--mono);font-weight:500;color:var(--black);background:var(--white);}
+.cmi-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.cmi-del{background:none;border:none;cursor:pointer;color:var(--g300);font-size:18px;line-height:1;padding:0;transition:color .15s;}
+.cmi-del:hover{color:var(--red);}
+.cmi-total{font-size:12px;font-weight:500;font-family:var(--mono);color:var(--black);}
+.cmi-wt{font-size:9px;color:var(--g400);font-family:var(--mono);}
+.cart-modal-summary{
+  padding:12px 18px;background:var(--g50);
+  border-top:0.5px solid var(--g200);flex-shrink:0;
+}
+.cms-row{display:flex;justify-content:space-between;font-size:10px;font-family:var(--mono);color:var(--g400);margin-bottom:4px;}
+.cms-total{display:flex;justify-content:space-between;align-items:baseline;padding-top:8px;border-top:0.5px solid var(--g200);margin-top:4px;}
+.cms-total-lbl{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);}
+.cms-total-val{font-size:22px;font-weight:300;font-family:var(--mono);color:var(--black);}
+.cart-modal-actions{
+  display:grid;grid-template-columns:1fr 1fr;
+  border-top:0.5px solid var(--g200);flex-shrink:0;
+}
+.cma-btn{
+  padding:14px;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;font-family:var(--mono);font-weight:500;border:none;
+  text-align:center;transition:opacity .15s;
+}
+.cma-btn:hover{opacity:.82;}
+.cma-copy{background:var(--black);color:var(--white);}
+.cma-clear{background:var(--g50);color:var(--g400);border-left:0.5px solid var(--g200);}
+
+/* add-to-cart stepper on card */
+.card-stepper{display:flex;align-items:center;gap:0;border:0.5px solid var(--g200);border-radius:2px;overflow:hidden;}
+.cs-btn{background:var(--g50);border:none;width:26px;height:28px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--black);font-weight:300;transition:background .12s;}
+.cs-btn:hover{background:var(--g100);}
+.cs-num{width:32px;text-align:center;font-size:11px;font-family:var(--mono);font-weight:500;color:var(--black);background:var(--white);}
+
 /* ── AUTH NAV ── */
 .nav-auth{display:flex;align-items:center;gap:10px;font-family:var(--mono);}
 .btn-login{
@@ -2359,7 +2517,7 @@ body{
 
 /* ── PATTERN BUTTONS ── */
 .pattern-actions{display:flex;gap:8px;margin-bottom:12px;}
-.btn-pattern{
+.btn-pattern{display:inline-flex;align-items:center;gap:6px;
   flex:1;background:none;border:1px solid var(--g200);
   color:var(--g600);font-family:var(--mono);font-size:10px;
   letter-spacing:1.5px;text-transform:uppercase;
@@ -2397,6 +2555,8 @@ body{
   letter-spacing:1px;text-transform:uppercase;color:var(--g400);
   padding:5px 8px;cursor:pointer;font-family:var(--mono);transition:all .15s;
 }
+.btn-overwrite{background:none;border:1px solid var(--g200);color:var(--g600);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 10px;cursor:pointer;font-family:var(--mono);transition:all .15s;border-radius:0;}
+.btn-overwrite:hover{border-color:var(--black);color:var(--black);}
 .btn-del:hover{border-color:var(--red);color:var(--red);}
 .pattern-empty,.pattern-loading{
   text-align:center;padding:28px 0;font-size:11px;
@@ -2420,6 +2580,12 @@ body{
     </div>
     <div class="nav-right">
       <div class="hdr-stat" id="hdr-stat"></div>
+      <button class="cart-nav-btn" id="cart-nav-btn" onclick="openCartModal()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1h2l2.5 9h6l1.5-5.5H4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="12" r="1.1" fill="currentColor"/><circle cx="10.5" cy="12" r="1.1" fill="currentColor"/></svg>
+        รายการ
+        <span class="cart-nav-badge" id="cart-nav-badge">0</span>
+        <span class="cart-nav-price" id="cart-nav-price">฿0</span>
+      </button>
       <div class="nav-auth" id="nav-auth">
         <button class="btn-login" onclick="openLoginModal()">เข้าสู่ระบบ</button>
       </div>
@@ -2993,10 +3159,9 @@ body{
         </div>
         <div style="position:sticky;bottom:0;z-index:10;margin:0 -1px;background:var(--white);">
           <div class="cta-row" style="border-top:1px solid var(--g200);">
-            <button class="btn-cta" id="btn-cta" onclick="openOrderModal()">สั่งซื้อ</button>
-            <button class="btn-custom" onclick="openQuickQuote()" title="Quick Quote — ตัดขนาด+ราคาทันที" style="border-left:1px solid var(--g200);">
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 10L6 2l4 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 7.5h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-              Quick
+            <button class="btn-cta" id="btn-cta" onclick="openQuickQuote()">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="flex-shrink:0"><path d="M2 10L6 2l4 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 7.5h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              Quick Quote
             </button>
             <button class="btn-custom" onclick="openCustomChecker()" title="Custom Order — ปรับ Packing/Surface/Certificate" style="border-left:1px solid var(--g200);">
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 6.5h4M6.5 4.5v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
@@ -3958,9 +4123,10 @@ function renderGrid(){
     '<div class="grid">';
   filteredSkus.forEach(function(s,i){
     var stock=parseInt(s.STOCK_QTY)||0;
-    var sc=stock===0?'red':stock<10?'yellow':'green';
-    var sbadge=stock===0?'out-stock':stock<10?'low-stock':'in-stock';
-    var slabel=stock===0?'หมดสต็อก':stock<10?'เหลือน้อย':'มีสต็อก';
+    var isMTO = stock===0;
+    var sc=isMTO?'yellow':stock<10?'yellow':'green';
+    var sbadge=isMTO?'mto':stock<10?'low-stock':'in-stock';
+    var slabel=isMTO?'MTO · สั่งผลิต':stock<10?'เหลือน้อย':'มีสต็อก';
     var price=parseInt(s.PRICE_PER_SHEET_THB)||0;
     var prickg=(parseFloat(s.PRICE_PER_KG_THB)||0).toFixed(1);
     var t=parseFloat(s.THICKNESS_TARGET_MM)||0;
@@ -3977,7 +4143,7 @@ function renderGrid(){
     // thickness display: show TMT actual if different from target
     var thickDisplay = t+'';
     if(tmt && tmt!==t) thickDisplay = t+' <span style="font-size:10px;color:var(--g400);font-family:var(--mono);">(TMT '+tmt+')</span>';
-    h+='<div class="card" style="transition-delay:'+delay+'s">'+
+    h+='<div class="card" data-idx="'+i+'" style="transition-delay:'+delay+'s">'+
       '<div class="card-img" onclick="openViewer('+i+')" onmouseenter="hoverBundle('+i+',true)" onmouseleave="hoverBundle('+i+',false)">'+
         '<canvas id="cv-'+i+'" style="display:block;width:100%;height:100%;position:relative;z-index:2;"></canvas>'+
         '<div class="status-badge '+sbadge+'">'+slabel+'</div>'+
@@ -4011,8 +4177,24 @@ function renderGrid(){
         '</div>'+
       '</div>'+
       '<div class="card-foot">'+
-        '<button class="btn-spec" onclick="openViewer('+i+')">ดู Spec Sheet</button>'+
-        '<button class="btn-order-card" '+(stock===0?'disabled':'')+' onclick="openViewer('+i+');setTimeout(openCustomChecker,120)">Custom →</button>'+
+        '<button class="btn-spec" onclick="openViewer('+i+')">ดู Spec →</button>'+
+        '<div class="card-foot-actions">'+
+          '<button class="btn-custom-card" onclick="event.stopPropagation();openViewer('+i+');setTimeout(openCustomChecker,120)" title="Custom Order">'+
+            '<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1.1"/><path d="M3.5 5.5h4M5.5 3.5v4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>'+
+            'Custom'+
+          '</button>'+
+          (cartItems[s.SKU]
+            ? (function(){var sid=s.SKU.replace(/[^a-zA-Z0-9]/g,'-');return '<div class="card-stepper">'+
+                '<button class="cs-btn" onclick="event.stopPropagation();cartChg(this.dataset.sku,'+price+','+kg+',-1)" data-sku="'+s.SKU+'">−</button>'+
+                '<div class="cs-num" id="csn-'+sid+'">'+cartItems[s.SKU].qty+'</div>'+
+                '<button class="cs-btn" onclick="event.stopPropagation();cartChg(this.dataset.sku,'+price+','+kg+',1)" data-sku="'+s.SKU+'">+</button>'+
+              '</div>';})()
+            : (isMTO
+                ? '<button class="btn-mto-card" onclick="event.stopPropagation();cartAdd(this.dataset.sku,'+price+','+kg+',true)" data-sku="'+s.SKU+'">สั่งผลิต</button>'
+                : '<button class="btn-order-card" onclick="event.stopPropagation();cartAdd(this.dataset.sku,'+price+','+kg+',false)" data-sku="'+s.SKU+'">+ ใส่</button>'
+              )
+          )+
+        '</div>'+
       '</div>'+
     '</div>';
   });
@@ -4020,33 +4202,53 @@ function renderGrid(){
   el.innerHTML=h;
   qhBindCards();
 
-  // -- Scroll Reveal with IntersectionObserver --
+  // -- Scroll Reveal + Canvas init --
   var cards=el.querySelectorAll('.card');
+
+  function initCardCanvas(card){
+    var idx=parseInt(card.getAttribute('data-idx'));
+    if(isNaN(idx))return;
+    var s=filteredSkus[idx];
+    if(!s)return;
+    var cv=document.getElementById('cv-'+idx);
+    if(!cv)return;
+    var pr=window.devicePixelRatio||1;
+    var pw=cv.parentElement.offsetWidth;
+    var ph=cv.parentElement.offsetHeight;
+    if(!pw||!ph)return;
+    cv.width=Math.round(pw*pr);
+    cv.height=Math.round(ph*pr);
+    drawBundleCard('cv-'+idx,s,'wire');
+  }
+
   if('IntersectionObserver' in window){
     var io=new IntersectionObserver(function(entries){
       entries.forEach(function(e){
         if(e.isIntersecting){
           e.target.classList.add('revealed');
+          initCardCanvas(e.target);
           io.unobserve(e.target);
         }
       });
-    },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+    },{threshold:0.04,rootMargin:'120px 0px 120px 0px'});
     cards.forEach(function(c){io.observe(c);});
   } else {
-    // fallback — reveal all immediately
-    cards.forEach(function(c){c.classList.add('revealed');});
+    cards.forEach(function(c){
+      c.classList.add('revealed');
+      initCardCanvas(c);
+    });
   }
 
+  // วาด card ที่อยู่ใน viewport ตั้งแต่แรก (ก่อน scroll)
   setTimeout(function(){
-    filteredSkus.forEach(function(s,i){
-      var cv=document.getElementById('cv-'+i);
-      if(!cv)return;
-      var pr=window.devicePixelRatio||1;
-      cv.width=Math.round(cv.parentElement.offsetWidth*pr);
-      cv.height=Math.round(cv.parentElement.offsetHeight*pr);
-      drawBundleCard('cv-'+i,s,'wire');
+    cards.forEach(function(c){
+      var r=c.getBoundingClientRect();
+      if(r.top < window.innerHeight+200){
+        c.classList.add('revealed');
+        initCardCanvas(c);
+      }
     });
-  },60);
+  },80);
 }
 
 // -- OPEN VIEWER -----------------------------------
@@ -5531,6 +5733,7 @@ function calcUpdate(){
   calcInitOfferUI();
   var q=parseInt(document.getElementById('qty').value)||0;
   var p=parseInt(currentSku.PRICE_PER_SHEET_THB)||0;
+  var _pAdj=_tpGetProdQCAdj(); p=p+_pAdj.total;
   var w=calcKgPerSheet();
   var b=parseInt(currentSku.BUNDLE_SIZE)||5;
   var stock=window._calcStock||parseInt(currentSku.STOCK_QTY)||0;
@@ -5613,18 +5816,18 @@ function openCustomChecker(){
   updateAuthUI();
   _tpCurStep = 0;
   _tpSkippedSteps = {};
-  if(_tp.cfg){ _tpInit(); _tpRenderStep(); _tpUpdateSummary(); return; }
+  if(_tp.cfg){ _tpInit(); _tpUpdateStepBar(); _tpRenderStep(); _tpUpdateSummary(); return; }
   document.getElementById('tp-step-body').innerHTML='<div style="text-align:center;padding:32px 0;font-size:11px;color:var(--g400);font-family:var(--mono);">กำลังโหลด options...</div>';
   var loadUrl = SCRIPT_URL+'?action=getCustomOptions&nocache='+Date.now();
   fetch(loadUrl)
     .then(function(r){return r.json();})
     .then(function(res){
       _tp.cfg=_tpParse((res.options&&res.options.length>0)?res.options:_tpFallback());
-      _tpInit(); _tpRenderStep(); _tpUpdateSummary();
+      _tpInit(); _tpUpdateStepBar(); _tpRenderStep(); _tpUpdateSummary();
     })
     .catch(function(){
       _tp.cfg=_tpParse(_tpFallback());
-      _tpInit(); _tpRenderStep(); _tpUpdateSummary();
+      _tpInit(); _tpUpdateStepBar(); _tpRenderStep(); _tpUpdateSummary();
     });
 }
 function closeCustomChecker(){
@@ -5632,6 +5835,94 @@ function closeCustomChecker(){
 }
 function closeCustomSummary(){
   document.getElementById('custom-summary-overlay').classList.remove('open');
+}
+
+// ================================================================
+//  CONCEPT A — "สรุปเลย" เพิ่ม custom item เข้า cart ทันที
+// ================================================================
+function _tpBuildCustomSpec(){
+  // สร้าง spec summary string สำหรับแสดงใน cart
+  var s = currentSku; if(!s) return { lines:[], priceAdj:0 };
+  var lines = [];
+  var priceAdj = 0;
+
+  // PROD_QC adj
+  var prodAdj = _tpGetProdQCAdj();
+  priceAdj += prodAdj.total;
+  var surfNames = ['ไม่มี','ระดับ 1.5','ระดับ 2','ระดับ 3'];
+  if(_prodQC.rust !== 1) lines.push('สนิม '+surfNames[_prodQC.rust]);
+  if(_prodQC.scale !== 1) lines.push('สเกล '+surfNames[_prodQC.scale]);
+  if(_prodQC.crack !== 1) lines.push('คลื่น '+surfNames[_prodQC.crack]);
+  var markNames = {
+    mark_none:'ไม่พ่น', mark_erase:'ลบตัวพ่น', mark_tmt:'พ่น TMT No.',
+    mark_heat:'พ่น Heat No.', mark_heat_coil:'พ่น Heat/Coil No.',
+    mark_tmt_nosize:'TMT No. ไม่พ่น Size'
+  };
+  if(_prodQC.marking !== 'mark_tmt') lines.push(markNames[_prodQC.marking]||_prodQC.marking);
+
+  // DIM cut
+  if(_tp.st && _tp.st['DIM']){
+    var stdW=parseInt(s.WIDTH_MM)||1200, stdL=parseInt(s.LENGTH_MM)||2400;
+    var vw=(_tp.st['DIM']||{}).w||0, vl=(_tp.st['DIM']||{}).l||0;
+    if(vw && vw!==stdW){ lines.push('ตัด W '+vw+'mm'); priceAdj+=15; }
+    if(vl && vl!==stdL){ lines.push('ตัด L '+vl+'mm'); priceAdj+=12; }
+  }
+
+  // PACK checkboxes
+  if(_tp.cfg){
+    _tp.cfg.forEach(function(cat){
+      if(cat.type==='checkbox'){
+        cat.subs.forEach(function(sub){
+          if((_tp.st[cat.id]||{})[sub.id]){
+            lines.push(sub.label);
+            priceAdj += _tpSubAmt(sub);
+          }
+        });
+      }
+    });
+  }
+
+  return { lines:lines, priceAdj:priceAdj };
+}
+
+function _tpAddToCartNow(){
+  var s = currentSku; if(!s) return;
+  var qty = parseInt((document.getElementById('tp-qty-live')||document.getElementById('tp-qty')||{value:10}).value)||10;
+  var basePrice = parseInt(s.PRICE_PER_SHEET_THB)||0;
+  var kg = parseFloat(s.WEIGHT_PER_SHEET_KG)||0;
+  var spec = _tpBuildCustomSpec();
+  var unitPrice = basePrice + Math.round(spec.priceAdj);
+
+  // สร้าง unique key สำหรับ custom item (SKU + spec hash)
+  var specStr = spec.lines.join('|');
+  var cartKey = s.SKU + (specStr ? '__CUSTOM__'+specStr : '');
+
+  var label = (parseFloat(s.THICKNESS_TARGET_MM)||0)+'mm · '+(parseInt(s.WIDTH_MM)||0)+'×'+(parseInt(s.LENGTH_MM)||0)+' mm';
+  var badge = surfaceBadgeLabel ? surfaceBadgeLabel(s.SURFACE) : (s.SURFACE||'');
+  var isCustom = spec.lines.length > 0;
+
+  cartItems[cartKey] = {
+    qty: qty,
+    price: unitPrice,
+    kg: kg,
+    label: label,
+    badge: badge,
+    sku: s.SKU,
+    mto: false,
+    isCustom: isCustom,
+    customSpec: spec.lines,
+    priceAdj: Math.round(spec.priceAdj)
+  };
+
+  cartRenderNav();
+  closeCustomChecker();
+
+  // flash cart nav button
+  var btn = document.getElementById('cart-nav-btn');
+  if(btn){
+    btn.style.transform='scale(1.08)';
+    setTimeout(function(){ btn.style.transform=''; }, 300);
+  }
 }
 
 function runCustomCheck(){
@@ -7152,8 +7443,24 @@ window.addEventListener('load',function(){
   if(SHEET_ID==='YOUR_GOOGLE_SHEET_ID_HERE'){showError('กรุณาแก้ไข SHEET_ID ในโค้ด JS ก่อนใช้งาน');return;}
   loadCatalog();
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('orderOverlay').classList.remove('open');closeQuickQuote();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('orderOverlay').classList.remove('open');closeQuickQuote();closeCartModal();}});
 </script>
+<!-- ══ CART MODAL ══ -->
+<div class="cart-overlay" id="cart-overlay" onclick="if(event.target===this)closeCartModal()">
+  <div class="cart-modal" onclick="event.stopPropagation()">
+    <div class="cart-modal-hdr">
+      <span class="cart-modal-title">รายการสรุป</span>
+      <button class="cart-modal-close" onclick="closeCartModal()">×</button>
+    </div>
+    <div class="cart-modal-items" id="cart-modal-items"></div>
+    <div id="cart-modal-summary"></div>
+    <div class="cart-modal-actions" id="cart-modal-actions" style="display:none;">
+      <div class="cma-btn cma-copy" onclick="cartCopyQuote()">Copy Quote</div>
+      <div class="cma-btn cma-clear" onclick="cartClearAll()">ล้างทั้งหมด</div>
+    </div>
+  </div>
+</div>
+
 <div id="tooltip-box" class="tooltip-box"></div>
 
 <!-- ══ QUICK QUOTE OVERLAY ══ -->
@@ -7232,15 +7539,15 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.ge
         <div class="tp-step-bar" id="tp-step-bar">
           <div class="tp-step-item active" data-step="0" onclick="_tpGoStep(0)">
             <div class="tp-step-num">1</div>
-            <span class="tp-step-label">ขนาด + จำนวน</span>
+            <span class="tp-step-label">มิติ + จำนวน</span>
           </div>
           <div class="tp-step-item" data-step="1" onclick="_tpGoStep(1)">
             <div class="tp-step-num">2</div>
-            <span class="tp-step-label">Packing</span>
+            <span class="tp-step-label">การผลิต & QC</span>
           </div>
           <div class="tp-step-item" data-step="2" onclick="_tpGoStep(2)">
             <div class="tp-step-num">3</div>
-            <span class="tp-step-label">Surface</span>
+            <span class="tp-step-label">Packing & ส่ง</span>
           </div>
           <div class="tp-step-item" data-step="3" onclick="_tpGoStep(3)">
             <div class="tp-step-num">4</div>
@@ -7260,6 +7567,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.ge
           <div style="display:flex;gap:8px;flex:1;order:1;">
             <button class="tp-btn-back" id="tp-btn-back" style="display:none" onclick="_tpPrevStep()">← ย้อนกลับ</button>
             <button class="tp-btn-next" id="tp-btn-next" onclick="_tpNextStep()">ถัดไป →</button>
+            <button class="tp-btn-summary" id="tp-btn-summary" onclick="_tpAddToCartNow()">+ สรุปเลย</button>
           </div>
         </div>
       </div>
@@ -7294,8 +7602,14 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.ge
         </div>
         <button class="tp-confirm-btn" id="tp-confirm-btn" onclick="runCustomCheck()">ยืนยัน Custom →</button>
         <div class="pattern-actions" id="cc-pattern-actions" style="display:none;padding:7px 14px 14px;">
-          <button class="btn-pattern" onclick="openSavePatternModal()">&#128190; บันทึก Pattern</button>
-          <button class="btn-pattern" onclick="openLoadPatternModal()">&#128194; โหลด Pattern</button>
+          <button class="btn-pattern" onclick="openSavePatternModal()">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1h7.5L11 3.5V11H1V1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><rect x="3" y="7" width="6" height="4" rx=".5" stroke="currentColor" stroke-width="1.1"/><rect x="3.5" y="1" width="4" height="2.5" rx=".3" stroke="currentColor" stroke-width="1.1"/></svg>
+            บันทึก Pattern
+          </button>
+          <button class="btn-pattern" onclick="openLoadPatternModal()">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 4.5V11h10V4.5H7.5L6.5 3h-3L2.5 4.5H1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><circle cx="6" cy="7.5" r="1.8" stroke="currentColor" stroke-width="1.1"/></svg>
+            โหลด Pattern
+          </button>
         </div>
         <div class="pattern-login-hint" id="cc-pattern-hint" style="display:none;padding:6px 14px 10px;"></div>
       </div>
@@ -7624,6 +7938,7 @@ function renderPatternList(patterns) {
         '</div>' +
         '<div class="pattern-item-actions">' +
           '<button class="btn-apply" onclick="applyPattern(' + idx + ')">โหลด</button>' +
+          '<button class="btn-overwrite" onclick="confirmOverwritePattern(' + idx + ')">บันทึกทับ</button>' +
           '<button class="btn-del"   onclick="confirmDeletePattern(' + idx + ')">ลบ</button>' +
         '</div>' +
       '</div>';
@@ -7645,6 +7960,42 @@ function applyPattern(idx) {
   document.getElementById('cc-note').value           = pt.note        || '';
   closeLoadPatternModal();
 }
+function confirmOverwritePattern(idx) {
+  var pt = (window._patternCache || [])[idx];
+  if (!pt) return;
+  if (!confirm('บันทึกทับ Pattern "' + pt.patternName + '" ด้วยค่าปัจจุบัน?')) return;
+  var s = getSession(); if (!s) return;
+  // ลบ pattern เดิม แล้วสร้างใหม่ด้วยชื่อเดิม
+  gasCall('deletePattern', { id: pt.id, username: s.username })
+    .then(function(res) {
+      if (!res.success) { alert('ลบ pattern เดิมไม่สำเร็จ: ' + (res.message||'')); return; }
+      return gasCall('savePattern', {
+        username    : s.username,
+        patternName : pt.patternName,
+        sku         : document.getElementById('cc-sku-pill').textContent || '',
+        cut_w       : document.getElementById('cc-w').value,
+        cut_l       : document.getElementById('cc-l').value,
+        bundle      : document.getElementById('cc-bundle').value,
+        export_pack : document.getElementById('cc-export').checked,
+        smallbundle : document.getElementById('cc-smallbundle').checked,
+        individual  : document.getElementById('cc-individual').checked,
+        pallet      : document.getElementById('cc-pallet').checked,
+        millcert    : document.getElementById('cc-millcert').checked,
+        surface     : document.getElementById('cc-surface').checked,
+        note        : document.getElementById('cc-note').value
+      });
+    })
+    .then(function(res) {
+      if (res && res.success) {
+        // refresh list
+        fetchPatterns(s.username);
+      } else if (res) {
+        alert('บันทึกทับไม่สำเร็จ: ' + (res.error||''));
+      }
+    })
+    .catch(function() { alert('เชื่อมต่อ server ไม่ได้'); });
+}
+
 function confirmDeletePattern(idx) {
   var pt = (window._patternCache || [])[idx];
   if (!pt) return;
@@ -7775,6 +8126,197 @@ function _tpIsDef(cat){
   if(cat.type==='number') return parseInt(_tp.st[cat.id])===(cat.defKey?parseInt(s[cat.defKey]||0):0);
   if(cat.type==='text') return !_tp.st[cat.id];
   return true;
+}
+
+// ================================================================
+//  CART SYSTEM
+// ================================================================
+var cartItems = {}; // { SKU: {qty, price, kg, label} }
+
+function cartAdd(sku, price, kg, isMTO){
+  var s = filteredSkus.find(function(x){ return x.SKU===sku; }) ||
+          allSkus.find(function(x){ return x.SKU===sku; });
+  var label = s ? makeName(s) : sku;
+  var badge = s ? surfaceBadgeLabel(s.SURFACE) : '';
+  var mto = isMTO || (s && parseInt(s.STOCK_QTY||0)===0);
+  cartItems[sku] = { qty:10, price:price, kg:kg, label:label, badge:badge, sku:sku, mto:mto };
+  cartRenderNav();
+  renderGrid();
+}
+
+function cartChg(sku, price, kg, delta){
+  if(!cartItems[sku]){ cartAdd(sku, price, kg); return; }
+  cartItems[sku].qty = Math.max(0, cartItems[sku].qty + delta);
+  if(cartItems[sku].qty === 0){
+    delete cartItems[sku];
+    cartRenderNav();
+    renderGrid(); // ต้องเปลี่ยนปุ่มกลับเป็น "ใส่รายการ"
+    return;
+  }
+  cartRenderNav();
+  // อัปเดต stepper number ใน card โดยไม่ re-render ทั้งหน้า
+  var safeId = sku.replace(/[^a-zA-Z0-9]/g,'-');
+  var numEl = document.getElementById('csn-'+safeId);
+  if(numEl) numEl.textContent = cartItems[sku].qty;
+}
+
+function cartRenderNav(){
+  var keys = Object.keys(cartItems);
+  var btn = document.getElementById('cart-nav-btn');
+  var badge = document.getElementById('cart-nav-badge');
+  var priceEl = document.getElementById('cart-nav-price');
+  if(!btn) return;
+  if(!keys.length){
+    btn.classList.remove('has-items');
+    return;
+  }
+  btn.classList.add('has-items');
+  badge.textContent = keys.length;
+  var total = keys.reduce(function(t,k){ return t + cartItems[k].price * cartItems[k].qty; }, 0);
+  priceEl.textContent = '฿'+total.toLocaleString();
+}
+
+function openCartModal(){
+  cartRenderModal();
+  document.getElementById('cart-overlay').classList.add('open');
+}
+function closeCartModal(){
+  document.getElementById('cart-overlay').classList.remove('open');
+}
+
+function cartRenderModal(){
+  var keys = Object.keys(cartItems);
+  var itemsEl = document.getElementById('cart-modal-items');
+  var summaryEl = document.getElementById('cart-modal-summary');
+  var actionsEl = document.getElementById('cart-modal-actions');
+  if(!itemsEl) return;
+
+  if(!keys.length){
+    itemsEl.innerHTML = '<div class="cart-modal-empty">ยังไม่มีรายการ<br>กด "+ ใส่รายการ" ที่ card เพื่อเพิ่ม</div>';
+    summaryEl.innerHTML = '';
+    actionsEl.style.display = 'none';
+    return;
+  }
+
+  var totalPrice = 0, totalKg = 0;
+  var html = '';
+  var hasMTO = false;
+  keys.forEach(function(sku){
+    var c = cartItems[sku];
+    var amt = c.price * c.qty;
+    var wt  = c.kg * c.qty;
+    totalPrice += amt; totalKg += wt;
+    if(c.mto) hasMTO = true;
+    var safeId = 'cmn' + sku.replace(/[^a-zA-Z0-9]/g, '_');
+    var borderStyle = c.mto ? 'border-left:2px solid #b8860b;' : c.isCustom ? 'border-left:2px solid #185FA5;' : '';
+    var badgeClass = c.mto ? '" style="background:#FAEEDA;color:#633806;"' : c.isCustom ? ' custom"' : '"';
+    var badgeText = c.mto ? 'MTO' : c.isCustom ? 'CUSTOM' : c.badge;
+    html +=
+      '<div class="cart-modal-item" data-sku="'+sku+'" style="'+borderStyle+'">'+ 
+        '<div class="cmi-badge'+badgeClass+'>'+badgeText+'</div>'+
+        '<div class="cmi-info">'+
+          '<div class="cmi-name">'+c.label+'</div>'+
+          '<div class="cmi-sub">'+c.sku+' · ฿'+c.price.toLocaleString()+'/แผ่น'+(c.priceAdj&&c.priceAdj!==0?' (ปรับ '+(c.priceAdj>0?'+':'')+c.priceAdj+'฿)':'')+'</div>'+
+          (c.isCustom&&c.customSpec&&c.customSpec.length?'<div class="cart-custom-spec">'+c.customSpec.join(' · ')+'</div>':'')+
+          (c.mto?'<div class="cart-mto-warn">สั่งผลิต · lead time 5–15 วัน</div>':'')+
+          '<div class="cmi-qty-row">'+
+            '<span class="cmi-qty-lbl">จำนวน</span>'+
+            '<div class="cmi-stepper">'+
+              '<button class="cmi-sp cmi-minus">−</button>'+
+              '<div class="cmi-spnum" id="'+safeId+'">'+c.qty+'</div>'+
+              '<button class="cmi-sp cmi-plus">+</button>'+
+            '</div>'+
+            '<span class="cmi-qty-lbl">แผ่น</span>'+
+          '</div>'+
+        '</div>'+
+        '<div class="cmi-right">'+
+          '<button class="cmi-del">×</button>'+
+          '<div class="cmi-total">฿'+amt.toLocaleString()+'</div>'+
+          '<div class="cmi-wt">'+wt.toFixed(0)+' kg</div>'+
+        '</div>'+
+      '</div>';
+  });
+  itemsEl.innerHTML = html;
+
+  // bind events via delegation
+  itemsEl.querySelectorAll('.cart-modal-item').forEach(function(row){
+    var sku = row.getAttribute('data-sku');
+    row.querySelector('.cmi-minus').addEventListener('click', function(){ cartModalChg(sku, -1); });
+    row.querySelector('.cmi-plus').addEventListener('click',  function(){ cartModalChg(sku,  1); });
+    row.querySelector('.cmi-del').addEventListener('click',   function(){ cartDel(sku); });
+  });
+
+  summaryEl.innerHTML =
+    '<div class="cart-modal-summary">'+
+      '<div class="cms-row"><span>รายการทั้งหมด</span><span>'+keys.length+' SKU</span></div>'+
+      '<div class="cms-row"><span>น้ำหนักรวม</span><span>'+totalKg.toFixed(0)+' kg</span></div>'+
+      (hasMTO?'<div class="cms-row" style="color:#633806;font-weight:500;"><span>รายการ MTO</span><span>ต้องผลิต 5–15 วัน</span></div>':'')+
+      '<div class="cms-total">'+
+        '<span class="cms-total-lbl">ราคารวม</span>'+
+        '<span class="cms-total-val">฿'+totalPrice.toLocaleString()+'</span>'+
+      '</div>'+
+    '</div>';
+
+  actionsEl.style.display = '';
+}
+
+function cartModalChg(sku, delta){
+  if(!cartItems[sku]) return;
+  cartItems[sku].qty = Math.max(1, cartItems[sku].qty + delta);
+  // update number in modal DOM (cartRenderModal uses cmn + _ separator)
+  var safeId = 'cmn' + sku.replace(/[^a-zA-Z0-9]/g,'_');
+  var numEl = document.getElementById(safeId);
+  if(numEl) numEl.textContent = cartItems[sku].qty;
+  // update total for this item
+  var parent = numEl && numEl.closest('.cart-modal-item');
+  if(parent){
+    var totEl = parent.querySelector('.cmi-total');
+    var wtEl  = parent.querySelector('.cmi-wt');
+    if(totEl) totEl.textContent = '฿'+(cartItems[sku].price*cartItems[sku].qty).toLocaleString();
+    if(wtEl)  wtEl.textContent  = (cartItems[sku].kg*cartItems[sku].qty).toFixed(0)+' kg';
+  }
+  // update summary
+  var keys = Object.keys(cartItems);
+  var totalPrice = keys.reduce(function(t,k){ return t+cartItems[k].price*cartItems[k].qty; }, 0);
+  var totalKg    = keys.reduce(function(t,k){ return t+cartItems[k].kg*cartItems[k].qty; }, 0);
+  var sumEl = document.querySelector('.cms-total-val');
+  if(sumEl) sumEl.textContent = '฿'+totalPrice.toLocaleString();
+  var sumKgEl = document.querySelectorAll('.cms-row')[1];
+  if(sumKgEl) sumKgEl.lastElementChild.textContent = totalKg.toFixed(0)+' kg';
+  cartRenderNav();
+}
+
+function cartDel(sku){
+  delete cartItems[sku];
+  cartRenderNav();
+  cartRenderModal();
+  renderGrid();
+}
+
+function cartClearAll(){
+  cartItems = {};
+  cartRenderNav();
+  closeCartModal();
+  renderGrid();
+}
+
+function cartCopyQuote(){
+  var keys = Object.keys(cartItems);
+  var lines = ['รายการสรุป — TMT Steel', ''];
+  lines = lines.concat(keys.map(function(sku){
+    var c = cartItems[sku];
+    var mtoTag = c.mto ? ' [สั่งผลิต]' : '';
+    var customTag = (c.isCustom && c.customSpec && c.customSpec.length) ? ' [Custom: '+c.customSpec.join(', ')+']' : '';
+    return c.badge+' '+c.label+' × '+c.qty+' แผ่น = ฿'+(c.price*c.qty).toLocaleString()+mtoTag+customTag;
+  }));
+  var total = keys.reduce(function(t,k){ return t+cartItems[k].price*cartItems[k].qty; }, 0);
+  var kg    = keys.reduce(function(t,k){ return t+cartItems[k].kg*cartItems[k].qty; }, 0);
+  lines.push('');
+  lines.push('รวมทั้งหมด ฿'+total.toLocaleString()+' · '+kg.toFixed(0)+' kg');
+  navigator.clipboard && navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var btn = document.querySelector('.cma-copy');
+    if(btn){ btn.textContent='✓ Copied!'; setTimeout(function(){ btn.textContent='Copy Quote'; }, 1800); }
+  });
 }
 
 // ================================================================
@@ -8058,12 +8600,171 @@ function _tpToggleSkip(checked){
   _tpRenderStep();
 }
 
+// ================================================================
+//  PRODUCTION QC STEP — Surface + Marking pricing
+// ================================================================
+
+// Pricing config — loaded from CUSTOM_PRICING sheet, fallback ใช้ default
+var _customPricing = {
+  surface_none:  +8,
+  surface_1_5:    0,
+  surface_2:     -5,
+  surface_3:    -12,
+  mark_none:     -3,
+  mark_erase:    +2,
+  mark_tmt:       0,
+  mark_heat:     +2,
+  mark_heat_coil: +4,
+  mark_tmt_nosize:-1
+};
+
+// State สำหรับ step การผลิต & QC
+var _prodQC = {
+  rust:  1,  // 0=ไม่มี 1=1.5 2=ระดับ2 3=ระดับ3
+  scale: 1,
+  crack: 1,
+  marking: 'mark_tmt',  // key ของ marking
+  qc_points: 3,
+  machine: 'Line 1'
+};
+
+// load CUSTOM_PRICING จาก GAS ถ้ามี
+(function loadCustomPricing(){
+  if(typeof gasCall !== 'function') return;
+  gasCall('getCustomPricing', {}).then(function(res){
+    if(res && res.pricing){
+      Object.assign(_customPricing, res.pricing);
+    }
+  }).catch(function(){});
+})();
+
+var _SURF_LEVELS = [
+  { key:'surface_none', dot:'#1a7a4a', lbl:'ไม่มี' },
+  { key:'surface_1_5',  dot:'#b8860b', lbl:'ระดับ 1.5' },
+  { key:'surface_2',    dot:'#d97706', lbl:'ระดับ 2' },
+  { key:'surface_3',    dot:'#b03a2e', lbl:'ระดับ 3' }
+];
+var _MARK_OPTIONS = [
+  { key:'mark_none',      lbl:'ไม่พ่น' },
+  { key:'mark_erase',     lbl:'ลบตัวพ่น' },
+  { key:'mark_tmt',       lbl:'พ่น TMT No.' },
+  { key:'mark_heat',      lbl:'พ่น Heat No.' },
+  { key:'mark_heat_coil', lbl:'พ่น Heat/Coil No.' },
+  { key:'mark_tmt_nosize',lbl:'TMT No. ไม่พ่น Size' }
+];
+
+function _ppHtml(val){
+  if(val > 0) return '<span class="tp-pp tp-pp-plus">+฿'+val+'</span>';
+  if(val < 0) return '<span class="tp-pp tp-pp-minus">-฿'+Math.abs(val)+'</span>';
+  return '<span class="tp-pp tp-pp-base">base</span>';
+}
+
+function _tpRenderProdQC(){
+  var p = _customPricing;
+  var surfTypes = [
+    {id:'rust',  ttl:'ระดับสนิม'},
+    {id:'scale', ttl:'ระดับสเกล'},
+    {id:'crack', ttl:'คลื่น/รอยหัก'}
+  ];
+  var parts = [];
+
+  // สภาพผิว section
+  parts.push('<div class="tp-section"><div class="tp-sec-hdr">สภาพผิว</div><div class="tp-surf-grid">');
+  surfTypes.forEach(function(st){
+    parts.push('<div class="tp-surf-card"><div class="tp-surf-card-ttl">'+st.ttl+'</div>');
+    _SURF_LEVELS.forEach(function(lv, idx){
+      var sel = _prodQC[st.id] === idx;
+      var priceVal = p[lv.key]||0;
+      parts.push(
+        '<button class="tp-lvl-btn'+(sel?' tp-lvl-sel':'')+'"'+
+        ' data-type="'+st.id+'" data-idx="'+idx+'"'+
+        ' onclick="_tpPickSurf(this.dataset.type,+this.dataset.idx)">'+
+        '<div class="tp-lvl-dot" style="background:'+lv.dot+'"></div>'+
+        '<span class="tp-lvl-txt">'+lv.lbl+'</span>'+
+        _ppHtml(priceVal)+
+        '<span class="tp-lvl-ck">✓</span>'+
+        '</button>'
+      );
+    });
+    parts.push('</div>');
+  });
+  parts.push('</div></div>');
+
+  // รูปแบบการพ่น section
+  parts.push('<div class="tp-section"><div class="tp-sec-hdr">รูปแบบการพ่น</div><div class="tp-mark-grid">');
+  _MARK_OPTIONS.forEach(function(mo){
+    var sel = _prodQC.marking === mo.key;
+    var priceVal = p[mo.key]||0;
+    parts.push(
+      '<button class="tp-mark-btn'+(sel?' tp-mark-sel':'')+'"'+
+      ' data-key="'+mo.key+'"'+
+      ' onclick="_tpPickMark(this.dataset.key)">'+
+      '<div class="tp-mark-btn-left"><div class="tp-mark-dot"></div>'+
+      '<span class="tp-mark-lbl">'+mo.lbl+'</span></div>'+
+      _ppHtml(priceVal)+
+      '</button>'
+    );
+  });
+  parts.push('</div></div>');
+
+  // QC & เครื่องจักร
+  var machines = ['Line 1','Line 2','Line 3','ระบุเอง'];
+  var machOpts = machines.map(function(m){
+    return '<option'+(m===_prodQC.machine?' selected':'')+'>'+m+'</option>';
+  }).join('');
+  parts.push(
+    '<div class="tp-section">'+
+    '<div class="tp-sec-hdr">QC & เครื่องจักร</div>'+
+    '<div class="tp-dim-grid">'+
+    '<div class="tp-field"><label>วัดตรุดิบ (จุด)</label>'+
+    '<input type="number" value="'+_prodQC.qc_points+'" min="1" max="20"'+
+    ' oninput="_prodQC.qc_points=parseInt(this.value)||3;_tpUpdateSummary()"></div>'+
+    '<div class="tp-field"><label>เครื่องจักร</label>'+
+    '<select onchange="_prodQC.machine=this.value;_tpUpdateSummary()">'+machOpts+'</select>'+
+    '</div></div></div>'
+  );
+
+  return parts.join('');
+}
+
+function _tpPickSurf(type, idx){
+  _prodQC[type] = idx;
+  // อัปเดต DOM ตรงๆ ไม่ re-render ทั้ง step
+  var cards = document.querySelectorAll('.tp-surf-card');
+  cards.forEach(function(card){
+    var btns = card.querySelectorAll('.tp-lvl-btn');
+    // หา card ที่ตรงกับ type โดยเช็ค data-type ของปุ่มแรก
+    if(!btns.length || btns[0].dataset.type !== type) return;
+    btns.forEach(function(btn){
+      var isSel = +btn.dataset.idx === idx;
+      btn.classList.toggle('tp-lvl-sel', isSel);
+    });
+  });
+  _tpUpdateSummary();
+}
+function _tpPickMark(key){
+  _prodQC.marking = key;
+  // อัปเดต DOM ตรงๆ ไม่ re-render ทั้ง step
+  document.querySelectorAll('.tp-mark-btn').forEach(function(btn){
+    btn.classList.toggle('tp-mark-sel', btn.dataset.key === key);
+  });
+  _tpUpdateSummary();
+}
+
+function _tpGetProdQCAdj(){
+  var p = _customPricing;
+  var surfKeys = ['surface_none','surface_1_5','surface_2','surface_3'];
+  var surfAdj = (p[surfKeys[_prodQC.rust]]||0) + (p[surfKeys[_prodQC.scale]]||0) + (p[surfKeys[_prodQC.crack]]||0);
+  var markAdj = p[_prodQC.marking]||0;
+  return { surf: surfAdj, mark: markAdj, total: surfAdj + markAdj };
+}
+
 var _tpCurStep = 0;
 var _TP_STEPS = [
-  { label: 'ขนาด + จำนวน', cats: ['DIM','BUNDLE','STRAP'] },
-  { label: 'Packing',       cats: ['PACK'] },
-  { label: 'Surface',       cats: ['SURF'] },
-  { label: 'อื่นๆ',         cats: ['CERT','NOTE'] }
+  { label: 'มิติ + จำนวน',   cats: ['DIM','BUNDLE','STRAP'] },
+  { label: 'การผลิต & QC',   cats: ['PROD_QC'] },
+  { label: 'Packing & ส่ง',  cats: ['PACK'] },
+  { label: 'อื่นๆ',           cats: ['CERT','NOTE'] }
 ];
 
 // เรียกแทน _tpRender() เดิม — render แค่ step ปัจจุบัน
@@ -8073,16 +8774,53 @@ function _tpRender(){
   _tpUpdateSummary();
 }
 
+function _tpUpdateStepBar(){
+  var items = document.querySelectorAll('.tp-step-item');
+  items.forEach(function(el){
+    var step = parseInt(el.getAttribute('data-step'));
+    var numEl = el.querySelector('.tp-step-num');
+    el.classList.remove('active','done');
+    if(step === _tpCurStep){
+      el.classList.add('active');
+      if(numEl) numEl.textContent = step + 1;
+    } else if(step < _tpCurStep){
+      el.classList.add('done');
+      if(numEl) numEl.textContent = '✓';
+    } else {
+      if(numEl) numEl.textContent = step + 1;
+    }
+  });
+  // footer buttons
+  var back = document.getElementById('tp-btn-back');
+  var next = document.getElementById('tp-btn-next');
+  if(back) back.style.display = _tpCurStep > 0 ? '' : 'none';
+  if(next) next.textContent = _tpCurStep === _TP_STEPS.length - 1 ? 'ยืนยัน Custom →' : 'ถัดไป →';
+  // skip checkbox
+  var skipCb = document.getElementById('tp-skip-step');
+  if(skipCb) skipCb.checked = !!_tpSkippedSteps[_tpCurStep];
+}
+
 function _tpGoStep(n){
   _tpCurStep = n;
+  _tpUpdateStepBar();
   _tpRenderStep();
   _tpUpdateSummary();
 }
 function _tpNextStep(){
-  if(_tpCurStep < _TP_STEPS.length - 1){ _tpCurStep++; _tpRenderStep(); _tpUpdateSummary(); }
+  if(_tpCurStep < _TP_STEPS.length - 1){
+    _tpCurStep++;
+    _tpUpdateStepBar();
+    _tpRenderStep();
+    _tpUpdateSummary();
+  }
 }
 function _tpPrevStep(){
-  if(_tpCurStep > 0){ _tpCurStep--; _tpRenderStep(); _tpUpdateSummary(); }
+  if(_tpCurStep > 0){
+    _tpCurStep--;
+    _tpUpdateStepBar();
+    _tpRenderStep();
+    _tpUpdateSummary();
+  }
 }
 
 function _tpRenderStep(){
@@ -8090,6 +8828,19 @@ function _tpRenderStep(){
   var s = currentSku;
   var step = _TP_STEPS[_tpCurStep];
   var html = '';
+
+  // -- PROD_QC step: render แบบพิเศษ --
+  if(step.cats.indexOf('PROD_QC') >= 0){
+    html = _tpRenderProdQC();
+    document.getElementById('tp-step-body').innerHTML = html;
+    // restore skip checkbox state
+    var skipCb = document.getElementById('tp-skip-step');
+    if(skipCb) skipCb.checked = !!_tpSkippedSteps[_tpCurStep];
+    var stepBody = document.getElementById('tp-step-body');
+    if(stepBody) stepBody.style.opacity = _tpSkippedSteps[_tpCurStep] ? '0.35' : '1';
+    if(stepBody) stepBody.style.pointerEvents = _tpSkippedSteps[_tpCurStep] ? 'none' : '';
+    return;
+  }
 
   // -- วนทุก category ที่อยู่ใน step นี้ --
   _tp.cfg.forEach(function(cat){
@@ -8278,11 +9029,41 @@ function _tpUpdateSummary(){
   if(sumBase) sumBase.textContent = (parseFloat(s.THICKNESS_TARGET_MM)||0)+'mm · '+parseInt(s.WIDTH_MM)+'×'+parseInt(s.LENGTH_MM)+' mm';
   if(sumMeta) sumMeta.textContent = (s.GRADE||'')+(s.GRADE&&s.SURFACE?' · ':'')+surfaceBadgeLabel(s.SURFACE);
 
-  var grand = qty*bp + Math.round(addons);
+  // รวม PROD_QC adj (สภาพผิว + รูปแบบการพ่น)
+  var prodAdj = _tpGetProdQCAdj();
+  var prodAdjTotal = prodAdj.total * qty;
+  var grand = qty*bp + Math.round(addons) + prodAdjTotal;
+
   var tVal = document.getElementById('tp-total-val');
   var tSub = document.getElementById('tp-total-sub');
   if(tVal) tVal.textContent = '฿'+grand.toLocaleString();
-  if(tSub) tSub.textContent = qty+' แผ่น × ฿'+bp+(addons>0?' + add-ons':'');
+
+  // sub line: แสดงราคา/แผ่น หลังปรับ
+  var adjPerSheet = prodAdj.total;
+  var unitPrice = bp + adjPerSheet;
+  var subParts = [qty+' แผ่น × ฿'+unitPrice.toLocaleString()];
+  if(prodAdj.surf !== 0) subParts.push('ผิว '+(prodAdj.surf>0?'+':'')+prodAdj.surf+'฿');
+  if(prodAdj.mark !== 0) subParts.push('พ่น '+(prodAdj.mark>0?'+':'')+prodAdj.mark+'฿');
+  if(tSub) tSub.textContent = subParts.join(' · ')+(addons>0?' + add-ons':'');
+
+  // inject adj rows into summary panel
+  var adjEl = document.getElementById('tp-prod-adj');
+  if(!adjEl){
+    var totalBar = document.getElementById('tp-total-val');
+    if(totalBar && totalBar.parentElement && totalBar.parentElement.parentElement){
+      var adjDiv = document.createElement('div');
+      adjDiv.id = 'tp-prod-adj';
+      adjDiv.style.cssText = 'padding:2px 14px 4px;';
+      totalBar.parentElement.parentElement.insertBefore(adjDiv, totalBar.parentElement);
+      adjEl = adjDiv;
+    }
+  }
+  if(adjEl){
+    var adjRows = '';
+    if(prodAdj.surf !== 0) adjRows += '<div class="tp-adj-row"><span>สภาพผิว</span>'+_ppHtml(prodAdj.surf)+'</div>';
+    if(prodAdj.mark !== 0) adjRows += '<div class="tp-adj-row"><span>การพ่น</span>'+_ppHtml(prodAdj.mark)+'</div>';
+    adjEl.innerHTML = adjRows;
+  }
 
   var si = document.getElementById('tp-sum-items');
   if(si){
@@ -8299,7 +9080,7 @@ function _tpUpdateSummary(){
 
   // also update compat fields for _tpFooter
   var pb=document.getElementById('tp-p-base');if(pb)pb.textContent='฿'+(qty*bp).toLocaleString();
-  var pa=document.getElementById('tp-p-addon');if(pa)pa.textContent=addons>0?'+฿'+Math.round(addons).toLocaleString():'+฿0';
+  var pa=document.getElementById('tp-p-addon');if(pa)pa.textContent=(addons+prodAdjTotal)>0?'+฿'+Math.round(addons+prodAdjTotal).toLocaleString():'+฿0';
   var pg=document.getElementById('tp-p-grand');if(pg)pg.textContent='฿'+grand.toLocaleString();
 }
 
@@ -8328,6 +9109,26 @@ function _tpSync(){
   if(dimCat){var st=_tp.st[dimCat.id]||{};var elW=document.getElementById('cc-w');if(elW)elW.value=st.w||'';var elL=document.getElementById('cc-l');if(elL)elL.value=st.l||'';}
   var numCat=(_tp.cfg||[]).find(function(c){return c.type==='number';});
   if(numCat){var elB=document.getElementById('cc-bundle');if(elB)elB.value=_tp.st[numCat.id]||'';}
+  // -- PROD_QC price adjustment rows --
+  var adj = _tpGetProdQCAdj();
+  var adjEl = document.getElementById('tp-prod-adj');
+  if(!adjEl){
+    var totalBar = document.getElementById('tp-total-val');
+    if(totalBar && totalBar.parentElement){
+      var adjDiv = document.createElement('div');
+      adjDiv.id = 'tp-prod-adj';
+      adjDiv.style.cssText = 'padding:4px 14px 0;';
+      totalBar.parentElement.parentElement.insertBefore(adjDiv, totalBar.parentElement);
+      adjEl = adjDiv;
+    }
+  }
+  if(adjEl){
+    var adjHtml = '';
+    if(adj.surf !== 0) adjHtml += '<div class="tp-adj-row"><span>สภาพผิว</span>'+_ppHtml(adj.surf)+'</div>';
+    if(adj.mark !== 0) adjHtml += '<div class="tp-adj-row"><span>การพ่น</span>'+_ppHtml(adj.mark)+'</div>';
+    adjEl.innerHTML = adjHtml;
+  }
+
   var surfSt=_tp.st['SURF'];
   var elSurf=document.getElementById('cc-surface');if(elSurf)elSurf.checked=surfSt&&surfSt!=='SURF-NONE';
   var packSt=_tp.st['PACK']||{};
