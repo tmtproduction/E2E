@@ -113,9 +113,62 @@ body{
 
 /* ── filter row below canvas ── */
 .hero-filter-zone{
-  padding:0 48px 24px;
+  padding:0 48px 16px;
   background:var(--white);
   border-top:1px solid var(--g200);
+}
+
+/* ── Search bar ── */
+.hfz-search-row{padding:14px 0 10px;display:flex;flex-direction:column;gap:8px;}
+.hfz-search-wrap{display:flex;align-items:center;gap:0;border:1px solid var(--g200);border-radius:6px;overflow:hidden;transition:border-color .15s;}
+.hfz-search-wrap:focus-within{border-color:var(--black);}
+.hfz-search-icon{margin:0 12px;color:var(--g400);flex-shrink:0;}
+.hfz-search-input{flex:1;border:none;outline:none;background:transparent;font-size:14px;color:var(--black);padding:11px 0;font-family:var(--sans);}
+.hfz-search-input::placeholder{color:var(--g300);}
+.hfz-clear-search{background:none;border:none;cursor:pointer;color:var(--g400);padding:0 12px;display:flex;align-items:center;transition:color .12s;}
+.hfz-clear-search:hover{color:var(--black);}
+.hfz-suggest-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.hfz-sug-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);white-space:nowrap;}
+.hfz-sug{background:none;border:0.5px solid var(--g200);border-radius:20px;padding:3px 10px;font-size:10px;cursor:pointer;font-family:var(--mono);color:var(--g400);transition:all .12s;white-space:nowrap;}
+.hfz-sug:hover,.hfz-sug.on{background:var(--black);border-color:var(--black);color:var(--white);}
+
+/* ── Filter panel row ── */
+.hfz-filter-row{display:flex;gap:0;align-items:stretch;border:1px solid var(--g200);border-radius:6px;overflow:hidden;}
+.hfz-filter-group{display:flex;flex-direction:column;gap:4px;padding:8px 14px;border-right:1px solid var(--g200);flex:1;min-width:0;}
+.hfz-filter-group:last-child{border-right:none;}
+.hfz-fg-lbl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-family:var(--mono);white-space:nowrap;}
+.hfz-select{border:none;background:transparent;font-size:13px;font-weight:500;outline:none;color:var(--black);cursor:pointer;font-family:var(--sans);-webkit-appearance:none;appearance:none;width:100%;padding:2px 0;}
+.hfz-select:hover{color:var(--black);}
+
+/* ── Range inputs ── */
+.hfz-range-group{min-width:120px;}
+.hfz-range-row{display:flex;align-items:center;gap:4px;}
+.hfz-num{width:52px;border:0.5px solid var(--g200);border-radius:4px;padding:3px 6px;font-size:12px;font-family:var(--mono);outline:none;background:var(--white);color:var(--black);-moz-appearance:textfield;}
+.hfz-num::-webkit-outer-spin-button,.hfz-num::-webkit-inner-spin-button{-webkit-appearance:none;}
+.hfz-num:focus{border-color:var(--black);}
+.hfz-range-sep{font-size:10px;color:var(--g400);font-family:var(--mono);}
+
+/* ── Stock toggle + sort ── */
+.hfz-tools-group{min-width:140px;flex:0 0 auto;}
+.hfz-tools-row{display:flex;flex-direction:column;gap:5px;}
+.hfz-stock-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}
+.hfz-sw{width:26px;height:15px;border-radius:8px;background:var(--g200);position:relative;transition:background .2s;flex-shrink:0;}
+.hfz-sw.on{background:var(--black);}
+.hfz-sw-k{width:11px;height:11px;border-radius:50%;background:var(--white);position:absolute;top:2px;left:2px;transition:left .2s;}
+.hfz-sw.on .hfz-sw-k{left:13px;}
+.hfz-sw-lbl{font-size:11px;color:var(--g400);font-family:var(--mono);}
+.hfz-sort-btns{display:flex;gap:4px;}
+.hfz-sort-btn{background:none;border:0.5px solid var(--g200);border-radius:4px;padding:3px 8px;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:var(--mono);color:var(--g400);transition:all .12s;}
+.hfz-sort-btn.on{background:var(--black);border-color:var(--black);color:var(--white);}
+.hfz-sort-btn:hover:not(.on){border-color:var(--g400);color:var(--black);}
+.hfz-clear-btn{background:none;border:none;border-left:1px solid var(--g200);padding:8px 14px;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:var(--mono);color:var(--g400);transition:color .12s;white-space:nowrap;flex-shrink:0;border-radius:0;}
+.hfz-clear-btn:hover{color:var(--black);}
+
+@media(max-width:767px){
+  .hero-filter-zone{padding:0 16px 14px;}
+  .hfz-filter-row{flex-wrap:wrap;}
+  .hfz-filter-group{min-width:calc(50% - 1px);flex:0 0 calc(50% - 1px);}
+  .hfz-tools-group{flex:1;}
 }
 
 /* ── filter row label ── */
@@ -2596,26 +2649,95 @@ body{
   <div class="cat-hero" id="cat-hero" style="text-align:left;">
     <canvas id="hero-canvas" style="width:100%;display:block;aspect-ratio:2.8/1;max-height:56vh;object-fit:cover;will-change:transform;"></canvas>
     <!-- Desktop filters (inline row) -->
-    <div class="hero-filter-zone">
-      <div class="hero-filter-label">ค้นหาสินค้า</div>
-    <div class="search-bar">
-      <div class="sf"><label>ประเภทผิว</label>
-        <select id="f-surface" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>ดำ (Hot Rolled)</option><option>ชุบสังกะสี (Galvanized)</option><option>Cold Rolled</option><option>สเตนเลส</option></select>
+    <div class="hero-filter-zone" id="hero-filter-zone">
+
+      <!-- ── Search bar row ── -->
+      <div class="hfz-search-row">
+        <div class="hfz-search-wrap">
+          <svg class="hfz-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M9.5 9.5L12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <input class="hfz-search-input" id="f-search" type="text" placeholder="พิมพ์ spec เช่น SS400, 2mm, 1200..." oninput="applyFilter()" autocomplete="off">
+          <button class="hfz-clear-search" id="f-search-clear" onclick="clearSearch()" style="display:none">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2L8 8M8 2L2 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <!-- quick suggest chips -->
+        <div class="hfz-suggest-row" id="hfz-suggest">
+          <span class="hfz-sug-lbl">แนะนำ:</span>
+          <button class="hfz-sug" onclick="setSuggest('Hot Rolled')">Hot Rolled</button>
+          <button class="hfz-sug" onclick="setSuggest('Cold Rolled')">Cold Rolled</button>
+          <button class="hfz-sug" onclick="setSuggest('Galvanized')">Galvanized</button>
+          <button class="hfz-sug" onclick="setSuggest('SS400')">SS400</button>
+          <button class="hfz-sug" onclick="setSuggest('SPHC')">SPHC</button>
+          <button class="hfz-sug" onclick="setSuggest('2.0')">2.0mm</button>
+          <button class="hfz-sug" onclick="setSuggest('3.2')">3.2mm</button>
+        </div>
       </div>
-      <div class="sf"><label>เกรด</label>
-        <select id="f-grade" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>SPHC</option><option>SS400</option><option>SPCC</option><option>SGHC</option></select>
+
+      <!-- ── Filter panel row ── -->
+      <div class="hfz-filter-row">
+
+        <!-- ประเภทผิว -->
+        <div class="hfz-filter-group">
+          <div class="hfz-fg-lbl">ประเภทผิว</div>
+          <select id="f-surface" class="hfz-select" onchange="applyFilter()">
+            <option value="">ทั้งหมด</option>
+          </select>
+        </div>
+
+        <!-- เกรด -->
+        <div class="hfz-filter-group">
+          <div class="hfz-fg-lbl">เกรด</div>
+          <select id="f-grade" class="hfz-select" onchange="applyFilter()">
+            <option value="">ทั้งหมด</option>
+          </select>
+        </div>
+
+        <!-- ความหนา range -->
+        <div class="hfz-filter-group hfz-range-group">
+          <div class="hfz-fg-lbl">ความหนา (mm)</div>
+          <div class="hfz-range-row">
+            <input type="number" class="hfz-num" id="f-thick-min" placeholder="min" step="0.1" min="0" oninput="applyFilter()">
+            <span class="hfz-range-sep">–</span>
+            <input type="number" class="hfz-num" id="f-thick-max" placeholder="max" step="0.1" min="0" oninput="applyFilter()">
+          </div>
+        </div>
+
+        <!-- ความกว้าง -->
+        <div class="hfz-filter-group">
+          <div class="hfz-fg-lbl">ความกว้าง</div>
+          <select id="f-width" class="hfz-select" onchange="applyFilter()">
+            <option value="">ทั้งหมด</option>
+          </select>
+        </div>
+
+        <!-- ความยาว -->
+        <div class="hfz-filter-group">
+          <div class="hfz-fg-lbl">ความยาว</div>
+          <select id="f-length" class="hfz-select" onchange="applyFilter()">
+            <option value="">ทั้งหมด</option>
+          </select>
+        </div>
+
+        <!-- stock toggle + sort -->
+        <div class="hfz-filter-group hfz-tools-group">
+          <div class="hfz-fg-lbl">สต็อก / เรียง</div>
+          <div class="hfz-tools-row">
+            <label class="hfz-stock-toggle" id="hfz-stock-wrap">
+              <div class="hfz-sw" id="hfz-sw"><div class="hfz-sw-k"></div></div>
+              <span class="hfz-sw-lbl">มีสต็อก</span>
+              <input type="checkbox" id="f-stock" onchange="toggleStock()" style="display:none">
+            </label>
+            <div class="hfz-sort-btns">
+              <button class="hfz-sort-btn on" id="sort-price" onclick="setSort('price',this)">฿ ราคา</button>
+              <button class="hfz-sort-btn" id="sort-stock" onclick="setSort('stock',this)">สต็อก</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- clear -->
+        <button class="hfz-clear-btn" onclick="clearFilter()">ล้าง</button>
       </div>
-      <div class="sf"><label>ความหนา</label>
-        <select id="f-thick" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>1.2</option><option>1.5</option><option>2.0</option><option>2.3</option><option>3.2</option></select>
-      </div>
-      <div class="sf"><label>ความกว้าง</label>
-        <select id="f-width" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>900</option><option>1200</option><option>1500</option></select>
-      </div>
-      <div class="sf"><label>ความยาว</label>
-        <select id="f-length" onchange="applyFilter()"><option value="">ทั้งหมด</option><option>2000</option><option>2400</option><option>3000</option></select>
-      </div>
-      <button class="btn-clear" onclick="clearFilter()">ล้างตัวกรอง</button>
-    </div>
+
     </div><!-- /hero-filter-zone -->
   </div>
 
@@ -3981,7 +4103,8 @@ function populateDynamicFilters(){
 
   fillSelect(['f-surface','f-surface-m'], getUnique('SURFACE'));
   fillSelect(['f-grade','f-grade-m'], getUnique('GRADE'));
-  fillSelect(['f-thick','f-thick-m'], getUnique('THICKNESS_TARGET_MM', function(v){
+  // f-thick replaced by range inputs — skip fillSelect for thick
+  fillSelect(['f-thick-m'], getUnique('THICKNESS_TARGET_MM', function(v){
     var n=parseFloat(v); return isNaN(n)?null:String(n);
   }));
   fillSelect(['f-width','f-width-m'], getUnique('WIDTH_MM', function(v){
@@ -4037,18 +4160,92 @@ function toggleAdvFilter(btn){
 }
 
 // -- FILTER ----------------------------------------
+var _sortMode = 'price'; // 'price' | 'stock'
+
 function applyFilter(){
-  var fv=function(id){return document.getElementById(id).value;};
-  filteredSkus=allSkus.filter(function(s){
-    if(fv('f-surface')&&s.SURFACE!==fv('f-surface'))return false;
-    if(fv('f-grade')&&s.GRADE!==fv('f-grade'))return false;
-    if(fv('f-thick')&&String(parseFloat(s.THICKNESS_TARGET_MM))!==fv('f-thick'))return false;
-    if(fv('f-width')&&String(parseInt(s.WIDTH_MM))!==fv('f-width'))return false;
-    if(fv('f-length')&&String(parseInt(s.LENGTH_MM))!==fv('f-length'))return false;
-    if(s.STATUS&&s.STATUS!=='ACTIVE')return false;
+  var fv = function(id){ var el=document.getElementById(id); return el?el.value:''; };
+  var q = (fv('f-search')||'').trim().toLowerCase();
+  var thickMin = parseFloat(fv('f-thick-min'))||0;
+  var thickMax = parseFloat(fv('f-thick-max'))||999;
+  var stockOnly = document.getElementById('f-stock')&&document.getElementById('f-stock').checked;
+
+  // update clear button visibility
+  var clearBtn = document.getElementById('f-search-clear');
+  if(clearBtn) clearBtn.style.display = q ? 'flex' : 'none';
+
+  filteredSkus = allSkus.filter(function(s){
+    if(s.STATUS && s.STATUS!=='ACTIVE') return false;
+
+    // stock filter
+    if(stockOnly && (parseInt(s.STOCK_QTY)||0) <= 0) return false;
+
+    // dropdown filters
+    if(fv('f-surface') && s.SURFACE !== fv('f-surface')) return false;
+    if(fv('f-grade')   && s.GRADE   !== fv('f-grade'))   return false;
+    if(fv('f-width')   && String(parseInt(s.WIDTH_MM))  !== fv('f-width'))  return false;
+    if(fv('f-length')  && String(parseInt(s.LENGTH_MM)) !== fv('f-length')) return false;
+
+    // thickness range
+    var th = parseFloat(s.THICKNESS_TARGET_MM)||0;
+    if(fv('f-thick-min') && th < thickMin) return false;
+    if(fv('f-thick-max') && th > thickMax) return false;
+
+    // free-text search — match against SKU, GRADE, SURFACE, thickness, width, length
+    if(q){
+      var haystack = [
+        s.SKU||'', s.GRADE||'', s.SURFACE||'',
+        String(parseFloat(s.THICKNESS_TARGET_MM)||''),
+        String(parseInt(s.WIDTH_MM)||''),
+        String(parseInt(s.LENGTH_MM)||''),
+        s.STANDARD||'', s.NOTES||''
+      ].join(' ').toLowerCase();
+      var words = q.split(/\s+/);
+      if(!words.every(function(w){ return haystack.indexOf(w) > -1; })) return false;
+    }
+
     return true;
   });
+
+  // sort
+  filteredSkus.sort(function(a,b){
+    if(_sortMode === 'stock'){
+      return (parseInt(b.STOCK_QTY)||0) - (parseInt(a.STOCK_QTY)||0);
+    }
+    return (parseInt(a.PRICE_PER_SHEET_THB)||0) - (parseInt(b.PRICE_PER_SHEET_THB)||0);
+  });
+
   renderGrid();
+}
+
+function setSuggest(val){
+  var inp = document.getElementById('f-search');
+  if(!inp) return;
+  inp.value = val;
+  // toggle active class on suggest buttons
+  document.querySelectorAll('.hfz-sug').forEach(function(b){
+    b.classList.toggle('on', b.textContent === val);
+  });
+  applyFilter();
+}
+
+function clearSearch(){
+  var inp = document.getElementById('f-search');
+  if(inp) inp.value = '';
+  document.querySelectorAll('.hfz-sug').forEach(function(b){ b.classList.remove('on'); });
+  applyFilter();
+}
+
+function toggleStock(){
+  var sw = document.getElementById('hfz-sw');
+  if(sw) sw.classList.toggle('on', document.getElementById('f-stock').checked);
+  applyFilter();
+}
+
+function setSort(mode, btn){
+  _sortMode = mode;
+  document.querySelectorAll('.hfz-sort-btn').forEach(function(b){ b.classList.remove('on'); });
+  if(btn) btn.classList.add('on');
+  applyFilter();
 }
 
 // -- RENDER GRID -----------------------------------
@@ -4071,6 +4268,20 @@ function makeTagline(s){
   if(s.WEIGHT_PER_SHEET_KG)parts.push((parseFloat(s.WEIGHT_PER_SHEET_KG)||0)+' kg/แผ่น');
   if(s.MILL_NAME&&String(s.MILL_NAME).trim())parts.push(String(s.MILL_NAME).trim());
   return parts.join(' · ');
+}
+
+// ── Flatness limit helper ──────────────────────────────
+// Rules:
+//   SURFACE contains 'STAYFLAT' AND thickness ≤ 6  → ≤ 5 mm/m
+//   SURFACE contains 'STAYFLAT' AND thickness >  6  → ≤ 8 mm/m
+//   otherwise (STANDARD)                            → ≤ 12 mm/m
+function _getFlatnessLimit(s){
+  var surf = String(s.SURFACE||'').toUpperCase().replace(/[\s-_]/g,'');
+  var thick = parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
+  if(surf.indexOf('STAYFLAT') >= 0){
+    return thick > 6 ? 8 : 5;
+  }
+  return 12;
 }
 
 function surfaceBadgeClass(s){
@@ -4540,12 +4751,10 @@ function openViewer(idx){
   }
 
   // 3. Flatness: W-SD-QA-01 §4 Cut to Length
-  var stdVal = String(s.STANDARD||'').toUpperCase().trim();
   var tTgt2  = parseFloat(s.THICKNESS_TARGET_MM||s.THICKNESS_TMT_MM||0);
   var wNom2  = parseFloat(s.WIDTH_MM||1219);
-  var stdVal2 = String((currentSku&&currentSku.STANDARD)||'').toUpperCase().trim();
-  var flatLim = stdVal2.indexOf('STAY FLAT') >= 0 ? 5 : 12;
-  setText('tc-flat', '≤ '+flatLim+' mm ');
+  var flatLim = _getFlatnessLimit(s);
+  setText('tc-flat', '≤ '+flatLim+' mm/m');
 
   // 4. Camber: W-SD-QA-01 §5 Cut to Length
   var lenMM2 = parseFloat(s.LENGTH_MM||2400);
@@ -4697,7 +4906,7 @@ function openViewer(idx){
   calcUpdate();
 
   // Geo panel
-  var gDef={flat:s.FLATNESS||'≤ 12 mm/m',flat2:'≤ 20 mm',camb:s.CAMBER||'≤ 2 mm/m',camb2:'≤ 4 mm',sq:s.SQUARENESS||'≤ 2 mm/m',sq2:'≤ 3 mm',br1:s.BEND_RADIUS_TRANS||'1.0t',br2:s.BEND_RADIUS_LONG||'1.5t',ba:'90°',sb:'~ 2–3°'};
+  var gDef={flat:s.FLATNESS||('≤ '+_getFlatnessLimit(s)+' mm/m'),flat2:'≤ 20 mm',camb:s.CAMBER||'≤ 2 mm/m',camb2:'≤ 4 mm',sq:s.SQUARENESS||'≤ 2 mm/m',sq2:'≤ 3 mm',br1:s.BEND_RADIUS_TRANS||'1.0t',br2:s.BEND_RADIUS_LONG||'1.5t',ba:'90°',sb:'~ 2–3°'};
   Object.keys(gDef).forEach(function(k){
     var el=document.getElementById('g-'+k); if(el) el.textContent=gDef[k];
     var ai=document.getElementById('a-'+k); if(ai) ai.value=gDef[k];
@@ -4798,26 +5007,12 @@ function openViewer(idx){
   setText('qc-l-nom', qcLenMM2>0?qcLenMM2.toFixed(0):'—');
   setText('qc-l-max', qcLenMM2>0&&qcLTol>0?(qcLenMM2+qcLTol).toFixed(0):'—');
 
-  // -- Flatness (W-SD-QA-01 §4 Cut to Length) ---
-  var qcFlat=16, qcFlatRef='2m';
-  var qcStdUp = String(s.STANDARD||'').toUpperCase();
-  if(qcStdUp.indexOf('STAY FLAT')>=0){
-    // STAY FLAT standard → ≤ 5 mm/2m เสมอ
-    qcFlat=5; qcFlatRef='2m';
-  } else if(qcTgt>0){
-    if(qcTgt<1.60)      {qcFlat=qcW<1250?16:20; qcFlatRef='2m';}
-    else if(qcTgt<3.15) {qcFlat=qcW<1250?16:18; qcFlatRef='2m';}
-    else if(qcTgt<4.00) {qcFlat=16; qcFlatRef='2m';}
-    else if(qcTgt<6.00) {qcFlat=14; qcFlatRef='2m';}
-    else if(qcTgt<10.00){qcFlat=13; qcFlatRef='2m';}
-    else if(qcTgt<25.00){qcFlat=12; qcFlatRef='2m';}
-    else if(qcTgt<40.00){qcFlat=9;  qcFlatRef='2m';}
-    else                {qcFlat=8;  qcFlatRef='2m';}
-  }
-  var qcFlatStr='≤ '+qcFlat+' mm';
+  // -- Flatness: ใช้ _getFlatnessLimit ตาม SURFACE + thickness --
+  var qcFlat = _getFlatnessLimit(s);
+  var qcFlatStr = '≤ '+qcFlat+' mm/m';
   setText('qc-flat', qcFlatStr);
-  var flatSvg=document.getElementById('qc-flat-svg');
-  if(flatSvg) flatSvg.textContent='≤'+qcFlat+'mm';
+  var flatSvg = document.getElementById('qc-flat-svg');
+  if(flatSvg) flatSvg.textContent = '≤'+qcFlat+'mm/m';
 
   // -- Camber (W-SD-QA-01 §5 Cut to Length) ---
   var qcLenMM=parseFloat(s.LENGTH_MM||2400);
@@ -4990,10 +5185,18 @@ function closePage(){
 })();
 
 function clearFilter(){
-  ['f-surface','f-grade','f-thick','f-width','f-length'].forEach(function(id){
-    document.getElementById(id).value='';
+  ['f-surface','f-grade','f-width','f-length'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
   });
-  // sync mobile dropdowns too
+  ['f-thick-min','f-thick-max'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  var fs=document.getElementById('f-search'); if(fs) fs.value='';
+  var fstk=document.getElementById('f-stock'); if(fstk) fstk.checked=false;
+  var sw=document.getElementById('hfz-sw'); if(sw) sw.classList.remove('on');
+  document.querySelectorAll('.hfz-sug').forEach(function(b){ b.classList.remove('on'); });
+  var clrBtn=document.getElementById('f-search-clear'); if(clrBtn) clrBtn.style.display='none';
+  // sync mobile dropdowns
   ['f-surface-m','f-grade-m','f-thick-m','f-width-m','f-length-m'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.value='';
   });
@@ -5019,9 +5222,11 @@ function syncMobileFilter(mainId, mobileId){
   updateFilterBadge();
 }
 function updateFilterBadge(){
-  var count=['f-surface','f-grade','f-thick','f-width','f-length'].filter(function(id){
+  var count=['f-surface','f-grade','f-width','f-length','f-thick-min','f-thick-max','f-search'].filter(function(id){
     return document.getElementById(id)&&document.getElementById(id).value!=='';
   }).length;
+  // add stock filter to count
+  var fstk=document.getElementById('f-stock'); if(fstk&&fstk.checked) count++;
   var badge=document.getElementById('ftb-count');
   if(!badge)return;
   badge.textContent=count;
@@ -6056,7 +6261,7 @@ function buildLSS(s) {
       {lbl:'Nominal',val:ww+' mm'},{lbl:'Max',val:wMax+' mm'}
     ]},
     {name:'Form Tolerances', rows:[
-      {lbl:'Flatness',val:'≤ '+flatLim+' mm / 1m'},
+      {lbl:'Flatness',val:'≤ '+_getFlatnessLimit(s)+' mm/m'},
       {lbl:'Camber',  val:'≤ '+camber+' mm'},
       {lbl:'Squareness',val:'≤ 3 mm'}
     ]},
